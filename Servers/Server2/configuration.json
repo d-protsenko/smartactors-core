@@ -76,7 +76,8 @@
         {
           "handler":"download",
           "wrapper":{
-            "in_getFeature":"message/feature"
+            "in_getFeature":"message/feature",
+            "out_setFeature":"message/feature"
           },
           "target":"download-feature-actor"
         },
@@ -91,7 +92,8 @@
         {
           "handler":"unzip",
           "wrapper":{
-            "in_getFeature":"message/feature"
+            "in_getFeature":"message/feature",
+            "out_setFeature":"message/feature"
           },
           "target":"unzip-feature-actor"
         },
@@ -107,6 +109,7 @@
           "handler":"load",
           "wrapper":{
             "in_getFeature":"message/feature",
+            "out_setFeature":"message/feature",
             "in_getAfterFeaturesCallbackQueue": "message/afterFeaturesCallbackQueue"
           },
           "target":"load-feature-actor"

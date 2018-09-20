@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.feature_management.unzip_feature_actor.excep
 import info.smart_tools.smartactors.feature_management.unzip_feature_actor.wrapper.UnzipFeatureWrapper;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -84,7 +85,7 @@ public class UnzipFeatureActor {
             throws UnzipFeatureException {
         IFeature feature;
         try {
-            feature = wrapper.getFeature();
+            feature = wrapper.getFeature().clone();
         } catch (ReadValueException e) {
             throw new UnzipFeatureException("Feature should not be null.");
         }
@@ -103,6 +104,11 @@ public class UnzipFeatureActor {
             feature.setFailed(true);
             System.out.println("[FAILED] ---------- Feature '" + feature.getDisplayName() + "' unzipping/copying failed:");
             System.out.println(e);
+        }
+        try {
+            wrapper.setFeature(feature);
+        } catch (ChangeValueException e) {
+            throw new UnzipFeatureException("Update feature in message failed.");
         }
     }
 

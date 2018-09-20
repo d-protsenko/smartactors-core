@@ -105,4 +105,10 @@ public interface IFeature {
      * @param packageType the feature package type
      */
     void setPackageType(String packageType);
+
+    /**
+     * Creates a copy of the feature instance with same Id and other fields
+     * @return new feature copy
+     */
+    IFeature clone();
 }

@@ -22,6 +22,7 @@ import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeat
 import info.smart_tools.smartactors.feature_management.load_feature_actor.exception.LoadFeatureException;
 import info.smart_tools.smartactors.feature_management.load_feature_actor.wrapper.LoadFeatureWrapper;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -75,12 +76,12 @@ public class LoadFeatureActor {
             throws LoadFeatureException {
         IFeature feature;
         try {
-            feature = wrapper.getFeature();
+            feature = wrapper.getFeature().clone();
         } catch (ReadValueException e) {
             throw new LoadFeatureException("Feature should not be null.");
         }
         try {
-            System.out.println("[INFO] Start loading feature - '" + feature.getDisplayName() + "'.");
+            System.out.println("[INFO] Start loading feature '" + feature.getDisplayName() + "'.");
 
             File file = Paths.get((feature.getLocation()).getPath()).toFile();
             Collection<IPath> jars = new ArrayList<>();
@@ -137,6 +138,11 @@ public class LoadFeatureActor {
             feature.setFailed(true);
             System.out.println("[FAILED] ---------- Feature '" + feature.getDisplayName() + "' loading failed with exception:");
             e.printStackTrace(System.out);
+        }
+        try {
+            wrapper.setFeature(feature);
+        } catch (ChangeValueException e) {
+            throw new LoadFeatureException("Update feature in message failed.");
         }
     }
 }

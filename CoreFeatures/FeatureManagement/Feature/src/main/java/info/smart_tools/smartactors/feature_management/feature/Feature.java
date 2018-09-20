@@ -41,9 +41,9 @@ public class Feature implements IFeature {
         this.version = version;
         this.dependencies = dependencies;
         this.featureLocation = featureLocation;
-        this.failed = false;
-        this.id = java.util.UUID.randomUUID();
         this.packageType = packageType;
+        this.id = java.util.UUID.randomUUID();
+        this.failed = false;
     }
 
     @Override
@@ -128,5 +128,20 @@ public class Feature implements IFeature {
     @Override
     public void setPackageType(String packageType) {
         this.packageType = packageType;
+    }
+
+    @Override
+    public IFeature clone() {
+        Feature copy = new Feature(
+                this.groupId,
+                this.name,
+                this.version,
+                this.dependencies,
+                this.featureLocation,
+                this.packageType
+        );
+        copy.id = this.id;
+        copy.failed = this.failed;
+        return copy;
     }
 }

@@ -166,8 +166,12 @@ public class FeatureManagerActor {
         IFeature feature;
         try {
             feature = wrapper.getFeature();
-            System.out.println("[INFO] " + Thread.currentThread().getName() +
-                    " onFeatureLoaded started on feature " + feature.getDisplayName());
+            if (this.featuresInProgress.get(feature.getId()) != feature) {
+                this.featuresInProgress.remove(feature.getId());
+                this.featuresInProgress.put(feature.getId(), feature);
+            }
+            /*System.out.println("[INFO] " + Thread.currentThread().getName() +
+                    " onFeatureLoaded started on feature " + feature.getDisplayName());*/
 
             this.featuresInProgress.remove(feature.getId());
             if (feature.isFailed()) {
@@ -233,8 +237,8 @@ public class FeatureManagerActor {
         } catch (ReadValueException e) {
             throw new FeatureManagementException("Feature should not be null.");
         }
-        System.out.println("[INFO] " + Thread.currentThread().getName() +
-                " onFeatureLoaded finished on feature " + feature.getDisplayName());
+        /*System.out.println("[INFO] " + Thread.currentThread().getName() +
+                " onFeatureLoaded finished on feature " + feature.getDisplayName());*/
     }
 
     /**
@@ -248,8 +252,12 @@ public class FeatureManagerActor {
         IFeature feature;
         try {
             feature = wrapper.getFeature();
-            System.out.println("[INFO] " + Thread.currentThread().getName() +
-                    " onFeatureStepCompleted started on feature " + feature.getDisplayName());
+            /*System.out.println("[INFO] " + Thread.currentThread().getName() +
+                    " onFeatureStepCompleted started on feature " + feature.getDisplayName());*/
+            if (this.featuresInProgress.get(feature.getId()) != feature) {
+                this.featuresInProgress.remove(feature.getId());
+                this.featuresInProgress.put(feature.getId(), feature);
+            }
             checkAndRunConnectedFeatures();
             Set<String> featureDependencies = feature.getDependencies();
 
@@ -273,8 +281,8 @@ public class FeatureManagerActor {
         } catch (InvalidArgumentException | ReadValueException | AsynchronousOperationException e) {
             throw new FeatureManagementException(e);
         }
-        System.out.println("[INFO] " + Thread.currentThread().getName() +
-                " onFeatureStepCompleted finished on feature " + feature.getDisplayName());
+        /*System.out.println("[INFO] " + Thread.currentThread().getName() +
+                " onFeatureStepCompleted finished on feature " + feature.getDisplayName());*/
     }
 
     /**
@@ -333,7 +341,10 @@ public class FeatureManagerActor {
                 if (null != baseFeature) {
                     VersionManager.addItemDependency(feature.getId(), baseFeature.getId());
                     iterator.remove();
-                    System.out.println("[INFO] Dependency '" + dependency + "' was removed from feature '" + feature.getDisplayName() + "'. Loaded feature:'" + baseFeature.getDisplayName() + "'.");
+                    /*System.out.println(
+                            "[INFO] Dependency '" + dependency + "' removed from feature '" +
+                            feature.getDisplayName() + "'. Loaded feature:'" + baseFeature.getDisplayName() + "'."
+                    );*/
                 }
             }
         }

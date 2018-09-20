@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.feature_management.download_feature_actor.wr
 import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeature;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -19,7 +20,6 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -65,7 +65,7 @@ public class DownloadFeatureActor {
             throws DownloadFeatureException {
         IFeature feature;
         try {
-            feature = wrapper.getFeature();
+            feature = wrapper.getFeature().clone();
             //TODO: need refactoring
             for(String type : FILE_TYPE_LIST) {
                 if (
@@ -98,6 +98,11 @@ public class DownloadFeatureActor {
             feature.setFailed(true);
             System.out.println("[FAILED] ---------- Feature '" + feature.getDisplayName() + "' downloading aborted with exception:");
             System.out.println(e);
+        }
+        try {
+            wrapper.setFeature(feature);
+        } catch (ChangeValueException e) {
+            throw new DownloadFeatureException("Update feature in message failed.");
         }
     }
 
