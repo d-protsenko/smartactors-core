@@ -72,6 +72,7 @@ public class FeatureManagerActor {
 
     /**
      * Default constructor
+     *
      * @throws ResolutionException if any errors occurred on resolution IOC dependencies
      */
     public FeatureManagerActor()
@@ -84,10 +85,10 @@ public class FeatureManagerActor {
         this.failedFeatures = new ConcurrentHashMap<>();
         this.featuresInProgress = new ConcurrentHashMap<>();
 
-        this.featureFN =                        IOC.resolve(
+        this.featureFN = IOC.resolve(
                 Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "feature"
         );
-        this.afterFeaturesCallbackQueueFN =     IOC.resolve(
+        this.afterFeaturesCallbackQueueFN = IOC.resolve(
                 Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "afterFeaturesCallbackQueue"
         );
         this.startTimeOfLoadingFeatureGroupFN = IOC.resolve(
@@ -97,6 +98,7 @@ public class FeatureManagerActor {
 
     /**
      * Adds features to the processing
+     *
      * @param wrapper the wrapped message for getting needed data and storing result
      * @throws FeatureManagementException if any errors occurred on feature processing
      */
@@ -142,12 +144,12 @@ public class FeatureManagerActor {
             }
         } catch (
                 ReadValueException |
-                ChangeValueException |
-                InvalidArgumentException |
-                ResolutionException |
-                ChainNotFoundException |
-                MessageProcessorProcessException |
-                AsynchronousOperationException e
+                        ChangeValueException |
+                        InvalidArgumentException |
+                        ResolutionException |
+                        ChainNotFoundException |
+                        MessageProcessorProcessException |
+                        AsynchronousOperationException e
         ) {
             throw new FeatureManagementException(e);
         }
@@ -155,6 +157,7 @@ public class FeatureManagerActor {
 
     /**
      * Ends feature processing
+     *
      * @param wrapper the wrapped message for getting needed data and storing result
      * @throws FeatureManagementException if any errors occurred on feature processing
      */
@@ -163,6 +166,8 @@ public class FeatureManagerActor {
         IFeature feature;
         try {
             feature = wrapper.getFeature();
+            System.out.println("[INFO] " + Thread.currentThread().getName() +
+                    " onFeatureLoaded started on feature " + feature.getDisplayName());
 
             this.featuresInProgress.remove(feature.getId());
             if (feature.isFailed()) {
@@ -216,9 +221,9 @@ public class FeatureManagerActor {
                     this.requestProcessesForInfo.remove(mp);
                 } catch (
                         InvalidArgumentException |
-                        AsynchronousOperationException |
-                        ReadValueException |
-                        ActionExecuteException e
+                                AsynchronousOperationException |
+                                ReadValueException |
+                                ActionExecuteException e
                 ) {
                     throw new RuntimeException(e);
                 }
@@ -228,10 +233,13 @@ public class FeatureManagerActor {
         } catch (ReadValueException e) {
             throw new FeatureManagementException("Feature should not be null.");
         }
+        System.out.println("[INFO] " + Thread.currentThread().getName() +
+                " onFeatureLoaded finished on feature " + feature.getDisplayName());
     }
 
     /**
      * Ends step of feature processing
+     *
      * @param wrapper the wrapped message for getting needed data and storing result
      * @throws FeatureManagementException if any errors occurred on feature processing
      */
@@ -240,14 +248,16 @@ public class FeatureManagerActor {
         IFeature feature;
         try {
             feature = wrapper.getFeature();
+            System.out.println("[INFO] " + Thread.currentThread().getName() +
+                    " onFeatureStepCompleted started on feature " + feature.getDisplayName());
             checkAndRunConnectedFeatures();
             Set<String> featureDependencies = feature.getDependencies();
 
             if (null != featureDependencies) {
                 VersionManager.addItem(
-                    feature.getId(),
-                    getEmptyIfNull(feature.getGroupId()) + FEATURE_NAME_DELIMITER + getEmptyIfNull(feature.getName()),
-                    getEmptyIfNull(feature.getVersion())
+                        feature.getId(),
+                        getEmptyIfNull(feature.getGroupId()) + FEATURE_NAME_DELIMITER + getEmptyIfNull(feature.getName()),
+                        getEmptyIfNull(feature.getVersion())
                 );
 
                 removeLoadedFeaturesFromFeatureDependencies(feature);
@@ -263,10 +273,13 @@ public class FeatureManagerActor {
         } catch (InvalidArgumentException | ReadValueException | AsynchronousOperationException e) {
             throw new FeatureManagementException(e);
         }
+        System.out.println("[INFO] " + Thread.currentThread().getName() +
+                " onFeatureStepCompleted finished on feature " + feature.getDisplayName());
     }
 
     /**
      * Gets state of added features
+     *
      * @param wrapper the wrapped message for getting needed data and storing result
      * @throws FeatureManagementException if any errors occurred on feature processing
      */
@@ -305,21 +318,13 @@ public class FeatureManagerActor {
 
         Set<String> featureDependencies = feature.getDependencies();
         if (null != featureDependencies) {
-            for(Iterator<String> iterator = featureDependencies.iterator(); iterator.hasNext();) {
+            for (Iterator<String> iterator = featureDependencies.iterator(); iterator.hasNext(); ) {
 
-                String[] dependencyNames = iterator.next().split(FEATURE_NAME_DELIMITER);
-                if (dependencyNames.length < 2) {
-                    throw new FeatureManagementException("Wrong feature "+feature.getId()+" dependency format.");
-                }
-                String dependencyGroupId = dependencyNames[0];
-                String dependencyName = dependencyNames[1];
-                String dependencyVersion = (dependencyNames.length > 2 ? dependencyNames[2] : "");
+                String dependency = iterator.next();
 
                 IFeature baseFeature = null;
-                for(IFeature loadedFeature : this.loadedFeatures.values()) {
-                    if (    loadedFeature.getGroupId().equals(dependencyGroupId) &&
-                            loadedFeature.getName().equals(dependencyName) &&
-                            loadedFeature.getVersion().compareTo(dependencyVersion) >= 0) {
+                for (IFeature loadedFeature : this.loadedFeatures.values()) {
+                    if (matchDependency(dependency, loadedFeature)) {
                         if (baseFeature == null || loadedFeature.getVersion().compareTo(baseFeature.getVersion()) >= 0) {
                             baseFeature = loadedFeature;
                         }
@@ -328,12 +333,14 @@ public class FeatureManagerActor {
                 if (null != baseFeature) {
                     VersionManager.addItemDependency(feature.getId(), baseFeature.getId());
                     iterator.remove();
+                    System.out.println("[INFO] Dependency '" + dependency + "' was removed from feature '" + feature.getDisplayName() + "'. Loaded feature:'" + baseFeature.getDisplayName() + "'.");
                 }
             }
         }
     }
 
-    private void checkUnresolved() {
+    private void checkUnresolved()
+            throws FeatureManagementException {
         int minDependencies = this.featuresInProgress
                 .values()
                 .stream()
@@ -343,7 +350,7 @@ public class FeatureManagerActor {
                 .orElse(0);
         if (
                 !this.featuresInProgress.isEmpty()
-                && minDependencies > 0
+                        && minDependencies > 0
         ) {
             Set<String> unresolved = this.featuresInProgress
                     .values()
@@ -351,15 +358,19 @@ public class FeatureManagerActor {
                     .map(IFeature::getDependencies)
                     .flatMap(Collection::stream)
                     .collect(Collectors.toSet());
-            unresolved.removeAll(
-                    this.featuresInProgress
-                            .values()
-                            .stream()
-                            .map(f -> f.getGroupId() + ":" + f.getName())
-                            .collect(Collectors.toSet())
-            );
 
-            System.out.println("[INFO] The server needs the following features to continue: " +
+            Iterator<String> iterator = unresolved.iterator();
+            while (iterator.hasNext()) {
+                String dependency = iterator.next();
+
+                for (IFeature feature : this.featuresInProgress.values()) {
+                    if (matchDependency(dependency, feature)) {
+                        iterator.remove();
+                    }
+                }
+            }
+
+            System.out.println("[INFO] The server waits for the following features to continue: " +
                     unresolved.stream().map(a -> "\n\t\t" + a).collect(Collectors.toList())
             );
         }
@@ -367,5 +378,28 @@ public class FeatureManagerActor {
 
     private String getEmptyIfNull(String s) {
         return (s == null ? "" : s);
+    }
+
+    private boolean matchDependency(String dependencyName, IFeature feature)
+            throws FeatureManagementException {
+        String[] dependency = parseFullName(dependencyName);
+        return (feature.getGroupId().equals(dependency[0]) &&
+                feature.getName().equals(dependency[1]) &&
+                feature.getVersion().compareTo(dependency[2]) >= 0);
+    }
+
+    // todo: replace this code by parsing strategy
+    private String[] parseFullName(String fullName)
+            throws FeatureManagementException {
+        String[] dependencyNames = fullName.split(FEATURE_NAME_DELIMITER);
+        if (dependencyNames.length < 2) {
+            throw new FeatureManagementException("Wrong feature name or dependency format '"+fullName+"'.");
+        }
+        String[] result = {
+                dependencyNames[0],
+                dependencyNames[1],
+                dependencyNames.length > 2 ? dependencyNames[2] : ""
+        };
+        return result;
     }
 }

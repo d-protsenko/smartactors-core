@@ -90,18 +90,18 @@ public class UnzipFeatureActor {
         }
         try {
             if (null == feature.getDependencies()) {
-                System.out.println("[INFO] Start unzipping/copying feature - '" + feature.getDisplayName() + "'.");
+                System.out.println("[INFO] Start unzipping/copying feature '" + feature.getDisplayName() + "'.");
                 File f = new File(feature.getLocation().toString());
                 IBiFunction<File, IFeature, File> function = this.unzipFunctions.get(getExtension(f));
                 if (null != function) {
                     File configFile = function.execute(f, feature);
                     updateFeature(configFile, feature);
-                    System.out.println("[OK] -------------- Feature '" + feature.getDisplayName() + "' has been unzipped/copied successful.");
+                    System.out.println("[OK] -------------- Feature '" + feature.getDisplayName() + "' unzipped/copied successfully.");
                 }
             }
         } catch (Throwable e) {
             feature.setFailed(true);
-            System.out.println("[FAILED] ---------- Feature '" + feature.getDisplayName() + "' unzipping/copying has been aborted with exception:");
+            System.out.println("[FAILED] ---------- Feature '" + feature.getDisplayName() + "' unzipping/copying failed:");
             System.out.println(e);
         }
     }

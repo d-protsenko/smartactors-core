@@ -132,10 +132,10 @@ public class LoadFeatureActor {
                 String configString = new Scanner(configFile).useDelimiter(END_OF_INPUT_DELIMITER).next();
                 configurationManager.applyConfig(IOC.resolve(Keys.getOrAdd(CONFIGURATION_OBJECT_KEY), configString));
             }
-            System.out.println("[OK] -------------- Feature - '" + feature.getDisplayName() + "' has been loaded successful.");
+            System.out.println("[OK] -------------- Feature '" + feature.getDisplayName() + "' loaded successfully.");
         } catch (Throwable e) {
             feature.setFailed(true);
-            System.out.println("[FAILED] ---------- Feature '" + feature.getDisplayName() + "' loading has been broken with exception:");
+            System.out.println("[FAILED] ---------- Feature '" + feature.getDisplayName() + "' loading failed with exception:");
             e.printStackTrace(System.out);
         }
     }

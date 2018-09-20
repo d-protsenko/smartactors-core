@@ -90,13 +90,13 @@ public class DownloadFeatureActor {
         }
         try {
             if (null == feature.getDependencies() && null != feature.getGroupId() && null != feature.getVersion()) {
-                System.out.println("[INFO] Start downloading feature - '" + getFullFeatureName(feature) + "'.");
+                System.out.println("[INFO] Start downloading feature - '" + feature.getDisplayName() + "'.");
                 download0(feature);
-                System.out.println("[OK] -------------- Feature '" + getFullFeatureName(feature) + "' has been downloaded successful.");
+                System.out.println("[OK] -------------- Feature '" + feature.getDisplayName() + "' downloaded successfully.");
             }
         } catch (Throwable e) {
             feature.setFailed(true);
-            System.out.println("[FAILED] ---------- Feature '" + getFullFeatureName(feature) + "' downloading has been aborted with exception:");
+            System.out.println("[FAILED] ---------- Feature '" + feature.getDisplayName() + "' downloading aborted with exception:");
             System.out.println(e);
         }
     }
@@ -137,9 +137,5 @@ public class DownloadFeatureActor {
         } catch (Throwable e) {
             throw new Exception(e);
         }
-    }
-
-    private String getFullFeatureName(IFeature feature) {
-        return feature.getGroupId()+":"+feature.getName()+":"+feature.getVersion();
     }
 }
