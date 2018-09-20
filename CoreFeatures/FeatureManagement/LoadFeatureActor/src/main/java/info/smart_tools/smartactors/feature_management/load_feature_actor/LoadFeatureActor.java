@@ -52,6 +52,7 @@ public class LoadFeatureActor {
     private final static String PLUGIN_LOADER_KEY = "plugin loader";
     private final static String CONFIGURATION_OBJECT_KEY = "configuration object";
     private final static String END_OF_INPUT_DELIMITER = "\\Z";
+    private final static String FEATURE_NAME_DELIMITER = ":";
 
     /**
      * Default constructor
@@ -79,7 +80,7 @@ public class LoadFeatureActor {
             throw new LoadFeatureException("Feature should not be null.");
         }
         try {
-            System.out.println("[INFO] Start loading feature - '" + feature.getName() + "'.");
+            System.out.println("[INFO] Start loading feature - '" + feature.getDisplayName() + "'.");
 
             File file = Paths.get((feature.getLocation()).getPath()).toFile();
             Collection<IPath> jars = new ArrayList<>();
@@ -131,10 +132,10 @@ public class LoadFeatureActor {
                 String configString = new Scanner(configFile).useDelimiter(END_OF_INPUT_DELIMITER).next();
                 configurationManager.applyConfig(IOC.resolve(Keys.getOrAdd(CONFIGURATION_OBJECT_KEY), configString));
             }
-            System.out.println("[OK] -------------- Feature - '" + feature.getName() + "' has been loaded successful.");
+            System.out.println("[OK] -------------- Feature - '" + feature.getDisplayName() + "' has been loaded successful.");
         } catch (Throwable e) {
             feature.setFailed(true);
-            System.out.println("[FAILED] ---------- Feature '" + feature.getName() + "' loading has been broken with exception:");
+            System.out.println("[FAILED] ---------- Feature '" + feature.getDisplayName() + "' loading has been broken with exception:");
             e.printStackTrace(System.out);
         }
     }

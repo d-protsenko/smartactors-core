@@ -59,6 +59,12 @@ public interface IFeature {
     String getPackageType();
 
     /**
+     * Gets full feature name
+     * @return the full feature name
+     */
+    String getDisplayName();
+
+    /**
      * Sets feature name
      * @param featureName the feature name
      */

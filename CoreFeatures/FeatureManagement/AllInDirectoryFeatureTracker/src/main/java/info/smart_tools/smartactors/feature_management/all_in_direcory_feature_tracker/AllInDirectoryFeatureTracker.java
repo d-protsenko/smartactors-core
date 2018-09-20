@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Actor that scans specific directory,
@@ -52,6 +54,7 @@ public class AllInDirectoryFeatureTracker {
     private final static String DEF_PACKAGE_TYPE = "jar";
     private final static String FEATURE_VERSION_PATTERN = "-\\d+\\.\\d+\\.\\d+";
     private final static List<String> FILE_TYPE_LIST = Arrays.asList("zip", "jar");
+    private final static String FEATURE_NAME_DELIMITER = ":";
 
     /**
      * Default constructor
@@ -120,23 +123,36 @@ public class AllInDirectoryFeatureTracker {
                 new Scanner(jsonFile).useDelimiter(END_OF_INPUT_DELIMITER).next()
         );
 
-        String name = (String) jsonConfig.getValue(this.featureNameFN);
+        String featureName = (String) jsonConfig.getValue(this.featureNameFN);
+        String[] featureNames = featureName.split(FEATURE_NAME_DELIMITER);
+        if (featureNames.length < 2) {
+            throw new Exception("Wrong feature name format '"+featureName+"' in "+jsonFile.getPath()+" .");
+        }
+        String groupId = featureNames[0];
+        String name = featureNames[1];
+        String version = featureNames.length > 2 ? featureNames[2] : null;
+
         Set<String> dependencies = new HashSet<String>((List) jsonConfig.getValue(this.afterFeaturesFN));
 
-        return new Feature(name, dependencies, new Path(f.getPath()), null);
+        return new Feature(groupId, name, version, dependencies, new Path(f.getPath()), null);
     }
 
     private IFeature createZippedFeature(final File f)
             throws Exception {
 
+        String name = f.getName().split(FEATURE_VERSION_PATTERN)[0];
+        Pattern pattern = Pattern.compile(FEATURE_VERSION_PATTERN);
+        Matcher matcher = pattern.matcher(f.getName());
+        matcher.find();
+        String version = matcher.group().substring(1);
         return new Feature(
-                parseNameOfZippedFeature(f), null, new Path(f.getPath()), this.getExtension(f)
+                null,
+                name,
+                version,
+                null,
+                new Path(f.getPath()),
+                this.getExtension(f)
         );
-    }
-
-    private String parseNameOfZippedFeature(final File f) {
-
-        return f.getName().split(FEATURE_VERSION_PATTERN)[0];
     }
 
     private Map<String, IFeature> parseFeatureList(final File jsonFile)
@@ -160,9 +176,10 @@ public class AllInDirectoryFeatureTracker {
             String name = (String) feature.getValue(this.nameFN);
             String packageType = (String) feature.getValue(this.packageTypeFN);
             features.put(name, new Feature(
-                            (String) feature.getValue(this.nameFN),
                             (String) feature.getValue(this.groupFN),
+                            (String) feature.getValue(this.nameFN),
                             (String) feature.getValue(this.versionFN),
+                            null,
                             new Path(jsonFile.getParent()),
                             null != packageType ? packageType : DEF_PACKAGE_TYPE
                     )

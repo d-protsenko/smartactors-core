@@ -2,7 +2,6 @@ package info.smart_tools.smartactors.feature_management.unzip_feature_actor;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IBiFunction;
 import info.smart_tools.smartactors.base.path.Path;
-import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
 import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeature;
 import info.smart_tools.smartactors.feature_management.unzip_feature_actor.exception.UnzipFeatureException;
 import info.smart_tools.smartactors.feature_management.unzip_feature_actor.wrapper.UnzipFeatureWrapper;
@@ -91,18 +90,18 @@ public class UnzipFeatureActor {
         }
         try {
             if (null == feature.getDependencies()) {
-                System.out.println("[INFO] Start unzipping/copying feature - '" + feature.getName() + "'.");
+                System.out.println("[INFO] Start unzipping/copying feature - '" + feature.getDisplayName() + "'.");
                 File f = new File(feature.getLocation().toString());
                 IBiFunction<File, IFeature, File> function = this.unzipFunctions.get(getExtension(f));
                 if (null != function) {
                     File configFile = function.execute(f, feature);
                     updateFeature(configFile, feature);
-                    System.out.println("[OK] -------------- Feature '" + feature.getName() + "' has been unzipped/copied successful.");
+                    System.out.println("[OK] -------------- Feature '" + feature.getDisplayName() + "' has been unzipped/copied successful.");
                 }
             }
         } catch (Throwable e) {
             feature.setFailed(true);
-            System.out.println("[FAILED] ---------- Feature '" + feature.getName() + "' unzipping/copying has been aborted with exception:");
+            System.out.println("[FAILED] ---------- Feature '" + feature.getDisplayName() + "' unzipping/copying has been aborted with exception:");
             System.out.println(e);
         }
     }
@@ -169,11 +168,7 @@ public class UnzipFeatureActor {
             if (destinationDir.exists() && destinationDir.isDirectory()) {
                 File checkFile = Paths.get(destinationDir.getPath(), NAME_OF_CHECK_FILE).toFile();
                 if (checkFile.exists() && zippedFeature.lastModified() < checkFile.lastModified()) {
-                    System.out.println(
-                            "[OK] -------------- Unzipping/copying of the feature '" +
-                            feature.getName() +
-                            "' was skipped because the directory contains an actual state of this feature."
-                    );
+                    System.out.println("[INFO] Unzipping/copying feature '" + feature.getDisplayName() + "' already done.");
                     return false;
                 }
             }
@@ -211,8 +206,8 @@ public class UnzipFeatureActor {
         Set<String> dependenciesSet = new HashSet<>(dependencies);
         feature.setDependencies(dependenciesSet);
         feature.setLocation(new Path(f.getParent()));
-        feature.setName(featureNames[0]);
-        feature.setGroupId(featureNames[1]);
+        feature.setGroupId(featureNames[0]);
+        feature.setName(featureNames[1]);
         feature.setVersion(featureNames.length > 2 ? featureNames[2] : "");
     }
 
@@ -229,5 +224,4 @@ public class UnzipFeatureActor {
             Files.createFile(f.toPath());
         }
     }
-
 }

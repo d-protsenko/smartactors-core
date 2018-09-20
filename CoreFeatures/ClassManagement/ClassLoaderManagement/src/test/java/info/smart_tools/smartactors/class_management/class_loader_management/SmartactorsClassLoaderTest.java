@@ -6,6 +6,8 @@ import org.junit.Test;
 
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -17,10 +19,10 @@ public class SmartactorsClassLoaderTest {
     @Test
     public void checkSmartactorsClassLoaderCreation()
             throws Exception {
-        VersionManager.addItem(VersionManager.coreName, VersionManager.coreVersion);
-        VersionManager.addItem("cl1");
+        VersionManager.addItem(VersionManager.coreId, VersionManager.coreName, VersionManager.coreVersion);
+        VersionManager.addItem("cl1", "cl1", null);
         assertNotNull(VersionManager.getItemClassLoader("cl1"));
-        VersionManager.addItem("cl2");
+        VersionManager.addItem("cl2", "cl2", null);
         assertNotNull(VersionManager.getItemClassLoader("cl2"));
         assertSame(((ClassLoader) VersionManager.getItemClassLoader("cl2")).getParent(), ClassLoader.getSystemClassLoader());
         VersionManager.addItemDependency("cl1", "cl2");
@@ -34,17 +36,16 @@ public class SmartactorsClassLoaderTest {
         URL url1 = new URL("http", "host", 9000, "filename1");
         URL url2 = new URL("http", "host", 9000, "filename2");
         URL url3 = new URL("http", "host", 9000, "filename1");
-        VersionManager.addItem("c0");
-        VersionManager.addItem("cl");
-        ISmartactorsClassLoader cl = VersionManager.getItemClassLoader("cl");
-
+        VersionManager.addItem("clURL", "clURL", "clURL");
+        ISmartactorsClassLoader cl = VersionManager.getItemClassLoader("clURL");
         assertNotNull(cl);
+
+        cl.addURL(url1);
         cl.addURL(url2);
         cl.addURL(url3);
         URL[] result = cl.getURLsFromDependencies();
-        assertSame(result[0], url1);
-        assertSame(result[1], url2);
-        assertEquals(result.length, 2);
+        assertSame(url1, result[result.length-2]);
+        assertSame(url2, result[result.length-1]);
 
         try {
             Class clazz = cl.loadClass("nowhere.classNotExist");
@@ -59,11 +60,8 @@ public class SmartactorsClassLoaderTest {
     public void checkGettersSetters()
             throws Exception {
 
-        VersionManager.addItem("cl");
+        VersionManager.addItem("cl", "cl", null);
         ISmartactorsClassLoader cl = VersionManager.getItemClassLoader("cl");
-
-        String namespace = "currentClassLoaderNamespace";
-        VersionManager.setItemName("cl", namespace);
 
         try {
             byte[] byteCode = { 1, 2 };
@@ -93,23 +91,17 @@ public class SmartactorsClassLoaderTest {
     public void performanceTestForExtendedClassLoader()
             throws Exception {
         {
-            VersionManager.addItem("cl00");
-            VersionManager.setItemName("cl00", "DeadEnd-IField");
+            VersionManager.addItem("cl00", "DeadEnd-IField", "cl00");
             ISmartactorsClassLoader cl00 = VersionManager.getItemClassLoader("cl00");
-            VersionManager.addItem("cl01");
-            VersionManager.setItemName("cl01", "PathToSCL-IField");
+            VersionManager.addItem("cl01", "PathToSCL-IField", "cl01");
             ISmartactorsClassLoader cl01 = VersionManager.getItemClassLoader("cl01");
-            VersionManager.addItem("CL1");
-            VersionManager.setItemName("CL1", "CL1");
+            VersionManager.addItem("CL1", "CL1", "CL1");
             ISmartactorsClassLoader cl1 = VersionManager.getItemClassLoader("CL1");
-            VersionManager.addItem("CL2");
-            VersionManager.setItemName("CL2", "CL2");
+            VersionManager.addItem("CL2", "CL2", "CL2");
             ISmartactorsClassLoader cl2 = VersionManager.getItemClassLoader("CL2");
-            VersionManager.addItem("CL3");
-            VersionManager.setItemName("CL3", "CL3");
+            VersionManager.addItem("CL3", "CL3", "CL3");
             ISmartactorsClassLoader cl3 = VersionManager.getItemClassLoader("CL3");
-            VersionManager.addItem("CL4");
-            VersionManager.setItemName("CL4", "CL4");
+            VersionManager.addItem("CL4", "CL4", "CL4");
             ISmartactorsClassLoader cl4 = VersionManager.getItemClassLoader("CL4");
             VersionManager.addItemDependency("CL1", "cl00");
             VersionManager.addItemDependency("CL1", "cl01");
@@ -134,23 +126,17 @@ public class SmartactorsClassLoaderTest {
         iterations = 1000;
         for(int i=0; i<iterations+5; i++)
         {
-            VersionManager.addItem("cl00");
-            VersionManager.setItemName("cl00", "DeadEnd-IField");
+            VersionManager.addItem("cl00", "DeadEnd-IField", "cl00");
             ISmartactorsClassLoader cl00 = VersionManager.getItemClassLoader("cl00");
-            VersionManager.addItem("cl01");
-            VersionManager.setItemName("cl01", "PathToSCL-IField");
+            VersionManager.addItem("cl01", "PathToSCL-IField", "cl01");
             ISmartactorsClassLoader cl01 = VersionManager.getItemClassLoader("cl01");
-            VersionManager.addItem("CL1");
-            VersionManager.setItemName("CL1", "CL1");
+            VersionManager.addItem("CL1", "CL1", "CL1");
             ISmartactorsClassLoader cl1 = VersionManager.getItemClassLoader("CL1");
-            VersionManager.addItem("CL2");
-            VersionManager.setItemName("CL2", "CL2");
+            VersionManager.addItem("CL2", "CL2", "CL2");
             ISmartactorsClassLoader cl2 = VersionManager.getItemClassLoader("CL2");
-            VersionManager.addItem("CL3");
-            VersionManager.setItemName("CL3", "CL3");
+            VersionManager.addItem("CL3", "CL3", "CL3");
             ISmartactorsClassLoader cl3 = VersionManager.getItemClassLoader("CL3");
-            VersionManager.addItem("CL4");
-            VersionManager.setItemName("CL4", "CL4");
+            VersionManager.addItem("CL4", "CL4", "CL4");
             ISmartactorsClassLoader cl4 = VersionManager.getItemClassLoader("CL4");
             VersionManager.addItemDependency("CL1", "cl00");
             VersionManager.addItemDependency("CL1", "cl01");
@@ -181,32 +167,23 @@ public class SmartactorsClassLoaderTest {
         System.out.println("Average direct line class loading (ns): "+d);
         System.out.println("Average aroung line class loading (ns): "+a);
 
-        VersionManager.addItem("cl00");
-        VersionManager.setItemName("cl00", "DeadEnd-IField");
+        VersionManager.addItem("cl00", "DeadEnd-IField", "cl00");
         ISmartactorsClassLoader cl00 = VersionManager.getItemClassLoader("cl00");
-        VersionManager.addItem("cl01");
-        VersionManager.setItemName("cl01", "PathToSCL-IField");
+        VersionManager.addItem("cl01", "PathToSCL-IField", "cl01");
         ISmartactorsClassLoader cl01 = VersionManager.getItemClassLoader("cl01");
-        VersionManager.addItem("CL1");
-        VersionManager.setItemName("CL1", "CL1");
+        VersionManager.addItem("CL1", "CL1", "CL1");
         ISmartactorsClassLoader cl1 = VersionManager.getItemClassLoader("CL1");
-        VersionManager.addItem("CL2");
-        VersionManager.setItemName("CL2", "CL2");
+        VersionManager.addItem("CL2", "CL2", "CL2");
         ISmartactorsClassLoader cl2 = VersionManager.getItemClassLoader("CL2");
-        VersionManager.addItem("CL3");
-        VersionManager.setItemName("CL3", "CL3");
+        VersionManager.addItem("CL3", "CL3", "CL3");
         ISmartactorsClassLoader cl3 = VersionManager.getItemClassLoader("CL3");
-        VersionManager.addItem("CL4");
-        VersionManager.setItemName("CL4", "CL4");
+        VersionManager.addItem("CL4", "CL4", "CL4");
         ISmartactorsClassLoader cl4 = VersionManager.getItemClassLoader("CL4");
-        VersionManager.addItem("CL5");
-        VersionManager.setItemName("CL5", "CL5");
+        VersionManager.addItem("CL5", "CL5", "CL5");
         ISmartactorsClassLoader cl5 = VersionManager.getItemClassLoader("CL5");
-        VersionManager.addItem("CL6");
-        VersionManager.setItemName("CL6", "CL6");
+        VersionManager.addItem("CL6", "CL6", "CL6");
         ISmartactorsClassLoader cl6 = VersionManager.getItemClassLoader("CL6");
-        VersionManager.addItem("CL7");
-        VersionManager.setItemName("CL7", "CL7");
+        VersionManager.addItem("CL7", "CL7", "CL7");
         ISmartactorsClassLoader cl7 = VersionManager.getItemClassLoader("CL7");
         VersionManager.addItemDependency("CL1", "cl00");
         VersionManager.addItemDependency("CL1", "cl01");

@@ -61,6 +61,7 @@ public class Server implements IServer {
     @Override
     public void initialize()
             throws ServerInitializeException {
+        Thread.currentThread().setName("BaseThread");
         try {
             VersionManager.addItem(
                     VersionManager.coreId,

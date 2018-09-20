@@ -140,24 +140,14 @@ public class FeaturesCreatorActor {
                 for (IObject feature : featuresFromJson) {
                     String name = (String) feature.getValue(this.nameFN);
                     String packageType = (String) feature.getValue(this.packageTypeFN);
-                    if (null != feature.getValue(this.groupFN)) {
-                        features.put(name, new Feature(
-                                        name,
-                                        (String) feature.getValue(this.groupFN),
-                                        (String) feature.getValue(this.versionFN),
-                                        new Path(wrapper.getFeatureDirectory()),
-                                        packageType
-                                )
-                        );
-                    } else {
-                        features.put(name, new Feature(
-                                        name,
-                                        null,
-                                        (IPath) feature.getValue(this.featureLocationFN),
-                                        packageType
-                                )
-                        );
-                    }
+                    features.put(name, new Feature(
+                            (String) feature.getValue(this.groupFN),
+                            (String) feature.getValue(this.nameFN),
+                            (String) feature.getValue(this.versionFN),
+                            null,
+                            new Path(wrapper.getFeatureDirectory()),
+                            packageType
+                    ));
                 }
             }
 

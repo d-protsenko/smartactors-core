@@ -208,7 +208,7 @@ public class FeatureManagerActor {
                     System.out.println(
                             "[INFO] Feature group has been loaded: " +
                                     this.requestProcessesForInfo.get(mp).stream().map(
-                                            a -> "\n" + getFullFeatureName(a) + " - " + (!a.isFailed() ? "(OK)" : "(Failed)")
+                                            a -> "\n" + a.getDisplayName() + " - " + (!a.isFailed() ? "(OK)" : "(Failed)")
                                     ).collect(Collectors.toList())
                     );
                     System.out.println("[INFO] elapsed time - " + elapsedTimeToLocalTime.format(df) + ".");
@@ -363,14 +363,6 @@ public class FeatureManagerActor {
                     unresolved.stream().map(a -> "\n\t\t" + a).collect(Collectors.toList())
             );
         }
-    }
-
-    private String getFullFeatureName(IFeature feature) {
-        return  getEmptyIfNull(feature.getGroupId()) +
-                FEATURE_NAME_DELIMITER +
-                getEmptyIfNull(feature.getName()) +
-                FEATURE_NAME_DELIMITER +
-                getEmptyIfNull(feature.getVersion());
     }
 
     private String getEmptyIfNull(String s) {

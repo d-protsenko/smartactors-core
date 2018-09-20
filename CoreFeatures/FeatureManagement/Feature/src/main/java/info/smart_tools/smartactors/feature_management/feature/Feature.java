@@ -29,8 +29,8 @@ public class Feature implements IFeature {
      * @param featureLocation the feature location
      */
     public Feature(
-            final String name,
             final String groupId,
+            final String name,
             final String version,
             final Set<String> dependencies,
             final IPath featureLocation,
@@ -74,13 +74,28 @@ public class Feature implements IFeature {
     }
 
     @Override
+    public String getDisplayName() {
+        return  (this.groupId == null || this.groupId.equals("") ? "*unknown*" : this.groupId) +
+                FEATURE_NAME_DELIMITER +
+                (this.name == null || this.name.equals("") ? "*unknown*" : this.name) +
+                FEATURE_NAME_DELIMITER +
+                (this.version == null || this.version.equals("") ? "*unknown*" : this.version);
+    }
+
+    @Override
     public boolean isFailed() { return this.failed; }
 
     @Override
     public void setFailed(final boolean failed) { this.failed = failed; }
 
     @Override
-    public void setName(final String featureName) { this.name = featureName;}
+    public void setName(final String featureName) {
+        if (featureName != null) {
+            if (this.name == null || this.name.equals("") || !featureName.equals("")) {
+                this.name = featureName;
+            }
+        }
+    }
 
     @Override
     public void setDependencies(final Set<String> dependencies) {
@@ -94,12 +109,20 @@ public class Feature implements IFeature {
 
     @Override
     public void setGroupId(final String groupId) {
-        this.groupId = groupId;
+        if (groupId != null) {
+            if (this.groupId == null || this.groupId.equals("") || !groupId.equals("")) {
+                this.groupId = groupId;
+            }
+        }
     }
 
     @Override
     public void setVersion(final String version) {
-        this.version = version;
+        if (version != null) {
+            if (this.version == null || this.version.equals("") || !version.equals("")) {
+                this.version = version;
+            }
+        }
     }
 
     @Override
