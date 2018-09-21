@@ -30,8 +30,8 @@ public class FromStringClassGeneratorTest {
                 "        return a;\n" +
                 "    }\n" +
                 "}\n";
-        VersionManager.addItem(VersionManager.coreName, VersionManager.coreVersion);
-        Class<?> clazz = classGenerator.generate(testSample, (ClassLoader) VersionManager.getItemClassLoader(VersionManager.getCoreId()));
+        VersionManager.addItem(VersionManager.coreId, VersionManager.coreName, VersionManager.coreVersion);
+        Class<?> clazz = classGenerator.generate(testSample, (ClassLoader) VersionManager.getItemClassLoader(VersionManager.coreId));
         TestInterface inst = (TestInterface) clazz.newInstance();
     }
 
@@ -86,7 +86,7 @@ public class FromStringClassGeneratorTest {
     @Test (expected = ClassGenerationException.class)
     public void checkInvalidArgumentExceptionOnTestWithUndefinedInterface()
             throws Exception {
-        VersionManager.addItem("cl");
+        VersionManager.addItem("cl", "cl", "cl");
         ClassLoader cl = (ClassLoader) VersionManager.getItemClassLoader("cl");
         FromStringClassGenerator classGenerator = new FromStringClassGenerator();
         String testSample = "package info.smart_tools.smartactors.class_management.test_class;\n" +
@@ -110,8 +110,8 @@ public class FromStringClassGeneratorTest {
         Enumeration<JarEntry> e = jarFile.entries();
 
         URL[] urls = { new URL("jar:file:" + pathToJar+"!/") };
-        VersionManager.addItem(VersionManager.coreName, VersionManager.coreVersion);
-        ClassLoader cl = (ClassLoader) VersionManager.getItemClassLoader(VersionManager.getCoreId());
+        VersionManager.addItem(VersionManager.coreId, VersionManager.coreName, VersionManager.coreVersion);
+        ClassLoader cl = (ClassLoader) VersionManager.getItemClassLoader(VersionManager.coreId);
         while (e.hasMoreElements()) {
             JarEntry je = e.nextElement();
             if(je.isDirectory() || !je.getName().endsWith(".class")){

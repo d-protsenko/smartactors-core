@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
@@ -229,7 +230,9 @@ public class HttpsEndpointPlugin implements IPlugin {
                                 HttpsEndpoint endpoint = new HttpsEndpoint(
                                         (Integer) configuration.getValue(portFieldName),
                                         (Integer) configuration.getValue(maxContentLengthFieldName),
-                                        ScopeProvider.getCurrentScope(), environmentHandler,
+                                        ScopeProvider.getCurrentScope(),
+                                        VersionManager.getCurrentItemID(),
+                                        environmentHandler,
                                         (String) configuration.getValue(endpointNameFieldName),
                                         (IReceiverChain) configuration.getValue(startChainNameFieldName),
                                         sslContextProvider, upCounter);

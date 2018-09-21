@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.endpoint_service_starter.endpoint_starter;
 
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
+import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
 import info.smart_tools.smartactors.http_endpoint.http_endpoint.HttpEndpoint;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
@@ -126,7 +127,9 @@ public class EndpointsSectionProcessingStrategyTest {
                             configuration);
                         return new HttpEndpoint((Integer) configuration.getValue(new FieldName("port")),
                             (Integer) configuration.getValue(new FieldName("maxContentLength")),
-                            ScopeProvider.getCurrentScope(), environmentHandler,
+                            ScopeProvider.getCurrentScope(),
+                            VersionManager.getCurrentItemID(),
+                            environmentHandler,
                             (IReceiverChain) configuration.getValue(new FieldName("startChain")),
                                 "default", mock(IUpCounter.class));
                     } catch (ReadValueException | InvalidArgumentException

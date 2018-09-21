@@ -103,10 +103,6 @@ public final class VersionManager {
         return itemVersions.get(getCurrentItemID());
     }
 
-    public static Object getCoreId() {
-        return coreId;
-    }
-
     public static <T> T getFromMap(Object itemID, Map<Object, T> objects) {
         T object = objects.get(itemID);
         if (object == null) {

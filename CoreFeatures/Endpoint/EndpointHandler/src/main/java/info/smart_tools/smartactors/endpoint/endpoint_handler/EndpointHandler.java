@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.endpoint.endpoint_handler;
 
+import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
@@ -26,6 +27,7 @@ public abstract class EndpointHandler<TContext, TRequest> {
     private final IReceiverChain receiverChain;
     private final IEnvironmentHandler environmentHandler;
     private final IScope scope;
+    private final Object featureId;
     private final String name;
 
     private final IQueue<ITask> taskQueue;
@@ -33,15 +35,17 @@ public abstract class EndpointHandler<TContext, TRequest> {
     /**
      * Constructor for HttpRequestHandler
      *
-     * @param scope              scope for HttpRequestHandler
+     * @param scope              scope for EndpointHandler
+     * @param featureId          the id of feature in which context EndpointHandler works
      * @param environmentHandler handler for environment
      * @param receiver           chain, that should receive message
      * @param name               name of the endpoint
      * @throws ResolutionException if error occurs resolving any dependencies
      */
     public EndpointHandler(final IReceiverChain receiver, final IEnvironmentHandler environmentHandler,
-                           final IScope scope, final String name) throws ResolutionException {
+                           final IScope scope, final Object featureId, final String name) throws ResolutionException {
         this.scope = scope;
+        this.featureId = featureId;
         this.receiverChain = receiver;
         this.environmentHandler = environmentHandler;
         this.name = name;
@@ -83,6 +87,7 @@ public abstract class EndpointHandler<TContext, TRequest> {
             taskQueue.put(() -> {
                 try {
                     ScopeProvider.setCurrentScope(scope);
+                    VersionManager.setCurrentItemID(featureId);
                     IObject environment = getEnvironment(ctx, request);
                     environmentHandler.handle(environment, receiverChain, null);
                 } catch (Exception e) {

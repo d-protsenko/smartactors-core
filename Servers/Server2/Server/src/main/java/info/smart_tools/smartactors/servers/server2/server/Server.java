@@ -124,7 +124,7 @@ public class Server implements IServer {
             throws InvalidArgumentException, PluginLoaderException, ProcessExecutionException {
         IBootstrap bootstrap = new Bootstrap();
         IPluginLoader<Collection<IPath>> pluginLoader = new PluginLoader(
-                VersionManager.getItemClassLoader(VersionManager.getCoreId()),
+                VersionManager.getItemClassLoader(VersionManager.coreId),
                 clz -> {
                     try {
                         if (Modifier.isAbstract(clz.getModifiers())) {

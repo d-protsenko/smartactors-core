@@ -26,8 +26,8 @@ public class SmartactorsClassLoaderTest {
         assertNotNull(VersionManager.getItemClassLoader("cl2"));
         assertSame(((ClassLoader) VersionManager.getItemClassLoader("cl2")).getParent(), ClassLoader.getSystemClassLoader());
         VersionManager.addItemDependency("cl1", "cl2");
-        VersionManager.finalizeItemDependencies("cl1", VersionManager.getCoreId());
-        VersionManager.finalizeItemDependencies("cl2", VersionManager.getCoreId());
+        VersionManager.finalizeItemDependencies("cl1", VersionManager.coreId);
+        VersionManager.finalizeItemDependencies("cl2", VersionManager.coreId);
     }
 
     @Test

@@ -134,7 +134,7 @@ public class HttpRequestHandlerTest {
         IObject message = new DSObject("{\"hello\": \"world\"}");
         when(deserializeStrategy.deserialize(request)).thenReturn(message);
         when(request.method()).thenReturn(HttpMethod.POST);
-        HttpRequestHandler requestHandler = new HttpRequestHandler(ScopeProvider.getCurrentScope(), null, null, null, mock(IUpCounter.class));
+        HttpRequestHandler requestHandler = new HttpRequestHandler(ScopeProvider.getCurrentScope(), null, null, null, null, mock(IUpCounter.class));
         IObject environment = requestHandler.getEnvironment(ctx, request);
         assertEquals(environment.getValue(new FieldName("message")), message);
     }
@@ -146,7 +146,7 @@ public class HttpRequestHandlerTest {
         IObject message = new DSObject("{\"hello\": \"world\"}");
         when(deserializeStrategy.deserialize(request)).thenThrow(DeserializationException.class);
         when(request.method()).thenReturn(HttpMethod.POST);
-        HttpRequestHandler requestHandler = new HttpRequestHandler(ScopeProvider.getCurrentScope(), null, null, null, mock(IUpCounter.class));
+        HttpRequestHandler requestHandler = new HttpRequestHandler(ScopeProvider.getCurrentScope(), null, null, null, null, mock(IUpCounter.class));
         IOC.register(Keys.getOrAdd("HttpPostParametersToIObjectException"), new SingletonStrategy(
                         new DSObject("{\"statusCode\": 200}")
                 )
@@ -162,7 +162,7 @@ public class HttpRequestHandlerTest {
         IObject message = new DSObject("{\"hello\": \"world\"}");
         when(request.method()).thenReturn(HttpMethod.GET);
         doThrow(new AddRequestParametersToIObjectException("exception")).when(requestParametersToIObject).extract(any(), any());
-        HttpRequestHandler requestHandler = new HttpRequestHandler(ScopeProvider.getCurrentScope(), null, null, null, mock(IUpCounter.class));
+        HttpRequestHandler requestHandler = new HttpRequestHandler(ScopeProvider.getCurrentScope(), null, null, null, null, mock(IUpCounter.class));
         IOC.register(Keys.getOrAdd("HttpRequestParametersToIObjectException"), new SingletonStrategy(
                         new DSObject("{\"statusCode\": 200}")
                 )

@@ -25,6 +25,7 @@ public class HttpsEndpoint extends HttpsServer {
      * @param port               port of the endpoint
      * @param maxContentLength   max length of the content
      * @param scope              scope for endpoint
+     * @param featureId          the id of feature in which context HttpRequestHandler works
      * @param handler            handler for environment
      * @param name               name of the endpoint
      * @param receiverChain      chain, that should receive {@link MessageProcessor}
@@ -33,12 +34,12 @@ public class HttpsEndpoint extends HttpsServer {
      * @throws ResolutionException if error occurs resolving ny dependencies
      * @throws UpCounterCallbackExecutionException if error occurs registering shutdown request callbacks
      */
-    public HttpsEndpoint(final int port, final int maxContentLength, final IScope scope,
+    public HttpsEndpoint(final int port, final int maxContentLength, final IScope scope, final Object featureId,
                          final IEnvironmentHandler handler, final String name, final IReceiverChain receiverChain,
                          final ISslEngineProvider sslContextProvider, final IUpCounter upCounter
                          ) throws ResolutionException, UpCounterCallbackExecutionException {
         super(port, new EndpointChannelInboundHandler<>(
-                        new HttpRequestHandler(scope, handler, receiverChain, name, upCounter),
+                        new HttpRequestHandler(scope, featureId, handler, receiverChain, name, upCounter),
                         FullHttpRequest.class),
                 maxContentLength, sslContextProvider);
     }

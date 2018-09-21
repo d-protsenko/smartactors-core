@@ -139,7 +139,7 @@ public class HierarchicalClassLoader extends ExtendedURLClassLoader implements I
                 clazz = this.loadClassFromDependencies(
                         className,
                         getSystemClassLoader(),
-                        itemClassLoaders.get(VersionManager.getCoreId()),
+                        itemClassLoaders.get(VersionManager.coreId),
                         sclUsed
                 );
             }
