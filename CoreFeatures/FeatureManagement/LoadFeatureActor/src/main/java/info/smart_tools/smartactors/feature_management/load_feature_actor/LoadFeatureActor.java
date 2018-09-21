@@ -47,7 +47,6 @@ public class LoadFeatureActor {
     private final IPluginCreator pluginCreator;
     private final IConfigurationManager configurationManager;
 
-    private final IFieldName afterFeaturesCallbackQueueFN;
     private final static String CONFIG_FILE_NAME = "config.json";
     private final static String LIBRARY_EXTENSION = "jar";
     private final static String PLUGIN_LOADER_KEY = "plugin loader";
@@ -64,7 +63,6 @@ public class LoadFeatureActor {
         this.pluginLoaderVisitor =          IOC.resolve(Keys.getOrAdd("plugin loader visitor"));
         this.pluginCreator =                IOC.resolve(Keys.getOrAdd("plugin creator"));
         configurationManager =              IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
-        this.afterFeaturesCallbackQueueFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "afterFeaturesCallbackQueue");
     }
 
     /**
@@ -76,7 +74,7 @@ public class LoadFeatureActor {
             throws LoadFeatureException {
         IFeature feature;
         try {
-            feature = wrapper.getFeature().clone();
+            feature = wrapper.getFeature();
         } catch (ReadValueException e) {
             throw new LoadFeatureException("Feature should not be null.");
         }
@@ -138,11 +136,6 @@ public class LoadFeatureActor {
             feature.setFailed(true);
             System.out.println("[FAILED] ---------- Feature '" + feature.getDisplayName() + "' loading failed with exception:");
             e.printStackTrace(System.out);
-        }
-        try {
-            wrapper.setFeature(feature);
-        } catch (ChangeValueException e) {
-            throw new LoadFeatureException("Update feature in message failed.");
         }
     }
 }

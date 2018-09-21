@@ -124,17 +124,21 @@ public class AllInDirectoryFeatureTracker {
         );
 
         String featureName = (String) jsonConfig.getValue(this.featureNameFN);
-        String[] featureNames = featureName.split(FEATURE_NAME_DELIMITER);
-        if (featureNames.length < 2) {
-            throw new Exception("Wrong feature name format '"+featureName+"' in "+jsonFile.getPath()+" .");
-        }
+        String[] featureNames = parseFullName(featureName);
         String groupId = featureNames[0];
         String name = featureNames[1];
         String version = featureNames.length > 2 ? featureNames[2] : null;
 
         Set<String> dependencies = new HashSet<String>((List) jsonConfig.getValue(this.afterFeaturesFN));
 
-        return new Feature(groupId, name, version, dependencies, new Path(f.getPath()), null);
+        return new Feature(
+                featureNames[0],
+                featureNames[1],
+                featureNames[2],
+                dependencies,
+                new Path(f.getPath()),
+                null
+        );
     }
 
     private IFeature createZippedFeature(final File f)
@@ -191,5 +195,20 @@ public class AllInDirectoryFeatureTracker {
 
     private String getExtension(final File f) {
         return f.getName().substring(f.getName().lastIndexOf(EXTENSION_SEPARATOR) + 1);
+    }
+
+    // todo: replace this code by parsing strategy
+    private String[] parseFullName(String fullName)
+            throws FeatureTrackerException {
+        String[] dependencyNames = fullName.split(FEATURE_NAME_DELIMITER);
+        if (dependencyNames.length < 2) {
+            throw new FeatureTrackerException("Wrong feature name or dependency format '"+fullName+"'.");
+        }
+        String[] result = {
+                dependencyNames[0],
+                dependencyNames[1],
+                dependencyNames.length > 2 ? dependencyNames[2] : ""
+        };
+        return result;
     }
 }

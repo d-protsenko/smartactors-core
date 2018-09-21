@@ -60,11 +60,11 @@ public class MapsSectionProcessingStrategy implements ISectionStrategy {
             IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
 
             for (IObject mapDescription : section) {
-                Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), mapDescription.getValue(mapIdFieldName));
+                Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), mapDescription.getValue(mapIdFieldName));
                 try {
-                    chainStorage.register(mapId, mapDescription);
+                    chainStorage.register(chainId, mapDescription);
                 } catch (ChainCreationException e) {
-                    throw new ConfigurationProcessingException("Could not create chain for map #'" + String.valueOf(mapId) + "'.", e);
+                    throw new ConfigurationProcessingException("Could not create chain for map #'" + String.valueOf(chainId) + "'.", e);
                 }
             }
         } catch (InvalidArgumentException | ResolutionException | ReadValueException e) {

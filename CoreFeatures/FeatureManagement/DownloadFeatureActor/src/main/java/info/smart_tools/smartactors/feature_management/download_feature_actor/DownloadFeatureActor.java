@@ -65,7 +65,7 @@ public class DownloadFeatureActor {
             throws DownloadFeatureException {
         IFeature feature;
         try {
-            feature = wrapper.getFeature().clone();
+            feature = wrapper.getFeature();
             //TODO: need refactoring
             for(String type : FILE_TYPE_LIST) {
                 if (
@@ -98,11 +98,6 @@ public class DownloadFeatureActor {
             feature.setFailed(true);
             System.out.println("[FAILED] ---------- Feature '" + feature.getDisplayName() + "' downloading aborted with exception:");
             System.out.println(e);
-        }
-        try {
-            wrapper.setFeature(feature);
-        } catch (ChangeValueException e) {
-            throw new DownloadFeatureException("Update feature in message failed.");
         }
     }
 

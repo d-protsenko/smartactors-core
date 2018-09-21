@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.feature_management.interfaces.ifeature;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 
 import java.util.Set;
@@ -111,4 +112,11 @@ public interface IFeature {
      * @return new feature copy
      */
     IFeature clone();
+
+    /**
+     * Update feature content from its clone
+     * @param clone the clone of the feature
+     * @return true if update successful and false otherwise
+     */
+    boolean updateFromClone(IFeature clone);
 }

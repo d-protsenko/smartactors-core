@@ -78,9 +78,9 @@ public class MessageBusSectionProcessingStrategy implements ISectionStrategy {
             IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(),
                     IChainStorage.class.getCanonicalName()));
             String startChainName = (String) messageBusObject.getValue(startChainNameFieldName);
-            Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), startChainName);
+            Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), startChainName);
             VersionManager.setCurrentContext(null);
-            IReceiverChain chain = chainStorage.resolve(mapId);
+            IReceiverChain chain = chainStorage.resolve(chainId);
 
             IAction<IObject> finalAction = IOC.resolve(Keys.getOrAdd("send response action"));
 

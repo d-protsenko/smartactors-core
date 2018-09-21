@@ -19,14 +19,6 @@ public interface LoadFeatureWrapper {
             throws ReadValueException;
 
     /**
-     * Puts the feature to message for further processing
-     * @param feature the feature to put into message
-     * @throws ChangeValueException if any errors occurred on writing to the wrapper
-     */
-    void setFeature(IFeature feature)
-            throws ChangeValueException;
-
-    /**
      * Gets the afterFeaturesCallback queue from the message
      * @return the instance of {@link IQueue}
      * @throws ReadValueException if any errors occurred on wrapper reading

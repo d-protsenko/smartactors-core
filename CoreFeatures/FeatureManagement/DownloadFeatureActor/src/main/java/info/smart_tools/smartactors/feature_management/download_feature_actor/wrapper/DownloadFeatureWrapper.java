@@ -17,11 +17,4 @@ public interface DownloadFeatureWrapper {
     IFeature getFeature()
             throws ReadValueException;
 
-    /**
-     * Puts the feature to message for further processing
-     * @param feature the feature to put into message
-     * @throws ChangeValueException if any errors occurred on writing to the wrapper
-     */
-    void setFeature(IFeature feature)
-            throws ChangeValueException;
 }

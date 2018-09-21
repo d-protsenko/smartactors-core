@@ -131,7 +131,7 @@ public class FeatureManagerActor {
                         Keys.getOrAdd(MESSAGE_PROCESSOR_FACTORY_STRATEGY_NAME), queue, processingSequence
                 );
                 IObject message = IOC.resolve(Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME));
-                message.setValue(this.featureFN, feature);
+                message.setValue(this.featureFN, feature.clone());
                 message.setValue(this.afterFeaturesCallbackQueueFN, afterFeaturesCallbackQueue);
                 IObject context = IOC.resolve(Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME));
                 messageProcessor.process(message, context);
@@ -163,16 +163,15 @@ public class FeatureManagerActor {
      */
     public void onFeatureLoaded(final OnFeatureLoadedWrapper wrapper)
             throws FeatureManagementException {
-        IFeature feature;
+        IFeature feature, featureFromMessage;
         try {
-            feature = wrapper.getFeature();
-            if (this.featuresInProgress.get(feature.getId()) != feature) {
-                this.featuresInProgress.remove(feature.getId());
-                this.featuresInProgress.put(feature.getId(), feature);
+            featureFromMessage = wrapper.getFeature();
+            feature = this.featuresInProgress.get(featureFromMessage.getId());
+            if (!feature.updateFromClone(featureFromMessage)) {
+                throw new FeatureManagementException("Cannot update feature "+feature.getDisplayName()+" from its clone.");
             }
             /*System.out.println("[INFO] " + Thread.currentThread().getName() +
                     " onFeatureLoaded started on feature " + feature.getDisplayName());*/
-
             this.featuresInProgress.remove(feature.getId());
             if (feature.isFailed()) {
                 this.failedFeatures.put(feature.getId(), feature);
@@ -239,6 +238,11 @@ public class FeatureManagerActor {
         }
         /*System.out.println("[INFO] " + Thread.currentThread().getName() +
                 " onFeatureLoaded finished on feature " + feature.getDisplayName());*/
+        if (!featureFromMessage.updateFromClone(feature)) {
+            throw new FeatureManagementException(
+                    "Cannot update feature "+featureFromMessage.getDisplayName()+" from its clone."
+            );
+        }
     }
 
     /**
@@ -249,15 +253,17 @@ public class FeatureManagerActor {
      */
     public void onFeatureStepCompleted(final OnFeatureStepCompletedWrapper wrapper)
             throws FeatureManagementException {
-        IFeature feature;
+        IFeature feature, featureFromMessage;
         try {
-            feature = wrapper.getFeature();
+            featureFromMessage = wrapper.getFeature();
+            feature = this.featuresInProgress.get(featureFromMessage.getId());
+            if (!feature.updateFromClone(featureFromMessage)) {
+                throw new FeatureManagementException("Cannot update feature "+feature.getDisplayName()+" from its clone.");
+            }
+
             /*System.out.println("[INFO] " + Thread.currentThread().getName() +
                     " onFeatureStepCompleted started on feature " + feature.getDisplayName());*/
-            if (this.featuresInProgress.get(feature.getId()) != feature) {
-                this.featuresInProgress.remove(feature.getId());
-                this.featuresInProgress.put(feature.getId(), feature);
-            }
+
             checkAndRunConnectedFeatures();
             Set<String> featureDependencies = feature.getDependencies();
 
@@ -283,6 +289,11 @@ public class FeatureManagerActor {
         }
         /*System.out.println("[INFO] " + Thread.currentThread().getName() +
                 " onFeatureStepCompleted finished on feature " + feature.getDisplayName());*/
+        if (!featureFromMessage.updateFromClone(feature)) {
+            throw new FeatureManagementException(
+                    "Cannot update feature "+featureFromMessage.getDisplayName()+" from its clone."
+            );
+        }
     }
 
     /**
@@ -363,12 +374,12 @@ public class FeatureManagerActor {
                 !this.featuresInProgress.isEmpty()
                         && minDependencies > 0
         ) {
-            Set<String> unresolved = this.featuresInProgress
-                    .values()
-                    .stream()
-                    .map(IFeature::getDependencies)
-                    .flatMap(Collection::stream)
-                    .collect(Collectors.toSet());
+            Set<String> unresolved = new HashSet<>();
+            for(IFeature feature : this.featuresInProgress.values()) {
+                if (feature.getDependencies() != null) {
+                    unresolved.addAll(feature.getDependencies());
+                }
+            }
 
             Iterator<String> iterator = unresolved.iterator();
             while (iterator.hasNext()) {
@@ -394,9 +405,9 @@ public class FeatureManagerActor {
     private boolean matchDependency(String dependencyName, IFeature feature)
             throws FeatureManagementException {
         String[] dependency = parseFullName(dependencyName);
-        return (feature.getGroupId().equals(dependency[0]) &&
-                feature.getName().equals(dependency[1]) &&
-                feature.getVersion().compareTo(dependency[2]) >= 0);
+        return (getEmptyIfNull(feature.getGroupId()).equals(dependency[0]) &&
+                getEmptyIfNull(feature.getName()).equals(dependency[1]) &&
+                getEmptyIfNull(feature.getVersion()).compareTo(dependency[2]) >= 0);
     }
 
     // todo: replace this code by parsing strategy

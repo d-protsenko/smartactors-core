@@ -85,7 +85,7 @@ public class UnzipFeatureActor {
             throws UnzipFeatureException {
         IFeature feature;
         try {
-            feature = wrapper.getFeature().clone();
+            feature = wrapper.getFeature();
         } catch (ReadValueException e) {
             throw new UnzipFeatureException("Feature should not be null.");
         }
@@ -104,11 +104,6 @@ public class UnzipFeatureActor {
             feature.setFailed(true);
             System.out.println("[FAILED] ---------- Feature '" + feature.getDisplayName() + "' unzipping/copying failed:");
             System.out.println(e);
-        }
-        try {
-            wrapper.setFeature(feature);
-        } catch (ChangeValueException e) {
-            throw new UnzipFeatureException("Update feature in message failed.");
         }
     }
 
@@ -205,16 +200,15 @@ public class UnzipFeatureActor {
         IObject config = IOC.resolve(Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME), content);
         List<String> dependencies = (List<String>) config.getValue(this.dependenciesFieldName);
         String fullFeatureName = (String) config.getValue(this.featureNameFN);
-        String[] featureNames = fullFeatureName.split(FEATURE_NAME_DELIMITER);
-        if (featureNames.length < 2) {
-            throw new Exception("Wrong format of attribute 'featureName' in 'config.json' file.\nIt must follow the pattern [groupId:featureName:featureVersion].");
-        }
+        String[] featureNames = parseFullName(fullFeatureName);
         Set<String> dependenciesSet = new HashSet<>(dependencies);
         feature.setDependencies(dependenciesSet);
         feature.setLocation(new Path(f.getParent()));
         feature.setGroupId(featureNames[0]);
         feature.setName(featureNames[1]);
-        feature.setVersion(featureNames.length > 2 ? featureNames[2] : "");
+        if (!featureNames[2].equals("")) {
+            feature.setVersion(featureNames[2]);
+        }
     }
 
     private String getExtension(final File f) {
@@ -229,5 +223,19 @@ public class UnzipFeatureActor {
         } else {
             Files.createFile(f.toPath());
         }
+    }
+
+    private String[] parseFullName(String fullName)
+            throws UnzipFeatureException {
+        String[] dependencyNames = fullName.split(FEATURE_NAME_DELIMITER);
+        if (dependencyNames.length < 2) {
+            throw new UnzipFeatureException("Wrong feature name or dependency format '"+fullName+"'.");
+        }
+        String[] result = {
+                dependencyNames[0],
+                dependencyNames[1],
+                dependencyNames.length > 2 ? dependencyNames[2] : ""
+        };
+        return result;
     }
 }

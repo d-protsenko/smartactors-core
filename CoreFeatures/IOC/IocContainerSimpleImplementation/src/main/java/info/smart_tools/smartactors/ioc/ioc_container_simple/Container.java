@@ -89,7 +89,7 @@ public class Container implements IContainer {
         try {
             return (T) strategy.resolve(args);
         } catch (Exception e) {
-            throw new ResolutionException("Resolution of dependency failed for key " + key, e);
+            throw new ResolutionException("Resolution of dependency failed for key '" + key + "'.", e);
         }
     }
 

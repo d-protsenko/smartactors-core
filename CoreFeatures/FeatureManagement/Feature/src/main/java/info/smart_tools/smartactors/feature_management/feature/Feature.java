@@ -1,8 +1,10 @@
 package info.smart_tools.smartactors.feature_management.feature;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeature;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -89,13 +91,7 @@ public class Feature implements IFeature {
     public void setFailed(final boolean failed) { this.failed = failed; }
 
     @Override
-    public void setName(final String featureName) {
-        if (featureName != null) {
-            if (this.name == null || this.name.equals("") || !featureName.equals("")) {
-                this.name = featureName;
-            }
-        }
-    }
+    public void setName(final String featureName) { this.name = featureName; }
 
     @Override
     public void setDependencies(final Set<String> dependencies) {
@@ -108,27 +104,13 @@ public class Feature implements IFeature {
     }
 
     @Override
-    public void setGroupId(final String groupId) {
-        if (groupId != null) {
-            if (this.groupId == null || this.groupId.equals("") || !groupId.equals("")) {
-                this.groupId = groupId;
-            }
-        }
-    }
+    public void setGroupId(final String groupId) { this.groupId = groupId; }
 
     @Override
-    public void setVersion(final String version) {
-        if (version != null) {
-            if (this.version == null || this.version.equals("") || !version.equals("")) {
-                this.version = version;
-            }
-        }
-    }
+    public void setVersion(final String version) { this.version = version; }
 
     @Override
-    public void setPackageType(String packageType) {
-        this.packageType = packageType;
-    }
+    public void setPackageType(String packageType) { this.packageType = packageType; }
 
     @Override
     public IFeature clone() {
@@ -136,12 +118,31 @@ public class Feature implements IFeature {
                 this.groupId,
                 this.name,
                 this.version,
-                this.dependencies,
+                this.dependencies, // changeable object
                 this.featureLocation,
                 this.packageType
         );
         copy.id = this.id;
         copy.failed = this.failed;
         return copy;
+    }
+
+    @Override
+    public boolean updateFromClone(IFeature featureClone) {
+        if (featureClone == null ||
+            !(featureClone instanceof Feature ||
+            !featureClone.getId().equals(this.id))
+        ) {
+            return false;
+        }
+        Feature clone = (Feature) featureClone;
+        this.groupId = clone.groupId;
+        this.name = clone.name;
+        this.version = clone.version;
+        this.dependencies = clone.dependencies; // changeable object
+        this.featureLocation = clone.featureLocation;
+        this.packageType = clone.packageType;
+        this.failed = clone.failed;
+        return true;
     }
 }
