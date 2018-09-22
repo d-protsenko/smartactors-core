@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.WatchService;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -116,7 +115,7 @@ public class RuntimeDirectoryFeatureTracker {
         IChainStorage chainStorage = IOC.resolve(
                 IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IChainStorage.class.getCanonicalName())
         );
-        VersionManager.setCurrentContext(null);
+        VersionManager.setCurrentMessage(null);
         this.executionChain = chainStorage.resolve(chainId);
     }
 

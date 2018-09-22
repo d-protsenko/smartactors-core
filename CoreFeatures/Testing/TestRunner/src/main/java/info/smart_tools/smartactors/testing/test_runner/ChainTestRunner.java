@@ -115,7 +115,7 @@ public class ChainTestRunner implements ITestRunner {
             IChainStorage chainStorage = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IChainStorage.class.getCanonicalName())
             );
-            VersionManager.setCurrentContext(null);
+            VersionManager.setCurrentMessage(null);
             IReceiverChain testedChain = chainStorage.resolve(chainId);
 
             IEnvironmentHandler handler = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "test environment handler"));

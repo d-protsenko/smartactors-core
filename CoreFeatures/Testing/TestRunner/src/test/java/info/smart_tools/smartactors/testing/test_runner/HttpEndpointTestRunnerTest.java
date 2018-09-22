@@ -9,7 +9,6 @@ import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.Ap
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -106,7 +105,7 @@ public class HttpEndpointTestRunnerTest {
                 IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "test_data_source"),
                 new SingletonStrategy(this.source)
         );
-        VersionManager.setCurrentContext(null);
+        VersionManager.setCurrentMessage(null);
         when(this.chainStorage.resolve(this.chainId)).thenReturn(this.receiverChain);
     }
 

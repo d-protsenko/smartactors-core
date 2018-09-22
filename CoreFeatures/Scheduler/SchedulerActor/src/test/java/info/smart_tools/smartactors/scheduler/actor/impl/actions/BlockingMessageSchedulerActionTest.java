@@ -12,7 +12,6 @@ import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObje
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
@@ -100,7 +99,7 @@ public class BlockingMessageSchedulerActionTest extends PluginsLoadingTestBase {
             }
         });
 
-        VersionManager.setCurrentContext(null);
+        VersionManager.setCurrentMessage(null);
         when(chainStorageMock.resolve(eq("some_chain__id"))).thenReturn(receiverChainMock);
 
         action = new BlockingMessageSchedulerAction();

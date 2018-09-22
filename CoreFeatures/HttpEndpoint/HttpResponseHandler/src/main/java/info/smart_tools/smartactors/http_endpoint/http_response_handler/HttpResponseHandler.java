@@ -68,7 +68,7 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
             IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(),
                     IChainStorage.class.getCanonicalName()));
             Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), receiverChain);
-            //VersionManager.setCurrentContext(null);
+            //VersionManager.setCurrentMessage(null);
             this.receiverChain = chainStorage.resolve(mapId);
             messageFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
             contextFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context");

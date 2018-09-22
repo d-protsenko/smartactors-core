@@ -116,7 +116,7 @@ public class FeatureManagerActor {
             Object chainId = IOC.resolve(Keys.getOrAdd(CHAIN_ID_STORAGE_STRATEGY_NAME), scatterChainName);
             IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
             int stackDepth = DEFAULT_STACK_DEPTH;
-            VersionManager.setCurrentContext(null);
+            VersionManager.setCurrentMessage(null);
             IReceiverChain scatterChain = chainStorage.resolve(chainId);
 
             IQueue afterFeaturesCallbackQueue = IOC.resolve(Keys.getOrAdd(IQueue.class.getCanonicalName()));

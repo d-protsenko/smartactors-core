@@ -151,7 +151,7 @@ public class HttpEndpointTestRunner implements ITestRunner {
             IChainStorage chainStorage = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IChainStorage.class.getCanonicalName())
             );
-            VersionManager.setCurrentContext(null);
+            VersionManager.setCurrentMessage(null);
             IReceiverChain testedChain = chainStorage.resolve(chainId);
 
             sourceObject.setValue(this.contentFieldName, description);

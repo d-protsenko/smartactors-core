@@ -11,10 +11,8 @@ import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.Ap
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
-import info.smart_tools.smartactors.endpoint.interfaces.iresponse_sender.IResponseSender;
 import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_post_form_urlencoded.DeserializeStrategyPostFormUrlencoded;
 import info.smart_tools.smartactors.http_endpoint.http_endpoint.HttpEndpoint;
-import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty;
 import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_get.DeserializeStrategyGet;
 import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_get.parse_tree.IParseTree;
@@ -24,9 +22,6 @@ import info.smart_tools.smartactors.http_endpoint.environment_handler.Environmen
 import info.smart_tools.smartactors.http_endpoint.http_response_sender.HttpResponseSender;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
-import info.smart_tools.smartactors.http_endpoint.interfaces.icookies_extractor.ICookiesSetter;
-import info.smart_tools.smartactors.http_endpoint.interfaces.iheaders_extractor.IHeadersExtractor;
-import info.smart_tools.smartactors.http_endpoint.interfaces.iresponse_status_extractor.IResponseStatusExtractor;
 import info.smart_tools.smartactors.http_endpoint.message_to_bytes_mapper.MessageToBytesMapper;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -146,7 +141,7 @@ public class HttpEndpointPlugin implements IPlugin {
                                                             (Integer) configuration.getValue(portFieldName),
                                                             (Integer) configuration.getValue(maxContentLengthFieldName),
                                                             ScopeProvider.getCurrentScope(),
-                                                            VersionManager.getCurrentItemID(),
+                                                            VersionManager.getCurrentModule(),
                                                             environmentHandler,
                                                             (IReceiverChain) configuration.getValue(startChainNameFieldName),
                                                             (String) configuration.getValue(endpointNameFieldName),

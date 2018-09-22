@@ -104,7 +104,7 @@ public class EndpointsSectionProcessingStrategy implements ISectionStrategy {
                 String type = (String) endpoint.getValue(typeFieldName);
                 String startChainName = (String) endpoint.getValue(startChainNameFieldName);
                 Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), startChainName);
-                VersionManager.setCurrentContext(null);
+                VersionManager.setCurrentMessage(null);
                 IReceiverChain chain = chainStorage.resolve(mapId);
 
                 endpoint.setValue(startChainNameFieldName, chain);

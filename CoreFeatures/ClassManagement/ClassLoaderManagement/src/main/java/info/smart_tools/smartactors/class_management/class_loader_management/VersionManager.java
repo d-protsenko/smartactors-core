@@ -21,7 +21,7 @@ public final class VersionManager {
     public static final Object coreId = java.util.UUID.randomUUID();
 
     private static ThreadLocal<Object> currentItemID = new ThreadLocal<>();
-    private static ThreadLocal<IObject> currentContext = new ThreadLocal<>();
+    private static ThreadLocal<IObject> currentMessage = new ThreadLocal<>();
 
     private static Map<Object, Set<Object>> dependencies = new ConcurrentHashMap<>();
     private static Map<Object, String> itemNames = new ConcurrentHashMap<>();
@@ -85,22 +85,16 @@ public final class VersionManager {
         }
     }
 
-    public static void setCurrentContext(IObject context) {
-        currentContext.set(context);
-    }
+    public static void setCurrentMessage(IObject message) { currentMessage.set(message); }
 
-    public static IObject getCurrentContext() { return currentContext.get(); }
+    public static IObject getCurrentMessage() { return currentMessage.get(); }
 
-    public static void setCurrentItemID(Object itemID) {
+    public static void setCurrentModule(Object itemID) {
         currentItemID.set(itemID);
     }
 
-    public static Object getCurrentItemID() {
+    public static Object getCurrentModule() {
         return currentItemID.get();
-    }
-
-    public static String getCurrentItemVersion() {
-        return itemVersions.get(getCurrentItemID());
     }
 
     public static <T> T getFromMap(Object itemID, Map<Object, T> objects) {
@@ -117,7 +111,7 @@ public final class VersionManager {
     }
 
     public static <T> T getFromMap(Map<Object, T> objects) {
-        return getFromMap(getCurrentItemID(), objects);
+        return getFromMap(getCurrentModule(), objects);
     }
 
     public static <T> T removeFromMap(Object itemID, Map<Object, T> objects) {
@@ -134,12 +128,14 @@ public final class VersionManager {
     }
 
     public static <T> T removeFromMap(Map<Object, T> objects) {
-        return removeFromMap(getCurrentItemID(), objects);
+        return removeFromMap(getCurrentModule(), objects);
     }
 
-    public static void registerChainVersion(Object chainID, Object version, Object itemID)
+    public static void registerChainVersion(Object chainID)
             throws InvalidArgumentException {
 
+        Object itemID = getCurrentModule();
+        Object version = itemVersions.get(itemID);
         if (chainID == null || version == null) {
             throw new InvalidArgumentException("Key and version of chain cannot be null.");
         }
@@ -231,33 +227,12 @@ public final class VersionManager {
 
     public static Object getItemIDByChainID(Object chainID)
             throws InvalidArgumentException, ResolveDependencyStrategyException {
-        Object itemID = getCurrentItemID();
-        IObject context = getCurrentContext();
+        Object itemID = getCurrentModule();
+        IObject context = getCurrentMessage();
         if (context != null || itemID == null) {
             Object chainVersion = VersionManager.applyVersionResolutionStrategy(chainID, context);
             itemID = VersionManager.getItemIDByChainVersion(chainID, chainVersion);
         }
         return itemID;
     }
-/*
-    public static void addItem(String itemID) {
-        if (dependencies.get(itemID) == null) {
-            HierarchicalClassLoader.addItem(itemID);
-            dependencies.put(itemID, Collections.synchronizedSet(new HashSet<>()));
-        }
-    }
-
-    public static String getCurrentItemName() {
-        return itemNames.get(getCurrentItemID());
-    }
-
-    public static void setItemName(String itemID, String itemName) {
-        HierarchicalClassLoader.setItemName(itemID, itemName);
-        itemNames.put(itemID, itemName);
-    }
-
-    public static void setItemVersion(String itemID, String itemVersion) {
-        itemVersions.put(itemID, itemVersion);
-    }
-*/
 }

@@ -1902,12 +1902,20 @@
   "rawName" : "StringIocKey",
   "version" : "0.4.0"
 }, {
-   "artifactId" : "ioc.versioned-strategy-container",
+    "artifactId" : "ioc.versioned-strategy-container",
+    "uploadRepositories" : [ {
+    "uploadRepositoryId" : "archiva.smartactors-modules",
+    "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+  } ],
+    "rawName" : "VersionedStrategyContainer",
+    "version" : "0.4.0"
+ }, {
+   "artifactId" : "ioc.versioned-recursive-strategy-container",
    "uploadRepositories" : [ {
    "uploadRepositoryId" : "archiva.smartactors-modules",
    "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
  } ],
-   "rawName" : "VersionedStrategyContainer",
+   "rawName" : "VersionedRecursiveStrategyContainer",
    "version" : "0.4.0"
 } ],
   "uploadRepositories" : [ {

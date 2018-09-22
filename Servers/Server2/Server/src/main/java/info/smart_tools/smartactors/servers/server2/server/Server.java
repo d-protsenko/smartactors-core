@@ -27,8 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.text.MessageFormat;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -68,7 +66,7 @@ public class Server implements IServer {
                     VersionManager.coreName,
                     VersionManager.coreVersion
             );
-            VersionManager.setCurrentItemID(VersionManager.coreId);
+            VersionManager.setCurrentModule(VersionManager.coreId);
         } catch (InvalidArgumentException e) {
             throw new ServerInitializeException("Failed to initialize core.");
         }

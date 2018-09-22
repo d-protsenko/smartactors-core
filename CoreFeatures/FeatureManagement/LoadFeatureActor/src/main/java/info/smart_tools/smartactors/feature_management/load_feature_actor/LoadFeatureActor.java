@@ -21,8 +21,6 @@ import info.smart_tools.smartactors.feature_management.after_features_callback_s
 import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeature;
 import info.smart_tools.smartactors.feature_management.load_feature_actor.exception.LoadFeatureException;
 import info.smart_tools.smartactors.feature_management.load_feature_actor.wrapper.LoadFeatureWrapper;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -102,7 +100,7 @@ public class LoadFeatureActor {
                 }
             };
             // setup current feature for class loading, bootstrap and applying config
-            VersionManager.setCurrentItemID(feature.getId());
+            VersionManager.setCurrentModule(feature.getId());
             IPluginLoader<Collection<IPath>> pluginLoader = IOC.resolve(
                     Keys.getOrAdd(PLUGIN_LOADER_KEY),
                     VersionManager.getItemClassLoader(feature.getId()),

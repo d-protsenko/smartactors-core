@@ -59,7 +59,7 @@ public class MessageProcessingSequenceRecoveryStrategy implements IResolveDepend
             Object mainChainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainsStack.next());
             int mainChainPos = ((Number) stepStack.next()).intValue();
 
-            VersionManager.setCurrentContext(dump);
+            VersionManager.setCurrentMessage(dump);
             IMessageProcessingSequence sequence = new MessageProcessingSequence(maxDepth, storage.resolve(mainChainId));
             sequence.goTo(0, mainChainPos + 1);
 
@@ -69,7 +69,7 @@ public class MessageProcessingSequenceRecoveryStrategy implements IResolveDepend
                 Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainsStack.next());
                 int pos = ((Number) stepStack.next()).intValue();
 
-                VersionManager.setCurrentContext(dump); // ????
+                VersionManager.setCurrentMessage(dump); // ????
                 sequence.callChain(storage.resolve(chainId));
                 sequence.goTo(level++, pos + 1);
             }

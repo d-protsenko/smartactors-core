@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.ioc.versioned_strategy_container;
+package info.smart_tools.smartactors.ioc.versioned_recursive_strategy_container;
 
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
@@ -24,13 +24,23 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class StrategyContainer implements IStrategyContainer {
 
+    private IStrategyContainer parent;
     /**
      * Local storage
      */
     private Map<Object, Map<Object, IResolveDependencyStrategy>> strategyStorage = new ConcurrentHashMap<>();
 
     /**
+     *  Constructs the container.
+     *  @param parent   parent container to do the recursive resolve, can be null for empty parent
+     */
+    public StrategyContainer(final IStrategyContainer parent) {
+        this.parent = parent;
+    }
+
+    /**
      * Resolve {@link IResolveDependencyStrategy} by given unique object identifier.
+     * Asks parent strategy if this container doesn't have a strategy for the key.
      * @param key unique object identifier
      * @return instance of {@link IResolveDependencyStrategy}
      * @throws StrategyContainerException if any errors occurred
@@ -41,6 +51,9 @@ public class StrategyContainer implements IStrategyContainer {
         Map<Object, IResolveDependencyStrategy> strategyVersions = strategyStorage.get(key);
         if (strategyVersions != null) {
             strategy = VersionManager.getFromMap(strategyVersions);
+        }
+        if (strategy == null && parent != null) {
+            strategy = parent.resolve(key);    // ask parent ONLY AFTER local resolution failed
         }
         return strategy;
     }
@@ -63,6 +76,8 @@ public class StrategyContainer implements IStrategyContainer {
 
     /**
      * Remove existing dependency of {@link IResolveDependencyStrategy} by unique object identifier.
+     * Note remove is done only for this container,
+     * the following call to {@link #resolve(Object)} may return the strategy from the parent container.
      * @param key unique object identifier
      * @throws StrategyContainerException  if any error occurred
      */
@@ -75,6 +90,14 @@ public class StrategyContainer implements IStrategyContainer {
                 if (strategyVersions.size() == 0) {
                     strategyStorage.remove(key);
                 }
+            } else {
+                if (parent != null) {
+                    parent.remove(key);
+                }
+            }
+        } else {
+            if (parent != null) {
+                parent.remove(key);
             }
         }
     }

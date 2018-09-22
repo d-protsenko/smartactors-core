@@ -36,9 +36,10 @@ class ThreadImpl {
                 }
 
                 try {
+                    ITask task = setTaskRef.get();
                     ScopeProvider.setCurrentScope(pool.getScope());
-                    VersionManager.setCurrentItemID(pool.getFeatureID());
-                    setTaskRef.get().execute();
+                    VersionManager.setCurrentModule(pool.getFeatureID());
+                    task.execute();
                 } catch (TaskExecutionException | ScopeProviderException e) {
                     // TODO: Handle
                     e.printStackTrace();

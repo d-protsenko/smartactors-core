@@ -85,7 +85,7 @@ public class MessageBusHandler implements IMessageBusHandler {
     @Override
     public void handle(final IObject message, final Object chainName)
             throws MessageBusHandlerException {
-        VersionManager.setCurrentContext(message);
+        VersionManager.setCurrentMessage(message);
         handle0(message, resolveChain(chainName));
     }
 
@@ -98,7 +98,7 @@ public class MessageBusHandler implements IMessageBusHandler {
     @Override
     public void handleForReply(final IObject message, final Object chainName, final Object replyToChainName)
             throws MessageBusHandlerException {
-        VersionManager.setCurrentContext(message);
+        VersionManager.setCurrentMessage(message);
         handleForReply0(message, resolveChain(chainName), replyToChainName);
     }
 

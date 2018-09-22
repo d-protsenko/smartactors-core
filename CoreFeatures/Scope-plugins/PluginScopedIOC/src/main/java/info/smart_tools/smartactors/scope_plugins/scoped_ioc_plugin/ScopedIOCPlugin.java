@@ -40,7 +40,7 @@ public class ScopedIOCPlugin implements IPlugin {
                         try {
                             ScopeProvider.subscribeOnCreationNewScope(scope -> {
                                 try {
-                                    scope.setValue(IOC.getIocKey(), new StrategyContainer(null));
+                                    scope.setValue(IOC.getIocKey(), new StrategyContainer());
                                 } catch (Exception e) {
                                     throw new Error(e);
                                 }

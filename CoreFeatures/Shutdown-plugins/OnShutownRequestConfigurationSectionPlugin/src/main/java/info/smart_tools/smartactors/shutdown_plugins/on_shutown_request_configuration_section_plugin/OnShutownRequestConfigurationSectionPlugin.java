@@ -77,7 +77,7 @@ public class OnShutownRequestConfigurationSectionPlugin extends BootstrapPlugin 
                 Integer stackDepth = stackDepth0;
 
                 Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName);
-                VersionManager.setCurrentContext(null);
+                VersionManager.setCurrentMessage(null);
                 IReceiverChain chain = chainStorage.resolve(mapId);
 
                 return (IAction<Object>) mode -> {

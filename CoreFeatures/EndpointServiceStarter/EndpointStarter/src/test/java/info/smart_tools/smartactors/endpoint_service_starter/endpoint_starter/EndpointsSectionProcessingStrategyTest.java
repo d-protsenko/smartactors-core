@@ -13,7 +13,6 @@ import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
@@ -128,7 +127,7 @@ public class EndpointsSectionProcessingStrategyTest {
                         return new HttpEndpoint((Integer) configuration.getValue(new FieldName("port")),
                             (Integer) configuration.getValue(new FieldName("maxContentLength")),
                             ScopeProvider.getCurrentScope(),
-                            VersionManager.getCurrentItemID(),
+                            VersionManager.getCurrentModule(),
                             environmentHandler,
                             (IReceiverChain) configuration.getValue(new FieldName("startChain")),
                                 "default", mock(IUpCounter.class));

@@ -37,7 +37,7 @@ public class ThreadPool implements IThreadPool {
         } catch (ScopeProviderException e) {
             this.scope = null;
         }
-        this.featureID = VersionManager.getCurrentItemID();
+        this.featureID = VersionManager.getCurrentModule();
     }
 
     @Override

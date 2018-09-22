@@ -17,7 +17,6 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -61,8 +60,8 @@ public class ChainStorage implements IChainStorage {
 
         Object itemID = null;
         try {
-            //Object chainVersion = VersionManager.applyVersionResolutionStrategy(chainId, VersionManager.getCurrentContext());
-            //VersionManager.setCurrentItemID(VersionManager.getItemIDByChainVersion(chainId, chainVersion));
+            //Object chainVersion = VersionManager.applyVersionResolutionStrategy(chainId, VersionManager.getCurrentMessage());
+            //VersionManager.setCurrentModule(VersionManager.getItemIDByChainVersion(chainId, chainVersion));
             //IChainState state = VersionManager.getFromMap(chainVersions);
             itemID = VersionManager.getItemIDByChainID(chainId);
         } catch (InvalidArgumentException | ResolveDependencyStrategyException e) {
@@ -92,17 +91,17 @@ public class ChainStorage implements IChainStorage {
             Map<Object, IChainState> chainVersions = chainStates.get(chainId);
             if (chainVersions == null) {
                 chainVersions = new ConcurrentHashMap<>();
-                chainVersions.put(VersionManager.getCurrentItemID(), state);
+                chainVersions.put(VersionManager.getCurrentModule(), state);
                 synchronized (modificationLock) {
                     chainStates.put(chainId, chainVersions);
                 }
             } else {
                 synchronized (modificationLock) {
-                    oldState = chainVersions.put(VersionManager.getCurrentItemID(), state);
+                    oldState = chainVersions.put(VersionManager.getCurrentModule(), state);
                 }
 
             }
-            VersionManager.registerChainVersion(chainId, VersionManager.getCurrentItemVersion(), VersionManager.getCurrentItemID());
+            VersionManager.registerChainVersion(chainId);
 
             if (null != oldState) {
                 System.out.println(MessageFormat.format("Warning: replacing chain ({0}) registered as ''{1}'' by {2}",
@@ -120,7 +119,7 @@ public class ChainStorage implements IChainStorage {
 
         if (chainVersions != null) {
             synchronized (modificationLock) {
-                oldState = chainVersions.remove(VersionManager.getCurrentItemID());
+                oldState = chainVersions.remove(VersionManager.getCurrentModule());
             }
         }
 

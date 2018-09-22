@@ -25,6 +25,7 @@
         <module>ResolveByNameIocStrategy</module>
         <module>StringIocKey</module>
         <module>VersionedStrategyContainer</module>
+        <module>VersionedRecursiveStrategyContainer</module>
         <module>IOCDistribution</module>
     </modules>
     <build>

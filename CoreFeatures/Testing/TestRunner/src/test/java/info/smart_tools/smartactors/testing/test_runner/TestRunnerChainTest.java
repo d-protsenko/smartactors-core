@@ -7,7 +7,6 @@ import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExec
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.exception.EnvironmentHandleException;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
@@ -93,7 +92,7 @@ public class TestRunnerChainTest {
                 IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "test environment handler"),
                 new SingletonStrategy(testHandler)
         );
-        VersionManager.setCurrentContext(null);
+        VersionManager.setCurrentMessage(null);
         when(this.chainStorage.resolve(this.chainId)).thenReturn(this.receiverChain);
     }
 

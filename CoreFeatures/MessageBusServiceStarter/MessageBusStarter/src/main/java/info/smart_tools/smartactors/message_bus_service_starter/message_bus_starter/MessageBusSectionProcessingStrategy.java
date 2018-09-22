@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.message_bus_service_starter.message_bus_starter;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
@@ -9,7 +8,6 @@ import info.smart_tools.smartactors.configuration_manager.interfaces.iconfigurat
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_container.exception.SendingMessageException;
 import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_handler.IMessageBusHandler;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -79,7 +77,7 @@ public class MessageBusSectionProcessingStrategy implements ISectionStrategy {
                     IChainStorage.class.getCanonicalName()));
             String startChainName = (String) messageBusObject.getValue(startChainNameFieldName);
             Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), startChainName);
-            VersionManager.setCurrentContext(null);
+            VersionManager.setCurrentMessage(null);
             IReceiverChain chain = chainStorage.resolve(chainId);
 
             IAction<IObject> finalAction = IOC.resolve(Keys.getOrAdd("send response action"));

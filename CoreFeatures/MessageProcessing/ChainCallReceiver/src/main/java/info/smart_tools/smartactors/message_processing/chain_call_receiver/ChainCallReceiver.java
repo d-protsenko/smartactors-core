@@ -59,7 +59,7 @@ public class ChainCallReceiver implements IMessageReceiver {
             throws MessageReceiveException {
         try {
             Object chainId = chainChoiceStrategy.chooseChain(processor);
-            VersionManager.setCurrentContext(processor.getMessage());
+            VersionManager.setCurrentMessage(processor.getMessage());
             IReceiverChain chain = chainStorage.resolve(chainId);
             checkAccess(chain, processor);
             processor.getSequence().callChain(chain);

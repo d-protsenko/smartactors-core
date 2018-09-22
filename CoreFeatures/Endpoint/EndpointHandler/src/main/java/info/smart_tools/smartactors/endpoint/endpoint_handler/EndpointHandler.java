@@ -87,7 +87,7 @@ public abstract class EndpointHandler<TContext, TRequest> {
             taskQueue.put(() -> {
                 try {
                     ScopeProvider.setCurrentScope(scope);
-                    VersionManager.setCurrentItemID(featureId);
+                    VersionManager.setCurrentModule(featureId);
                     IObject environment = getEnvironment(ctx, request);
                     environmentHandler.handle(environment, receiverChain, null);
                 } catch (Exception e) {

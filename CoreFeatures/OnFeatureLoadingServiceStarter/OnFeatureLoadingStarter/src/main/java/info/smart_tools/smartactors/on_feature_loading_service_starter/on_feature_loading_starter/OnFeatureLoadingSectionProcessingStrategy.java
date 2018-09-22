@@ -6,7 +6,6 @@ import info.smart_tools.smartactors.configuration_manager.interfaces.iconfigurat
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -103,7 +102,7 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                 if ( !isRevert ) {
                     String chainName = (String) task.getValue(this.chainFieldName);
                     Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName);
-                    VersionManager.setCurrentContext(null);
+                    VersionManager.setCurrentMessage(null);
                     IReceiverChain chain = chainStorage.resolve(mapId);
                     List<IObject> messages = (List<IObject>)task.getValue(this.messagesFieldName);
                     for (IObject message : messages) {
@@ -151,7 +150,7 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                     if (isRevert) {
                         String chainName = (String) task.getValue(this.chainFieldName);
                         Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName);
-                        VersionManager.setCurrentContext(null);
+                        VersionManager.setCurrentMessage(null);
                         IReceiverChain chain = chainStorage.resolve(mapId);
                         List<IObject> messages = (List<IObject>) task.getValue(this.messagesFieldName);
                         for (IObject message : messages) {
