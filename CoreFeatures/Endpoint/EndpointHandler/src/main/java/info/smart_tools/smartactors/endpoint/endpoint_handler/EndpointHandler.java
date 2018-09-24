@@ -84,10 +84,10 @@ public abstract class EndpointHandler<TContext, TRequest> {
      */
     public void handle(final TContext ctx, final TRequest request) throws ExecutionException {
         try {
+            ScopeProvider.setCurrentScope(scope);
+            VersionManager.setCurrentModule(featureId);
             taskQueue.put(() -> {
                 try {
-                    ScopeProvider.setCurrentScope(scope);
-                    VersionManager.setCurrentModule(featureId);
                     IObject environment = getEnvironment(ctx, request);
                     environmentHandler.handle(environment, receiverChain, null);
                 } catch (Exception e) {

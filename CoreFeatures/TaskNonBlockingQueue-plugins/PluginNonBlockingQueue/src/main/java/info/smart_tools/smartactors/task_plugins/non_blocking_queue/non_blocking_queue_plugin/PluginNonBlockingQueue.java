@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 /**
  * Plugin that registers non-blocking queue in IOC.
  */
-public class PluginNonlockingQueue implements IPlugin {
+public class PluginNonBlockingQueue implements IPlugin {
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
@@ -30,7 +30,7 @@ public class PluginNonlockingQueue implements IPlugin {
      *
      * @param bootstrap    the bootstrap
      */
-    public PluginNonlockingQueue(final IBootstrap<IBootstrapItem<String>> bootstrap) {
+    public PluginNonBlockingQueue(final IBootstrap<IBootstrapItem<String>> bootstrap) {
         this.bootstrap = bootstrap;
     }
 

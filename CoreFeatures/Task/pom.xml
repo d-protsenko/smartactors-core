@@ -12,17 +12,17 @@
     <version>0.4.0</version>
     <packaging>pom</packaging>
     <modules>
-        <module>BlockingQueue</module>
-        <module>IThreadPool</module>
-        <module>ITaskDispatcher</module>
-        <module>ThreadPool</module>
-        <module>IQueue</module>
-        <module>NonBlockingQueue</module>
         <module>ITask</module>
-        <module>TaskDispatcher</module>
+        <module>IQueue</module>
+        <module>IThreadPool</module>
         <module>ITaskPreprocessStrategy</module>
         <module>ITaskExecutionState</module>
         <module>IManagedTask</module>
+        <module>ITaskDispatcher</module>
+        <module>ThreadPool</module>
+        <module>BlockingQueue</module>
+        <module>NonBlockingQueue</module>
+        <module>TaskDispatcher</module>
         <module>TaskDistribution</module>
     </modules>
     <build>

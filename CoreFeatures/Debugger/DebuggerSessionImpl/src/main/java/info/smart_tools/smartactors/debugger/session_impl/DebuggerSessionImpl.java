@@ -97,6 +97,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         commands.put("setMessageField", this::setMessageField);
         commands.put("setChain", stopModeCommand(args -> {
             try {
+                // ToDo : check carefully
                 VersionManager.setCurrentMessage(message);
                 IChainStorage storage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
                 mainChain = storage.resolve(IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), args));
@@ -400,6 +401,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
     private Object call(final Object arg)
             throws CommandExecutionException {
         try {
+            // ToDo: check !!!
             VersionManager.setCurrentMessage(message);
             IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
             IReceiverChain chain = chainStorage.resolve(IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), arg));
