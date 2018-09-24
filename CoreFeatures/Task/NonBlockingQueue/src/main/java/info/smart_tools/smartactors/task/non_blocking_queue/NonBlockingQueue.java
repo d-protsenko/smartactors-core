@@ -1,9 +1,8 @@
 package info.smart_tools.smartactors.task.non_blocking_queue;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
+import info.smart_tools.smartactors.class_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.scope.iscope.IScope;
-import info.smart_tools.smartactors.scope.iscope.exception.ScopeException;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;

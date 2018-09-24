@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_bus.message_bus_handler;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
+import info.smart_tools.smartactors.class_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;

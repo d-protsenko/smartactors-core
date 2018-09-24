@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.class_management.class_loader_management;
+package info.smart_tools.smartactors.class_management.simple_class_loader;
 
 import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
 import org.junit.Ignore;

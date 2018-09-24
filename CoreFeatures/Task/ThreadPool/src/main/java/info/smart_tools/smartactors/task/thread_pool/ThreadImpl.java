@@ -1,10 +1,7 @@
 package info.smart_tools.smartactors.task.thread_pool;
 
-import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
-import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 
 import java.util.concurrent.atomic.AtomicReference;
 

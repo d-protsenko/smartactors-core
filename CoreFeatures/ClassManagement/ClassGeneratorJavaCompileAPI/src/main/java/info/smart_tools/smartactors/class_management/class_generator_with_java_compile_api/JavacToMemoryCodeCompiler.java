@@ -1,6 +1,4 @@
 package info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api;
-import info.smart_tools.smartactors.class_management.class_loader_management.HierarchicalClassLoader;
-import info.smart_tools.smartactors.class_management.class_loader_management.SmartactorsClassLoader;
 import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
 
 import javax.tools.Diagnostic;
@@ -10,7 +8,6 @@ import javax.tools.JavaCompiler.CompilationTask;
 import javax.tools.JavaFileObject;
 import javax.tools.ToolProvider;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;

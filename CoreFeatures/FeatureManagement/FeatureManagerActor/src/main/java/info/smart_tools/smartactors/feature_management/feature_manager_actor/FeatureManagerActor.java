@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.feature_management.feature_manager_actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
+import info.smart_tools.smartactors.class_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.exception.FeatureManagementException;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.wrapper.AddFeatureWrapper;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.wrapper.FeatureManagerStateWrapper;

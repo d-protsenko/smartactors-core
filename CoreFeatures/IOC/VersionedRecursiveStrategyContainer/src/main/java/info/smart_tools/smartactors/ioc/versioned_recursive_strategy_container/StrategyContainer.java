@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.ioc.versioned_recursive_strategy_container;
 
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
+import info.smart_tools.smartactors.class_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
 import info.smart_tools.smartactors.ioc.istrategy_container.exception.StrategyContainerException;
 

@@ -1902,21 +1902,21 @@
   "rawName" : "StringIocKey",
   "version" : "0.4.0"
 }, {
-    "artifactId" : "ioc.versioned-strategy-container",
-    "uploadRepositories" : [ {
-    "uploadRepositoryId" : "archiva.smartactors-modules",
-    "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
-  } ],
-    "rawName" : "VersionedStrategyContainer",
-    "version" : "0.4.0"
- }, {
-   "artifactId" : "ioc.versioned-recursive-strategy-container",
-   "uploadRepositories" : [ {
-   "uploadRepositoryId" : "archiva.smartactors-modules",
-   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
- } ],
-   "rawName" : "VersionedRecursiveStrategyContainer",
-   "version" : "0.4.0"
+  "artifactId" : "ioc.versioned-strategy-container",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "VersionedStrategyContainer",
+  "version" : "0.4.0"
+}, {
+  "artifactId" : "ioc.versioned-recursive-strategy-container",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "VersionedRecursiveStrategyContainer",
+  "version" : "0.4.0"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -2603,14 +2603,14 @@
   "rawName" : "ClassGeneratorJavaCompileAPI",
   "version" : "0.4.0"
 }, {
-   "artifactId" : "class-management.class-loader-management",
-   "uploadRepositories" : [ {
-   "uploadRepositoryId" : "archiva.smartactors-modules",
-   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
- } ],
-   "rawName" : "ClassLoaderManagement",
-   "version" : "0.4.0"
- } ],
+  "artifactId" : "class-management.class-loader-management",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "ClassLoaderManagement",
+  "version" : "0.4.0"
+} ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-features/"

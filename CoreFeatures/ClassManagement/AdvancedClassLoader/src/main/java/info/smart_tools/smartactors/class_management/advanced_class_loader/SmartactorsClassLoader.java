@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.class_management.class_loader_management;
+package info.smart_tools.smartactors.class_management.advanced_class_loader;
 
 import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
 
@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Extension of {@link URLClassLoader}
  */
-public class SmartactorsClassLoader extends ExtendedURLClassLoader implements ISmartactorsClassLoader {
+public class SmartactorsClassLoader extends URLClassLoader implements ISmartactorsClassLoader {
 
     /* This is ItemID To ClassLoader Map */
     private static Map<String, SmartactorsClassLoader> itemClassLoaders = new ConcurrentHashMap<>();
@@ -41,7 +41,7 @@ public class SmartactorsClassLoader extends ExtendedURLClassLoader implements IS
         return itemClassLoaders.get(itemID);
     }
 
-    static void addItemDependency(String dependentItemID, String baseItemID) {
+    static void addItemDependency(Object dependentItemID, Object baseItemID) {
         if (!baseItemID.equals(dependentItemID)) {
             SmartactorsClassLoader baseClassLoader = getItemClassLoader(baseItemID);
             SmartactorsClassLoader dependentClassLoader = getItemClassLoader(dependentItemID);
@@ -162,5 +162,23 @@ public class SmartactorsClassLoader extends ExtendedURLClassLoader implements IS
         }
     }
 
+    /**
+     * Add compiled byte code of the class directly to this class loader
+     * @param className The name of the class to define
+     * @param classByteCode Compiled byte code of the class to add
+     * @return The reference to the class
+     */
+    public Class<?> addClass(final String className, byte[] classByteCode) {
+        return defineClass(className, classByteCode, 0, classByteCode.length);
+    }
+
     public ClassLoader getCompilationClassLoader() { return this; }
+
+    /**
+     * Add new instance of {@link URL} to the current url class loader if url class loader doesn't contain this instance of {@link URL}
+     * @param url instance of {@link URL}
+     */
+    public void addURL(final URL url) {
+        super.addURL(url);
+    }
 }

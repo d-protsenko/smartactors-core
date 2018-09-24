@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.class_management.class_loader_management;
+package info.smart_tools.smartactors.class_management.version_manager;
 
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;

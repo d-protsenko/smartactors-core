@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.feature_management.directory_watcher_actor;
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
-import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
+import info.smart_tools.smartactors.class_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.feature_management.directory_watcher_actor.exception.WatchingServiceException;
 import info.smart_tools.smartactors.feature_management.directory_watcher_actor.wrapper.StartWatchingWrapper;
 import info.smart_tools.smartactors.feature_management.directory_watcher_actor.wrapper.StopWatchingWrapper;

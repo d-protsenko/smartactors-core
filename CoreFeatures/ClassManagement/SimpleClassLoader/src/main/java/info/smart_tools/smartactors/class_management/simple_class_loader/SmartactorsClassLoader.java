@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.class_management.class_loader_management;
+package info.smart_tools.smartactors.class_management.simple_class_loader;
 
 import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
 
@@ -9,35 +9,35 @@ import java.util.*;
 /**
  * Extension of {@link URLClassLoader}
  */
-public class ExtendedURLClassLoader extends URLClassLoader implements ISmartactorsClassLoader {
+public class SmartactorsClassLoader extends URLClassLoader implements ISmartactorsClassLoader {
 
-    private static ExtendedURLClassLoader single = null;
-    private static ExtendedURLClassLoader compilation = null;
-
-    /**
-     * Redefined constructor
-     * @param urls the URLs from which to load classes and resources
-     */
-    ExtendedURLClassLoader(final URL[] urls) { super(urls); }
+    private static SmartactorsClassLoader single = null;
+    private static SmartactorsClassLoader compilation = null;
 
     /**
      * Redefined constructor
      * @param urls the URLs from which to load classes and resources
      */
-    private ExtendedURLClassLoader(final URL[] urls, ClassLoader parent) {
+    SmartactorsClassLoader(final URL[] urls) { super(urls); }
+
+    /**
+     * Redefined constructor
+     * @param urls the URLs from which to load classes and resources
+     */
+    private SmartactorsClassLoader(final URL[] urls, ClassLoader parent) {
         super(urls, parent);
     }
 
     static void addItem(Object itemID, String itemName, String itemVersion) {
         if (single == null) {
-            single = new ExtendedURLClassLoader(new URL[]{});
+            single = new SmartactorsClassLoader(new URL[]{});
         }
         if (compilation == null) {
-            compilation = new ExtendedURLClassLoader(new URL[]{}, single);
+            compilation = new SmartactorsClassLoader(new URL[]{}, single);
         }
     }
 
-    static ExtendedURLClassLoader getItemClassLoader(Object itemID) {
+    static SmartactorsClassLoader getItemClassLoader(Object itemID) {
         return single;
     }
 

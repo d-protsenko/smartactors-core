@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_processing.chain_storage;
 
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
-import info.smart_tools.smartactors.class_management.class_loader_management.VersionManager;
+import info.smart_tools.smartactors.class_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing.chain_storage.interfaces.IChainState;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
