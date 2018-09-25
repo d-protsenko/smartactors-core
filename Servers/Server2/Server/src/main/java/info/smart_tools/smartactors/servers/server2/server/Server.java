@@ -66,6 +66,7 @@ public class Server implements IServer {
                     VersionManager.coreName,
                     VersionManager.coreVersion
             );
+            VersionManager.setDefaultItemId(VersionManager.coreId);
             VersionManager.setCurrentModule(VersionManager.coreId);
         } catch (InvalidArgumentException e) {
             throw new ServerInitializeException("Failed to initialize core.");

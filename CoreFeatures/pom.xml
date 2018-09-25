@@ -91,7 +91,6 @@
         <module>GlobalConstantsServiceStarter</module>
         <module>EndpointServiceStarter</module>
         <module>DatabaseServiceStarter</module>
-        <module>VersionManagement</module>
     </modules>
 
     <build>

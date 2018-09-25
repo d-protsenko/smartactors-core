@@ -277,7 +277,7 @@ public class FeatureManagerActor {
                 removeLoadedFeaturesFromFeatureDependencies(feature);
 
                 if (featureDependencies.isEmpty()) {
-                    VersionManager.finalizeItemDependencies(feature.getId(), VersionManager.coreId);
+                    VersionManager.finalizeItemDependencies(feature.getId());
                 } else {
                     IMessageProcessor mp = wrapper.getMessageProcessor();
                     mp.pauseProcess();

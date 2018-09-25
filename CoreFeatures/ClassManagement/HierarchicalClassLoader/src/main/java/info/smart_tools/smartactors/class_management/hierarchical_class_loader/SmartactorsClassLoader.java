@@ -12,21 +12,26 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SmartactorsClassLoader extends URLClassLoader implements ISmartactorsClassLoader {
 
+    private static Object defaultItemId = null;
     /* This is ItemID To ClassLoader Map */
     private static Map<Object, SmartactorsClassLoader> itemClassLoaders = new ConcurrentHashMap<>();
 
     private Set<SmartactorsClassLoader> dependsOn = Collections.synchronizedSet(new HashSet<>());
 
-    static void addItem(Object itemID, String itemName, String itemVersion) {
+    public static void setDefaultItemId(Object itemID) {
+        defaultItemId = itemID;
+    }
+
+    public static void addItem(Object itemID, String itemName, String itemVersion) {
         SmartactorsClassLoader classLoader = new SmartactorsClassLoader(new URL[]{});
         itemClassLoaders.put(itemID, classLoader);
     }
 
-    static SmartactorsClassLoader getItemClassLoader(Object itemID) {
+    public static SmartactorsClassLoader getItemClassLoader(Object itemID) {
         return itemClassLoaders.get(itemID);
     }
 
-    static void addItemDependency(Object dependentItemID, Object baseItemID) {
+    public static void addItemDependency(Object dependentItemID, Object baseItemID) {
         if (!baseItemID.equals(dependentItemID)) {
             SmartactorsClassLoader baseClassLoader = getItemClassLoader(baseItemID);
             SmartactorsClassLoader dependentClassLoader = getItemClassLoader(dependentItemID);
@@ -36,9 +41,9 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
         }
     }
 
-    static void finalizeItemDependencies(Object itemID, Object defaultItemID) {
+    public static void finalizeItemDependencies(Object itemID) {
         if (getItemClassLoader(itemID).dependsOn.size() == 0) {
-            addItemDependency(itemID, defaultItemID);
+            addItemDependency(itemID, defaultItemId);
         }
     }
 
@@ -139,7 +144,7 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
                 clazz = this.loadClassFromDependencies(
                         className,
                         getSystemClassLoader(),
-                        itemClassLoaders.get(VersionManager.coreId),
+                        itemClassLoaders.get(defaultItemId),
                         sclUsed
                 );
             }

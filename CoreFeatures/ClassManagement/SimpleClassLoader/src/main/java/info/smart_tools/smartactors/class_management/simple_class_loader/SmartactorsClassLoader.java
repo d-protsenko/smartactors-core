@@ -28,7 +28,10 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
         super(urls, parent);
     }
 
-    static void addItem(Object itemID, String itemName, String itemVersion) {
+    public static void setDefaultItemId(Object itemID) {
+    }
+
+    public static void addItem(Object itemID, String itemName, String itemVersion) {
         if (single == null) {
             single = new SmartactorsClassLoader(new URL[]{});
         }
@@ -37,14 +40,14 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
         }
     }
 
-    static SmartactorsClassLoader getItemClassLoader(Object itemID) {
+    public static SmartactorsClassLoader getItemClassLoader(Object itemID) {
         return single;
     }
 
-    static void addItemDependency(Object dependentItemID, Object baseItemID) {
+    public static void addItemDependency(Object dependentItemID, Object baseItemID) {
     }
 
-    static void finalizeItemDependencies(Object itemID, Object defaultItemID) {
+    public static void finalizeItemDependencies(Object itemID) {
     }
 
     /**

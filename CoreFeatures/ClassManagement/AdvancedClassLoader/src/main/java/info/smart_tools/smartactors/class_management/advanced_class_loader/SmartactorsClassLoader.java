@@ -12,8 +12,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SmartactorsClassLoader extends URLClassLoader implements ISmartactorsClassLoader {
 
+    private static Object defaultItemId = null;
+
     /* This is ItemID To ClassLoader Map */
-    private static Map<String, SmartactorsClassLoader> itemClassLoaders = new ConcurrentHashMap<>();
+    private static Map<Object, SmartactorsClassLoader> itemClassLoaders = new ConcurrentHashMap<>();
 
     private String itemName = null;
     private Set<SmartactorsClassLoader> dependsOn = Collections.synchronizedSet(new HashSet<>());
@@ -27,7 +29,11 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
         super(urls);
     }
 
-    static void addItem(String itemID, String itemName, String itemVersion) {
+    public static void setDefaultItemId(Object itemID) {
+        defaultItemId = itemID;
+    }
+
+    public static void addItem(Object itemID, String itemName, String itemVersion) {
         SmartactorsClassLoader classLoader = new SmartactorsClassLoader(new URL[]{});
         itemClassLoaders.put(itemID, classLoader);
         itemName = itemName.replace('/', '.');
@@ -37,11 +43,11 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
         classLoader.classMap.put(itemName, classLoader);
     }
 
-    static SmartactorsClassLoader getItemClassLoader(Object itemID) {
+    public static SmartactorsClassLoader getItemClassLoader(Object itemID) {
         return itemClassLoaders.get(itemID);
     }
 
-    static void addItemDependency(Object dependentItemID, Object baseItemID) {
+    public static void addItemDependency(Object dependentItemID, Object baseItemID) {
         if (!baseItemID.equals(dependentItemID)) {
             SmartactorsClassLoader baseClassLoader = getItemClassLoader(baseItemID);
             SmartactorsClassLoader dependentClassLoader = getItemClassLoader(dependentItemID);
@@ -57,9 +63,9 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
         }
     }
 
-    static void finalizeItemDependencies(Object itemID, Object defaultItemID) {
+    public static void finalizeItemDependencies(Object itemID) {
         if (getItemClassLoader(itemID).dependsOn.size() == 0) {
-            addItemDependency(itemID, defaultItemID);
+            addItemDependency(itemID, defaultItemId);
         }
     }
 

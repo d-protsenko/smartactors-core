@@ -63,7 +63,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>class-management.class-loader-management</artifactId>
+            <artifactId>class-management.version-manager</artifactId>
             <version>0.4.0</version>
             <scope>compile</scope>
         </dependency>

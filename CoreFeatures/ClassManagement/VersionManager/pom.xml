@@ -7,7 +7,7 @@
         <artifactId>class-management</artifactId>
         <version>0.4.0</version>
     </parent>
-    <artifactId>class-management.class-loader-management</artifactId>
+    <artifactId>class-management.version-manager</artifactId>
     <version>0.4.0</version>
     <dependencies>
         <dependency>
@@ -43,6 +43,24 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.iobject</artifactId>
+            <version>0.4.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>class-management.hierarchical-class-loader</artifactId>
+            <version>0.4.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>class-management.advanced-class-loader</artifactId>
+            <version>0.4.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>class-management.simple-class-loader</artifactId>
             <version>0.4.0</version>
             <scope>compile</scope>
         </dependency>

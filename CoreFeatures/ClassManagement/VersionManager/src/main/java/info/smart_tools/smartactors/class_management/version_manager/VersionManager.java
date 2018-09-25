@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.class_management.hierarchical_class_loader.SmartactorsClassLoader;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,6 +20,7 @@ public final class VersionManager {
     public static final String coreName = "info.smart_tools:smartactors";
     public static final String coreVersion = "0.4.1";
     public static final Object coreId = java.util.UUID.randomUUID();
+    private static Object defaultItemID = null;
 
     private static ThreadLocal<Object> currentItemID = new ThreadLocal<>();
     private static ThreadLocal<IObject> currentMessage = new ThreadLocal<>();
@@ -42,13 +44,18 @@ public final class VersionManager {
         String version = (itemVersion == null ? "" : itemVersion);
 
         if (dependencies.get(itemId) == null) {
-            HierarchicalClassLoader.addItem(itemId, itemName, version);
+            SmartactorsClassLoader.addItem(itemId, itemName, version);
             dependencies.put(itemId, Collections.synchronizedSet(new HashSet<>()));
             itemNames.put(itemId, itemName);
             itemVersions.put(itemId, version);
         } else {
             System.out.println("[WARNING] Item "+itemId+" already defined.\n");
         }
+    }
+
+    public static void setDefaultItemId(final Object itemId) {
+        SmartactorsClassLoader.setDefaultItemId(itemId);
+        defaultItemID = itemId;
     }
 
     private static String getItemName(Object itemID) {
@@ -60,7 +67,7 @@ public final class VersionManager {
     }
 
     public static ISmartactorsClassLoader getItemClassLoader(Object itemID) {
-        return HierarchicalClassLoader.getItemClassLoader(itemID);
+        return SmartactorsClassLoader.getItemClassLoader(itemID);
     }
 
     public static void addItemDependency(Object dependentItemID, Object baseItemID) {
@@ -71,13 +78,13 @@ public final class VersionManager {
             dependsOn.add(baseItemID);
             dependsOn.addAll(itemIDs);
 
-            HierarchicalClassLoader.addItemDependency(dependentItemID, baseItemID);
+            SmartactorsClassLoader.addItemDependency(dependentItemID, baseItemID);
         }
     }
 
-    public static void finalizeItemDependencies(Object itemID, Object defaultItemID) {
+    public static void finalizeItemDependencies(Object itemID) {
         if (itemID != null) {
-            HierarchicalClassLoader.finalizeItemDependencies(itemID, defaultItemID);
+            SmartactorsClassLoader.finalizeItemDependencies(itemID);
             Set<Object> dependsOn = dependencies.get(itemID);
             if (dependsOn.size() == 0 && defaultItemID != null) {
                 dependsOn.add(defaultItemID);
