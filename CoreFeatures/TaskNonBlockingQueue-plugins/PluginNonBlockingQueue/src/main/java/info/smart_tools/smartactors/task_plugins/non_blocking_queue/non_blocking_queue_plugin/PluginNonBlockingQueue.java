@@ -15,6 +15,7 @@ import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.task.non_blocking_queue.NonBlockingQueue;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.task.task_queue_decorator.TaskQueueDecorator;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -46,7 +47,7 @@ public class PluginNonBlockingQueue implements IPlugin {
                         try {
                             IOC.register(Keys.getOrAdd(IQueue.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(args -> {
                                 try {
-                                    return new NonBlockingQueue<>(new ConcurrentLinkedQueue<>());
+                                    return new TaskQueueDecorator(new NonBlockingQueue<>(new ConcurrentLinkedQueue<>()));
                                 } catch (Exception e) {
                                     throw new RuntimeException(e);
                                 }

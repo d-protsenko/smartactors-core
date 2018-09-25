@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,15 +20,21 @@ public class SmartactorsClassLoaderTest {
     @Test
     public void checkSmartactorsClassLoaderCreation()
             throws Exception {
-        VersionManager.addItem(VersionManager.coreId, VersionManager.coreName, VersionManager.coreVersion);
-        VersionManager.addItem("cl1", "cl1", null);
-        assertNotNull(VersionManager.getItemClassLoader("cl1"));
-        VersionManager.addItem("cl2", "cl2", null);
-        assertNotNull(VersionManager.getItemClassLoader("cl2"));
-        assertSame(((ClassLoader) VersionManager.getItemClassLoader("cl2")).getParent(), ClassLoader.getSystemClassLoader());
-        VersionManager.addItemDependency("cl1", "cl2");
-        VersionManager.finalizeItemDependencies("cl1", VersionManager.coreId);
-        VersionManager.finalizeItemDependencies("cl2", VersionManager.coreId);
+        SmartactorsClassLoader.addModule(
+                "coreId",
+                "coreName",
+                "coreVersion"
+        );
+        SmartactorsClassLoader.setDefaultModuleId("coreId");
+        SmartactorsClassLoader.addModule("cl1", "cl1", null);
+        assertNotNull(SmartactorsClassLoader.getModuleClassLoader("cl1"));
+        SmartactorsClassLoader.addModule("cl2", "cl2", null);
+        assertNotNull(SmartactorsClassLoader.getModuleClassLoader("cl2"));
+        assertSame(SmartactorsClassLoader.getModuleClassLoader("cl2").getParent(), ClassLoader.getSystemClassLoader());
+        SmartactorsClassLoader.addModuleDependency("cl1", "cl2");
+        SmartactorsClassLoader.finalizeModuleDependencies("cl1");
+        SmartactorsClassLoader.finalizeModuleDependencies("cl2");
+        assertNotNull(SmartactorsClassLoader.getModuleClassLoader("coreId").getCompilationClassLoader());
     }
 
     @Test
@@ -36,16 +43,29 @@ public class SmartactorsClassLoaderTest {
         URL url1 = new URL("http", "host", 9000, "filename1");
         URL url2 = new URL("http", "host", 9000, "filename2");
         URL url3 = new URL("http", "host", 9000, "filename1");
-        VersionManager.addItem("clURL", "clURL", "clURL");
-        ISmartactorsClassLoader cl = VersionManager.getItemClassLoader("clURL");
+        SmartactorsClassLoader.addModule("cl", "cl", "cl");
+        ISmartactorsClassLoader cl0 = SmartactorsClassLoader.getModuleClassLoader("cl");
+        assertNotNull(cl0);
+        SmartactorsClassLoader.addModule("clURL", "clURL", "clURL");
+        ISmartactorsClassLoader cl = SmartactorsClassLoader.getModuleClassLoader("clURL");
         assertNotNull(cl);
-
+        SmartactorsClassLoader.addModuleDependency("clURL", "cl");
+        SmartactorsClassLoader.setDefaultModuleId("cl");
+        cl0.addURL(url1);
         cl.addURL(url1);
         cl.addURL(url2);
         cl.addURL(url3);
         URL[] result = cl.getURLsFromDependencies();
-        assertSame(url1, result[result.length-2]);
-        assertSame(url2, result[result.length-1]);
+        ArrayList<URL> al = new ArrayList<URL>();
+        for(URL url : result) {
+            al.add(url);
+        }
+        if( !al.contains(url1)) {
+            fail();
+        }
+        if( !al.contains(url2)) {
+            fail();
+        }
 
         try {
             Class clazz = cl.loadClass("nowhere.classNotExist");
@@ -57,11 +77,10 @@ public class SmartactorsClassLoaderTest {
     }
 
     @Test
-    public void checkGettersSetters()
-            throws Exception {
+    public void checkGettersSetters() {
 
-        VersionManager.addItem("cl", "cl", null);
-        ISmartactorsClassLoader cl = VersionManager.getItemClassLoader("cl");
+        SmartactorsClassLoader.addModule("cl", "cl", null);
+        ISmartactorsClassLoader cl = SmartactorsClassLoader.getModuleClassLoader("cl");
 
         try {
             byte[] byteCode = { 1, 2 };
@@ -76,7 +95,7 @@ public class SmartactorsClassLoaderTest {
         cl.addURL(new URL("jar:file:" + pathToJar+"!/"));
     }
 
-    private URLClassLoader createClassLoaderForJar(String jarName, ClassLoader parent)
+    private ClassLoader createClassLoaderForJar(String jarName, ClassLoader parent)
             throws Exception {
         URLClassLoader cl;
         String pathToJar = this.getClass().getClassLoader().getResource(jarName).getFile();
@@ -86,77 +105,67 @@ public class SmartactorsClassLoaderTest {
         return cl;
     }
 
+    private ClassLoader[] createClassLoaderSet()
+            throws Exception {
+        ClassLoader cls[] = new SmartactorsClassLoader[22];
+        SmartactorsClassLoader.addModule("cl00", "DeadEnd-IField", "cl00");
+        cls[20] = SmartactorsClassLoader.getModuleClassLoader("cl00");
+        SmartactorsClassLoader.addModule("cl01", "PathToSCL-IField", "cl01");
+        cls[0] = SmartactorsClassLoader.getModuleClassLoader("cl01");
+        SmartactorsClassLoader.addModule("CL1", "CL1", "CL1");
+        cls[1] = SmartactorsClassLoader.getModuleClassLoader("CL1");
+        SmartactorsClassLoader.addModule("CL2", "CL2", "CL2");
+        cls[2] = SmartactorsClassLoader.getModuleClassLoader("CL2");
+        SmartactorsClassLoader.addModule("CL3", "CL3", "CL3");
+        cls[3] = SmartactorsClassLoader.getModuleClassLoader("CL3");
+        SmartactorsClassLoader.addModule("CL4", "CL4", "CL4");
+        cls[4] = SmartactorsClassLoader.getModuleClassLoader("CL4");
+        SmartactorsClassLoader.addModule("CL5", "CL5", "CL5");
+        cls[5] = SmartactorsClassLoader.getModuleClassLoader("CL5");
+        SmartactorsClassLoader.addModule("CL6", "CL6", "CL6");
+        cls[6] = SmartactorsClassLoader.getModuleClassLoader("CL6");
+        SmartactorsClassLoader.addModule("CL7", "CL7", "CL7");
+        cls[7] = SmartactorsClassLoader.getModuleClassLoader("CL7");
+
+        SmartactorsClassLoader.addModuleDependency("CL1", "cl00");
+        SmartactorsClassLoader.addModuleDependency("CL1", "cl01");
+        SmartactorsClassLoader.addModuleDependency("CL2", "cl01");
+        SmartactorsClassLoader.addModuleDependency("CL3", "CL1");
+        SmartactorsClassLoader.addModuleDependency("CL3", "CL2");
+        SmartactorsClassLoader.addModuleDependency("CL4", "CL2");
+        SmartactorsClassLoader.addModuleDependency("CL5", "CL4");
+        SmartactorsClassLoader.addModuleDependency("CL6", "CL5");
+        SmartactorsClassLoader.addModuleDependency("CL7", "CL6");
+
+        attachJarToClassLoader("ifield.jar", (ISmartactorsClassLoader)cls[20]);
+        attachJarToClassLoader("ifield.jar", (ISmartactorsClassLoader)cls[0]);
+        attachJarToClassLoader("ifield_name.jar", (ISmartactorsClassLoader)cls[2]);
+        attachJarToClassLoader("iobject.jar", (ISmartactorsClassLoader)cls[2]);
+        attachJarToClassLoader("iobject-wrapper.jar", (ISmartactorsClassLoader)cls[2]);
+
+        return cls;
+    }
+
     @Test
-    @Ignore
     public void performanceTestForExtendedClassLoader()
             throws Exception {
-        {
-            VersionManager.addItem("cl00", "DeadEnd-IField", "cl00");
-            ISmartactorsClassLoader cl00 = VersionManager.getItemClassLoader("cl00");
-            VersionManager.addItem("cl01", "PathToSCL-IField", "cl01");
-            ISmartactorsClassLoader cl01 = VersionManager.getItemClassLoader("cl01");
-            VersionManager.addItem("CL1", "CL1", "CL1");
-            ISmartactorsClassLoader cl1 = VersionManager.getItemClassLoader("CL1");
-            VersionManager.addItem("CL2", "CL2", "CL2");
-            ISmartactorsClassLoader cl2 = VersionManager.getItemClassLoader("CL2");
-            VersionManager.addItem("CL3", "CL3", "CL3");
-            ISmartactorsClassLoader cl3 = VersionManager.getItemClassLoader("CL3");
-            VersionManager.addItem("CL4", "CL4", "CL4");
-            ISmartactorsClassLoader cl4 = VersionManager.getItemClassLoader("CL4");
-            VersionManager.addItemDependency("CL1", "cl00");
-            VersionManager.addItemDependency("CL1", "cl01");
-            VersionManager.addItemDependency("CL2", "cl01");
-            VersionManager.addItemDependency("CL3", "CL1");
-            VersionManager.addItemDependency("CL3", "CL2");
-            VersionManager.addItemDependency("CL4", "CL2");
-            attachJarToClassLoader("ifield.jar", cl00);
-            attachJarToClassLoader("ifield.jar", cl01);
-            attachJarToClassLoader("ifield_name.jar", cl2);
-            attachJarToClassLoader("iobject.jar", cl2);
-            attachJarToClassLoader("iobject-wrapper.jar", cl2);
-            try {
-                cl3.loadClass("info.smart_tools.smartactors.iobject.ifield.IField");
-                fail();
-            } catch (NoClassDefFoundError e) { }
-        }
-        Class clazz = null;
+        ClassLoader[] cls;
+
+        Class[] clazz = { null, null, null, null, null };
         long iterations, t1, t2, t3, t4;
         double d, a, u;
         d = 0; a = 0; u = 0;
         iterations = 1000;
         for(int i=0; i<iterations+5; i++)
         {
-            VersionManager.addItem("cl00", "DeadEnd-IField", "cl00");
-            ISmartactorsClassLoader cl00 = VersionManager.getItemClassLoader("cl00");
-            VersionManager.addItem("cl01", "PathToSCL-IField", "cl01");
-            ISmartactorsClassLoader cl01 = VersionManager.getItemClassLoader("cl01");
-            VersionManager.addItem("CL1", "CL1", "CL1");
-            ISmartactorsClassLoader cl1 = VersionManager.getItemClassLoader("CL1");
-            VersionManager.addItem("CL2", "CL2", "CL2");
-            ISmartactorsClassLoader cl2 = VersionManager.getItemClassLoader("CL2");
-            VersionManager.addItem("CL3", "CL3", "CL3");
-            ISmartactorsClassLoader cl3 = VersionManager.getItemClassLoader("CL3");
-            VersionManager.addItem("CL4", "CL4", "CL4");
-            ISmartactorsClassLoader cl4 = VersionManager.getItemClassLoader("CL4");
-            VersionManager.addItemDependency("CL1", "cl00");
-            VersionManager.addItemDependency("CL1", "cl01");
-            VersionManager.addItemDependency("CL2", "cl01");
-            VersionManager.addItemDependency("CL3", "CL1");
-            VersionManager.addItemDependency("CL3", "CL2");
-            VersionManager.addItemDependency("CL4", "CL2");
-
-            attachJarToClassLoader("ifield.jar", cl00);
-            attachJarToClassLoader("ifield.jar", cl01);
-            attachJarToClassLoader("ifield_name.jar", cl2);
-            attachJarToClassLoader("iobject.jar", cl2);
-            attachJarToClassLoader("iobject-wrapper.jar", cl2);
+            cls = createClassLoaderSet();
 
             t1 = System.nanoTime();
-            clazz = cl2.loadClass("info.smart_tools.smartactors.iobject.ifield.IField");
+            clazz[0] = cls[2].loadClass("info.smart_tools.smartactors.iobject.ifield.IField");
             t2 = System.nanoTime();
-            clazz = cl3.loadClass("info.smart_tools.smartactors.iobject.iobject.IObject");
+            clazz[1] = cls[3].loadClass("info.smart_tools.smartactors.iobject.iobject.IObject");
             t3 = System.nanoTime();
-            if (i>4) {
+            if (i>4 && clazz[0].getClassLoader().getParent() != null && clazz[1].getClassLoader().getParent() != null) {
                 d += t2 - t1;
                 a += t3 - t2;
             }
@@ -167,66 +176,38 @@ public class SmartactorsClassLoaderTest {
         System.out.println("Average direct line class loading (ns): "+d);
         System.out.println("Average aroung line class loading (ns): "+a);
 
-        VersionManager.addItem("cl00", "DeadEnd-IField", "cl00");
-        ISmartactorsClassLoader cl00 = VersionManager.getItemClassLoader("cl00");
-        VersionManager.addItem("cl01", "PathToSCL-IField", "cl01");
-        ISmartactorsClassLoader cl01 = VersionManager.getItemClassLoader("cl01");
-        VersionManager.addItem("CL1", "CL1", "CL1");
-        ISmartactorsClassLoader cl1 = VersionManager.getItemClassLoader("CL1");
-        VersionManager.addItem("CL2", "CL2", "CL2");
-        ISmartactorsClassLoader cl2 = VersionManager.getItemClassLoader("CL2");
-        VersionManager.addItem("CL3", "CL3", "CL3");
-        ISmartactorsClassLoader cl3 = VersionManager.getItemClassLoader("CL3");
-        VersionManager.addItem("CL4", "CL4", "CL4");
-        ISmartactorsClassLoader cl4 = VersionManager.getItemClassLoader("CL4");
-        VersionManager.addItem("CL5", "CL5", "CL5");
-        ISmartactorsClassLoader cl5 = VersionManager.getItemClassLoader("CL5");
-        VersionManager.addItem("CL6", "CL6", "CL6");
-        ISmartactorsClassLoader cl6 = VersionManager.getItemClassLoader("CL6");
-        VersionManager.addItem("CL7", "CL7", "CL7");
-        ISmartactorsClassLoader cl7 = VersionManager.getItemClassLoader("CL7");
-        VersionManager.addItemDependency("CL1", "cl00");
-        VersionManager.addItemDependency("CL1", "cl01");
-        VersionManager.addItemDependency("CL2", "cl01");
-        VersionManager.addItemDependency("CL3", "CL1");
-        VersionManager.addItemDependency("CL3", "CL2");
-        VersionManager.addItemDependency("CL4", "CL2");
-        VersionManager.addItemDependency("CL5", "CL4");
-        VersionManager.addItemDependency("CL6", "CL5");
-        VersionManager.addItemDependency("CL7", "CL6");
+        cls = createClassLoaderSet();
 
-        attachJarToClassLoader("ifield.jar", cl00);
-        attachJarToClassLoader("ifield.jar", cl01);
-        attachJarToClassLoader("ifield_name.jar", cl2);
-        attachJarToClassLoader("iobject.jar", cl2);
-        attachJarToClassLoader("iobject-wrapper.jar", cl2);
+        ClassLoader cls8 =  createClassLoaderForJar("ifield.jar", ClassLoader.getSystemClassLoader());
+        ClassLoader cls9 =  createClassLoaderForJar("ifield_name.jar", cls8);
+        ClassLoader cls10 = createClassLoaderForJar("iobject.jar", cls9);
+        ClassLoader cls11 = createClassLoaderForJar("iobject-wrapper.jar", cls10);
+        ClassLoader cls12 = new URLClassLoader(new URL[]{}, cls11);
+        ClassLoader cls13 = new URLClassLoader(new URL[]{}, cls12);
+        ClassLoader cls14 = new URLClassLoader(new URL[]{}, cls13);
+        ClassLoader cls15 = new URLClassLoader(new URL[]{}, cls14);
 
-        URLClassLoader cl8 = createClassLoaderForJar("ifield.jar", ClassLoader.getSystemClassLoader());
-        URLClassLoader cl9 = createClassLoaderForJar("ifield_name.jar", cl8);
-        URLClassLoader cl10 = createClassLoaderForJar("iobject.jar", cl9);
-        URLClassLoader cl11 = createClassLoaderForJar("iobject-wrapper.jar", cl10);
-        URLClassLoader cl12 = new URLClassLoader(new URL[]{}, cl11);
-        URLClassLoader cl13 = new URLClassLoader(new URL[]{}, cl12);
-        URLClassLoader cl14 = new URLClassLoader(new URL[]{}, cl13);
-        URLClassLoader cl15 = new URLClassLoader(new URL[]{}, cl14);
-        URLClassLoader cl16 = new URLClassLoader(new URL[]{}, cl15);
-        clazz = cl2.loadClass("info.smart_tools.smartactors.iobject.ifield.IField");
-        clazz = cl3.loadClass("info.smart_tools.smartactors.iobject.iobject.IObject");
-        clazz = cl3.loadClass("info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper");
-        clazz = cl7.loadClass("info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper");
-        clazz = cl15.loadClass("info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper");
+        clazz[0] = cls[2].loadClass("info.smart_tools.smartactors.iobject.ifield.IField");
+        clazz[1] = cls[3].loadClass("info.smart_tools.smartactors.iobject.iobject.IObject");
+        clazz[2] = cls[3].loadClass("info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper");
+        clazz[3] = cls[7].loadClass("info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper");
+        clazz[4] = cls15 .loadClass("info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper");
         d = 0; a = 0; u = 0;
         iterations = 100000;
         for(int i=0; i<iterations+2; i++)
         {
             t1 = System.nanoTime();
-            clazz = cl7.loadClass("info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper");
+            clazz[0] = cls[7].loadClass("info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper");
             t2 = System.nanoTime();
-            clazz = cl3.loadClass("info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper");
+            clazz[1] = cls[3].loadClass("info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper");
             t3 = System.nanoTime();
-            clazz = cl15.loadClass("info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper");
+            clazz[2] = cls15 .loadClass("info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper");
             t4 = System.nanoTime();
-            if (i>1) {
+            if (i>1 &&
+                    clazz[0].getClassLoader().getParent() != null &&
+                    clazz[1].getClassLoader().getParent() != null &&
+                    clazz[2].getClassLoader().getParent() != null
+            ) {
                 d += t2 - t1;
                 a += t3 - t2;
                 u += t4 - t3;

@@ -22,6 +22,7 @@
         <module>ThreadPool</module>
         <module>BlockingQueue</module>
         <module>NonBlockingQueue</module>
+        <module>TaskQueueDecorator</module>
         <module>TaskDispatcher</module>
         <module>TaskDistribution</module>
     </modules>
