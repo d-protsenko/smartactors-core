@@ -20,74 +20,74 @@ public final class VersionManager {
     public static final String coreName = "info.smart_tools:smartactors";
     public static final String coreVersion = "0.4.1";
     public static final Object coreId = java.util.UUID.randomUUID();
-    private static Object defaultItemID = null;
+    private static Object defaultModuleID = null;
 
-    private static ThreadLocal<Object> currentItemID = new ThreadLocal<>();
+    private static ThreadLocal<Object> currentModuleId = new ThreadLocal<>();
     private static ThreadLocal<IObject> currentMessage = new ThreadLocal<>();
 
     private static Map<Object, Set<Object>> dependencies = new ConcurrentHashMap<>();
-    private static Map<Object, String> itemNames = new ConcurrentHashMap<>();
-    private static Map<Object, String> itemVersions = new ConcurrentHashMap<>();
+    private static Map<Object, String> moduleNames = new ConcurrentHashMap<>();
+    private static Map<Object, String> moduleVersions = new ConcurrentHashMap<>();
 
     private static Map<Object, List<IResolveDependencyStrategy>> versionStrategies = new ConcurrentHashMap<>();
     private static Map<Object, List<Object>> chainVersions = new ConcurrentHashMap<>();
-    private static Map<Object, Map<Object, Object>> chainItemIDs = new ConcurrentHashMap<>();
+    private static Map<Object, Map<Object, Object>> chainModuleIds = new ConcurrentHashMap<>();
 
     private VersionManager() {}
 
-    public static void addItem(final Object itemId, final String itemName, final String itemVersion)
+    public static void addModule(final Object moduleId, final String moduleName, final String moduleVersion)
             throws InvalidArgumentException {
-        if (itemName == null || itemName.equals("")) {
+        if (moduleName == null || moduleName.equals("")) {
             throw new InvalidArgumentException("Item name cannot be null");
         }
 
-        String version = (itemVersion == null ? "" : itemVersion);
+        String version = (moduleVersion == null ? "" : moduleVersion);
 
-        if (dependencies.get(itemId) == null) {
-            SmartactorsClassLoader.addItem(itemId, itemName, version);
-            dependencies.put(itemId, Collections.synchronizedSet(new HashSet<>()));
-            itemNames.put(itemId, itemName);
-            itemVersions.put(itemId, version);
+        if (dependencies.get(moduleId) == null) {
+            SmartactorsClassLoader.addModule(moduleId, moduleName, version);
+            dependencies.put(moduleId, Collections.synchronizedSet(new HashSet<>()));
+            moduleNames.put(moduleId, moduleName);
+            moduleVersions.put(moduleId, version);
         } else {
-            System.out.println("[WARNING] Item "+itemId+" already defined.\n");
+            System.out.println("[WARNING] Module "+moduleId+" already defined.\n");
         }
     }
 
-    public static void setDefaultItemId(final Object itemId) {
-        SmartactorsClassLoader.setDefaultItemId(itemId);
-        defaultItemID = itemId;
+    public static void setDefaultModuleId(final Object moduleId) {
+        SmartactorsClassLoader.setDefaultModuleId(moduleId);
+        defaultModuleID = moduleId;
     }
 
-    private static String getItemName(Object itemID) {
-        return itemNames.get(itemID);
+    private static String getModuleName(Object moduleId) {
+        return moduleNames.get(moduleId);
     }
 
-    private static String getItemVersion(Object itemID) {
-        return itemVersions.get(itemID);
+    private static String getModuleVersion(Object moduleId) {
+        return moduleVersions.get(moduleId);
     }
 
-    public static ISmartactorsClassLoader getItemClassLoader(Object itemID) {
-        return SmartactorsClassLoader.getItemClassLoader(itemID);
+    public static ISmartactorsClassLoader getModuleClassLoader(Object moduleId) {
+        return SmartactorsClassLoader.getModuleClassLoader(moduleId);
     }
 
-    public static void addItemDependency(Object dependentItemID, Object baseItemID) {
-        if (baseItemID != null && dependentItemID != null && dependentItemID != baseItemID) {
-            Set<Object> itemIDs = dependencies.get(baseItemID);
-            Set<Object> dependsOn = dependencies.get(dependentItemID);
+    public static void addModuleDependency(Object dependentModuleId, Object baseModuleId) {
+        if (baseModuleId != null && dependentModuleId != null && dependentModuleId != baseModuleId) {
+            Set<Object> moduleIDs = dependencies.get(baseModuleId);
+            Set<Object> dependsOn = dependencies.get(dependentModuleId);
             // it is based on ConcurrentHashMap, so it is thread safe
-            dependsOn.add(baseItemID);
-            dependsOn.addAll(itemIDs);
+            dependsOn.add(baseModuleId);
+            dependsOn.addAll(moduleIDs);
 
-            SmartactorsClassLoader.addItemDependency(dependentItemID, baseItemID);
+            SmartactorsClassLoader.addModuleDependency(dependentModuleId, baseModuleId);
         }
     }
 
-    public static void finalizeItemDependencies(Object itemID) {
-        if (itemID != null) {
-            SmartactorsClassLoader.finalizeItemDependencies(itemID);
-            Set<Object> dependsOn = dependencies.get(itemID);
-            if (dependsOn.size() == 0 && defaultItemID != null) {
-                dependsOn.add(defaultItemID);
+    public static void finalizeModuleDependencies(Object moduleId) {
+        if (moduleId != null) {
+            SmartactorsClassLoader.finalizeModuleDependencies(moduleId);
+            Set<Object> dependsOn = dependencies.get(moduleId);
+            if (dependsOn.size() == 0 && defaultModuleID != null) {
+                dependsOn.add(defaultModuleID);
             }
         }
     }
@@ -96,18 +96,18 @@ public final class VersionManager {
 
     public static IObject getCurrentMessage() { return currentMessage.get(); }
 
-    public static void setCurrentModule(Object itemID) {
-        currentItemID.set(itemID);
+    public static void setCurrentModule(Object moduleId) {
+        currentModuleId.set(moduleId);
     }
 
     public static Object getCurrentModule() {
-        return currentItemID.get();
+        return currentModuleId.get();
     }
 
-    public static <T> T getFromMap(Object itemID, Map<Object, T> objects) {
-        T object = objects.get(itemID);
+    public static <T> T getFromMap(Object moduleId, Map<Object, T> objects) {
+        T object = objects.get(moduleId);
         if (object == null) {
-            for(Object dependency : dependencies.get(itemID)) {
+            for(Object dependency : dependencies.get(moduleId)) {
                 object = objects.get(dependency);
                 if (object != null) {
                     break;
@@ -121,10 +121,10 @@ public final class VersionManager {
         return getFromMap(getCurrentModule(), objects);
     }
 
-    public static <T> T removeFromMap(Object itemID, Map<Object, T> objects) {
-        T object = objects.remove(itemID);
+    public static <T> T removeFromMap(Object moduleId, Map<Object, T> objects) {
+        T object = objects.remove(moduleId);
         if (object == null) {
-            for(Object dependency : dependencies.get(itemID)) {
+            for(Object dependency : dependencies.get(moduleId)) {
                 object = objects.remove(dependency);
                 if (object != null) {
                     break;
@@ -138,52 +138,52 @@ public final class VersionManager {
         return removeFromMap(getCurrentModule(), objects);
     }
 
-    public static void registerChainVersion(Object chainID)
+    public static void registerChainVersion(Object chainId)
             throws InvalidArgumentException {
 
-        Object itemID = getCurrentModule();
-        Object version = itemVersions.get(itemID);
-        if (chainID == null || version == null) {
+        Object moduleID = getCurrentModule();
+        Object version = moduleVersions.get(moduleID);
+        if (chainId == null || version == null) {
             throw new InvalidArgumentException("Key and version of chain cannot be null.");
         }
-        Map<Object, Object> versions = chainItemIDs.get(chainID);
+        Map<Object, Object> versions = chainModuleIds.get(chainId);
         if (versions == null) {
             versions = new ConcurrentHashMap<>();
-            chainItemIDs.put(chainID, versions);
+            chainModuleIds.put(chainId, versions);
         }
-        Object previous = versions.put(version, itemID);
+        Object previous = versions.put(version, moduleID);
         if (null != previous) {
             System.out.println(
-                    "[WARNING] Replacing chain "+chainID+"-"+version+" registered from feature "+
-                            getItemName(previous)+"-"+getItemVersion(previous)+" by chain from feature "+
-                            getItemName(itemID)+"-"+getItemVersion(itemID)
+                    "[WARNING] Replacing chain "+chainId+"-"+version+" registered from feature "+
+                            getModuleName(previous)+"-"+ getModuleVersion(previous)+" by chain from feature "+
+                            getModuleName(moduleID)+"-"+ getModuleVersion(moduleID)
             );
-            versionStrategies.put(chainID, Collections.synchronizedList(new LinkedList<>()));
-            chainVersions.put(chainID, Collections.synchronizedList(new LinkedList<>()));
+            versionStrategies.put(chainId, Collections.synchronizedList(new LinkedList<>()));
+            chainVersions.put(chainId, Collections.synchronizedList(new LinkedList<>()));
         }
-        registerVersionResolutionStrategy(chainID, version, new ApplyFunctionToArgumentsStrategy(args -> {
+        registerVersionResolutionStrategy(chainId, version, new ApplyFunctionToArgumentsStrategy(args -> {
             Object argumentChainID = args[0];
             return chainVersions.get(argumentChainID).get(0);
         }));
     }
 
-    public static void registerVersionResolutionStrategy(Object chainID, Object version, IResolveDependencyStrategy strategy)
+    public static void registerVersionResolutionStrategy(Object chainId, Object version, IResolveDependencyStrategy strategy)
             throws InvalidArgumentException {
-        if (chainID == null || version == null) {
+        if (chainId == null || version == null) {
             throw new InvalidArgumentException("Key and version of chain cannot be null.");
         }
         if (strategy == null) {
             throw new InvalidArgumentException("Cannot register null version resolution strategy.");
         }
-        List<IResolveDependencyStrategy> strategies = versionStrategies.get(chainID);
+        List<IResolveDependencyStrategy> strategies = versionStrategies.get(chainId);
         if (strategies == null) {
             strategies = Collections.synchronizedList(new LinkedList<>());
-            versionStrategies.put(chainID, strategies);
+            versionStrategies.put(chainId, strategies);
         }
-        List<Object> versions = chainVersions.get(chainID);
+        List<Object> versions = chainVersions.get(chainId);
         if (versions == null) {
             versions = Collections.synchronizedList(new LinkedList<>());
-            chainVersions.put(chainID, versions);
+            chainVersions.put(chainId, versions);
         }
         int i;
         for(i = 0; i < versions.size(); i++) {
@@ -220,26 +220,26 @@ public final class VersionManager {
         throw new ResolveDependencyStrategyException("All strategies failed while resolving key '"+chainID+"'.");
     }
 
-    public static Object getItemIDByChainVersion(final Object chainID, final Object version)
+    public static Object getModuleIdByChainVersion(final Object chainId, final Object version)
             throws InvalidArgumentException {
-        if (chainID == null || version == null) {
+        if (chainId == null || version == null) {
             throw new InvalidArgumentException("Key and version of chain cannot be null.");
         }
-        Map<Object, Object> versions = chainItemIDs.get(chainID);
+        Map<Object, Object> versions = chainModuleIds.get(chainId);
         if (versions == null) {
             return null;
         }
         return versions.get(version);
     }
 
-    public static Object getItemIDByChainID(Object chainID)
+    public static Object getModuleIdByChainId(Object chainId)
             throws InvalidArgumentException, ResolveDependencyStrategyException {
-        Object itemID = getCurrentModule();
+        Object moduleID = getCurrentModule();
         IObject context = getCurrentMessage();
-        if (context != null || itemID == null) {
-            Object chainVersion = VersionManager.applyVersionResolutionStrategy(chainID, context);
-            itemID = VersionManager.getItemIDByChainVersion(chainID, chainVersion);
+        if (context != null || moduleID == null) {
+            Object chainVersion = VersionManager.applyVersionResolutionStrategy(chainId, context);
+            moduleID = VersionManager.getModuleIdByChainVersion(chainId, chainVersion);
         }
-        return itemID;
+        return moduleID;
     }
 }

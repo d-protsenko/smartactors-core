@@ -76,16 +76,16 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
      * Constructor for HttpRequestHandler
      *
      * @param scope              scope for HttpRequestHandler
-     * @param featureId          the id of feature in which context HttpRequestHandler works
+     * @param moduleId           the id of feature in which context HttpRequestHandler works
      * @param environmentHandler handler for environment
      * @param receiver           chain, that should receive message
      * @param name               name of the endpoint
      * @param upCounter          up-counter to use to subscribe on shutdown request
      */
     public HttpRequestHandler(
-            final IScope scope, final Object featureId, final IEnvironmentHandler environmentHandler, final IReceiverChain receiver,
+            final IScope scope, final Object moduleId, final IEnvironmentHandler environmentHandler, final IReceiverChain receiver,
             final String name, final IUpCounter upCounter) throws ResolutionException, UpCounterCallbackExecutionException {
-        super(receiver, environmentHandler, scope, featureId, name);
+        super(receiver, environmentHandler, scope, moduleId, name);
         this.name = name;
 
         messageFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");

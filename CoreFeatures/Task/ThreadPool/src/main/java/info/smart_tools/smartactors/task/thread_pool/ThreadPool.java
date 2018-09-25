@@ -12,8 +12,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class ThreadPool implements IThreadPool {
     private final Queue<ThreadImpl> threadsQueue;
-    //private IScope scope;
-    //private Object featureID;
     private boolean terminating = false;
 
     /**
@@ -27,13 +25,6 @@ public class ThreadPool implements IThreadPool {
         for (int i = 0; i < threadCount; i++) {
             threadsQueue.offer(new ThreadImpl(this, "TaskThread"+(i+1)));
         }
-
-/*        try {
-            this.scope = ScopeProvider.getCurrentScope();
-        } catch (ScopeProviderException e) {
-            this.scope = null;
-        }
-        this.featureID = VersionManager.getCurrentModule();*/
     }
 
     @Override
@@ -70,12 +61,4 @@ public class ThreadPool implements IThreadPool {
             thread.interrupt();
         }
     }
-/*
-    IScope getScope() {
-        return this.scope;
-    }
-
-    Object getFeatureID() {
-        return this.featureID;
-    }*/
 }

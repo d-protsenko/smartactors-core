@@ -12,12 +12,12 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SmartactorsClassLoader extends URLClassLoader implements ISmartactorsClassLoader {
 
-    private static Object defaultItemId = null;
+    private static Object defaultModuleId = null;
 
-    /* This is ItemID To ClassLoader Map */
-    private static Map<Object, SmartactorsClassLoader> itemClassLoaders = new ConcurrentHashMap<>();
+    /* This is ModuleId To ClassLoader Map */
+    private static Map<Object, SmartactorsClassLoader> moduleClassLoaders = new ConcurrentHashMap<>();
 
-    private String itemName = null;
+    private String moduleName = null;
     private Set<SmartactorsClassLoader> dependsOn = Collections.synchronizedSet(new HashSet<>());
     private Map<String, ClassLoader> classMap = new ConcurrentHashMap<>();
 
@@ -29,43 +29,43 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
         super(urls);
     }
 
-    public static void setDefaultItemId(Object itemID) {
-        defaultItemId = itemID;
+    public static void setDefaultModuleId(Object moduleId) {
+        defaultModuleId = moduleId;
     }
 
-    public static void addItem(Object itemID, String itemName, String itemVersion) {
+    public static void addModule(Object moduleId, String moduleName, String moduleVersion) {
         SmartactorsClassLoader classLoader = new SmartactorsClassLoader(new URL[]{});
-        itemClassLoaders.put(itemID, classLoader);
-        itemName = itemName.replace('/', '.');
-        itemName = itemName.replace(':', '.');
-        itemName = itemName.replace('-', '_');
-        classLoader.itemName = itemName;
-        classLoader.classMap.put(itemName, classLoader);
+        moduleClassLoaders.put(moduleId, classLoader);
+        moduleName = moduleName.replace('/', '.');
+        moduleName = moduleName.replace(':', '.');
+        moduleName = moduleName.replace('-', '_');
+        classLoader.moduleName = moduleName;
+        classLoader.classMap.put(moduleName, classLoader);
     }
 
-    public static SmartactorsClassLoader getItemClassLoader(Object itemID) {
-        return itemClassLoaders.get(itemID);
+    public static SmartactorsClassLoader getModuleClassLoader(Object moduleId) {
+        return moduleClassLoaders.get(moduleId);
     }
 
-    public static void addItemDependency(Object dependentItemID, Object baseItemID) {
-        if (!baseItemID.equals(dependentItemID)) {
-            SmartactorsClassLoader baseClassLoader = getItemClassLoader(baseItemID);
-            SmartactorsClassLoader dependentClassLoader = getItemClassLoader(dependentItemID);
+    public static void addModuleDependency(Object dependentModuleId, Object baseModuleId) {
+        if (!baseModuleId.equals(dependentModuleId)) {
+            SmartactorsClassLoader baseClassLoader = getModuleClassLoader(baseModuleId);
+            SmartactorsClassLoader dependentClassLoader = getModuleClassLoader(dependentModuleId);
             if (baseClassLoader != null && dependentClassLoader != null) {
                 Set<SmartactorsClassLoader> classLoaders = new HashSet<SmartactorsClassLoader>();
                 classLoaders.add(baseClassLoader);
                 classLoaders.addAll(baseClassLoader.dependsOn);
                 for (SmartactorsClassLoader cl : classLoaders) {
-                    dependentClassLoader.classMap.put(cl.itemName, cl);
+                    dependentClassLoader.classMap.put(cl.moduleName, cl);
                 }
                 dependentClassLoader.dependsOn.addAll(classLoaders);
             }
         }
     }
 
-    public static void finalizeItemDependencies(Object itemID) {
-        if (getItemClassLoader(itemID).dependsOn.size() == 0) {
-            addItemDependency(itemID, defaultItemId);
+    public static void finalizeModuleDependencies(Object moduleId) {
+        if (getModuleClassLoader(moduleId).dependsOn.size() == 0) {
+            addModuleDependency(moduleId, defaultModuleId);
         }
     }
 
@@ -93,6 +93,26 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
         urlArrayList.toArray(urls);
 
         return urls;
+    }
+
+    /**
+     * Add compiled byte code of the class directly to this class loader
+     * @param className The name of the class to define
+     * @param classByteCode Compiled byte code of the class to add
+     * @return The reference to the class
+     */
+    public Class<?> addClass(final String className, byte[] classByteCode) {
+        return defineClass(className, classByteCode, 0, classByteCode.length);
+    }
+
+    public ClassLoader getCompilationClassLoader() { return this; }
+
+    /**
+     * Add new instance of {@link URL} to the current url class loader if url class loader doesn't contain this instance of {@link URL}
+     * @param url instance of {@link URL}
+     */
+    public void addURL(final URL url) {
+        super.addURL(url);
     }
 
     private Class<?> loadClass0(String className, boolean upperLevel)
@@ -166,25 +186,5 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
 
             return clazz;
         }
-    }
-
-    /**
-     * Add compiled byte code of the class directly to this class loader
-     * @param className The name of the class to define
-     * @param classByteCode Compiled byte code of the class to add
-     * @return The reference to the class
-     */
-    public Class<?> addClass(final String className, byte[] classByteCode) {
-        return defineClass(className, classByteCode, 0, classByteCode.length);
-    }
-
-    public ClassLoader getCompilationClassLoader() { return this; }
-
-    /**
-     * Add new instance of {@link URL} to the current url class loader if url class loader doesn't contain this instance of {@link URL}
-     * @param url instance of {@link URL}
-     */
-    public void addURL(final URL url) {
-        super.addURL(url);
     }
 }

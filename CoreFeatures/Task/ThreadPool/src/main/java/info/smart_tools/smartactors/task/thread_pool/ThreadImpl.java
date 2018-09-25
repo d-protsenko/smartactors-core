@@ -34,8 +34,6 @@ class ThreadImpl {
 
                 try {
                     ITask task = setTaskRef.get();
-                    //ScopeProvider.setCurrentScope(pool.getScope());
-                    //VersionManager.setCurrentModule(pool.getFeatureID());
                     task.execute();
                 } catch (TaskExecutionException /*| ScopeProviderException*/ e) {
                     // TODO: Handle

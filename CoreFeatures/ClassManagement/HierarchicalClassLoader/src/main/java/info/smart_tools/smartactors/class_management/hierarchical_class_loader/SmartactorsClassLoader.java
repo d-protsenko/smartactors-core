@@ -12,38 +12,38 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SmartactorsClassLoader extends URLClassLoader implements ISmartactorsClassLoader {
 
-    private static Object defaultItemId = null;
-    /* This is ItemID To ClassLoader Map */
-    private static Map<Object, SmartactorsClassLoader> itemClassLoaders = new ConcurrentHashMap<>();
+    private static Object defaultModuleId = null;
+    /* This is ModuleId To ClassLoader Map */
+    private static Map<Object, SmartactorsClassLoader> moduleClassLoaders = new ConcurrentHashMap<>();
 
     private Set<SmartactorsClassLoader> dependsOn = Collections.synchronizedSet(new HashSet<>());
 
-    public static void setDefaultItemId(Object itemID) {
-        defaultItemId = itemID;
+    public static void setDefaultModuleId(Object moduleId) {
+        defaultModuleId = moduleId;
     }
 
-    public static void addItem(Object itemID, String itemName, String itemVersion) {
+    public static void addModule(Object moduleID, String moduleName, String moduleVersion) {
         SmartactorsClassLoader classLoader = new SmartactorsClassLoader(new URL[]{});
-        itemClassLoaders.put(itemID, classLoader);
+        moduleClassLoaders.put(moduleID, classLoader);
     }
 
-    public static SmartactorsClassLoader getItemClassLoader(Object itemID) {
-        return itemClassLoaders.get(itemID);
+    public static SmartactorsClassLoader getModuleClassLoader(Object moduleID) {
+        return moduleClassLoaders.get(moduleID);
     }
 
-    public static void addItemDependency(Object dependentItemID, Object baseItemID) {
-        if (!baseItemID.equals(dependentItemID)) {
-            SmartactorsClassLoader baseClassLoader = getItemClassLoader(baseItemID);
-            SmartactorsClassLoader dependentClassLoader = getItemClassLoader(dependentItemID);
+    public static void addModuleDependency(Object dependentModuleId, Object baseModuleId) {
+        if (!baseModuleId.equals(dependentModuleId)) {
+            SmartactorsClassLoader baseClassLoader = getModuleClassLoader(baseModuleId);
+            SmartactorsClassLoader dependentClassLoader = getModuleClassLoader(dependentModuleId);
             if (baseClassLoader != null && dependentClassLoader != null) {
                 dependentClassLoader.dependsOn.add(baseClassLoader);
             }
         }
     }
 
-    public static void finalizeItemDependencies(Object itemID) {
-        if (getItemClassLoader(itemID).dependsOn.size() == 0) {
-            addItemDependency(itemID, defaultItemId);
+    public static void finalizeModuleDependencies(Object moduleID) {
+        if (getModuleClassLoader(moduleID).dependsOn.size() == 0) {
+            addModuleDependency(moduleID, defaultModuleId);
         }
     }
 
@@ -144,7 +144,7 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
                 clazz = this.loadClassFromDependencies(
                         className,
                         getSystemClassLoader(),
-                        itemClassLoaders.get(defaultItemId),
+                        moduleClassLoaders.get(defaultModuleId),
                         sclUsed
                 );
             }

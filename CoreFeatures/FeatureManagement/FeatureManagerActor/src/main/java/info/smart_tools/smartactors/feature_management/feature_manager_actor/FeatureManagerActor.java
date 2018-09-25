@@ -268,7 +268,7 @@ public class FeatureManagerActor {
             Set<String> featureDependencies = feature.getDependencies();
 
             if (null != featureDependencies) {
-                VersionManager.addItem(
+                VersionManager.addModule(
                         feature.getId(),
                         getEmptyIfNull(feature.getGroupId()) + FEATURE_NAME_DELIMITER + getEmptyIfNull(feature.getName()),
                         getEmptyIfNull(feature.getVersion())
@@ -277,7 +277,7 @@ public class FeatureManagerActor {
                 removeLoadedFeaturesFromFeatureDependencies(feature);
 
                 if (featureDependencies.isEmpty()) {
-                    VersionManager.finalizeItemDependencies(feature.getId());
+                    VersionManager.finalizeModuleDependencies(feature.getId());
                 } else {
                     IMessageProcessor mp = wrapper.getMessageProcessor();
                     mp.pauseProcess();
@@ -350,7 +350,7 @@ public class FeatureManagerActor {
                     }
                 }
                 if (null != baseFeature) {
-                    VersionManager.addItemDependency(feature.getId(), baseFeature.getId());
+                    VersionManager.addModuleDependency(feature.getId(), baseFeature.getId());
                     iterator.remove();
                     /*System.out.println(
                             "[INFO] Dependency '" + dependency + "' removed from feature '" +

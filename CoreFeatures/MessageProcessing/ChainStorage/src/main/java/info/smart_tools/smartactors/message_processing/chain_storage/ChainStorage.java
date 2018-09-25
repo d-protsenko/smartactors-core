@@ -58,16 +58,16 @@ public class ChainStorage implements IChainStorage {
             throw new ChainNotFoundException(chainId);
         }
 
-        Object itemID = null;
+        Object moduleId = null;
         try {
             //Object chainVersion = VersionManager.applyVersionResolutionStrategy(chainId, VersionManager.getCurrentMessage());
-            //VersionManager.setCurrentModule(VersionManager.getItemIDByChainVersion(chainId, chainVersion));
+            //VersionManager.setCurrentModule(VersionManager.getModuleIdByChainVersion(chainId, chainVersion));
             //IChainState state = VersionManager.getFromMap(chainVersions);
-            itemID = VersionManager.getItemIDByChainID(chainId);
+            moduleId = VersionManager.getModuleIdByChainId(chainId);
         } catch (InvalidArgumentException | ResolveDependencyStrategyException e) {
-            throw new ChainNotFoundException("Cannot resolve item ID on chainID '"+chainId+"'.");
+            throw new ChainNotFoundException("Cannot resolve module Id on chainId '"+chainId+"'.");
         }
-        IChainState state = VersionManager.getFromMap(itemID, chainVersions);
+        IChainState state = VersionManager.getFromMap(moduleId, chainVersions);
 
         if (null == state) {
             throw new ChainNotFoundException(chainId);

@@ -27,7 +27,7 @@ public abstract class EndpointHandler<TContext, TRequest> {
     private final IReceiverChain receiverChain;
     private final IEnvironmentHandler environmentHandler;
     private final IScope scope;
-    private final Object featureId;
+    private final Object moduleId;
     private final String name;
 
     private final IQueue<ITask> taskQueue;
@@ -36,16 +36,16 @@ public abstract class EndpointHandler<TContext, TRequest> {
      * Constructor for HttpRequestHandler
      *
      * @param scope              scope for EndpointHandler
-     * @param featureId          the id of feature in which context EndpointHandler works
+     * @param moduleId          the id of feature in which context EndpointHandler works
      * @param environmentHandler handler for environment
      * @param receiver           chain, that should receive message
      * @param name               name of the endpoint
      * @throws ResolutionException if error occurs resolving any dependencies
      */
     public EndpointHandler(final IReceiverChain receiver, final IEnvironmentHandler environmentHandler,
-                           final IScope scope, final Object featureId, final String name) throws ResolutionException {
+                           final IScope scope, final Object moduleId, final String name) throws ResolutionException {
         this.scope = scope;
-        this.featureId = featureId;
+        this.moduleId = moduleId;
         this.receiverChain = receiver;
         this.environmentHandler = environmentHandler;
         this.name = name;
@@ -85,7 +85,7 @@ public abstract class EndpointHandler<TContext, TRequest> {
     public void handle(final TContext ctx, final TRequest request) throws ExecutionException {
         try {
             ScopeProvider.setCurrentScope(scope);
-            VersionManager.setCurrentModule(featureId);
+            VersionManager.setCurrentModule(moduleId);
             taskQueue.put(() -> {
                 try {
                     IObject environment = getEnvironment(ctx, request);
