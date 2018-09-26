@@ -1771,12 +1771,20 @@
   "rawName" : "IQueue",
   "version" : "0.4.0"
 }, {
-  "artifactId" : "task.non-blocking-queue",
+   "artifactId" : "task.non-blocking-queue",
+   "uploadRepositories" : [ {
+   "uploadRepositoryId" : "archiva.smartactors-modules",
+   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+ } ],
+   "rawName" : "NonBlockingQueue",
+   "version" : "0.4.0"
+ }, {
+  "artifactId" : "task.task-queue-decorator",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
-  "rawName" : "NonBlockingQueue",
+  "rawName" : "TaskQueueDecorator",
   "version" : "0.4.0"
 }, {
   "artifactId" : "task.interfaces.itask",
@@ -2595,20 +2603,52 @@
   "rawName" : "IClassGenerator",
   "version" : "0.4.0"
 }, {
-  "artifactId" : "class-management.class-generator-with-java-compile-api",
-  "uploadRepositories" : [ {
-  "uploadRepositoryId" : "archiva.smartactors-modules",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+    "artifactId" : "class-management.ismartactors-class-loader",
+    "uploadRepositories" : [ {
+    "uploadRepositoryId" : "archiva.smartactors-modules",
+    "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
-  "rawName" : "ClassGeneratorJavaCompileAPI",
-  "version" : "0.4.0"
+    "rawName" : "ISmartactorsClassLoader",
+    "version" : "0.4.0"
 }, {
-  "artifactId" : "class-management.class-loader-management",
+    "artifactId" : "class-management.simple-class-loader",
+    "uploadRepositories" : [ {
+    "uploadRepositoryId" : "archiva.smartactors-modules",
+    "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+    "rawName" : "SimpleClassLoader",
+    "version" : "0.4.0"
+}, {
+    "artifactId" : "class-management.advanced-class-loader",
+    "uploadRepositories" : [ {
+    "uploadRepositoryId" : "archiva.smartactors-modules",
+    "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+    "rawName" : "AdvancedClassLoader",
+    "version" : "0.4.0"
+}, {
+   "artifactId" : "class-management.hierarchical-class-loader",
+   "uploadRepositories" : [ {
+   "uploadRepositoryId" : "archiva.smartactors-modules",
+   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+   "rawName" : "HierarchicalClassLoader",
+   "version" : "0.4.0"
+}, {
+    "artifactId" : "class-management.class-generator-with-java-compile-api",
+    "uploadRepositories" : [ {
+    "uploadRepositoryId" : "archiva.smartactors-modules",
+    "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+    "rawName" : "ClassGeneratorJavaCompileAPI",
+    "version" : "0.4.0"
+}, {
+  "artifactId" : "class-management.version-manager",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
-  "rawName" : "ClassLoaderManagement",
+  "rawName" : "VersionManager",
   "version" : "0.4.0"
 } ],
   "uploadRepositories" : [ {

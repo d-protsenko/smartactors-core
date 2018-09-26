@@ -144,7 +144,7 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
                 clazz = this.loadClassFromDependencies(
                         className,
                         getSystemClassLoader(),
-                        moduleClassLoaders.get(defaultModuleId),
+                        defaultModuleId == null ? null : moduleClassLoaders.get(defaultModuleId),
                         sclUsed
                 );
             }

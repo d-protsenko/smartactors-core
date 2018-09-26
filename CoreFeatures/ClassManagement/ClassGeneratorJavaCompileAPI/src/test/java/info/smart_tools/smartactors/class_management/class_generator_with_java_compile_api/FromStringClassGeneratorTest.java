@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
 import info.smart_tools.smartactors.class_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.class_management.interfaces.iclass_generator.exception.ClassGenerationException;
 import org.junit.Test;
@@ -109,9 +110,10 @@ public class FromStringClassGeneratorTest {
         JarFile jarFile = new JarFile(pathToJar);
         Enumeration<JarEntry> e = jarFile.entries();
 
-        URL[] urls = { new URL("jar:file:" + pathToJar+"!/") };
+        URL url = new URL("jar:file:" + pathToJar+"!/");
         VersionManager.addModule(VersionManager.coreId, VersionManager.coreName, VersionManager.coreVersion);
-        ClassLoader cl = (ClassLoader) VersionManager.getModuleClassLoader(VersionManager.coreId);
+        ISmartactorsClassLoader cl = VersionManager.getModuleClassLoader(VersionManager.coreId);
+        cl.addURL(url);
         while (e.hasMoreElements()) {
             JarEntry je = e.nextElement();
             if(je.isDirectory() || !je.getName().endsWith(".class")){
@@ -134,7 +136,7 @@ public class FromStringClassGeneratorTest {
                 "        return a;\n" +
                 "    }\n" +
                 "}\n";
-        Class newClass = classGenerator.generate(testSample, cl);
+        Class newClass = classGenerator.generate(testSample, (ClassLoader)cl);
         assertNotNull(newClass);
     }
 }

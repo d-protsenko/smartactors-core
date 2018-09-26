@@ -27,8 +27,8 @@ public class PluginLoaderTest {
     public void checkPluginLoaderCreation()
             throws Exception {
         Checker checker = new Checker();
-        VersionManager.addModule(VersionManager.coreName, VersionManager.coreVersion);
-        ISmartactorsClassLoader cl = VersionManager.getModuleClassLoader(VersionManager.getCoreId());
+        VersionManager.addModule(VersionManager.coreId, VersionManager.coreName, VersionManager.coreVersion);
+        ISmartactorsClassLoader cl = VersionManager.getModuleClassLoader(VersionManager.coreId);
         IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
         IPluginLoader<Collection<IPath>> pl = new PluginLoader(
                 cl,
@@ -59,7 +59,7 @@ public class PluginLoaderTest {
     @Test (expected = PluginLoaderException.class)
     public void checkPluginLoaderException()
             throws Exception {
-        VersionManager.addModule("cl");
+        VersionManager.addModule("cl","cl","cl");
         ISmartactorsClassLoader cl = VersionManager.getModuleClassLoader("cl");
         IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
         IPluginLoader<Collection<IPath>> pl = new PluginLoader(
@@ -76,7 +76,7 @@ public class PluginLoaderTest {
     public void checkPluginLoaderOnLoadBrokenJarFile()
             throws Exception {
         Checker checker = new Checker();
-        VersionManager.addModule("cl");
+        VersionManager.addModule("cl", "cl", "cl");
         ISmartactorsClassLoader cl = VersionManager.getModuleClassLoader("cl");
         IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
         IPluginLoader<Collection<IPath>> pl = new PluginLoader(
