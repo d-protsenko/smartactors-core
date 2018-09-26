@@ -55,9 +55,9 @@ public class RuntimeDirectoryFeatureTracker {
     private final static String IOBJECT_FACTORY_STRATEGY_NAME = "info.smart_tools.smartactors.iobject.iobject.IObject";
     private final static String FIELD_NAME_FACTORY_STARTEGY_NAME =
             "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
-    private final static String MASSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME =
+    private final static String MESSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME =
             "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence";
-    private final static String MASSAGE_PROCESSOR_FACTORY_STRATEGY_NAME =
+    private final static String MESSAGE_PROCESSOR_FACTORY_STRATEGY_NAME =
             "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor";
 
     //TODO: this parameters would be took out into the config.json as actor arguments
@@ -129,12 +129,12 @@ public class RuntimeDirectoryFeatureTracker {
         Integer stackDepth = IOC.resolve(Keys.getOrAdd("default_stack_depth"));
 
         IMessageProcessingSequence processingSequence = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), MASSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME),
+                IOC.resolve(IOC.getKeyForKeyStorage(), MESSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME),
                 stackDepth,
                 this.executionChain
         );
         IMessageProcessor messageProcessor = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), MASSAGE_PROCESSOR_FACTORY_STRATEGY_NAME),
+                IOC.resolve(IOC.getKeyForKeyStorage(), MESSAGE_PROCESSOR_FACTORY_STRATEGY_NAME),
                 queue,
                 processingSequence
         );
