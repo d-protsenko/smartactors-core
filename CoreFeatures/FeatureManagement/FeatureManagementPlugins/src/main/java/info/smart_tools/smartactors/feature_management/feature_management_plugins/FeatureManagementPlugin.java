@@ -83,7 +83,7 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
         IOC.register(
                 Keys.getOrAdd("feature group load completion task queue"),
                 new ApplyFunctionToArgumentsStrategy(
-                        args -> AfterFeaturesCallbackStorage.getLocaleCallbackQueue()
+                        args -> AfterFeaturesCallbackStorage.getLocalCallbackQueue()
                 )
         );
         IOC.register(Keys.getOrAdd("DownloadFeatureActor"), new ApplyFunctionToArgumentsStrategy(

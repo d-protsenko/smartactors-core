@@ -9,7 +9,7 @@ public class AfterFeaturesCallbackStorage {
 
     private static final ThreadLocal<IQueue> localCallbackQueue = new ThreadLocal<>();
 
-    public static IQueue getLocaleCallbackQueue() {
+    public static IQueue getLocalCallbackQueue() {
         return localCallbackQueue.get();
     }
 
