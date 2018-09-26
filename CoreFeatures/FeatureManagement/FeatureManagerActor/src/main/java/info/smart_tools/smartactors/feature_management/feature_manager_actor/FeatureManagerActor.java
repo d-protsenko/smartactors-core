@@ -338,6 +338,7 @@ public class FeatureManagerActor {
             Set<String> unresolved = this.processingFeatures
                     .values()
                     .stream()
+                    .filter(feature -> null != feature.getDependencies())
                     .map(IFeature::getDependencies)
                     .flatMap(Collection::stream)
                     .collect(Collectors.toSet());
