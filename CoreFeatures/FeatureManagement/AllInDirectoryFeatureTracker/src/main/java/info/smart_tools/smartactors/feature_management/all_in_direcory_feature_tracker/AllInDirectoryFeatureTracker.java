@@ -13,7 +13,6 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,7 +51,8 @@ public class AllInDirectoryFeatureTracker {
     //TODO: this parameters would be took out into the config.json as actor arguments
     private final static String FEATURE_LIST_FILE_NAME = "features.json";
     private final static String DEF_PACKAGE_TYPE = "jar";
-    private final static String FEATURE_VERSION_PATTERN = "-\\d+\\.\\d+\\.\\d+";
+    private final static String FILENAME_VERSION_PATTERN = "-\\d+\\.\\d+\\.\\d+";
+    private final static String FEATURE_VERSION_PATTERN = "\\d+\\.\\d+\\.\\d+";
     private final static List<String> FILE_TYPE_LIST = Arrays.asList("zip", "jar");
     private final static String FEATURE_NAME_DELIMITER = ":";
 
@@ -137,6 +137,7 @@ public class AllInDirectoryFeatureTracker {
                 featureNames[2],
                 dependencies,
                 new Path(f.getPath()),
+                null,
                 null
         );
     }
@@ -144,17 +145,18 @@ public class AllInDirectoryFeatureTracker {
     private IFeature createZippedFeature(final File f)
             throws Exception {
 
-        String name = f.getName().split(FEATURE_VERSION_PATTERN)[0];
+        String name = f.getName().split(FILENAME_VERSION_PATTERN)[0];
         Pattern pattern = Pattern.compile(FEATURE_VERSION_PATTERN);
         Matcher matcher = pattern.matcher(f.getName());
         matcher.find();
-        String version = matcher.group().substring(1);
+        String version = matcher.group();
         return new Feature(
                 null,
                 name,
                 version,
                 null,
                 new Path(f.getPath()),
+                null,
                 this.getExtension(f)
         );
     }
@@ -185,6 +187,7 @@ public class AllInDirectoryFeatureTracker {
                             (String) feature.getValue(this.versionFN),
                             null,
                             new Path(jsonFile.getParent()),
+                            null,
                             null != packageType ? packageType : DEF_PACKAGE_TYPE
                     )
             );

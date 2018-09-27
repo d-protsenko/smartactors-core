@@ -48,6 +48,7 @@ public class RuntimeDirectoryFeatureTracker {
     private Thread watchingThread;
     private WatchService watchingService;
     private IScope scope;
+    private Object moduleId;
 
     private final static String EXTENSION_SEPARATOR = ".";
     private final static String TASK_QUEUE_IOC_NAME = "task_queue";
@@ -94,6 +95,7 @@ public class RuntimeDirectoryFeatureTracker {
             throws WatchingServiceException {
         try {
             this.scope = ScopeProvider.getCurrentScope();
+            this.moduleId = VersionManager.getCurrentModule();
             this.watchingDir = new info.smart_tools.smartactors.base.path.Path(wrapper.getObservedDirectory());
             this.fileNameFieldName = IOC.resolve(
                     Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), wrapper.getFileNameFieldName()
@@ -126,6 +128,7 @@ public class RuntimeDirectoryFeatureTracker {
             return;
         }
         ScopeProvider.setCurrentScope(this.scope);
+        VersionManager.setCurrentModule(this.moduleId);
         IQueue queue = IOC.resolve(Keys.getOrAdd(TASK_QUEUE_IOC_NAME));
         Integer stackDepth = IOC.resolve(Keys.getOrAdd("default_stack_depth"));
 

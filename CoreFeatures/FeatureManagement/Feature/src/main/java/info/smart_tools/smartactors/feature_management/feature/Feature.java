@@ -1,10 +1,8 @@
 package info.smart_tools.smartactors.feature_management.feature;
 
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeature;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -13,11 +11,12 @@ import java.util.Set;
 public class Feature implements IFeature {
 
     private String name;
-    private Set<String> dependencies;
-    private IPath featureLocation;
-    private boolean failed;
-    private String groupId;
     private String version;
+    private IPath location;
+    private IPath directory;
+    private String groupId;
+    private Set<String> dependencies;
+    private boolean failed;
     private Object id;
     private String packageType;
 
@@ -28,21 +27,26 @@ public class Feature implements IFeature {
      * @param name the feature name
      * @param groupId the feature group id
      * @param version the feature version
-     * @param featureLocation the feature location
+     * @param dependencies the feature dependencies
+     * @param location the feature location
+     * @param directory the feature directory
+     * @param packageType the feature package type
      */
     public Feature(
             final String groupId,
             final String name,
             final String version,
             final Set<String> dependencies,
-            final IPath featureLocation,
+            final IPath location,
+            final IPath directory,
             final String packageType
     ) {
         this.name = name;
         this.groupId = groupId;
         this.version = version;
         this.dependencies = dependencies;
-        this.featureLocation = featureLocation;
+        this.location = location;
+        this.directory = directory;
         this.packageType = packageType;
         this.id = java.util.UUID.randomUUID();
         this.failed = false;
@@ -65,7 +69,10 @@ public class Feature implements IFeature {
     public Set<String> getDependencies() { return this.dependencies; }
 
     @Override
-    public IPath getLocation() { return this.featureLocation; }
+    public IPath getLocation() { return this.location; }
+
+    @Override
+    public IPath getDirectory() { return this.directory; }
 
     @Override
     public Object getId() { return this.id; }
@@ -100,7 +107,12 @@ public class Feature implements IFeature {
 
     @Override
     public void setLocation(final IPath location) {
-        this.featureLocation = (IPath) location;
+        this.location = location;
+    }
+
+    @Override
+    public void setDirectory(final IPath directory) {
+        this.directory = directory;
     }
 
     @Override
@@ -119,7 +131,8 @@ public class Feature implements IFeature {
                 this.name,
                 this.version,
                 this.dependencies, // changeable object
-                this.featureLocation,
+                this.location,
+                this.directory,
                 this.packageType
         );
         copy.id = this.id;
@@ -140,7 +153,8 @@ public class Feature implements IFeature {
         this.name = clone.name;
         this.version = clone.version;
         this.dependencies = clone.dependencies; // changeable object
-        this.featureLocation = clone.featureLocation;
+        this.location = clone.location;
+        this.directory = clone.directory;
         this.packageType = clone.packageType;
         this.failed = clone.failed;
         return true;

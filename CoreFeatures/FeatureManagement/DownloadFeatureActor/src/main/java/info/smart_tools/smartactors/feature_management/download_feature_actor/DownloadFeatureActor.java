@@ -66,38 +66,34 @@ public class DownloadFeatureActor {
         IFeature feature;
         try {
             feature = wrapper.getFeature();
-            //TODO: need refactoring
-            for(String type : FILE_TYPE_LIST) {
-                if (
-                        Paths.get(
-                                feature.getLocation().getPath(),
-                                feature.getName() + "-" + feature.getVersion() + "." + type
-                        ).toFile().exists()
-                ) {
-                   return;
-                }
-                if (
-                        Paths.get(
-                                feature.getLocation().getPath(),
-                                feature.getName() + "-" + feature.getVersion() + "-" + ARCHIVE_POSTFIX + "." + type
-                        ).toFile().exists()
-                        ) {
-                    return;
-                }
-            }
         } catch (ReadValueException e) {
             throw new DownloadFeatureException("Feature should not be null.");
         }
-        try {
-            if (null == feature.getDependencies() && null != feature.getGroupId() && null != feature.getVersion()) {
-                System.out.println("[INFO] Start downloading feature - '" + feature.getDisplayName() + "'.");
+        if (null == feature.getDependencies() && null != feature.getGroupId()) {
+            System.out.println("[INFO] Start downloading feature - '" + feature.getDisplayName() + "'.");
+            for(String type : FILE_TYPE_LIST) {
+                if (
+                        Paths.get(
+                                feature.getDirectory().getPath(),
+                                feature.getName() + "-" + feature.getVersion() + "." + type
+                        ).toFile().exists() ||
+                        Paths.get(
+                                feature.getDirectory().getPath(),
+                                feature.getName() + "-" + feature.getVersion() + "-" + ARCHIVE_POSTFIX + "." + type
+                        ).toFile().exists()
+                ) {
+                    System.out.println("[OK] -------------- Feature '" + feature.getDisplayName() + "' already downloaded.");
+                    return;
+                }
+            }
+            try {
                 download0(feature);
                 System.out.println("[OK] -------------- Feature '" + feature.getDisplayName() + "' downloaded successfully.");
+            } catch (Throwable e) {
+                feature.setFailed(true);
+                System.out.println("[FAILED] ---------- Feature '" + feature.getDisplayName() + "' downloading aborted with exception:");
+                System.out.println(e);
             }
-        } catch (Throwable e) {
-            feature.setFailed(true);
-            System.out.println("[FAILED] ---------- Feature '" + feature.getDisplayName() + "' downloading aborted with exception:");
-            System.out.println(e);
         }
     }
 
@@ -131,7 +127,7 @@ public class DownloadFeatureActor {
             );
             File artifact = artifacts.get(0).getFile();
             String fileName = artifact.getName();
-            File location = Paths.get(feature.getLocation().getPath(), fileName).toFile();
+            File location = Paths.get(feature.getDirectory().getPath(), fileName).toFile();
             Files.copy(artifact.toPath(), location.toPath());
             feature.setLocation(new Path(location));
         } catch (Throwable e) {

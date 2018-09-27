@@ -48,6 +48,12 @@ public interface IFeature {
     IPath getLocation();
 
     /**
+     * Gets feature directory
+     * @return the feature directory
+     */
+    IPath getDirectory();
+
+    /**
      * Gets feature ID
      * @return the feature ID
      */
@@ -88,6 +94,12 @@ public interface IFeature {
      * @param location the feature location
      */
     void setLocation(IPath location);
+
+    /**
+     * Sets feature directory
+     * @param location the feature directory
+     */
+    void setDirectory(IPath location);
 
     /**
      * Sets feature group ID

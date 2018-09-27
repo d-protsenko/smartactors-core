@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Actor that creates instance of {@link IFeature}
@@ -50,7 +52,8 @@ public class FeaturesCreatorActor {
     private final static String IOC_FEATURE_REPOSITORY_STORAGE_NAME = "feature-repositories";
 
     //TODO: this parameters would be took out into the config.json as actor arguments
-    private final static String FEATURE_VERSION_PATTERN = "-\\d+\\.\\d+\\.\\d+";
+    private final static String FILENAME_VERSION_PATTERN = "-\\d+\\.\\d+\\.\\d+";
+    private final static String FEATURE_VERSION_PATTERN = "\\d+\\.\\d+\\.\\d+";
 
     private final Map<String, IBiAction<File, CreateMessageWrapper>> creationFunctions;
 
@@ -136,16 +139,21 @@ public class FeaturesCreatorActor {
                 repositoryStorage.addAll(repositories);
             }
             List<IObject> featuresFromJson = wrapper.getFeaturesDescription();
+            IPath directory = new Path(wrapper.getFeatureDirectory());
             if (null != featuresFromJson) {
                 for (IObject feature : featuresFromJson) {
                     String name = (String) feature.getValue(this.nameFN);
+                    String groupId = (String) feature.getValue(this.groupFN);
+                    String version = (String) feature.getValue(this.versionFN);
                     String packageType = (String) feature.getValue(this.packageTypeFN);
+                    IPath location = (IPath) feature.getValue(this.featureLocationFN);
                     features.put(name, new Feature(
-                            (String) feature.getValue(this.groupFN),
-                            (String) feature.getValue(this.nameFN),
-                            (String) feature.getValue(this.versionFN),
+                            groupId,
+                            name,
+                            version,
                             null,
-                            new Path(wrapper.getFeatureDirectory()),
+                            location,
+                            directory,
                             packageType
                     ));
                 }
@@ -161,12 +169,16 @@ public class FeaturesCreatorActor {
             throws FeatureCreationException {
         try {
             String packageType = getExtension(file);
-            String name = file.getName().split(FEATURE_VERSION_PATTERN)[0];
+            String name = file.getName().split(FILENAME_VERSION_PATTERN)[0];
+            Pattern pattern = Pattern.compile(FEATURE_VERSION_PATTERN);
+            Matcher matcher = pattern.matcher(file.getName());
+            matcher.find();
+            String version = matcher.group();
             List<IObject> featuresDescription = new ArrayList<>();
             IObject featureDescription = IOC.resolve(Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME));
             featureDescription.setValue(this.nameFN, name);
             featureDescription.setValue(this.groupFN, null);
-            featureDescription.setValue(this.versionFN, null);
+            featureDescription.setValue(this.versionFN, version);
             featureDescription.setValue(this.featureLocationFN, new Path(file.getPath()));
             featureDescription.setValue(this.packageTypeFN, packageType);
             featuresDescription.add(featureDescription);
