@@ -101,10 +101,10 @@ public class ChainStorage implements IChainStorage {
                 }
 
             }
-            VersionManager.registerChainVersion(chainId);
+            VersionManager.registerChain(chainId);
 
             if (null != oldState) {
-                System.out.println(MessageFormat.format("Warning: replacing chain ({0}) registered as ''{1}'' by {2}",
+                System.out.println(MessageFormat.format("[WARNING] Replacing chain ({0}) registered as ''{1}'' by {2}",
                         oldState.getCurrent().toString(), chainId.toString(), newChain.toString()));
             }
         } catch (ResolutionException | InvalidArgumentException e) {

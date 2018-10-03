@@ -4,22 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
-        <artifactId>message-processing</artifactId>
+        <artifactId>remote-management</artifactId>
         <version>0.4.0</version>
     </parent>
-    <artifactId>message-processing.map-router</artifactId>
+    <artifactId>remote-management.remote-management-plugin</artifactId>
     <version>0.4.0</version>
     <dependencies>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>message-processing-interfaces.irouter</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.exception.invalid-argument-exception</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -34,7 +24,31 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>class-management.version-manager</artifactId>
+            <artifactId>feature-loading-system.bootstrap-plugin</artifactId>
+            <version>0.4.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>remote-management.feature-load-starter-actor</artifactId>
+            <version>0.4.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>ioc.ioc</artifactId>
+            <version>0.4.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>ioc.named-keys-storage</artifactId>
+            <version>0.4.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.strategy.apply-function-to-arguments</artifactId>
             <version>0.4.0</version>
             <scope>compile</scope>
         </dependency>

@@ -148,8 +148,8 @@ public class AllInDirectoryFeatureTracker {
         String name = f.getName().split(FILENAME_VERSION_PATTERN)[0];
         Pattern pattern = Pattern.compile(FEATURE_VERSION_PATTERN);
         Matcher matcher = pattern.matcher(f.getName());
-        matcher.find();
-        String version = matcher.group();
+        String version = matcher.find() ? matcher.group() : null;
+
         return new Feature(
                 null,
                 name,
@@ -186,8 +186,8 @@ public class AllInDirectoryFeatureTracker {
                             (String) feature.getValue(this.nameFN),
                             (String) feature.getValue(this.versionFN),
                             null,
-                            new Path(jsonFile.getParent()),
                             null,
+                            new Path(jsonFile.getParent()),
                             null != packageType ? packageType : DEF_PACKAGE_TYPE
                     )
             );

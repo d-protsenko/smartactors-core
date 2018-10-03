@@ -27,7 +27,7 @@ public class MapRouterTest {
     @Test
     public void Should_storeAndRevertReceivers()
             throws Exception {
-        Map<Object, IMessageReceiver> map = mock(Map.class);
+        Map<Object, Map<Object, IMessageReceiver>> map = mock(Map.class);
         Object id = mock(Object.class);
         IMessageReceiver receiver0 = mock(IMessageReceiver.class);
         IMessageReceiver receiver1 = mock(IMessageReceiver.class);

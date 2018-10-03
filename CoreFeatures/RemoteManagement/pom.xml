@@ -4,41 +4,18 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
-        <artifactId>message-processing</artifactId>
+        <artifactId>core-features</artifactId>
         <version>0.4.0</version>
     </parent>
-    <artifactId>message-processing.map-router</artifactId>
+    <groupId>info.smart_tools.smartactors</groupId>
+    <artifactId>remote-management</artifactId>
     <version>0.4.0</version>
-    <dependencies>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>message-processing-interfaces.irouter</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.exception.invalid-argument-exception</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.10.19</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>class-management.version-manager</artifactId>
-            <version>0.4.0</version>
-            <scope>compile</scope>
-        </dependency>
-    </dependencies>
+    <packaging>pom</packaging>
+    <modules>
+        <module>FeatureLoadStarterActor</module>
+        <module>RemoteManagementPlugin</module>
+        <module>RemoteManagementDistribution</module>
+    </modules>
     <build>
         <pluginManagement>
             <plugins>
@@ -51,6 +28,13 @@
                     </configuration>
                 </plugin>
                 <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.19.1</version>
+                    <configuration>
+                        <useSystemClassLoader>false</useSystemClassLoader>
+                    </configuration>
+                </plugin>
+                <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>2.8.2</version>
                     <executions>
@@ -59,7 +43,7 @@
                             <phase>none</phase>
                         </execution>
                         <execution>
-                            <id>archiva.smartactors-modules</id>
+                            <id>archiva.smartactors-features</id>
                             <phase>deploy</phase>
                             <goals>
                                 <goal>deploy-file</goal>
@@ -67,18 +51,19 @@
                             <inherited>false</inherited>
                             <configuration>
                                 <generatePom>true</generatePom>
-                                <file>${project.basedir}/target/${project.artifactId}-${project.version}.jar</file>
-                                <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
-                                <repositoryId>archiva.smartactors-modules</repositoryId>
+                                <file>${project.parent.basedir}/project-distribution/${project.artifactId}-${project.parent.version}-archive.${deploy.fomat}</file>
+                                <url>http://archiva.smart-tools.info/repository/smartactors-features/</url>
+                                <repositoryId>archiva.smartactors-features</repositoryId>
                                 <groupId>${project.groupId}</groupId>
                                 <artifactId>${project.artifactId}</artifactId>
                                 <version>${project.version}</version>
-                                <packaging>jar</packaging>
-                                <description>This package contains ...</description>
+                                <packaging>${deploy.format}</packaging>
+                                <description>This archive contains ...</description>
+                                <classifier>${deploy.classifier}</classifier>
                             </configuration>
                         </execution>
                     </executions>
-                    <inherited>false</inherited>
+                    <inherited>true</inherited>
                 </plugin>
             </plugins>
         </pluginManagement>

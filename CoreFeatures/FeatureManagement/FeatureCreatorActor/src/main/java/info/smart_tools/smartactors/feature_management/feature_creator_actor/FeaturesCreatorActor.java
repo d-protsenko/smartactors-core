@@ -172,8 +172,7 @@ public class FeaturesCreatorActor {
             String name = file.getName().split(FILENAME_VERSION_PATTERN)[0];
             Pattern pattern = Pattern.compile(FEATURE_VERSION_PATTERN);
             Matcher matcher = pattern.matcher(file.getName());
-            matcher.find();
-            String version = matcher.group();
+            String version = matcher.find() ? matcher.group() : null;
             List<IObject> featuresDescription = new ArrayList<>();
             IObject featureDescription = IOC.resolve(Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME));
             featureDescription.setValue(this.nameFN, name);

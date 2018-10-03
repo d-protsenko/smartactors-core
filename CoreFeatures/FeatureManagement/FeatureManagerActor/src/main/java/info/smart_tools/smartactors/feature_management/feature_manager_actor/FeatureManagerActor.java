@@ -344,7 +344,9 @@ public class FeatureManagerActor {
                 IFeature baseFeature = null;
                 for (IFeature loadedFeature : this.loadedFeatures.values()) {
                     if (matchDependency(dependency, loadedFeature)) {
-                        if (baseFeature == null || loadedFeature.getVersion().compareTo(baseFeature.getVersion()) >= 0) {
+                        if (baseFeature == null ||
+                                getEmptyIfNull(loadedFeature.getVersion()).
+                                        compareTo(getEmptyIfNull(baseFeature.getVersion())) >= 0) {
                             baseFeature = loadedFeature;
                         }
                     }

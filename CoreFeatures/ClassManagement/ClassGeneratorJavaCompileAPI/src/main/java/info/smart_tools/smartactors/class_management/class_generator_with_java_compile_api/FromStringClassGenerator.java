@@ -44,10 +44,6 @@ public class FromStringClassGenerator implements IClassGenerator<String> {
 
     private String getFirstSubstringByPattern(final String source, final Pattern pattern) {
         Matcher matcher = pattern.matcher(source);
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-
-        return null;
+        return matcher.find() ? matcher.group(1) : null;
     }
 }

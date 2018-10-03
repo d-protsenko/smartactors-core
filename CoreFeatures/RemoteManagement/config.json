@@ -1,0 +1,47 @@
+{
+  "featureName": "info.smart_tools.smartactors:remote-management",
+  "afterFeatures": [],
+  "objects": [
+    {
+      "name": "feature-load-starter-actor",
+      "kind": "stateless_actor",
+      "dependency": "FeatureLoadStarterActor"
+    }
+  ],
+  "maps": [
+    {
+      "id": "load-feature-from-file",
+      "externalAccess": true,
+      "steps": [
+        {
+          "target": "feature-load-starter-actor",
+          "wrapper":{
+            "in_getFeatureLocation":"message/featureLocation",
+            "out_setObservedDirectory":"message/observedDirectory",
+            "out_setFileName":"message/fileName"
+          },
+          "handler": "setParametersForLoadFromFile"
+        },
+        {
+          "chain":"onNewFile",
+          "target":"constant_chain_call_receiver"
+        }
+
+      ],
+      "exceptional": [
+      ]
+    },
+    {
+      "id": "load-features-from-repository",
+      "externalAccess": true,
+      "steps": [
+        {
+          "chain":"createFeatures",
+          "target":"constant_chain_call_receiver"
+        }
+      ],
+      "exceptional": [
+      ]
+    }
+  ]
+}
