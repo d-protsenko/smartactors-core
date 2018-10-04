@@ -22,6 +22,7 @@
 
     <modules>
         <module>CoreFeatures</module>
+        <module>ServerDevelopmentTools</module>
         <module>Servers/Server2</module>
         <module>SystemActors</module>
     </modules>

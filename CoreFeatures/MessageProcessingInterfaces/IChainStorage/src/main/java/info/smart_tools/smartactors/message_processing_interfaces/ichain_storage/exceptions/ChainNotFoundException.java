@@ -17,4 +17,13 @@ public class ChainNotFoundException extends Exception {
     public ChainNotFoundException(final Object chainId) {
         super(MessageFormat.format("Chain ''{0}'' not found.", chainId));
     }
+
+    /**
+     * The constructor.
+     *
+     * @param chainId    identifier of the chain.
+     */
+    public ChainNotFoundException(final Object chainId, Throwable e) {
+        super(MessageFormat.format("Chain ''{0}'' not found.", chainId), e);
+    }
 }

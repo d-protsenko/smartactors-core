@@ -196,15 +196,15 @@ public final class VersionManager {
         strategies.add(i, strategy);
     }
 
-    public static <T> T applyVersionResolutionStrategy(final Object ... args)
+    private static <T> T applyVersionResolutionStrategy(final Object ... args)
             throws InvalidArgumentException, ResolveDependencyStrategyException {
-        String chainID = (String)args[0];
+        String chainID = String.valueOf(args[0]);
         if (chainID == null) {
             throw new InvalidArgumentException("Key for version resolution strategy cannot be null.");
         }
         List<IResolveDependencyStrategy> strategies = versionStrategies.get(chainID);
         if (strategies == null) {
-            throw new ResolveDependencyStrategyException("Key '"+chainID+"' is not registered.");
+            throw new ResolveDependencyStrategyException("Version resolution strategy container for '"+chainID+"' is not registered.");
         }
         T result = null;
         for(IResolveDependencyStrategy strategy : strategies) {
@@ -238,6 +238,11 @@ public final class VersionManager {
         if (context != null || moduleID == null) {
             Object chainVersion = VersionManager.applyVersionResolutionStrategy(chainId, context);
             moduleID = VersionManager.getModuleIdByChainVersion(chainId, chainVersion);
+            if (moduleID == null) {
+                throw new ResolveDependencyStrategyException(
+                        "Resolution failed for chain '"+String.valueOf(chainId)+":"+String.valueOf(chainVersion)+"'."
+                );
+            }
         }
         return moduleID;
     }

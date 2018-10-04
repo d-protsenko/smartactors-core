@@ -170,8 +170,6 @@ public class FeatureManagerActor {
             if (!feature.updateFromClone(featureFromMessage)) {
                 throw new FeatureManagementException("Cannot update feature "+feature.getDisplayName()+" from its clone.");
             }
-            /*System.out.println("[INFO] " + Thread.currentThread().getName() +
-                    " onFeatureLoaded started on feature " + feature.getDisplayName());*/
             this.featuresInProgress.remove(feature.getId());
             if (feature.isFailed()) {
                 this.failedFeatures.put(feature.getId(), feature);
@@ -236,8 +234,6 @@ public class FeatureManagerActor {
         } catch (ReadValueException e) {
             throw new FeatureManagementException("Feature should not be null.");
         }
-        /*System.out.println("[INFO] " + Thread.currentThread().getName() +
-                " onFeatureLoaded finished on feature " + feature.getDisplayName());*/
         if (!featureFromMessage.updateFromClone(feature)) {
             throw new FeatureManagementException(
                     "Cannot update feature "+featureFromMessage.getDisplayName()+" from its clone."
@@ -260,9 +256,6 @@ public class FeatureManagerActor {
             if (!feature.updateFromClone(featureFromMessage)) {
                 throw new FeatureManagementException("Cannot update feature "+feature.getDisplayName()+" from its clone.");
             }
-
-            /*System.out.println("[INFO] " + Thread.currentThread().getName() +
-                    " onFeatureStepCompleted started on feature " + feature.getDisplayName());*/
 
             checkAndRunConnectedFeatures();
             Set<String> featureDependencies = feature.getDependencies();
@@ -287,8 +280,6 @@ public class FeatureManagerActor {
         } catch (InvalidArgumentException | ReadValueException | AsynchronousOperationException e) {
             throw new FeatureManagementException(e);
         }
-        /*System.out.println("[INFO] " + Thread.currentThread().getName() +
-                " onFeatureStepCompleted finished on feature " + feature.getDisplayName());*/
         if (!featureFromMessage.updateFromClone(feature)) {
             throw new FeatureManagementException(
                     "Cannot update feature "+featureFromMessage.getDisplayName()+" from its clone."
@@ -342,8 +333,13 @@ public class FeatureManagerActor {
                 String dependency = iterator.next();
 
                 IFeature baseFeature = null;
+                int order = -1;
                 for (IFeature loadedFeature : this.loadedFeatures.values()) {
-                    if (matchDependency(dependency, loadedFeature)) {
+                    order = compareFeatureToDependency(loadedFeature, dependency);
+                    if (order == 0) {
+                        baseFeature = loadedFeature;
+                        break;
+                    } else if (order > 0) {
                         if (baseFeature == null ||
                                 getEmptyIfNull(loadedFeature.getVersion()).
                                         compareTo(getEmptyIfNull(baseFeature.getVersion())) >= 0) {
@@ -353,11 +349,13 @@ public class FeatureManagerActor {
                 }
                 if (null != baseFeature) {
                     VersionManager.addModuleDependency(feature.getId(), baseFeature.getId());
+                    if (order != 0) {
+                        System.out.println(
+                                "[WARNING] Version of base feature '"+baseFeature.getDisplayName()+
+                                "' is greater than in feature '"+feature.getDisplayName()+"' dependencies."
+                        );
+                    }
                     iterator.remove();
-                    /*System.out.println(
-                            "[INFO] Dependency '" + dependency + "' removed from feature '" +
-                            feature.getDisplayName() + "'. Loaded feature:'" + baseFeature.getDisplayName() + "'."
-                    );*/
                 }
             }
         }
@@ -388,7 +386,7 @@ public class FeatureManagerActor {
                 String dependency = iterator.next();
 
                 for (IFeature feature : this.featuresInProgress.values()) {
-                    if (matchDependency(dependency, feature)) {
+                    if (compareFeatureToDependency(feature, dependency) >= 0) {
                         iterator.remove();
                     }
                 }
@@ -404,12 +402,14 @@ public class FeatureManagerActor {
         return (s == null ? "" : s);
     }
 
-    private boolean matchDependency(String dependencyName, IFeature feature)
+    private int compareFeatureToDependency(IFeature feature, String dependencyName)
             throws FeatureManagementException {
         String[] dependency = parseFullName(dependencyName);
-        return (getEmptyIfNull(feature.getGroupId()).equals(dependency[0]) &&
-                getEmptyIfNull(feature.getName()).equals(dependency[1]) &&
-                getEmptyIfNull(feature.getVersion()).compareTo(dependency[2]) >= 0);
+        if (!getEmptyIfNull(feature.getGroupId()).equals(dependency[0]) ||
+                !getEmptyIfNull(feature.getName()).equals(dependency[1]) ) {
+            return -1;
+        }
+        return getEmptyIfNull(feature.getVersion()).compareTo(dependency[2]);
     }
 
     // todo: replace this code by parsing strategy

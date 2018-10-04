@@ -36,10 +36,9 @@ public class ChainStorage implements IChainStorage {
      * @param router       {@link IRouter} to use to resolve receivers
      * @throws InvalidArgumentException if chainsMap is {@code null}
      * @throws InvalidArgumentException if router is {@code null}
-     * @throws ResolutionException if error occurs resolving any dependency
      */
     public ChainStorage(final Map<Object, Map<Object, IChainState>> chainStates, final IRouter router)
-            throws InvalidArgumentException, ResolutionException {
+            throws InvalidArgumentException {
         if (null == chainStates) {
             throw new InvalidArgumentException("Chains map should not be null.");
         }
@@ -52,7 +51,8 @@ public class ChainStorage implements IChainStorage {
         this.router = router;
     }
 
-    private IChainState resolveState(final Object chainId) throws ChainNotFoundException {
+    private IChainState resolveState(final Object chainId)
+            throws ChainNotFoundException {
         Map<Object, IChainState> chainVersions = chainStates.get(chainId);
         if (null == chainVersions) {
             throw new ChainNotFoundException(chainId);
@@ -60,12 +60,9 @@ public class ChainStorage implements IChainStorage {
 
         Object moduleId = null;
         try {
-            //Object chainVersion = VersionManager.applyVersionResolutionStrategy(chainId, VersionManager.getCurrentMessage());
-            //VersionManager.setCurrentModule(VersionManager.getModuleIdByChainVersion(chainId, chainVersion));
-            //IChainState state = VersionManager.getFromMap(chainVersions);
             moduleId = VersionManager.getModuleIdByChainId(chainId);
         } catch (InvalidArgumentException | ResolveDependencyStrategyException e) {
-            throw new ChainNotFoundException("Cannot resolve module Id on chainId '"+chainId+"'.");
+            throw new ChainNotFoundException(chainId, e);
         }
         IChainState state = VersionManager.getFromMap(moduleId, chainVersions);
 
