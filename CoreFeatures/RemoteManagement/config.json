@@ -36,6 +36,16 @@
       "externalAccess": true,
       "steps": [
         {
+          "target": "feature-load-starter-actor",
+          "wrapper":{
+            "in_getFeaturesDescription":"message/features",
+            "in_getRepositoriesDescription":"message/repositories",
+            "out_setFeaturesDescription":"message/featuresDescription",
+            "out_setRepositoriesDescription":"message/repositoriesDescription"
+          },
+          "handler": "setParametersForLoadFromRepository"
+        },
+        {
           "chain":"createFeatures",
           "target":"constant_chain_call_receiver"
         }
