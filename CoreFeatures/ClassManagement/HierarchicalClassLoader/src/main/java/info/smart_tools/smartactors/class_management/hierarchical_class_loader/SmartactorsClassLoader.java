@@ -16,7 +16,7 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
     /* This is ModuleId To ClassLoader Map */
     private static Map<Object, SmartactorsClassLoader> moduleClassLoaders = new ConcurrentHashMap<>();
 
-    private Set<SmartactorsClassLoader> dependsOn = Collections.synchronizedSet(new HashSet<>());
+    private Set<SmartactorsClassLoader> dependsOn = new HashSet<>(); //Collections.synchronizedSet(new HashSet<>());
 
     public static void setDefaultModuleId(Object moduleId) {
         defaultModuleId = moduleId;
@@ -36,14 +36,10 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
             SmartactorsClassLoader baseClassLoader = getModuleClassLoader(baseModuleId);
             SmartactorsClassLoader dependentClassLoader = getModuleClassLoader(dependentModuleId);
             if (baseClassLoader != null && dependentClassLoader != null) {
-                dependentClassLoader.dependsOn.add(baseClassLoader);
+                synchronized (dependentClassLoader) {
+                    dependentClassLoader.dependsOn.add(baseClassLoader);
+                }
             }
-        }
-    }
-
-    public static void finalizeModuleDependencies(Object moduleID) {
-        if (getModuleClassLoader(moduleID).dependsOn.size() == 0) {
-            addModuleDependency(moduleID, defaultModuleId);
         }
     }
 
@@ -107,7 +103,7 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
         return clazz;
     }
 
-    private Class<?> loadClassFromDependencies(String className, ClassLoader scl, ClassLoader ccl, boolean[] rclUsed )
+    private Class<?> loadClassFromDependencies(String className, ClassLoader scl, ClassLoader dcl, boolean[] rclUsed )
             throws ClassNotFoundException {
         if (dependsOn.size() == 0) {
             try {
@@ -122,11 +118,11 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
         } else {
             for (SmartactorsClassLoader dependency : dependsOn) {
                 try {
-                    if (dependency != ccl) {
-                        return dependency.loadClassFromDependencies(className, scl, ccl, rclUsed);
+                    if (dependency != dcl) {
+                        return dependency.loadClassFromDependencies(className, scl, dcl, rclUsed);
                     } else if (!rclUsed[1]) {
                         rclUsed[1] = true;
-                        return dependency.loadClassFromDependencies(className, scl, ccl, rclUsed);
+                        return dependency.loadClassFromDependencies(className, scl, dcl, rclUsed);
                     }
                 } catch (ClassNotFoundException e) { }
             }

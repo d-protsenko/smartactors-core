@@ -12,13 +12,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SmartactorsClassLoader extends URLClassLoader implements ISmartactorsClassLoader {
 
-    private static Object defaultModuleId = null;
-
     /* This is ModuleId To ClassLoader Map */
     private static Map<Object, SmartactorsClassLoader> moduleClassLoaders = new ConcurrentHashMap<>();
 
     private String moduleName = null;
-    private Set<SmartactorsClassLoader> dependsOn = Collections.synchronizedSet(new HashSet<>());
+    private Set<SmartactorsClassLoader> dependsOn = new HashSet<>(); //Collections.synchronizedSet(new HashSet<>());
     private Map<String, ClassLoader> classMap = new ConcurrentHashMap<>();
 
     /**
@@ -29,18 +27,16 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
         super(urls);
     }
 
-    public static void setDefaultModuleId(Object moduleId) {
-        defaultModuleId = moduleId;
-    }
+    public static void setDefaultModuleId(Object moduleId) { }
 
     public static void addModule(Object moduleId, String moduleName, String moduleVersion) {
         SmartactorsClassLoader classLoader = new SmartactorsClassLoader(new URL[]{});
-        moduleClassLoaders.put(moduleId, classLoader);
         moduleName = moduleName.replace('/', '.');
         moduleName = moduleName.replace(':', '.');
         moduleName = moduleName.replace('-', '_');
         classLoader.moduleName = moduleName;
         classLoader.classMap.put(moduleName, classLoader);
+        moduleClassLoaders.put(moduleId, classLoader);
     }
 
     public static SmartactorsClassLoader getModuleClassLoader(Object moduleId) {
@@ -54,18 +50,16 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
             if (baseClassLoader != null && dependentClassLoader != null) {
                 Set<SmartactorsClassLoader> classLoaders = new HashSet<SmartactorsClassLoader>();
                 classLoaders.add(baseClassLoader);
-                classLoaders.addAll(baseClassLoader.dependsOn);
-                for (SmartactorsClassLoader cl : classLoaders) {
-                    dependentClassLoader.classMap.put(cl.moduleName, cl);
+                synchronized (baseClassLoader) {
+                    classLoaders.addAll(baseClassLoader.dependsOn);
                 }
-                dependentClassLoader.dependsOn.addAll(classLoaders);
+                synchronized (dependentClassLoader) {
+                    for (SmartactorsClassLoader cl : classLoaders) {
+                        dependentClassLoader.classMap.put(cl.moduleName, cl);
+                    }
+                    dependentClassLoader.dependsOn.addAll(classLoaders);
+                }
             }
-        }
-    }
-
-    public static void finalizeModuleDependencies(Object moduleId) {
-        if (getModuleClassLoader(moduleId).dependsOn.size() == 0) {
-            addModuleDependency(moduleId, defaultModuleId);
         }
     }
 

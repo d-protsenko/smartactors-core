@@ -1,11 +1,9 @@
-package info.smart_tools.smartactors.class_management.version_manager;
+package info.smart_tools.smartactors.version_management.version_manager;
 
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
-import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.class_management.hierarchical_class_loader.SmartactorsClassLoader;
@@ -19,9 +17,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class VersionManager {
 
     public static final String coreName = "info.smart_tools:smartactors";
-    public static final String coreVersion = "0.4.1";
+    public static final String coreVersion = "0.4.0";
     public static final Object coreId = java.util.UUID.randomUUID();
-    private static Object defaultModuleID = null;
 
     private static ThreadLocal<Object> currentModuleId = new ThreadLocal<>();
     private static ThreadLocal<IObject> currentMessage = new ThreadLocal<>();
@@ -33,6 +30,13 @@ public final class VersionManager {
     private static Map<Object, List<IResolveDependencyStrategy>> versionStrategies = new ConcurrentHashMap<>();
     private static Map<Object, List<Object>> chainVersions = new ConcurrentHashMap<>();
     private static Map<Object, Map<Object, Object>> chainModuleIds = new ConcurrentHashMap<>();
+
+    static {
+        try {
+            addModule(coreId, coreName, coreVersion);
+        } catch(InvalidArgumentException e) {}
+        SmartactorsClassLoader.setDefaultModuleId(coreId);
+    }
 
     private VersionManager() {}
 
@@ -54,11 +58,6 @@ public final class VersionManager {
         }
     }
 
-    public static void setDefaultModuleId(final Object moduleId) {
-        SmartactorsClassLoader.setDefaultModuleId(moduleId);
-        defaultModuleID = moduleId;
-    }
-
     private static String getModuleName(Object moduleId) {
         return moduleNames.get(moduleId);
     }
@@ -69,6 +68,10 @@ public final class VersionManager {
 
     public static ISmartactorsClassLoader getModuleClassLoader(Object moduleId) {
         return SmartactorsClassLoader.getModuleClassLoader(moduleId);
+    }
+
+    public static ISmartactorsClassLoader getCurrentClassLoader() {
+        return SmartactorsClassLoader.getModuleClassLoader(getCurrentModule());
     }
 
     public static void addModuleDependency(Object dependentModuleId, Object baseModuleId) {
@@ -85,10 +88,11 @@ public final class VersionManager {
 
     public static void finalizeModuleDependencies(Object moduleId) {
         if (moduleId != null) {
-            SmartactorsClassLoader.finalizeModuleDependencies(moduleId);
             Set<Object> dependsOn = dependencies.get(moduleId);
-            if (dependsOn.size() == 0 && defaultModuleID != null) {
-                dependsOn.add(defaultModuleID);
+            if (dependsOn != null && dependsOn.size() == 0) {
+
+                dependsOn.add(coreId);
+                SmartactorsClassLoader.addModuleDependency(moduleId, coreId);
             }
         }
     }

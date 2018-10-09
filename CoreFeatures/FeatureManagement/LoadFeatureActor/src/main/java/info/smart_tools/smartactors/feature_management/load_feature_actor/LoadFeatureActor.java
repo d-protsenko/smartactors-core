@@ -103,7 +103,7 @@ public class LoadFeatureActor {
             VersionManager.setCurrentModule(feature.getId());
             IPluginLoader<Collection<IPath>> pluginLoader = IOC.resolve(
                     Keys.getOrAdd(PLUGIN_LOADER_KEY),
-                    VersionManager.getModuleClassLoader(feature.getId()),
+                    VersionManager.getCurrentClassLoader(),
                     classHandler,
                     pluginLoaderVisitor);
             pluginLoader.loadPlugins(jars);

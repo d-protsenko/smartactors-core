@@ -92,6 +92,7 @@
         <module>EndpointServiceStarter</module>
         <module>DatabaseServiceStarter</module>
         <module>RemoteManagement</module>
+        <module>VersionManagement</module>
     </modules>
 
     <build>

@@ -1,14 +1,9 @@
-package info.smart_tools.smartactors.class_management.version_manager;
+package info.smart_tools.smartactors.version_management.version_manager;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import java.net.URL;
-import java.net.URLClassLoader;
 
 import static org.junit.Assert.*;
 
@@ -22,7 +17,6 @@ public class VersionManagerTest {
             throws Exception {
         VersionManager.addModule(VersionManager.coreId, VersionManager.coreName, VersionManager.coreVersion);
         VersionManager.addModule(VersionManager.coreId, VersionManager.coreName, VersionManager.coreVersion);
-        VersionManager.setDefaultModuleId(VersionManager.coreId);
         VersionManager.setCurrentModule(VersionManager.coreId);
         assertSame(VersionManager.getCurrentModule(), VersionManager.coreId);
         VersionManager.addModule("cl1", "cl1", null);

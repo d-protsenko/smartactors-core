@@ -50,7 +50,7 @@ public class Server implements IServer {
      */
     public static void main(final String[] args)
             throws Exception {
-        Thread.sleep(2000);
+        Thread.sleep(500);
         IServer server = new Server();
         server.initialize();
         server.start();
@@ -60,17 +60,7 @@ public class Server implements IServer {
     public void initialize()
             throws ServerInitializeException {
         Thread.currentThread().setName("BaseThread");
-        try {
-            VersionManager.addModule(
-                    VersionManager.coreId,
-                    VersionManager.coreName,
-                    VersionManager.coreVersion
-            );
-            VersionManager.setDefaultModuleId(VersionManager.coreId);
-            VersionManager.setCurrentModule(VersionManager.coreId);
-        } catch (InvalidArgumentException e) {
-            throw new ServerInitializeException("Failed to initialize core.");
-        }
+        VersionManager.setCurrentModule(VersionManager.coreId);
     }
 
     @Override
@@ -123,7 +113,7 @@ public class Server implements IServer {
             throws InvalidArgumentException, PluginLoaderException, ProcessExecutionException {
         IBootstrap bootstrap = new Bootstrap();
         IPluginLoader<Collection<IPath>> pluginLoader = new PluginLoader(
-                VersionManager.getModuleClassLoader(VersionManager.coreId),
+                VersionManager.getCurrentClassLoader(),
                 clz -> {
                     try {
                         if (Modifier.isAbstract(clz.getModifiers())) {

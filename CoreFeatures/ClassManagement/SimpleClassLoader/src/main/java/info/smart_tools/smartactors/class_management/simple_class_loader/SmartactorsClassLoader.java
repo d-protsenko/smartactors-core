@@ -18,7 +18,7 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
      * Redefined constructor
      * @param urls the URLs from which to load classes and resources
      */
-    SmartactorsClassLoader(final URL[] urls) { super(urls); }
+    private SmartactorsClassLoader(final URL[] urls) { super(urls); }
 
     /**
      * Redefined constructor
@@ -45,9 +45,6 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
     }
 
     public static void addModuleDependency(Object dependentModuleId, Object baseModuleId) {
-    }
-
-    public static void finalizeModuleDependencies(Object moduleId) {
     }
 
     /**
