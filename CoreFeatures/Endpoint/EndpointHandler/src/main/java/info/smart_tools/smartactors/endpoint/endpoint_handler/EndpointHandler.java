@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.endpoint.endpoint_handler;
 
-import info.smart_tools.smartactors.class_management.version_manager.VersionManager;
+import info.smart_tools.smartactors.version_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
@@ -27,7 +28,7 @@ public abstract class EndpointHandler<TContext, TRequest> {
     private final IReceiverChain receiverChain;
     private final IEnvironmentHandler environmentHandler;
     private final IScope scope;
-    private final Object moduleId;
+    private final IModule module;
     private final String name;
 
     private final IQueue<ITask> taskQueue;
@@ -36,16 +37,16 @@ public abstract class EndpointHandler<TContext, TRequest> {
      * Constructor for HttpRequestHandler
      *
      * @param scope              scope for EndpointHandler
-     * @param moduleId          the id of feature in which context EndpointHandler works
+     * @param module             the module in which context EndpointHandler works
      * @param environmentHandler handler for environment
      * @param receiver           chain, that should receive message
      * @param name               name of the endpoint
      * @throws ResolutionException if error occurs resolving any dependencies
      */
     public EndpointHandler(final IReceiverChain receiver, final IEnvironmentHandler environmentHandler,
-                           final IScope scope, final Object moduleId, final String name) throws ResolutionException {
+                           final IScope scope, final IModule module, final String name) throws ResolutionException {
         this.scope = scope;
-        this.moduleId = moduleId;
+        this.module = module;
         this.receiverChain = receiver;
         this.environmentHandler = environmentHandler;
         this.name = name;
@@ -85,7 +86,7 @@ public abstract class EndpointHandler<TContext, TRequest> {
     public void handle(final TContext ctx, final TRequest request) throws ExecutionException {
         try {
             ScopeProvider.setCurrentScope(scope);
-            VersionManager.setCurrentModule(moduleId);
+            VersionManager.setCurrentModule(module);
             taskQueue.put(() -> {
                 try {
                     IObject environment = getEnvironment(ctx, request);

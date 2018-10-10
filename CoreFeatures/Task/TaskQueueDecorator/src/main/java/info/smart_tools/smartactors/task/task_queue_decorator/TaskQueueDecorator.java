@@ -1,7 +1,8 @@
 package info.smart_tools.smartactors.task.task_queue_decorator;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.class_management.version_manager.VersionManager;
+import info.smart_tools.smartactors.version_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
@@ -31,7 +32,7 @@ public class TaskQueueDecorator implements IQueue<ITask> {
 
     @Override
     public void put(final ITask item) throws InterruptedException {
-        Object moduleId = VersionManager.getCurrentModule();
+        IModule module = VersionManager.getCurrentModule();
         IScope scope;
         try {
             scope = ScopeProvider.getCurrentScope();
@@ -39,7 +40,7 @@ public class TaskQueueDecorator implements IQueue<ITask> {
             throw new InterruptedException(e.getMessage());
         }
         this.queue.put((ITask)() -> {
-            VersionManager.setCurrentModule(moduleId);
+            VersionManager.setCurrentModule(module);
             try {
                 ScopeProvider.setCurrentScope(scope);
             } catch(ScopeProviderException e) {

@@ -1,7 +1,8 @@
 package info.smart_tools.smartactors.message_processing.chain_storage;
 
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
-import info.smart_tools.smartactors.class_management.version_manager.VersionManager;
+import info.smart_tools.smartactors.version_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing.chain_storage.interfaces.IChainState;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
@@ -25,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Implementation of {@link info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage}.
  */
 public class ChainStorage implements IChainStorage {
-    private final Map<Object, Map<Object, IChainState>> chainStates;
+    private final Map<Object, Map<IModule, IChainState>> chainStates;
     private final IRouter router;
     private final Object modificationLock = new Object();
 
@@ -37,7 +38,7 @@ public class ChainStorage implements IChainStorage {
      * @throws InvalidArgumentException if chainsMap is {@code null}
      * @throws InvalidArgumentException if router is {@code null}
      */
-    public ChainStorage(final Map<Object, Map<Object, IChainState>> chainStates, final IRouter router)
+    public ChainStorage(final Map<Object, Map<IModule, IChainState>> chainStates, final IRouter router)
             throws InvalidArgumentException {
         if (null == chainStates) {
             throw new InvalidArgumentException("Chains map should not be null.");
@@ -53,18 +54,18 @@ public class ChainStorage implements IChainStorage {
 
     private IChainState resolveState(final Object chainId)
             throws ChainNotFoundException {
-        Map<Object, IChainState> chainVersions = chainStates.get(chainId);
+        Map<IModule, IChainState> chainVersions = chainStates.get(chainId);
         if (null == chainVersions) {
             throw new ChainNotFoundException(chainId);
         }
 
-        Object moduleId = null;
+        IModule module = null;
         try {
-            moduleId = VersionManager.getModuleIdByChainId(chainId);
+            module = VersionManager.getModuleByChainId(chainId);
         } catch (InvalidArgumentException | ResolveDependencyStrategyException e) {
             throw new ChainNotFoundException(chainId, e);
         }
-        IChainState state = VersionManager.getFromMap(moduleId, chainVersions);
+        IChainState state = VersionManager.getFromMap(module, chainVersions);
 
         if (null == state) {
             throw new ChainNotFoundException(chainId);
@@ -85,7 +86,7 @@ public class ChainStorage implements IChainStorage {
 
             IChainState state = IOC.resolve(Keys.getOrAdd(IChainState.class.getCanonicalName()), newChain);
 
-            Map<Object, IChainState> chainVersions = chainStates.get(chainId);
+            Map<IModule, IChainState> chainVersions = chainStates.get(chainId);
             if (chainVersions == null) {
                 chainVersions = new ConcurrentHashMap<>();
                 chainVersions.put(VersionManager.getCurrentModule(), state);
@@ -112,7 +113,7 @@ public class ChainStorage implements IChainStorage {
     @Override
     public void unregister(final Object chainId) {
         IChainState oldState = null;
-        Map<Object, IChainState> chainVersions = chainStates.get(chainId);
+        Map<IModule, IChainState> chainVersions = chainStates.get(chainId);
 
         if (chainVersions != null) {
             synchronized (modificationLock) {

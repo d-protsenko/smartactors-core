@@ -1,7 +1,8 @@
 package info.smart_tools.smartactors.ioc.versioned_strategy_container;
 
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.class_management.version_manager.VersionManager;
+import info.smart_tools.smartactors.version_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
 import info.smart_tools.smartactors.ioc.istrategy_container.exception.StrategyContainerException;
 
@@ -27,7 +28,7 @@ public class StrategyContainer implements IStrategyContainer {
     /**
      * Local storage
      */
-    private Map<Object, Map<Object, IResolveDependencyStrategy>> strategyStorage = new ConcurrentHashMap<>();
+    private Map<Object, Map<IModule, IResolveDependencyStrategy>> strategyStorage = new ConcurrentHashMap<>();
 
     /**
      * Resolve {@link IResolveDependencyStrategy} by given unique object identifier.
@@ -38,7 +39,7 @@ public class StrategyContainer implements IStrategyContainer {
     public IResolveDependencyStrategy resolve(final Object key)
             throws StrategyContainerException {
         IResolveDependencyStrategy strategy = null;
-        Map<Object, IResolveDependencyStrategy> strategyVersions = strategyStorage.get(key);
+        Map<IModule, IResolveDependencyStrategy> strategyVersions = strategyStorage.get(key);
         if (strategyVersions != null) {
             strategy = VersionManager.getFromMap(strategyVersions);
         }
@@ -53,7 +54,7 @@ public class StrategyContainer implements IStrategyContainer {
      */
     public void register(final Object key, final IResolveDependencyStrategy strategy)
             throws StrategyContainerException {
-        Map<Object, IResolveDependencyStrategy> strategyVersions = strategyStorage.get(key);
+        Map<IModule, IResolveDependencyStrategy> strategyVersions = strategyStorage.get(key);
         if (strategyVersions == null) {
             strategyVersions = new ConcurrentHashMap<>();
             strategyStorage.put(key, strategyVersions);
@@ -68,7 +69,7 @@ public class StrategyContainer implements IStrategyContainer {
      */
     public void remove(final Object key)
             throws StrategyContainerException {
-        Map<Object, IResolveDependencyStrategy> strategyVersions = strategyStorage.get(key);
+        Map<IModule, IResolveDependencyStrategy> strategyVersions = strategyStorage.get(key);
         if (strategyVersions != null) {
             IResolveDependencyStrategy strategy = VersionManager.removeFromMap(strategyVersions);
             if (strategy != null) {

@@ -18,34 +18,23 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
      * Redefined constructor
      * @param urls the URLs from which to load classes and resources
      */
-    private SmartactorsClassLoader(final URL[] urls) { super(urls); }
-
-    /**
-     * Redefined constructor
-     * @param urls the URLs from which to load classes and resources
-     */
     private SmartactorsClassLoader(final URL[] urls, ClassLoader parent) {
         super(urls, parent);
     }
 
-    public static void setDefaultModuleId(Object moduleId) {
-    }
-
-    public static void addModule(Object moduleId, String moduleName, String moduleVersion) {
+    public static ISmartactorsClassLoader newInstance(String moduleName, String moduleVersion) {
         if (single == null) {
-            single = new SmartactorsClassLoader(new URL[]{});
+            single = new SmartactorsClassLoader(new URL[]{}, ClassLoader.getSystemClassLoader());
         }
         if (compilation == null) {
             compilation = new SmartactorsClassLoader(new URL[]{}, single);
         }
-    }
-
-    public static SmartactorsClassLoader getModuleClassLoader(Object moduleId) {
         return single;
     }
 
-    public static void addModuleDependency(Object dependentModuleId, Object baseModuleId) {
-    }
+    public void setDefault() { }
+
+    public void addDependency(ISmartactorsClassLoader base) { }
 
     /**
      * Add new instance of {@link URL} to the current url class loader if url class loader doesn't contain this instance of {@link URL}

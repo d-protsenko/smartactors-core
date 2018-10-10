@@ -12,43 +12,37 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SmartactorsClassLoader extends URLClassLoader implements ISmartactorsClassLoader {
 
-    private static Object defaultModuleId = null;
-    /* This is ModuleId To ClassLoader Map */
-    private static Map<Object, SmartactorsClassLoader> moduleClassLoaders = new ConcurrentHashMap<>();
+    private static SmartactorsClassLoader defaultClassLoader = null;
 
+    private String moduleName;
+    private String moduleVersion;
     private Set<SmartactorsClassLoader> dependsOn = new HashSet<>(); //Collections.synchronizedSet(new HashSet<>());
-
-    public static void setDefaultModuleId(Object moduleId) {
-        defaultModuleId = moduleId;
-    }
-
-    public static void addModule(Object moduleID, String moduleName, String moduleVersion) {
-        SmartactorsClassLoader classLoader = new SmartactorsClassLoader(new URL[]{});
-        moduleClassLoaders.put(moduleID, classLoader);
-    }
-
-    public static SmartactorsClassLoader getModuleClassLoader(Object moduleID) {
-        return moduleClassLoaders.get(moduleID);
-    }
-
-    public static void addModuleDependency(Object dependentModuleId, Object baseModuleId) {
-        if (!baseModuleId.equals(dependentModuleId)) {
-            SmartactorsClassLoader baseClassLoader = getModuleClassLoader(baseModuleId);
-            SmartactorsClassLoader dependentClassLoader = getModuleClassLoader(dependentModuleId);
-            if (baseClassLoader != null && dependentClassLoader != null) {
-                synchronized (dependentClassLoader) {
-                    dependentClassLoader.dependsOn.add(baseClassLoader);
-                }
-            }
-        }
-    }
 
     /**
      * Redefined constructor
-     * @param urls the URLs from which to load classes and resources
+     * @param moduleName the name of module which class loader contains
+     * @param moduleVersion the version of module which class loader contains
      */
-    private SmartactorsClassLoader(final URL[] urls) {
-        super(urls);
+    private SmartactorsClassLoader(String moduleName, String moduleVersion) {
+        super(new URL[]{});
+        this.moduleName = moduleName;
+        this.moduleVersion = moduleVersion;
+    }
+
+    public static ISmartactorsClassLoader newInstance(String moduleName, String moduleVersion) {
+        return new SmartactorsClassLoader(moduleName, moduleVersion);
+    }
+
+    public void setDefault() {
+        defaultClassLoader = this;
+    }
+
+    public void addDependency(ISmartactorsClassLoader base) {
+        if (base != null && base != this) {
+            synchronized (this) {
+                dependsOn.add((SmartactorsClassLoader)base);
+            }
+        }
     }
 
     private void addDependenciesToSet(Set<ClassLoader> classLoaders) {
@@ -140,7 +134,7 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
                 clazz = this.loadClassFromDependencies(
                         className,
                         getSystemClassLoader(),
-                        defaultModuleId == null ? null : moduleClassLoaders.get(defaultModuleId),
+                        defaultClassLoader,
                         sclUsed
                 );
             }

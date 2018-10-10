@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.feature_management.feature_manager_actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.class_management.version_manager.VersionManager;
+import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.exception.FeatureManagementException;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.wrapper.AddFeatureWrapper;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.wrapper.FeatureManagerStateWrapper;
@@ -26,6 +26,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.version_management.version_manager.exception.VersionManagerException;
 
 import java.util.*;
 import java.time.Duration;
@@ -263,8 +264,8 @@ public class FeatureManagerActor {
             if (null != featureDependencies) {
                 VersionManager.addModule(
                         feature.getId(),
-                        getEmptyIfNull(feature.getGroupId()) + FEATURE_NAME_DELIMITER + getEmptyIfNull(feature.getName()),
-                        getEmptyIfNull(feature.getVersion())
+                        emptify(feature.getGroupId()) + FEATURE_NAME_DELIMITER + emptify(feature.getName()),
+                        emptify(feature.getVersion())
                 );
 
                 removeLoadedFeaturesFromFeatureDependencies(feature);
@@ -277,7 +278,7 @@ public class FeatureManagerActor {
                     this.featureProcesses.put(mp, feature);
                 }
             }
-        } catch (InvalidArgumentException | ReadValueException | AsynchronousOperationException e) {
+        } catch (InvalidArgumentException | VersionManagerException | ReadValueException | AsynchronousOperationException e) {
             throw new FeatureManagementException(e);
         }
         if (!featureFromMessage.updateFromClone(feature)) {
@@ -341,14 +342,18 @@ public class FeatureManagerActor {
                         break;
                     } else if (order > 0) {
                         if (baseFeature == null ||
-                                getEmptyIfNull(loadedFeature.getVersion()).
-                                        compareTo(getEmptyIfNull(baseFeature.getVersion())) >= 0) {
+                                emptify(loadedFeature.getVersion()).
+                                        compareTo(emptify(baseFeature.getVersion())) >= 0) {
                             baseFeature = loadedFeature;
                         }
                     }
                 }
                 if (null != baseFeature) {
-                    VersionManager.addModuleDependency(feature.getId(), baseFeature.getId());
+                    try {
+                        VersionManager.addModuleDependency(feature.getId(), baseFeature.getId());
+                    } catch(InvalidArgumentException e) {
+                        throw new FeatureManagementException("Cannot add dependency to module.", e);
+                    }
                     if (order != 0) {
                         System.out.println(
                                 "[WARNING] Version of base feature '"+baseFeature.getDisplayName()+
@@ -398,18 +403,21 @@ public class FeatureManagerActor {
         }
     }
 
-    private String getEmptyIfNull(String s) {
-        return (s == null ? "" : s);
+    private String emptify(String str) {
+        return (str == null ? "" : str);
     }
 
     private int compareFeatureToDependency(IFeature feature, String dependencyName)
             throws FeatureManagementException {
         String[] dependency = parseFullName(dependencyName);
-        if (!getEmptyIfNull(feature.getGroupId()).equals(dependency[0]) ||
-                !getEmptyIfNull(feature.getName()).equals(dependency[1]) ) {
+        if (!emptify(feature.getGroupId()).equals(dependency[0]) ||
+                !emptify(feature.getName()).equals(dependency[1]) ) {
             return -1;
         }
-        return getEmptyIfNull(feature.getVersion()).compareTo(dependency[2]);
+        if (dependency[2].equals("")) {
+            return 0;
+        }
+        return  emptify(feature.getVersion()).compareTo(dependency[2]);
     }
 
     // todo: replace this code by parsing strategy

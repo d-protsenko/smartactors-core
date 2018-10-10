@@ -6,7 +6,8 @@ import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.class_management.hierarchical_class_loader.SmartactorsClassLoader;
+import info.smart_tools.smartactors.version_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.version_management.version_manager.exception.VersionManagerException;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,103 +17,85 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class VersionManager {
 
-    public static final String coreName = "info.smart_tools:smartactors";
-    public static final String coreVersion = "0.4.0";
-    public static final Object coreId = java.util.UUID.randomUUID();
+    public  static final Object coreId = java.util.UUID.randomUUID();
+    private static final String coreName = "info.smart_tools:smartactors";
+    private static final String coreVersion = "0.4.0";
 
-    private static ThreadLocal<Object> currentModuleId = new ThreadLocal<>();
+    private static ThreadLocal<IModule> currentModule = new ThreadLocal<>();
     private static ThreadLocal<IObject> currentMessage = new ThreadLocal<>();
 
-    private static Map<Object, Set<Object>> dependencies = new ConcurrentHashMap<>();
-    private static Map<Object, String> moduleNames = new ConcurrentHashMap<>();
-    private static Map<Object, String> moduleVersions = new ConcurrentHashMap<>();
+    private static Map<Object, IModule> modules = new ConcurrentHashMap<>();
+    private static Map<Object, Chain> chains = new ConcurrentHashMap<>();
 
     private static Map<Object, List<IResolveDependencyStrategy>> versionStrategies = new ConcurrentHashMap<>();
     private static Map<Object, List<Object>> chainVersions = new ConcurrentHashMap<>();
-    private static Map<Object, Map<Object, Object>> chainModuleIds = new ConcurrentHashMap<>();
+    private static Map<Object, Map<Object, IModule>> chainModuleIds = new ConcurrentHashMap<>();
 
     static {
         try {
             addModule(coreId, coreName, coreVersion);
-        } catch(InvalidArgumentException e) {}
-        SmartactorsClassLoader.setDefaultModuleId(coreId);
+            modules.get(coreId).setDefault();
+        } catch(InvalidArgumentException | VersionManagerException e) {}
     }
 
     private VersionManager() {}
 
     public static void addModule(final Object moduleId, final String moduleName, final String moduleVersion)
-            throws InvalidArgumentException {
-        if (moduleName == null || moduleName.equals("")) {
-            throw new InvalidArgumentException("Item name cannot be null");
+            throws InvalidArgumentException, VersionManagerException {
+        if (moduleId == null || moduleName == null || moduleName.equals("")) {
+            throw new InvalidArgumentException("Module id or name cannot be null.");
         }
 
         String version = (moduleVersion == null ? "" : moduleVersion);
 
-        if (dependencies.get(moduleId) == null) {
-            SmartactorsClassLoader.addModule(moduleId, moduleName, version);
-            dependencies.put(moduleId, Collections.synchronizedSet(new HashSet<>()));
-            moduleNames.put(moduleId, moduleName);
-            moduleVersions.put(moduleId, version);
+        if (modules.get(moduleId) == null) {
+            modules.put(moduleId, new Module(moduleId, moduleName, version));
         } else {
-            System.out.println("[WARNING] Module "+moduleId+" already defined.\n");
+            throw new VersionManagerException("Module "+String.valueOf(moduleId)+" already defined.");
         }
-    }
-
-    private static String getModuleName(Object moduleId) {
-        return moduleNames.get(moduleId);
-    }
-
-    private static String getModuleVersion(Object moduleId) {
-        return moduleVersions.get(moduleId);
-    }
-
-    public static ISmartactorsClassLoader getModuleClassLoader(Object moduleId) {
-        return SmartactorsClassLoader.getModuleClassLoader(moduleId);
     }
 
     public static ISmartactorsClassLoader getCurrentClassLoader() {
-        return SmartactorsClassLoader.getModuleClassLoader(getCurrentModule());
+        return currentModule.get().getClassLoader();
     }
 
-    public static void addModuleDependency(Object dependentModuleId, Object baseModuleId) {
-        if (baseModuleId != null && dependentModuleId != null && dependentModuleId != baseModuleId) {
-            Set<Object> moduleIDs = dependencies.get(baseModuleId);
-            Set<Object> dependsOn = dependencies.get(dependentModuleId);
-            // it is based on ConcurrentHashMap, so it is thread safe
-            dependsOn.add(baseModuleId);
-            dependsOn.addAll(moduleIDs);
+    public static void addModuleDependency(Object dependentModuleId, Object baseModuleId)
+            throws InvalidArgumentException {
 
-            SmartactorsClassLoader.addModuleDependency(dependentModuleId, baseModuleId);
+        if (baseModuleId == null || dependentModuleId == null) {
+            throw new InvalidArgumentException("Module id cannot be null.");
+        }
+
+        modules.get(dependentModuleId).addDependency(modules.get(baseModuleId));
+    }
+
+    public static void finalizeModuleDependencies(Object moduleId)
+            throws InvalidArgumentException {
+        if (moduleId == null) {
+            throw new InvalidArgumentException("Module id cannot be null.");
+        }
+
+        if (modules.get(moduleId).getDependencies().size() == 0) {
+            modules.get(moduleId).addDependency(modules.get(coreId));
         }
     }
 
-    public static void finalizeModuleDependencies(Object moduleId) {
-        if (moduleId != null) {
-            Set<Object> dependsOn = dependencies.get(moduleId);
-            if (dependsOn != null && dependsOn.size() == 0) {
+    public static IModule getModuleById(Object moduleId) { return modules.get(moduleId); }
 
-                dependsOn.add(coreId);
-                SmartactorsClassLoader.addModuleDependency(moduleId, coreId);
-            }
-        }
-    }
+    static IObject getCurrentMessage() { return currentMessage.get(); }
 
     public static void setCurrentMessage(IObject message) { currentMessage.set(message); }
 
-    public static IObject getCurrentMessage() { return currentMessage.get(); }
+    public static void setCurrentModule(IModule module) { currentModule.set(module); }
 
-    public static void setCurrentModule(Object moduleId) {
-        currentModuleId.set(moduleId);
+    public static IModule getCurrentModule() {
+        return currentModule.get();
     }
 
-    public static Object getCurrentModule() {
-        return currentModuleId.get();
-    }
-
-    public static <T> T getFromMap(Object moduleId, Map<Object, T> objects) {
-        T object = objects.get(moduleId);
+    public static <T> T getFromMap(IModule module, Map<IModule, T> objects) {
+        T object = objects.get(module);
         if (object == null) {
-            for(Object dependency : dependencies.get(moduleId)) {
+            for(Object dependency : module.getDependencies()) {
                 object = objects.get(dependency);
                 if (object != null) {
                     break;
@@ -122,14 +105,14 @@ public final class VersionManager {
         return object;
     }
 
-    public static <T> T getFromMap(Map<Object, T> objects) {
+    public static <T> T getFromMap(Map<IModule, T> objects) {
         return getFromMap(getCurrentModule(), objects);
     }
 
-    public static <T> T removeFromMap(Object moduleId, Map<Object, T> objects) {
-        T object = objects.remove(moduleId);
+    public static <T> T removeFromMap(IModule module, Map<IModule, T> objects) {
+        T object = objects.remove(module);
         if (object == null) {
-            for(Object dependency : dependencies.get(moduleId)) {
+            for(Object dependency : module.getDependencies()) {
                 object = objects.remove(dependency);
                 if (object != null) {
                     break;
@@ -139,28 +122,43 @@ public final class VersionManager {
         return object;
     }
 
-    public static <T> T removeFromMap(Map<Object, T> objects) {
+    public static <T> T removeFromMap(Map<IModule, T> objects) {
         return removeFromMap(getCurrentModule(), objects);
     }
 
     public static void registerChain(Object chainId)
             throws InvalidArgumentException {
-        Object moduleID = getCurrentModule();
-        Object version = moduleVersions.get(moduleID);
+        IModule module = getCurrentModule();
+        Object version = module.getVersion();
+
+        if (chainId == null || version == null) {
+            throw new InvalidArgumentException("Id and version of chain cannot be null.");
+        }
+
+        Chain chain = chains.get(chainId);
+        if (chain == null) {
+            chain = new Chain(chainId);
+            chains.put(chainId, chain);
+        }
+        chain.addVersion(version, module)
+
+
+
+//-----------
         if (chainId == null || version == null) {
             throw new InvalidArgumentException("Key and version of chain cannot be null.");
         }
-        Map<Object, Object> moduleVersions = chainModuleIds.get(chainId);
+        Map<Object, IModule> moduleVersions = chainModuleIds.get(chainId);
         if (moduleVersions == null) {
             moduleVersions = new ConcurrentHashMap<>();
             chainModuleIds.put(chainId, moduleVersions);
         }
-        Object previous = moduleVersions.put(version, moduleID);
+        IModule previous = moduleVersions.put(version, module);
         if (previous != null) {
             System.out.println(
                     "[WARNING] Replacing chain "+chainId+":"+version+" registered from feature "+
-                            getModuleName(previous)+":"+ getModuleVersion(previous)+" by chain from feature "+
-                            getModuleName(moduleID)+":"+ getModuleVersion(moduleID)
+                            previous.getName()+":"+previous.getVersion()+" by chain from feature "+
+                            module.getName()+":"+ module.getVersion()
             );
         } else {
             List<Object> versions = chainVersions.get(chainId);
@@ -172,7 +170,7 @@ public final class VersionManager {
 
     public static void registerVersionResolutionStrategy(Object chainId, IResolveDependencyStrategy strategy)
             throws InvalidArgumentException {
-        Object version = moduleVersions.get(getCurrentModule());
+        Object version = getCurrentModule().getVersion();
         if (chainId == null || version == null) {
             throw new InvalidArgumentException("Key and version of chain cannot be null.");
         }
@@ -223,31 +221,31 @@ public final class VersionManager {
         return (T)chainVersions.get(chainID).get(0);
     }
 
-    private static Object getModuleIdByChainVersion(final Object chainId, final Object version)
+    private static IModule getModuleByChainVersion(final Object chainId, final Object version)
             throws InvalidArgumentException {
         if (chainId == null || version == null) {
             throw new InvalidArgumentException("Key and version of chain cannot be null.");
         }
-        Map<Object, Object> versions = chainModuleIds.get(chainId);
+        Map<Object, IModule> versions = chainModuleIds.get(chainId);
         if (versions == null) {
             return null;
         }
         return versions.get(version);
     }
 
-    public static Object getModuleIdByChainId(Object chainId)
+    public static IModule getModuleByChainId(Object chainId)
             throws InvalidArgumentException, ResolveDependencyStrategyException {
-        Object moduleID = getCurrentModule();
+        IModule module = getCurrentModule();
         IObject context = getCurrentMessage();
-        if (context != null || moduleID == null) {
+        if (context != null || module == null) {
             Object chainVersion = VersionManager.applyVersionResolutionStrategy(chainId, context);
-            moduleID = VersionManager.getModuleIdByChainVersion(chainId, chainVersion);
-            if (moduleID == null) {
+            module = VersionManager.getModuleByChainVersion(chainId, chainVersion);
+            if (module == null) {
                 throw new ResolveDependencyStrategyException(
                         "Resolution failed for chain '"+String.valueOf(chainId)+":"+String.valueOf(chainVersion)+"'."
                 );
             }
         }
-        return moduleID;
+        return module;
     }
 }

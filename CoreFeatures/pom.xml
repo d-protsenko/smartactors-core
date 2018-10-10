@@ -23,6 +23,7 @@
     <modules>
         <module>Base</module>
         <module>ClassManagement</module>
+        <module>VersionManagement</module>
         <module>FeatureLoadingSystem</module>
         <module>Helpers</module>
         <module>Security</module>
@@ -92,7 +93,6 @@
         <module>EndpointServiceStarter</module>
         <module>DatabaseServiceStarter</module>
         <module>RemoteManagement</module>
-        <module>VersionManagement</module>
     </modules>
 
     <build>

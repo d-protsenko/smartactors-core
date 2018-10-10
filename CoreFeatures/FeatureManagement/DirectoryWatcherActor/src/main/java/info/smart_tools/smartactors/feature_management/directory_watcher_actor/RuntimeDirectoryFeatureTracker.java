@@ -3,7 +3,8 @@ package info.smart_tools.smartactors.feature_management.directory_watcher_actor;
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
-import info.smart_tools.smartactors.class_management.version_manager.VersionManager;
+import info.smart_tools.smartactors.version_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.feature_management.directory_watcher_actor.exception.WatchingServiceException;
 import info.smart_tools.smartactors.feature_management.directory_watcher_actor.wrapper.StartWatchingWrapper;
 import info.smart_tools.smartactors.feature_management.directory_watcher_actor.wrapper.StopWatchingWrapper;
@@ -48,7 +49,7 @@ public class RuntimeDirectoryFeatureTracker {
     private Thread watchingThread;
     private WatchService watchingService;
     private IScope scope;
-    private Object moduleId;
+    private IModule module;
 
     private final static String EXTENSION_SEPARATOR = ".";
     private final static String TASK_QUEUE_IOC_NAME = "task_queue";
@@ -95,7 +96,7 @@ public class RuntimeDirectoryFeatureTracker {
             throws WatchingServiceException {
         try {
             this.scope = ScopeProvider.getCurrentScope();
-            this.moduleId = VersionManager.getCurrentModule();
+            this.module = VersionManager.getCurrentModule();
             this.watchingDir = new info.smart_tools.smartactors.base.path.Path(wrapper.getObservedDirectory());
             this.fileNameFieldName = IOC.resolve(
                     Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), wrapper.getFileNameFieldName()
@@ -128,7 +129,7 @@ public class RuntimeDirectoryFeatureTracker {
             return;
         }
         ScopeProvider.setCurrentScope(this.scope);
-        VersionManager.setCurrentModule(this.moduleId);
+        VersionManager.setCurrentModule(this.module);
         IQueue queue = IOC.resolve(Keys.getOrAdd(TASK_QUEUE_IOC_NAME));
         Integer stackDepth = IOC.resolve(Keys.getOrAdd("default_stack_depth"));
 

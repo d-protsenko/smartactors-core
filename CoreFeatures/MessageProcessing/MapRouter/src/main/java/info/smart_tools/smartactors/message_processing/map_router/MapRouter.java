@@ -1,7 +1,8 @@
 package info.smart_tools.smartactors.message_processing.map_router;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.class_management.version_manager.VersionManager;
+import info.smart_tools.smartactors.version_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.exceptions.RouteNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
@@ -16,7 +17,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * Implementation of {@link IRouter} that uses a {@link Map} instance.
  */
 public class MapRouter implements IRouter {
-    private final Map<Object, Map<Object, IMessageReceiver>> map;
+
+    private final Map<Object, Map<IModule, IMessageReceiver>> map;
 
     /**
      * The constructor.
@@ -24,7 +26,7 @@ public class MapRouter implements IRouter {
      * @param map    {@link Map} instance to use as routing table
      * @throws InvalidArgumentException if map is {@code null}
      */
-    public MapRouter(final Map<Object, Map<Object, IMessageReceiver>> map)
+    public MapRouter(final Map<Object, Map<IModule, IMessageReceiver>> map)
             throws InvalidArgumentException {
         if (null == map) {
             throw new InvalidArgumentException("Map should not be null.");
@@ -36,7 +38,7 @@ public class MapRouter implements IRouter {
     @Override
     public IMessageReceiver route(final Object targetId) throws RouteNotFoundException {
         IMessageReceiver receiver = null;
-        Map<Object, IMessageReceiver> versions = map.get(targetId);
+        Map<IModule, IMessageReceiver> versions = map.get(targetId);
 
         if (versions != null) {
             receiver = VersionManager.getFromMap(versions);
@@ -51,7 +53,7 @@ public class MapRouter implements IRouter {
 
     @Override
     public void register(final Object targetId, final IMessageReceiver receiver) {
-        Map<Object, IMessageReceiver> versions = map.get(targetId);
+        Map<IModule, IMessageReceiver> versions = map.get(targetId);
 
         if (versions == null) {
             versions = new ConcurrentHashMap<>();
@@ -69,7 +71,7 @@ public class MapRouter implements IRouter {
     @Override
     public void unregister(final Object targetId) {
         IMessageReceiver receiver = null;
-        Map<Object, IMessageReceiver> versions = map.get(targetId);
+        Map<IModule, IMessageReceiver> versions = map.get(targetId);
 
         if (versions != null) {
             receiver = versions.remove(VersionManager.getCurrentModule());

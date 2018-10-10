@@ -4,10 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
-        <artifactId>class-management</artifactId>
+        <artifactId>version-management</artifactId>
         <version>0.4.0</version>
     </parent>
-    <artifactId>class-management.version-manager</artifactId>
+    <artifactId>version-management.version-manager</artifactId>
     <version>0.4.0</version>
     <dependencies>
         <dependency>
@@ -65,6 +65,12 @@
             <artifactId>iobject.ds-object</artifactId>
             <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>version-management.interfaces.imodule</artifactId>
+            <version>0.4.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
     <build>

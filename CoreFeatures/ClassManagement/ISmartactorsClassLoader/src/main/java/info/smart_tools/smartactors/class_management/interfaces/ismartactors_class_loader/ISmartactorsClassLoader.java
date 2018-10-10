@@ -8,6 +8,10 @@ import java.util.List;
  */
 public interface ISmartactorsClassLoader {
 
+    void setDefault();
+
+    void addDependency(ISmartactorsClassLoader base);
+
     /**
      * Add {@link URL} to the current url class loader if url class loader doesn't contain this {@link URL} yet
      * @param url instance of {@link URL}

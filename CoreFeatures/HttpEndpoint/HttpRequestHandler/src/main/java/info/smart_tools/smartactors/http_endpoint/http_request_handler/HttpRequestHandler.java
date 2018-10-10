@@ -31,6 +31,7 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.version_management.interfaces.imodule.IModule;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -83,9 +84,9 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
      * @param upCounter          up-counter to use to subscribe on shutdown request
      */
     public HttpRequestHandler(
-            final IScope scope, final Object moduleId, final IEnvironmentHandler environmentHandler, final IReceiverChain receiver,
+            final IScope scope, final IModule module, final IEnvironmentHandler environmentHandler, final IReceiverChain receiver,
             final String name, final IUpCounter upCounter) throws ResolutionException, UpCounterCallbackExecutionException {
-        super(receiver, environmentHandler, scope, moduleId, name);
+        super(receiver, environmentHandler, scope, module, name);
         this.name = name;
 
         messageFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");

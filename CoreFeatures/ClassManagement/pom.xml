@@ -17,7 +17,6 @@
         <module>SimpleClassLoader</module>
         <module>HierarchicalClassLoader</module>
         <module>AdvancedClassLoader</module>
-        <module>VersionManager</module>
         <module>ClassGeneratorJavaCompileAPI</module>
         <module>ClassManagementDistribution</module>
     </modules>

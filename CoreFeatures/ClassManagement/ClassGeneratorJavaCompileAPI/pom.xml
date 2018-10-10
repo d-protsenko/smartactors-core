@@ -23,7 +23,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>class-management.version-manager</artifactId>
+            <artifactId>class-management.interfaces.ismartactors_class_loader</artifactId>
             <version>0.4.0</version>
             <scope>compile</scope>
         </dependency>
