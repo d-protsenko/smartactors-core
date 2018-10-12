@@ -25,11 +25,8 @@ public final class VersionManager {
     private static ThreadLocal<IObject> currentMessage = new ThreadLocal<>();
 
     private static Map<Object, IModule> modules = new ConcurrentHashMap<>();
-    private static Map<Object, Chain> chains = new ConcurrentHashMap<>();
-
-    private static Map<Object, List<IResolveDependencyStrategy>> versionStrategies = new ConcurrentHashMap<>();
-    private static Map<Object, List<Object>> chainVersions = new ConcurrentHashMap<>();
-    private static Map<Object, Map<Object, IModule>> chainModuleIds = new ConcurrentHashMap<>();
+    private static Map<Object, ChainVersionStrategies> chainVersionStrategies = new ConcurrentHashMap<>();
+    private static Map<Object, Map<String, IModule>> chainVersionModules = new ConcurrentHashMap<>();
 
     static {
         try {
@@ -129,122 +126,76 @@ public final class VersionManager {
     public static void registerChain(Object chainId)
             throws InvalidArgumentException {
         IModule module = getCurrentModule();
-        Object version = module.getVersion();
+        String version = module.getVersion();
 
         if (chainId == null || version == null) {
-            throw new InvalidArgumentException("Id and version of chain cannot be null.");
+            throw new InvalidArgumentException("Chain id or version cannot be null.");
         }
 
-        Chain chain = chains.get(chainId);
-        if (chain == null) {
-            chain = new Chain(chainId);
-            chains.put(chainId, chain);
+        Map<String, IModule> versions = chainVersionModules.get(chainId);
+        if (versions == null) {
+            versions = new ConcurrentHashMap<>();
+            chainVersionModules.put(chainId, versions);
         }
-        chain.addVersion(version, module)
 
-
-
-//-----------
-        if (chainId == null || version == null) {
-            throw new InvalidArgumentException("Key and version of chain cannot be null.");
-        }
-        Map<Object, IModule> moduleVersions = chainModuleIds.get(chainId);
-        if (moduleVersions == null) {
-            moduleVersions = new ConcurrentHashMap<>();
-            chainModuleIds.put(chainId, moduleVersions);
-        }
-        IModule previous = moduleVersions.put(version, module);
+        IModule previous = versions.put(version, module);
         if (previous != null) {
             System.out.println(
-                    "[WARNING] Replacing chain "+chainId+":"+version+" registered from feature "+
-                            previous.getName()+":"+previous.getVersion()+" by chain from feature "+
-                            module.getName()+":"+ module.getVersion()
+                    "[WARNING] Replacing chain " + chainId + ":" + version + " registered from feature " +
+                            previous.getName() + ":" + previous.getVersion() + " by chain from feature " +
+                            module.getName() + ":" + module.getVersion()
             );
         } else {
-            List<Object> versions = chainVersions.get(chainId);
-            if (versions == null || !versions.contains(version)) {
-                registerVersionResolutionStrategy(chainId, null);
-            }
+            registerVersionResolutionStrategy(chainId, null);
         }
-    }
+  }
 
     public static void registerVersionResolutionStrategy(Object chainId, IResolveDependencyStrategy strategy)
             throws InvalidArgumentException {
-        Object version = getCurrentModule().getVersion();
+        String version = getCurrentModule().getVersion();
         if (chainId == null || version == null) {
             throw new InvalidArgumentException("Key and version of chain cannot be null.");
         }
-        List<Object> versions = chainVersions.get(chainId);
-        List<IResolveDependencyStrategy> strategies = versionStrategies.get(chainId);
-        if (versions == null || strategies == null) {
-            versions = Collections.synchronizedList(new LinkedList<>());
-            chainVersions.put(chainId, versions);
-            strategies = Collections.synchronizedList(new LinkedList<>());
-            versionStrategies.put(chainId, strategies);
+        ChainVersionStrategies versionStrategies = chainVersionStrategies.get(chainId);
+        if (versionStrategies == null) {
+            versionStrategies = new ChainVersionStrategies(chainId);
+            chainVersionStrategies.put(chainId, versionStrategies);
         }
-        int i;
-        for(i = 0; i < versions.size(); i++) {
-            int res = String.valueOf(versions.get(i)).compareTo(String.valueOf(version));
-            if (res == 0) {
-                versions.remove(i);
-                strategies.remove(i);
-                break;
-            }
-            if (res < 0 ) {
-                break;
-            }
-        }
-        versions.add(i, version);
-        strategies.add(i, strategy);
+        versionStrategies.registerVersionResolutionStrategy(version, strategy);
     }
 
-    private static <T> T applyVersionResolutionStrategy(final Object ... args)
+    private static String getVersionByChainId(Object chainId)
             throws InvalidArgumentException, ResolveDependencyStrategyException {
-        String chainID = String.valueOf(args[0]);
-        if (chainID == null) {
-            throw new InvalidArgumentException("Key for version resolution strategy cannot be null.");
-        }
-        List<IResolveDependencyStrategy> strategies = versionStrategies.get(chainID);
-        if (strategies == null) {
-            throw new ResolveDependencyStrategyException("Version resolution strategy container for '"+chainID+"' is not registered.");
-        }
-        T result = null;
-        for(IResolveDependencyStrategy strategy : strategies) {
-            if (strategy != null) {
-                result = strategy.resolve(args);
-                if (result != null) {
-                    return result;
-                }
-            }
-        }
-        // default strategy is to return max version
-        return (T)chainVersions.get(chainID).get(0);
-    }
-
-    private static IModule getModuleByChainVersion(final Object chainId, final Object version)
-            throws InvalidArgumentException {
-        if (chainId == null || version == null) {
+        if (chainId == null) {
             throw new InvalidArgumentException("Key and version of chain cannot be null.");
         }
-        Map<Object, IModule> versions = chainModuleIds.get(chainId);
-        if (versions == null) {
-            return null;
+        ChainVersionStrategies versionStrategies = chainVersionStrategies.get(chainId);
+        if (versionStrategies == null) {
+            throw new ResolveDependencyStrategyException("Chain with id '"+String.valueOf(chainId)+"' is not registered.");
         }
-        return versions.get(version);
+        IObject message = getCurrentMessage();
+        if (message == null) {
+            throw new ResolveDependencyStrategyException("Cannot resolve chain version on null message.");
+        }
+        return versionStrategies.resolveVersion(message);
     }
 
     public static IModule getModuleByChainId(Object chainId)
             throws InvalidArgumentException, ResolveDependencyStrategyException {
-        IModule module = getCurrentModule();
-        IObject context = getCurrentMessage();
-        if (context != null || module == null) {
-            Object chainVersion = VersionManager.applyVersionResolutionStrategy(chainId, context);
-            module = VersionManager.getModuleByChainVersion(chainId, chainVersion);
-            if (module == null) {
-                throw new ResolveDependencyStrategyException(
-                        "Resolution failed for chain '"+String.valueOf(chainId)+":"+String.valueOf(chainVersion)+"'."
-                );
-            }
+        if (chainId == null) {
+            throw new InvalidArgumentException("Key and version of chain cannot be null.");
+        }
+        if (getCurrentMessage() == null) {
+            return getCurrentModule();
+        }
+        String version = getVersionByChainId(chainId);
+        Map<String, IModule> versions = chainVersionModules.get(chainId);
+        if (versions == null) {
+            throw new ResolveDependencyStrategyException("Chain with id '"+String.valueOf(chainId)+"' is not registered.");
+        }
+        IModule module = versions.get(version);
+        if (module == null) {
+            throw new ResolveDependencyStrategyException("Resolution failed for chain '"+String.valueOf(chainId)+"'.");
         }
         return module;
     }

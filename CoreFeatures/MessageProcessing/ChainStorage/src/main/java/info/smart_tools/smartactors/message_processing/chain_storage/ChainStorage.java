@@ -59,7 +59,7 @@ public class ChainStorage implements IChainStorage {
             throw new ChainNotFoundException(chainId);
         }
 
-        IModule module = null;
+        IModule module;
         try {
             module = VersionManager.getModuleByChainId(chainId);
         } catch (InvalidArgumentException | ResolveDependencyStrategyException e) {
@@ -83,21 +83,16 @@ public class ChainStorage implements IChainStorage {
                     chainId, description, this, router);
 
             IChainState oldState = null;
-
             IChainState state = IOC.resolve(Keys.getOrAdd(IChainState.class.getCanonicalName()), newChain);
-
-            Map<IModule, IChainState> chainVersions = chainStates.get(chainId);
-            if (chainVersions == null) {
-                chainVersions = new ConcurrentHashMap<>();
-                chainVersions.put(VersionManager.getCurrentModule(), state);
-                synchronized (modificationLock) {
+            synchronized (modificationLock) {
+                Map<IModule, IChainState> chainVersions = chainStates.get(chainId);
+                if (chainVersions == null) {
+                    chainVersions = new ConcurrentHashMap<>();
+                    chainVersions.put(VersionManager.getCurrentModule(), state);
                     chainStates.put(chainId, chainVersions);
-                }
-            } else {
-                synchronized (modificationLock) {
+                } else {
                     oldState = chainVersions.put(VersionManager.getCurrentModule(), state);
                 }
-
             }
             VersionManager.registerChain(chainId);
 
