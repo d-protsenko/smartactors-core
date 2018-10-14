@@ -25,8 +25,6 @@ public final class VersionManager {
     private static ThreadLocal<IObject> currentMessage = new ThreadLocal<>();
 
     private static Map<Object, IModule> modules = new ConcurrentHashMap<>();
-    private static Map<Object, ChainVersionStrategies> chainVersionStrategies = new ConcurrentHashMap<>();
-    private static Map<Object, Map<String, IModule>> chainVersionModules = new ConcurrentHashMap<>();
 
     static {
         try {
@@ -123,80 +121,4 @@ public final class VersionManager {
         return removeFromMap(getCurrentModule(), objects);
     }
 
-    public static void registerChain(Object chainId)
-            throws InvalidArgumentException {
-        IModule module = getCurrentModule();
-        String version = module.getVersion();
-
-        if (chainId == null || version == null) {
-            throw new InvalidArgumentException("Chain id or version cannot be null.");
-        }
-
-        Map<String, IModule> versions = chainVersionModules.get(chainId);
-        if (versions == null) {
-            versions = new ConcurrentHashMap<>();
-            chainVersionModules.put(chainId, versions);
-        }
-
-        IModule previous = versions.put(version, module);
-        if (previous != null) {
-            System.out.println(
-                    "[WARNING] Replacing chain " + chainId + ":" + version + " registered from feature " +
-                            previous.getName() + ":" + previous.getVersion() + " by chain from feature " +
-                            module.getName() + ":" + module.getVersion()
-            );
-        } else {
-            registerVersionResolutionStrategy(chainId, null);
-        }
-  }
-
-    public static void registerVersionResolutionStrategy(Object chainId, IResolveDependencyStrategy strategy)
-            throws InvalidArgumentException {
-        String version = getCurrentModule().getVersion();
-        if (chainId == null || version == null) {
-            throw new InvalidArgumentException("Key and version of chain cannot be null.");
-        }
-        ChainVersionStrategies versionStrategies = chainVersionStrategies.get(chainId);
-        if (versionStrategies == null) {
-            versionStrategies = new ChainVersionStrategies(chainId);
-            chainVersionStrategies.put(chainId, versionStrategies);
-        }
-        versionStrategies.registerVersionResolutionStrategy(version, strategy);
-    }
-
-    private static String getVersionByChainId(Object chainId)
-            throws InvalidArgumentException, ResolveDependencyStrategyException {
-        if (chainId == null) {
-            throw new InvalidArgumentException("Key and version of chain cannot be null.");
-        }
-        ChainVersionStrategies versionStrategies = chainVersionStrategies.get(chainId);
-        if (versionStrategies == null) {
-            throw new ResolveDependencyStrategyException("Chain with id '"+String.valueOf(chainId)+"' is not registered.");
-        }
-        IObject message = getCurrentMessage();
-        if (message == null) {
-            throw new ResolveDependencyStrategyException("Cannot resolve chain version on null message.");
-        }
-        return versionStrategies.resolveVersion(message);
-    }
-
-    public static IModule getModuleByChainId(Object chainId)
-            throws InvalidArgumentException, ResolveDependencyStrategyException {
-        if (chainId == null) {
-            throw new InvalidArgumentException("Key and version of chain cannot be null.");
-        }
-        if (getCurrentMessage() == null) {
-            return getCurrentModule();
-        }
-        String version = getVersionByChainId(chainId);
-        Map<String, IModule> versions = chainVersionModules.get(chainId);
-        if (versions == null) {
-            throw new ResolveDependencyStrategyException("Chain with id '"+String.valueOf(chainId)+"' is not registered.");
-        }
-        IModule module = versions.get(version);
-        if (module == null) {
-            throw new ResolveDependencyStrategyException("Resolution failed for chain '"+String.valueOf(chainId)+"'.");
-        }
-        return module;
-    }
 }
