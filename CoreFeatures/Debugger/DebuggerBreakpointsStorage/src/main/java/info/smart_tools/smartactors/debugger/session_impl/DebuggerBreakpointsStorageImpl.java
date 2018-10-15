@@ -97,6 +97,7 @@ public class DebuggerBreakpointsStorageImpl implements IDebuggerBreakpointsStora
             IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
 
             // ToDo: investigate whether we must add message to resolve parameters?
+            // .setCurrentMessage(null) - probably must add version of chain directly
             IReceiverChain chain = chainStorage.resolve(IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName));
 
             IObject stepArgs = chain.getArguments(stepId);

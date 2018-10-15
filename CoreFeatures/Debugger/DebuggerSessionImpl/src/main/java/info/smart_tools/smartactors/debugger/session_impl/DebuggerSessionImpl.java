@@ -97,7 +97,6 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         commands.put("setMessageField", this::setMessageField);
         commands.put("setChain", stopModeCommand(args -> {
             try {
-                // ToDo : check carefully
                 IChainStorage storage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
                 mainChain = storage.resolve(IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), args, message));
             } catch (ResolutionException e) {

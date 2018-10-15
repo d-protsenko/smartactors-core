@@ -110,7 +110,11 @@ public class FeatureManagerActor {
 
             IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd(TASK_QUEUE_IOC_NAME));
             String scatterChainName = wrapper.getScatterChainName();
-            Object chainId = IOC.resolve(Keys.getOrAdd(CHAIN_ID_STORAGE_STRATEGY_NAME), scatterChainName);
+            Object chainId = IOC.resolve(
+                    Keys.getOrAdd(CHAIN_ID_STORAGE_STRATEGY_NAME),
+                    scatterChainName,
+                    mp.getMessage()
+            );
             IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
             int stackDepth = DEFAULT_STACK_DEPTH;
             IReceiverChain scatterChain = chainStorage.resolve(chainId);

@@ -9,12 +9,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 class ChainVersionStrategies {
-    private Object id;
+    private String mapName;
     private List<IResolveDependencyStrategy> versionResolutionStrategies;
     private List<String> versions;
 
-    ChainVersionStrategies(Object id) {
-        this.id = id;
+    ChainVersionStrategies(String mapName) {
+        this.mapName = mapName;
         this.versionResolutionStrategies = Collections.synchronizedList(new LinkedList<>());
         this.versions = Collections.synchronizedList(new LinkedList<>());
     }
@@ -43,9 +43,14 @@ class ChainVersionStrategies {
         String version = null;
         for(IResolveDependencyStrategy strategy : versionResolutionStrategies) {
             if (strategy != null) {
-                version = strategy.resolve(message);
-                if (version != null) {
-                    break;
+                try {
+                    version = strategy.resolve(message);
+                    if (version != null) {
+                        break;
+                    }
+                } catch (Throwable e) {
+                    System.out.println("[WARNING] Chain '"+ mapName +"' version resolution strategy thrown exception: "+ e.getMessage());
+                    e.printStackTrace();
                 }
             }
         }

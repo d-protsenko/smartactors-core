@@ -72,6 +72,7 @@ import info.smart_tools.smartactors.class_management.module_manager.ModuleManage
 public class ChainTestRunner implements ITestRunner {
 
     private final IFieldName chainNameFieldName;
+    private final IFieldName messageFieldName;
 
     /**
      * Default constructor.
@@ -82,6 +83,9 @@ public class ChainTestRunner implements ITestRunner {
         try {
             this.chainNameFieldName = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainName"
+            );
+            this.messageFieldName = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message"
             );
         } catch (ResolutionException e) {
             throw new InitializationException("Could not create new instance of ChainTestRunner.", e);
@@ -109,10 +113,13 @@ public class ChainTestRunner implements ITestRunner {
 
         try {
             String chainName = (String) description.getValue(chainNameFieldName);
+            String message = (String) description.getValue(messageFieldName);
             Object chainId = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name"),
-                    chainName
+                    chainName,
                     // ToDo: check if here we should setup message for correct chain Id resolution
+                    // setCurrentMessage
+                    message
             );
             IChainStorage chainStorage = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IChainStorage.class.getCanonicalName())
