@@ -103,9 +103,9 @@ public class EndpointsSectionProcessingStrategy implements ISectionStrategy {
                 // TODO: 25.07.16 remove stack depth from endpoint config
                 String type = (String) endpoint.getValue(typeFieldName);
                 String startChainName = (String) endpoint.getValue(startChainNameFieldName);
-                Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), startChainName);
-                ModuleManager.setCurrentMessage(null);
-                IReceiverChain chain = chainStorage.resolve(mapId);
+                Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), startChainName);
+                //ModuleManager.setCurrentMessage(null);
+                IReceiverChain chain = chainStorage.resolve(chainId);
 
                 endpoint.setValue(startChainNameFieldName, chain);
                 endpoint.setValue(queueFieldName, queue);

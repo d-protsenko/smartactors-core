@@ -101,15 +101,13 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                 Boolean isRevert = (Boolean) task.getValue(this.revertFieldName);
                 if ( !isRevert ) {
                     String chainName = (String) task.getValue(this.chainFieldName);
-                    Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName);
-                    ModuleManager.setCurrentMessage(null);
-                    IReceiverChain chain = chainStorage.resolve(mapId);
                     List<IObject> messages = (List<IObject>)task.getValue(this.messagesFieldName);
                     for (IObject message : messages) {
+                        Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName, message);
                         IMessageProcessingSequence processingSequence = IOC.resolve(
                                 IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                                 stackDepth,
-                                chain
+                                chainStorage.resolve(chainId)
                         );
                         IMessageProcessor messageProcessor = IOC.resolve(
                                 IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
@@ -149,16 +147,14 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                     Boolean isRevert = (Boolean) task.getValue(this.revertFieldName);
                     if (isRevert) {
                         String chainName = (String) task.getValue(this.chainFieldName);
-                        Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName);
-                        ModuleManager.setCurrentMessage(null);
-                        IReceiverChain chain = chainStorage.resolve(mapId);
                         List<IObject> messages = (List<IObject>) task.getValue(this.messagesFieldName);
                         for (IObject message : messages) {
                             try {
+                                Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName, message);
                                 IMessageProcessingSequence processingSequence = IOC.resolve(
                                         IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                                         stackDepth,
-                                        chain
+                                        chainStorage.resolve(chainId)
                                 );
                                 IMessageProcessor messageProcessor = IOC.resolve(
                                         IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
@@ -171,7 +167,7 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                             }
                         }
                     }
-                } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
+                } catch (ReadValueException | InvalidArgumentException e) {
                     exception.addSuppressed(e);
                 }
             }
