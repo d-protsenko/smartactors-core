@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.message_processing.chain_call_receiver.exce
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test for {@link ChainChoiceException}.

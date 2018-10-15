@@ -4,8 +4,10 @@ import info.smart_tools.smartactors.class_management.interfaces.ismartactors_cla
 
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Extension of {@link URLClassLoader}

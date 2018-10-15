@@ -12,12 +12,14 @@
     <version>0.4.0</version>
     <packaging>pom</packaging>
     <modules>
-        <module>IClassGenerator</module>
+        <module>IModule</module>
         <module>ISmartactorsClassLoader</module>
+        <module>IClassGenerator</module>
         <module>SimpleClassLoader</module>
         <module>HierarchicalClassLoader</module>
         <module>AdvancedClassLoader</module>
         <module>ClassGeneratorJavaCompileAPI</module>
+        <module>ModuleManager</module>
         <module>ClassManagementDistribution</module>
     </modules>
     <build>

@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.endpoint.interfaces.iresponse_content_strategy;
 
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse.IResponse;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
-import info.smart_tools.smartactors.endpoint.interfaces.iresponse.IResponse;
 
 /**
  * Interface for strategy, that should set content of the response

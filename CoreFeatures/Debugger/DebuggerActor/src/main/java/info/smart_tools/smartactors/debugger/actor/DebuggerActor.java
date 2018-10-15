@@ -1,14 +1,14 @@
 package info.smart_tools.smartactors.debugger.actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.debugger.interfaces.exceptions.CommandExecutionException;
-import info.smart_tools.smartactors.debugger.interfaces.exceptions.InterruptProcessingException;
-import info.smart_tools.smartactors.debugger.interfaces.exceptions.SessionNotFoundException;
+import info.smart_tools.smartactors.debugger.actor.wrappers.CommandMessage;
+import info.smart_tools.smartactors.debugger.actor.wrappers.DebuggableMessage;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerCommand;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSequence;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSession;
-import info.smart_tools.smartactors.debugger.actor.wrappers.CommandMessage;
-import info.smart_tools.smartactors.debugger.actor.wrappers.DebuggableMessage;
+import info.smart_tools.smartactors.debugger.interfaces.exceptions.CommandExecutionException;
+import info.smart_tools.smartactors.debugger.interfaces.exceptions.InterruptProcessingException;
+import info.smart_tools.smartactors.debugger.interfaces.exceptions.SessionNotFoundException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;

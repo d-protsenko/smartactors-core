@@ -5,7 +5,6 @@ import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
-import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -25,6 +24,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageProcessorProcessException;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 
 import java.util.List;
 
@@ -73,12 +73,7 @@ public class OnShutownRequestConfigurationSectionPlugin extends BootstrapPlugin 
                 } catch (ResolutionException e) {
                     stackDepth0 = 5;
                 }
-
                 Integer stackDepth = stackDepth0;
-
-                Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName);
-                VersionManager.setCurrentMessage(null);
-                IReceiverChain chain = chainStorage.resolve(mapId);
 
                 return (IAction<Object>) mode -> {
                     try {
@@ -87,6 +82,8 @@ public class OnShutownRequestConfigurationSectionPlugin extends BootstrapPlugin 
                                 message.setValue(modeFieldName, mode);
                             }
 
+                            Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName, message);
+                            IReceiverChain chain = chainStorage.resolve(chainId);
                             IMessageProcessingSequence processingSequence = IOC.resolve(
                                     IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                                     stackDepth,
@@ -99,11 +96,11 @@ public class OnShutownRequestConfigurationSectionPlugin extends BootstrapPlugin 
                             );
                             messageProcessor.process(message, (IObject) IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
                         }
-                    } catch (ResolutionException | ChangeValueException | MessageProcessorProcessException e) {
+                    } catch (ResolutionException | ChangeValueException | MessageProcessorProcessException | ChainNotFoundException e) {
                         throw new ActionExecuteException(e);
                     }
                 };
-            } catch (ResolutionException | ReadValueException | InvalidArgumentException | ChainNotFoundException e) {
+            } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
                 throw new FunctionExecutionException(e);
             }
         }));

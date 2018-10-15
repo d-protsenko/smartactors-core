@@ -3,7 +3,6 @@ package info.smart_tools.smartactors.debugger_plugins.session_plugin;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
-import info.smart_tools.smartactors.debugger.interfaces.IDebuggerBreakpointsStorage;
 import info.smart_tools.smartactors.debugger.session_impl.DebuggerSessionImpl;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;

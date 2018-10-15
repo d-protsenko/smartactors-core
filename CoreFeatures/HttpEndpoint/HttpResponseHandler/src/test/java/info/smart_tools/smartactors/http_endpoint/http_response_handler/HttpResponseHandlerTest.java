@@ -3,12 +3,12 @@ package info.smart_tools.smartactors.http_endpoint.http_response_handler;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.exceptions.DeserializationException;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.exception.ResponseHandlerException;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -30,18 +30,14 @@ import io.netty.handler.codec.http.HttpHeaders;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by sevenbits on 30.09.16.
  */
 public class HttpResponseHandlerTest {
     IQueue<ITask> taskQueue;
-    IReceiverChain receiverChain;
+    String receiverChain;
     HttpResponseHandler responseHandler;
     IMessageProcessingSequence messageProcessingSequence;
     IMessageProcessor messageProcessor;
@@ -57,7 +53,7 @@ public class HttpResponseHandlerTest {
         this.mapId = mock(Object.class);
         this.chainStorage = mock(IChainStorage.class);
         this.taskQueue = mock(IQueue.class);
-        this.receiverChain = mock(IReceiverChain.class);
+        this.receiverChain = mock(String.class);
         this.messageProcessingSequence = mock(IMessageProcessingSequence.class);
         this.messageProcessor = mock(IMessageProcessor.class);
         this.response = mock(FullHttpResponse.class);
@@ -124,7 +120,8 @@ public class HttpResponseHandlerTest {
                         chainStorage
                 )
         );
-        this.responseHandler = new HttpResponseHandler(taskQueue,
+        this.responseHandler = new HttpResponseHandler(
+                taskQueue,
                 5,
                 receiverChain,
                 new DSObject("{" +
@@ -134,7 +131,8 @@ public class HttpResponseHandlerTest {
                         "\"method\": \"POST\", " +
                         "\"uri\": \"https://foo.bar\"" +
                         "}"),
-                ScopeProvider.getCurrentScope()
+                ScopeProvider.getCurrentScope(),
+                ModuleManager.getCurrentModule()
         );
     }
 

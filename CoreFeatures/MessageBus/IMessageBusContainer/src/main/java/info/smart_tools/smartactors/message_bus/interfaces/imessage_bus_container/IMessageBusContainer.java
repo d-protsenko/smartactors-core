@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_container;
 
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_container.exception.SendingMessageException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 /**
  * Interface for MessageBus

@@ -17,7 +17,6 @@ import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlu
 import info.smart_tools.smartactors.timer.interfaces.itimer.ITime;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**

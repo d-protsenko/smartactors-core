@@ -2,11 +2,11 @@ package info.smart_tools.smartactors.timer.timer;
 
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.timer.interfaces.itimer.ITimerTask;
 import info.smart_tools.smartactors.timer.interfaces.itimer.exceptions.TaskScheduleException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 import java.util.Timer;
 import java.util.TimerTask;

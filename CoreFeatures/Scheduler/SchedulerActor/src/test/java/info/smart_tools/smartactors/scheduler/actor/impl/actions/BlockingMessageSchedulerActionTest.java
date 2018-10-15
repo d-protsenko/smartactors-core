@@ -4,7 +4,6 @@ import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -25,6 +24,7 @@ import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerAct
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -99,7 +99,6 @@ public class BlockingMessageSchedulerActionTest extends PluginsLoadingTestBase {
             }
         });
 
-        VersionManager.setCurrentMessage(null);
         when(chainStorageMock.resolve(eq("some_chain__id"))).thenReturn(receiverChainMock);
 
         action = new BlockingMessageSchedulerAction();

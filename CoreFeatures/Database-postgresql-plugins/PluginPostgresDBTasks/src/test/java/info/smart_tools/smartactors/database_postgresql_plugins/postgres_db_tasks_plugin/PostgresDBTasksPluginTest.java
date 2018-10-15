@@ -1,16 +1,9 @@
 package info.smart_tools.smartactors.database_postgresql_plugins.postgres_db_tasks_plugin;
 
-import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
-import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception.ProcessExecutionException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.database_postgresql.postgres_count_task.CountMessage;
 import info.smart_tools.smartactors.database_postgresql.postgres_count_task.PostgresCountTask;
 import info.smart_tools.smartactors.database_postgresql.postgres_create_task.CreateCollectionMessage;
@@ -25,9 +18,16 @@ import info.smart_tools.smartactors.database_postgresql.postgres_search_task.Pos
 import info.smart_tools.smartactors.database_postgresql.postgres_search_task.SearchMessage;
 import info.smart_tools.smartactors.database_postgresql.postgres_upsert_task.PostgresUpsertTask;
 import info.smart_tools.smartactors.database_postgresql.postgres_upsert_task.UpsertMessage;
-import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception.ProcessExecutionException;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_simple_container_plugin.PluginIOCSimpleContainer;
 import org.junit.Before;

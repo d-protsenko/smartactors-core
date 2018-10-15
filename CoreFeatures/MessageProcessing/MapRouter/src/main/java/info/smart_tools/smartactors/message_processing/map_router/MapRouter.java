@@ -1,11 +1,11 @@
 package info.smart_tools.smartactors.message_processing.map_router;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.version_management.interfaces.imodule.IModule;
-import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.exceptions.RouteNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class MapRouter implements IRouter {
         Map<IModule, IMessageReceiver> versions = map.get(targetId);
 
         if (versions != null) {
-            receiver = VersionManager.getFromMap(versions);
+            receiver = ModuleManager.getFromMap(versions);
         }
 
         if (null == receiver) {
@@ -60,7 +60,7 @@ public class MapRouter implements IRouter {
             map.put(targetId, versions);
         }
 
-        IMessageReceiver oldReceiver = versions.put(VersionManager.getCurrentModule(), receiver);
+        IMessageReceiver oldReceiver = versions.put(ModuleManager.getCurrentModule(), receiver);
 
         if (null != oldReceiver) {
             System.out.println(MessageFormat.format("Warning: replacing receiver ({0}) registered as ''{1}'' by {2}",
@@ -74,7 +74,7 @@ public class MapRouter implements IRouter {
         Map<IModule, IMessageReceiver> versions = map.get(targetId);
 
         if (versions != null) {
-            receiver = versions.remove(VersionManager.getCurrentModule());
+            receiver = versions.remove(ModuleManager.getCurrentModule());
             if (versions.size() == 0) {
                 map.remove(targetId);
             }

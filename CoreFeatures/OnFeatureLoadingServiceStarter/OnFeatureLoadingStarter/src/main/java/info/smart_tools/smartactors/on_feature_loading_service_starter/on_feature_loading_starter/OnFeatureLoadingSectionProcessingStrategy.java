@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.on_feature_loading_service_starter.on_feature_loading_starter;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -18,6 +17,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageProcessorProcessException;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 
 import java.util.List;
 
@@ -102,7 +102,7 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                 if ( !isRevert ) {
                     String chainName = (String) task.getValue(this.chainFieldName);
                     Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName);
-                    VersionManager.setCurrentMessage(null);
+                    ModuleManager.setCurrentMessage(null);
                     IReceiverChain chain = chainStorage.resolve(mapId);
                     List<IObject> messages = (List<IObject>)task.getValue(this.messagesFieldName);
                     for (IObject message : messages) {
@@ -150,7 +150,7 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                     if (isRevert) {
                         String chainName = (String) task.getValue(this.chainFieldName);
                         Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName);
-                        VersionManager.setCurrentMessage(null);
+                        ModuleManager.setCurrentMessage(null);
                         IReceiverChain chain = chainStorage.resolve(mapId);
                         List<IObject> messages = (List<IObject>) task.getValue(this.messagesFieldName);
                         for (IObject message : messages) {

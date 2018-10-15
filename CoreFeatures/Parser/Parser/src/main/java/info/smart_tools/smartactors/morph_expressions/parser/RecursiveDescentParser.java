@@ -2,9 +2,9 @@ package info.smart_tools.smartactors.morph_expressions.parser;
 
 import info.smart_tools.smartactors.morph_expressions.interfaces.parser.IFunction;
 import info.smart_tools.smartactors.morph_expressions.interfaces.parser.IProperty;
+import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.EvaluatingExpressionException;
 import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.ExecutionException;
 import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.ParsingException;
-import info.smart_tools.smartactors.morph_expressions.interfaces.parser.exception.EvaluatingExpressionException;
 import info.smart_tools.smartactors.morph_expressions.parser.exception.SyntaxException;
 
 import java.util.*;

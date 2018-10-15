@@ -12,10 +12,9 @@ import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginSc
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.*;
 
 /**
  * Test for {@link CheckpointSchedulerEntryStorageObserver}.

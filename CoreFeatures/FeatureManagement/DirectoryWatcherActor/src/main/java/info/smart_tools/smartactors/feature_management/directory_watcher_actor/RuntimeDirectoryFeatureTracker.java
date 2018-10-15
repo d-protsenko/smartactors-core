@@ -3,8 +3,6 @@ package info.smart_tools.smartactors.feature_management.directory_watcher_actor;
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
-import info.smart_tools.smartactors.version_management.interfaces.imodule.IModule;
-import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.feature_management.directory_watcher_actor.exception.WatchingServiceException;
 import info.smart_tools.smartactors.feature_management.directory_watcher_actor.wrapper.StartWatchingWrapper;
 import info.smart_tools.smartactors.feature_management.directory_watcher_actor.wrapper.StopWatchingWrapper;
@@ -25,6 +23,8 @@ import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -96,7 +96,7 @@ public class RuntimeDirectoryFeatureTracker {
             throws WatchingServiceException {
         try {
             this.scope = ScopeProvider.getCurrentScope();
-            this.module = VersionManager.getCurrentModule();
+            this.module = ModuleManager.getCurrentModule();
             this.watchingDir = new info.smart_tools.smartactors.base.path.Path(wrapper.getObservedDirectory());
             this.fileNameFieldName = IOC.resolve(
                     Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), wrapper.getFileNameFieldName()
@@ -118,7 +118,6 @@ public class RuntimeDirectoryFeatureTracker {
         IChainStorage chainStorage = IOC.resolve(
                 IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IChainStorage.class.getCanonicalName())
         );
-        VersionManager.setCurrentMessage(null);
         this.executionChain = chainStorage.resolve(chainId);
     }
 
@@ -129,7 +128,7 @@ public class RuntimeDirectoryFeatureTracker {
             return;
         }
         ScopeProvider.setCurrentScope(this.scope);
-        VersionManager.setCurrentModule(this.module);
+        ModuleManager.setCurrentModule(this.module);
         IQueue queue = IOC.resolve(Keys.getOrAdd(TASK_QUEUE_IOC_NAME));
         Integer stackDepth = IOC.resolve(Keys.getOrAdd("default_stack_depth"));
 

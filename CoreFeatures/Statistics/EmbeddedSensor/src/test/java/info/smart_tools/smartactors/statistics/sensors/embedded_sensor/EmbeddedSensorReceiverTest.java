@@ -24,7 +24,6 @@ import info.smart_tools.smartactors.timer.interfaces.itimer.ITimer;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;

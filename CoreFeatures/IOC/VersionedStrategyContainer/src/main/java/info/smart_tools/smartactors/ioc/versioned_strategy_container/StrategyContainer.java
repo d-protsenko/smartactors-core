@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.ioc.versioned_strategy_container;
 
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.version_management.interfaces.imodule.IModule;
-import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
 import info.smart_tools.smartactors.ioc.istrategy_container.exception.StrategyContainerException;
 
@@ -41,7 +41,7 @@ public class StrategyContainer implements IStrategyContainer {
         IResolveDependencyStrategy strategy = null;
         Map<IModule, IResolveDependencyStrategy> strategyVersions = strategyStorage.get(key);
         if (strategyVersions != null) {
-            strategy = VersionManager.getFromMap(strategyVersions);
+            strategy = ModuleManager.getFromMap(strategyVersions);
         }
         return strategy;
     }
@@ -59,7 +59,7 @@ public class StrategyContainer implements IStrategyContainer {
             strategyVersions = new ConcurrentHashMap<>();
             strategyStorage.put(key, strategyVersions);
         }
-        strategyVersions.put(VersionManager.getCurrentModule(), strategy);
+        strategyVersions.put(ModuleManager.getCurrentModule(), strategy);
     }
 
     /**
@@ -71,7 +71,7 @@ public class StrategyContainer implements IStrategyContainer {
             throws StrategyContainerException {
         Map<IModule, IResolveDependencyStrategy> strategyVersions = strategyStorage.get(key);
         if (strategyVersions != null) {
-            IResolveDependencyStrategy strategy = VersionManager.removeFromMap(strategyVersions);
+            IResolveDependencyStrategy strategy = ModuleManager.removeFromMap(strategyVersions);
             if (strategy != null) {
                 if (strategyVersions.size() == 0) {
                     strategyStorage.remove(key);

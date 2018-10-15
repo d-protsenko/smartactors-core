@@ -1,27 +1,27 @@
 package info.smart_tools.smartactors.message_bus_service_starter.message_bus_starter;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_handler.IMessageBusHandler;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
-import info.smart_tools.smartactors.scope.iscope.exception.ScopeException;
-import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
-import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_handler.IMessageBusHandler;
 import info.smart_tools.smartactors.message_bus.message_bus.MessageBus;
 import info.smart_tools.smartactors.message_bus.message_bus_handler.MessageBusHandler;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.scope.iscope.exception.ScopeException;
+import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 
 /**
  * Initializes MessageBus using configuration.
@@ -77,7 +77,7 @@ public class MessageBusSectionProcessingStrategy implements ISectionStrategy {
                     IChainStorage.class.getCanonicalName()));
             String startChainName = (String) messageBusObject.getValue(startChainNameFieldName);
             Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), startChainName);
-            VersionManager.setCurrentMessage(null);
+            ModuleManager.setCurrentMessage(null);
             IReceiverChain chain = chainStorage.resolve(chainId);
 
             IAction<IObject> finalAction = IOC.resolve(Keys.getOrAdd("send response action"));

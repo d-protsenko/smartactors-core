@@ -23,7 +23,7 @@ public class ConstantChainChoiceStrategy implements IChainChoiceStrategy {
     public Object chooseChain(IMessageProcessor messageProcessor) throws ChainChoiceException {
         try {
             Object name = messageProcessor.getSequence().getCurrentReceiverArguments().getValue(chainIdFieldName);
-            return IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), name);
+            return IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), name, messageProcessor.getMessage());
         } catch (Exception e) {
             throw new ChainChoiceException("Exception occurred reading chain id for current step.", e);
         }

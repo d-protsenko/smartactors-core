@@ -3,11 +3,7 @@ package info.smart_tools.smartactors.feature_loading_system.bootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Sort given list of {@link IBootstrapItem} using topological sorting graph.

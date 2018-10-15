@@ -4,7 +4,6 @@ import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
-import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -25,6 +24,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 
 import java.io.File;
 import java.lang.reflect.Modifier;
@@ -100,10 +100,10 @@ public class LoadFeatureActor {
                 }
             };
             // setup current feature for class loading, bootstrap and applying config
-            VersionManager.setCurrentModule(VersionManager.getModuleById(feature.getId()));
+            ModuleManager.setCurrentModule(ModuleManager.getModuleById(feature.getId()));
             IPluginLoader<Collection<IPath>> pluginLoader = IOC.resolve(
                     Keys.getOrAdd(PLUGIN_LOADER_KEY),
-                    VersionManager.getCurrentClassLoader(),
+                    ModuleManager.getCurrentClassLoader(),
                     classHandler,
                     pluginLoaderVisitor);
             pluginLoader.loadPlugins(jars);

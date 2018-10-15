@@ -16,7 +16,6 @@ import info.smart_tools.smartactors.timer.interfaces.itimer.ITimerTask;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**

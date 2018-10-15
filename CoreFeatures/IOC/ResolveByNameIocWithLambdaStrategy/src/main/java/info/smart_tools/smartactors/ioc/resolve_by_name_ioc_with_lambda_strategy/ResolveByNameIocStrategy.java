@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy;
 
-import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

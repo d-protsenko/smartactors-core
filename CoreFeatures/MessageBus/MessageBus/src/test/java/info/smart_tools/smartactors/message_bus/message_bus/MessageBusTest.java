@@ -1,18 +1,15 @@
 package info.smart_tools.smartactors.message_bus.message_bus;
 
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_container.IMessageBusContainer;
 import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_container.exception.SendingMessageException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
 
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests for {@link MessageBus}.

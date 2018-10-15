@@ -1,6 +1,8 @@
 package info.smart_tools.smartactors.http_endpoint.http_response_handler;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.exceptions.DeserializationException;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IResponseHandler;
@@ -35,7 +37,7 @@ import java.util.ArrayList;
 public class HttpResponseHandler implements IResponseHandler<ChannelHandlerContext, FullHttpResponse> {
     private IQueue<ITask> taskQueue;
     private int stackDepth;
-    private IReceiverChain receiverChain;
+    private Object receiverMapName;
     private IObject request;
     private IFieldName messageFieldName;
     private IFieldName contextFieldName;
@@ -50,25 +52,25 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
     private Object uuid;
     private boolean isReceived;
     private IScope currentScope;
+    private IModule currentModule;
+    IChainStorage chainStorage;
 
     /**
      * Constructor
      *
      * @param taskQueue     main queue of the {@link ITask}
      * @param stackDepth    depth of the stack for {@link io.netty.channel.ChannelOutboundBuffer.MessageProcessor}
-     * @param receiverChain chain, that should receive message
+     * @param mapName chain, that should receive message
      */
-    public HttpResponseHandler(final IQueue<ITask> taskQueue, final int stackDepth, final Object receiverChain,
-                               final IObject request, final IScope scope) throws ResponseHandlerException {
+    public HttpResponseHandler(final IQueue<ITask> taskQueue, final int stackDepth, final Object mapName,
+                               final IObject request, final IScope scope, IModule module) throws ResponseHandlerException {
         this.taskQueue = taskQueue;
         this.stackDepth = stackDepth;
 
         try {
-            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(),
+            chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(),
                     IChainStorage.class.getCanonicalName()));
-            Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), receiverChain);
-            //VersionManager.setCurrentMessage(null);
-            this.receiverChain = chainStorage.resolve(mapId);
+            receiverMapName = mapName;
             messageFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
             contextFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context");
             httpResponseStatusCodeFieldName = IOC.resolve(
@@ -86,7 +88,8 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
             this.uuid = request.getValue(uuidFieldName);
             isReceived = false;
             currentScope = scope;
-        } catch (ResolutionException | InvalidArgumentException | ReadValueException | ChainNotFoundException e) {
+            currentModule = module;
+        } catch (ResolutionException | InvalidArgumentException | ReadValueException e) {
             throw new ResponseHandlerException(e);
         }
     }
@@ -95,25 +98,25 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
     public void handle(final ChannelHandlerContext ctx, final FullHttpResponse response) throws ResponseHandlerException {
         try {
             ScopeProvider.setCurrentScope(currentScope);
+            ModuleManager.setCurrentModule(currentModule);
             IOC.resolve(Keys.getOrAdd("cancelTimerOnRequest"), uuid);
             isReceived = true;
             FullHttpResponse responseCopy = response.copy();
             ITask task = () -> {
                 try {
                     IObject environment = getEnvironment(responseCopy);
+                    IObject message = (IObject) environment.getValue(messageFieldName);
+                    Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), receiverMapName, message);
+                    IReceiverChain receiverChain = chainStorage.resolve(chainId);
                     IMessageProcessingSequence processingSequence =
                             IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), stackDepth, receiverChain);
                     IMessageProcessor messageProcessor =
                             IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), taskQueue, processingSequence);
-                    IFieldName messageFieldName = null;
-                    messageFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
-                    IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context");
-                    IObject message = (IObject) environment.getValue(messageFieldName);
                     message.setValue(messageMapIdFieldName, messageMapId);
                     IObject context = (IObject) environment.getValue(contextFieldName);
                     messageProcessor.process(message, context);
                 } catch (ChangeValueException | ReadValueException | InvalidArgumentException | ResponseHandlerException |
-                        ResolutionException | MessageProcessorProcessException e) {
+                        ResolutionException | MessageProcessorProcessException | ChainNotFoundException e) {
                     throw new TaskExecutionException(e);
                 }
             };

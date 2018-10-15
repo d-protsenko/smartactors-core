@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.debugger.session_impl;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerBreakpointsStorage;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSequence;
 import info.smart_tools.smartactors.debugger.interfaces.exceptions.BreakpointStorageException;
@@ -15,6 +14,7 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -96,8 +96,7 @@ public class DebuggerBreakpointsStorageImpl implements IDebuggerBreakpointsStora
 
             IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
 
-            // ToDo: investigate what to set here
-            VersionManager.setCurrentMessage(null);
+            // ToDo: investigate whether we must add message to resolve parameters?
             IReceiverChain chain = chainStorage.resolve(IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName));
 
             IObject stepArgs = chain.getArguments(stepId);

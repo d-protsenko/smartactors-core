@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
 import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.exception.RequestSenderException;
@@ -106,9 +107,10 @@ public class HttpClientPlugin implements IPlugin {
                                                     IResponseHandler responseHandler = new HttpResponseHandler(
                                                             (IQueue<ITask>) configuration.getValue(queueFieldName),
                                                             (Integer) configuration.getValue(stackDepthFieldName),
-                                                            request.getValue(startChainNameFieldName),
+                                                            (String)request.getValue(startChainNameFieldName),
                                                             request,
-                                                            ScopeProvider.getCurrentScope()
+                                                            ScopeProvider.getCurrentScope(),
+                                                            ModuleManager.getCurrentModule()
                                                     );
                                                     return responseHandler;
                                                 } catch (ResponseHandlerException | ResolutionException |

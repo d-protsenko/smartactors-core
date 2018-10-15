@@ -75,7 +75,7 @@ public class ReSendRestoringSequenceRecoverStrategy implements IRecoverStrategy 
             messageClone.setValue(checkpointStatusFieldName, checkpointStatus);
 
             IMessageProcessingSequence sequence = IOC.resolve(Keys.getOrAdd("recover message processing sequence"),
-                    state.getValue(sequenceDumpFieldName));
+                    state.getValue(sequenceDumpFieldName), state.getValue(messageFieldName));
 
             IMessageProcessor processor = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                     IOC.resolve(Keys.getOrAdd("task_queue")),

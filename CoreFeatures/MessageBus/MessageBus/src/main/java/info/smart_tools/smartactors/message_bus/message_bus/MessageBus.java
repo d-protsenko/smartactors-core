@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.message_bus.message_bus;
 
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_container.IMessageBusContainer;
 import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_container.exception.SendingMessageException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.message_bus.message_bus_container_with_scope.MessageBusContainer;
 
 /**

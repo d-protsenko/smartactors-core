@@ -2,18 +2,21 @@ package info.smart_tools.smartactors.database_postgresql.postgres_schema.indexes
 
 import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
+import info.smart_tools.smartactors.database_postgresql.postgres_schema.search.FieldPath;
 import info.smart_tools.smartactors.database_postgresql.postgres_schema.search.PostgresFieldPath;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.database_postgresql.postgres_schema.search.FieldPath;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A set of classes to write CREATE INDEX SQL statements.

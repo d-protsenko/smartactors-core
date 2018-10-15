@@ -1,22 +1,22 @@
 package info.smart_tools.smartactors.endpoint_service_starter.endpoint_starter;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.endpoint.interfaces.iasync_service.IAsyncService;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
+import info.smart_tools.smartactors.endpoint.interfaces.iasync_service.IAsyncService;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 
 import java.util.List;
 
@@ -104,7 +104,7 @@ public class EndpointsSectionProcessingStrategy implements ISectionStrategy {
                 String type = (String) endpoint.getValue(typeFieldName);
                 String startChainName = (String) endpoint.getValue(startChainNameFieldName);
                 Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), startChainName);
-                VersionManager.setCurrentMessage(null);
+                ModuleManager.setCurrentMessage(null);
                 IReceiverChain chain = chainStorage.resolve(mapId);
 
                 endpoint.setValue(startChainNameFieldName, chain);

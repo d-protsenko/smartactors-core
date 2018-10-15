@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader;
 
 import java.net.URL;
-import java.util.List;
 
 /**
  * Interface ISmartactorsClassLoader

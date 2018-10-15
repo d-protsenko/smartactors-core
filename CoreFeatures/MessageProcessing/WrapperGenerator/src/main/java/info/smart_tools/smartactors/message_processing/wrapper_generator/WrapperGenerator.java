@@ -1,12 +1,14 @@
 package info.smart_tools.smartactors.message_processing.wrapper_generator;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.FromStringClassGenerator;
+import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.class_builder.ClassBuilder;
+import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.class_builder.Modifiers;
+import info.smart_tools.smartactors.class_management.interfaces.iclass_generator.IClassGenerator;
 import info.smart_tools.smartactors.field.field.Field;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
-import info.smart_tools.smartactors.class_management.interfaces.iclass_generator.IClassGenerator;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.DeleteValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -14,8 +16,6 @@ import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException
 import info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper;
 import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_generator.exception.WrapperGeneratorException;
-import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.class_builder.ClassBuilder;
-import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.class_builder.Modifiers;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;

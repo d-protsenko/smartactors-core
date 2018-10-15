@@ -1,18 +1,15 @@
 package info.smart_tools.smartactors.message_processing.chain_storage;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
-import info.smart_tools.smartactors.version_management.interfaces.imodule.IModule;
-import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing.chain_storage.interfaces.IChainState;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainCreationException;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainModificationException;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 
@@ -20,13 +17,12 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Implementation of {@link info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage}.
  */
 public class ChainStorage implements IChainStorage {
-    private final Map<Object, Map<IModule, IChainState>> chainStates;
+    private final Map<Object, IChainState> chainStates;
     private final IRouter router;
     private final Object modificationLock = new Object();
 
@@ -37,9 +33,10 @@ public class ChainStorage implements IChainStorage {
      * @param router       {@link IRouter} to use to resolve receivers
      * @throws InvalidArgumentException if chainsMap is {@code null}
      * @throws InvalidArgumentException if router is {@code null}
+     * @throws ResolutionException if error occurs resolving any dependency
      */
-    public ChainStorage(final Map<Object, Map<IModule, IChainState>> chainStates, final IRouter router)
-            throws InvalidArgumentException {
+    public ChainStorage(final Map<Object, IChainState> chainStates, final IRouter router)
+            throws InvalidArgumentException, ResolutionException {
         if (null == chainStates) {
             throw new InvalidArgumentException("Chains map should not be null.");
         }
@@ -52,20 +49,8 @@ public class ChainStorage implements IChainStorage {
         this.router = router;
     }
 
-    private IChainState resolveState(final Object chainId)
-            throws ChainNotFoundException {
-        Map<IModule, IChainState> chainVersions = chainStates.get(chainId);
-        if (null == chainVersions) {
-            throw new ChainNotFoundException(chainId);
-        }
-
-        IModule module;
-        try {
-            module = VersionManager.getModuleByChainId(chainId);
-        } catch (InvalidArgumentException | ResolveDependencyStrategyException e) {
-            throw new ChainNotFoundException(chainId, e);
-        }
-        IChainState state = VersionManager.getFromMap(module, chainVersions);
+    private IChainState resolveState(final Object chainId) throws ChainNotFoundException {
+        IChainState state = chainStates.get(chainId);
 
         if (null == state) {
             throw new ChainNotFoundException(chainId);
@@ -82,38 +67,29 @@ public class ChainStorage implements IChainStorage {
                     Keys.getOrAdd(IReceiverChain.class.getCanonicalName()),
                     chainId, description, this, router);
 
-            IChainState oldState = null;
+            IChainState oldState;
+
             IChainState state = IOC.resolve(Keys.getOrAdd(IChainState.class.getCanonicalName()), newChain);
+
             synchronized (modificationLock) {
-                Map<IModule, IChainState> chainVersions = chainStates.get(chainId);
-                if (chainVersions == null) {
-                    chainVersions = new ConcurrentHashMap<>();
-                    chainVersions.put(VersionManager.getCurrentModule(), state);
-                    chainStates.put(chainId, chainVersions);
-                } else {
-                    oldState = chainVersions.put(VersionManager.getCurrentModule(), state);
-                }
+                oldState = chainStates.put(chainId, state);
             }
-            VersionManager.registerChain(chainId);
 
             if (null != oldState) {
-                System.out.println(MessageFormat.format("[WARNING] Replacing chain ({0}) registered as ''{1}'' by {2}",
+                System.out.println(MessageFormat.format("Warning: replacing chain ({0}) registered as ''{1}'' by {2}",
                         oldState.getCurrent().toString(), chainId.toString(), newChain.toString()));
             }
-        } catch (ResolutionException | InvalidArgumentException e) {
+        } catch (ResolutionException  e) {
             throw new ChainCreationException(MessageFormat.format("Could not create a chain ''{0}''", chainId.toString()), e);
         }
     }
 
     @Override
     public void unregister(final Object chainId) {
-        IChainState oldState = null;
-        Map<IModule, IChainState> chainVersions = chainStates.get(chainId);
+        IChainState oldState;
 
-        if (chainVersions != null) {
-            synchronized (modificationLock) {
-                oldState = chainVersions.remove(VersionManager.getCurrentModule());
-            }
+        synchronized (modificationLock) {
+            oldState = chainStates.remove(chainId);
         }
 
         if (null == oldState) {

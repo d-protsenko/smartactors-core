@@ -24,6 +24,7 @@
         <module>Base</module>
         <module>ClassManagement</module>
         <module>VersionManagement</module>
+        <module>VersionManagement-plugins</module>
         <module>FeatureLoadingSystem</module>
         <module>Helpers</module>
         <module>Security</module>

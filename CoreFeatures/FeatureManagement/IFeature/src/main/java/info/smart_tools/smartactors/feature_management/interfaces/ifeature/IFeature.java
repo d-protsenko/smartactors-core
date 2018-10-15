@@ -1,10 +1,8 @@
 package info.smart_tools.smartactors.feature_management.interfaces.ifeature;
 
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * IFeature interface

@@ -1,25 +1,25 @@
 package info.smart_tools.smartactors.message_bus.message_bus_handler;
 
-import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_handler.IMessageBusHandler;
-import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_handler.exception.MessageBusHandlerException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_handler.IMessageBusHandler;
+import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_handler.exception.MessageBusHandlerException;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.iresponse_strategy.IResponseStrategy;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageProcessorProcessException;
-import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
-import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageProcessorProcessException;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,8 +85,7 @@ public class MessageBusHandler implements IMessageBusHandler {
     @Override
     public void handle(final IObject message, final Object chainName)
             throws MessageBusHandlerException {
-        VersionManager.setCurrentMessage(message);
-        handle0(message, resolveChain(chainName));
+        handle0(message, resolveChain(chainName, message));
     }
 
     @Override
@@ -98,8 +97,7 @@ public class MessageBusHandler implements IMessageBusHandler {
     @Override
     public void handleForReply(final IObject message, final Object chainName, final Object replyToChainName)
             throws MessageBusHandlerException {
-        VersionManager.setCurrentMessage(message);
-        handleForReply0(message, resolveChain(chainName), replyToChainName);
+        handleForReply0(message, resolveChain(chainName, message), replyToChainName);
     }
 
     private void handle0(final IObject message, final IReceiverChain dstChain)
@@ -122,10 +120,10 @@ public class MessageBusHandler implements IMessageBusHandler {
         }
     }
 
-    private IReceiverChain resolveChain(final Object chainName)
+    private IReceiverChain resolveChain(final Object chainName, IObject message)
             throws MessageBusHandlerException {
         try {
-            Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName);
+            Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName, message);
             IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
 
             return chainStorage.resolve(chainId);

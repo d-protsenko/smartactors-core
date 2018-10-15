@@ -1,7 +1,5 @@
 package info.smart_tools.smartactors.endpoint.endpoint_handler;
 
-import info.smart_tools.smartactors.version_management.interfaces.imodule.IModule;
-import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
@@ -13,6 +11,8 @@ import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 
 import java.util.concurrent.ExecutionException;
 
@@ -86,7 +86,7 @@ public abstract class EndpointHandler<TContext, TRequest> {
     public void handle(final TContext ctx, final TRequest request) throws ExecutionException {
         try {
             ScopeProvider.setCurrentScope(scope);
-            VersionManager.setCurrentModule(module);
+            ModuleManager.setCurrentModule(module);
             taskQueue.put(() -> {
                 try {
                     IObject environment = getEnvironment(ctx, request);

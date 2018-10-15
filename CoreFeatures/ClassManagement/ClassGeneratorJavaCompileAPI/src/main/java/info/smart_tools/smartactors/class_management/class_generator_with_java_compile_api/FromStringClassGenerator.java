@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.class_management.interfaces.iclass_generator.IClassGenerator;
 import info.smart_tools.smartactors.class_management.interfaces.iclass_generator.exception.ClassGenerationException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

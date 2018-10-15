@@ -1,13 +1,13 @@
 package info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar;
 
-import info.smart_tools.smartactors.base.path.Path;
-import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
+import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
+import info.smart_tools.smartactors.base.path.Path;
 import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.IPluginLoader;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.exception.PluginLoaderException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader_visitor.IPluginLoaderVisitor;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import org.junit.Test;
 
 import java.net.URL;
@@ -27,8 +27,8 @@ public class PluginLoaderTest {
     public void checkPluginLoaderCreation()
             throws Exception {
         Checker checker = new Checker();
-        VersionManager.addModule(VersionManager.coreId, VersionManager.coreName, VersionManager.coreVersion);
-        ISmartactorsClassLoader cl = VersionManager.getModuleClassLoader(VersionManager.coreId);
+        ModuleManager.addModule(ModuleManager.coreId, ModuleManager.coreName, ModuleManager.coreVersion);
+        ISmartactorsClassLoader cl = ModuleManager.getModuleClassLoader(ModuleManager.coreId);
         IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
         IPluginLoader<Collection<IPath>> pl = new PluginLoader(
                 cl,
@@ -59,8 +59,8 @@ public class PluginLoaderTest {
     @Test (expected = PluginLoaderException.class)
     public void checkPluginLoaderException()
             throws Exception {
-        VersionManager.addModule("cl","cl","cl");
-        ISmartactorsClassLoader cl = VersionManager.getModuleClassLoader("cl");
+        ModuleManager.addModule("cl","cl","cl");
+        ISmartactorsClassLoader cl = ModuleManager.getModuleClassLoader("cl");
         IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
         IPluginLoader<Collection<IPath>> pl = new PluginLoader(
                 cl,
@@ -76,8 +76,8 @@ public class PluginLoaderTest {
     public void checkPluginLoaderOnLoadBrokenJarFile()
             throws Exception {
         Checker checker = new Checker();
-        VersionManager.addModule("cl", "cl", "cl");
-        ISmartactorsClassLoader cl = VersionManager.getModuleClassLoader("cl");
+        ModuleManager.addModule("cl", "cl", "cl");
+        ISmartactorsClassLoader cl = ModuleManager.getModuleClassLoader("cl");
         IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
         IPluginLoader<Collection<IPath>> pl = new PluginLoader(
                 cl,

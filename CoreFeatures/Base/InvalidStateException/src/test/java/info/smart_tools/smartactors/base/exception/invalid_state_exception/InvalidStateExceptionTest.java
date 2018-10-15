@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.base.exception.invalid_state_exception;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test for {@link InvalidStateException}.

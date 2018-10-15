@@ -2595,6 +2595,22 @@
   "version" : "0.4.0"
 }, {
   "actors" : [ {
+  "artifactId" : "class-management.imodule",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "IModule",
+  "version" : "0.4.0"
+}, {
+  "artifactId" : "class-management.module-manager",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "ModuleManager",
+  "version" : "0.4.0"
+}, {
   "artifactId" : "class-management.interfaces.iclass-generator",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
@@ -2654,20 +2670,20 @@
   "version" : "0.4.0"
 }, {
   "actors" : [ {
-  "artifactId" : "version-management.imodule",
+  "artifactId" : "version-management.versioned-task-queue-decorator",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
-  "rawName" : "IModule",
+  "rawName" : "VersionedTaskQueueDecorator",
   "version" : "0.4.0"
 }, {
-  "artifactId" : "version-management.version-manager",
+  "artifactId" : "version-management.chain-version-manager",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
-  "rawName" : "VersionManager",
+  "rawName" : "ChainModuleManager",
   "version" : "0.4.0"
 } ],
   "uploadRepositories" : [ {
@@ -2680,6 +2696,25 @@
   "rawName" : "VersionManagement",
   "version" : "0.4.0"
 }, {
+   "actors" : [ {
+   "artifactId" : "version-management-plugins.version-management-plugin",
+   "uploadRepositories" : [ {
+   "uploadRepositoryId" : "archiva.smartactors-modules",
+   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+ } ],
+   "rawName" : "VersionManagementPlugin",
+   "version" : "0.4.0"
+ } ],
+   "uploadRepositories" : [ {
+   "uploadRepositoryId" : "archiva.smartactors-features",
+   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-features/"
+ } ],
+   "plugins" : [ ],
+   "groupId" : "info.smart_tools.smartactors",
+   "artifactId" : "version-management-plugins",
+   "rawName" : "VersionManagement-plugins",
+   "version" : "0.4.0"
+ }, {
   "actors" : [ {
   "artifactId" : "security-plugins.password-encoder-plugin",
   "uploadRepositories" : [ {

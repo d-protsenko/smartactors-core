@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.feature_management.feature_manager_actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.exception.FeatureManagementException;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.wrapper.AddFeatureWrapper;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.wrapper.FeatureManagerStateWrapper;
@@ -26,16 +26,12 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.version_management.version_manager.exception.VersionManagerException;
+import info.smart_tools.smartactors.class_management.module_manager.exception.ModuleManagerException;
 
-import java.util.*;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -117,7 +113,6 @@ public class FeatureManagerActor {
             Object chainId = IOC.resolve(Keys.getOrAdd(CHAIN_ID_STORAGE_STRATEGY_NAME), scatterChainName);
             IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
             int stackDepth = DEFAULT_STACK_DEPTH;
-            VersionManager.setCurrentMessage(null);
             IReceiverChain scatterChain = chainStorage.resolve(chainId);
 
             IQueue afterFeaturesCallbackQueue = IOC.resolve(Keys.getOrAdd(IQueue.class.getCanonicalName()));
@@ -262,7 +257,7 @@ public class FeatureManagerActor {
             Set<String> featureDependencies = feature.getDependencies();
 
             if (null != featureDependencies) {
-                VersionManager.addModule(
+                ModuleManager.addModule(
                         feature.getId(),
                         emptify(feature.getGroupId()) + FEATURE_NAME_DELIMITER + emptify(feature.getName()),
                         emptify(feature.getVersion())
@@ -271,14 +266,14 @@ public class FeatureManagerActor {
                 removeLoadedFeaturesFromFeatureDependencies(feature);
 
                 if (featureDependencies.isEmpty()) {
-                    VersionManager.finalizeModuleDependencies(feature.getId());
+                    ModuleManager.finalizeModuleDependencies(feature.getId());
                 } else {
                     IMessageProcessor mp = wrapper.getMessageProcessor();
                     mp.pauseProcess();
                     this.featureProcesses.put(mp, feature);
                 }
             }
-        } catch (InvalidArgumentException | VersionManagerException | ReadValueException | AsynchronousOperationException e) {
+        } catch (InvalidArgumentException | ModuleManagerException | ReadValueException | AsynchronousOperationException e) {
             throw new FeatureManagementException(e);
         }
         if (!featureFromMessage.updateFromClone(feature)) {
@@ -350,7 +345,7 @@ public class FeatureManagerActor {
                 }
                 if (null != baseFeature) {
                     try {
-                        VersionManager.addModuleDependency(feature.getId(), baseFeature.getId());
+                        ModuleManager.addModuleDependency(feature.getId(), baseFeature.getId());
                     } catch(InvalidArgumentException e) {
                         throw new FeatureManagementException("Cannot add dependency to module.", e);
                     }

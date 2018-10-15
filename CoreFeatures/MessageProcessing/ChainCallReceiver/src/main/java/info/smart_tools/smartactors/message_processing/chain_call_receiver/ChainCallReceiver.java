@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.message_processing.chain_call_receiver;
 
-import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -10,12 +10,12 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing.chain_call_receiver.exceptions.ChainChoiceException;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageReceiveException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 
 /**
  * Receiver that calls {@link IReceiverChain} chosen by a {@link IChainChoiceStrategy} on a message.
@@ -59,7 +59,6 @@ public class ChainCallReceiver implements IMessageReceiver {
             throws MessageReceiveException {
         try {
             Object chainId = chainChoiceStrategy.chooseChain(processor);
-            VersionManager.setCurrentMessage(processor.getMessage());
             IReceiverChain chain = chainStorage.resolve(chainId);
             checkAccess(chain, processor);
             processor.getSequence().callChain(chain);

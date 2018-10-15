@@ -1,15 +1,13 @@
 package info.smart_tools.smartactors.base.pool_guard;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolTakeException;
 import info.smart_tools.smartactors.base.pool_guard.exception.PoolGuardException;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests for ScopeGuard

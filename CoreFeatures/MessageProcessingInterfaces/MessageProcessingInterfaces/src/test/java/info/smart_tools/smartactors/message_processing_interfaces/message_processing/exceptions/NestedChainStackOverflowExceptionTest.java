@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.message_processing_interfaces.message_proce
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertSame;
 
 /**
  * Test for {@link NestedChainStackOverflowException}.

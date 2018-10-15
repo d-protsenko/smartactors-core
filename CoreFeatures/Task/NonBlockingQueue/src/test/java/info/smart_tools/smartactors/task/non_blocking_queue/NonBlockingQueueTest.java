@@ -6,7 +6,8 @@ import org.junit.Test;
 
 import java.util.Queue;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
 

@@ -4,7 +4,8 @@ import info.smart_tools.smartactors.class_management.interfaces.ismartactors_cla
 
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Extension of {@link URLClassLoader}

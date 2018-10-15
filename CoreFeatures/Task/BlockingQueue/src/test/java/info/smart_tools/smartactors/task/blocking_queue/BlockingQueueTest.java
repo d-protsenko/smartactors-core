@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.task.blocking_queue;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.*;
 
 /**

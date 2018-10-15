@@ -12,8 +12,8 @@
     <version>0.4.0</version>
     <packaging>pom</packaging>
     <modules>
-        <module>IModule</module>
-        <module>VersionManager</module>
+        <module>ChainVersionManager</module>
+        <module>VersionedTaskQueueDecorator</module>
         <module>VersionManagementDistribution</module>
     </modules>
     <build>

@@ -136,7 +136,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>version-management.version-manager</artifactId>
+            <artifactId>class-management.module-manager</artifactId>
             <version>0.4.0</version>
             <scope>compile</scope>
         </dependency>

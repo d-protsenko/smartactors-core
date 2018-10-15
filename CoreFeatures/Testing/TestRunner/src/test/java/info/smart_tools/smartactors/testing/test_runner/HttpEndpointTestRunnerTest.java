@@ -7,7 +7,6 @@ import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExec
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
@@ -24,17 +23,14 @@ import info.smart_tools.smartactors.testing.interfaces.isource.ISource;
 import info.smart_tools.smartactors.testing.interfaces.isource.exception.SourceExtractionException;
 import info.smart_tools.smartactors.testing.interfaces.itest_runner.ITestRunner;
 import info.smart_tools.smartactors.testing.interfaces.itest_runner.exception.TestExecutionException;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests for {@link HttpEndpointTestRunner}.
@@ -105,7 +101,6 @@ public class HttpEndpointTestRunnerTest {
                 IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "test_data_source"),
                 new SingletonStrategy(this.source)
         );
-        VersionManager.setCurrentMessage(null);
         when(this.chainStorage.resolve(this.chainId)).thenReturn(this.receiverChain);
     }
 

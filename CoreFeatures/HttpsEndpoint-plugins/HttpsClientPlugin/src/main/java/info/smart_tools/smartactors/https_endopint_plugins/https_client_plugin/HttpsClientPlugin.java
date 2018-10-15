@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.core.https_endpoint.https_client.HttpsClient;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
@@ -16,8 +17,8 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.http_endpoint.http_request_maker.HttpRequestMaker;
 import info.smart_tools.smartactors.http_endpoint.http_client_initializer.HttpClientInitializer;
+import info.smart_tools.smartactors.http_endpoint.http_request_maker.HttpRequestMaker;
 import info.smart_tools.smartactors.http_endpoint.http_response_deserialization_strategy.HttpResponseDeserializationStrategy;
 import info.smart_tools.smartactors.http_endpoint.http_response_handler.HttpResponseHandler;
 import info.smart_tools.smartactors.http_endpoint.message_to_bytes_mapper.MessageToBytesMapper;
@@ -104,7 +105,8 @@ public class HttpsClientPlugin implements IPlugin {
                                                                     (Integer) configuration.getValue(stackDepthFieldName),
                                                                     request.getValue(startChainNameFieldName),
                                                                     request,
-                                                                    ScopeProvider.getCurrentScope()
+                                                                    ScopeProvider.getCurrentScope(),
+                                                                    ModuleManager.getCurrentModule()
                                                             );
                                                             return responseHandler;
                                                         } catch (ResponseHandlerException | ResolutionException |

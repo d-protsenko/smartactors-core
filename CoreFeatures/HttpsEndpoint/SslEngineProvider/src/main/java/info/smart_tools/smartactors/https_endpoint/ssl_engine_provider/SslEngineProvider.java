@@ -15,7 +15,6 @@ import io.netty.handler.ssl.SslProvider;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLParameters;
 import java.io.File;
 import java.util.Arrays;
 

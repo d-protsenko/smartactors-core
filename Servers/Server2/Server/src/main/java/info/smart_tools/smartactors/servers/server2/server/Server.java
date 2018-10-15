@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
-import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception.ProcessExecutionException;
@@ -60,7 +60,7 @@ public class Server implements IServer {
     public void initialize()
             throws ServerInitializeException {
         Thread.currentThread().setName("BaseThread");
-        VersionManager.setCurrentModule(VersionManager.getModuleById(VersionManager.coreId));
+        ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
     }
 
     @Override
@@ -113,7 +113,7 @@ public class Server implements IServer {
             throws InvalidArgumentException, PluginLoaderException, ProcessExecutionException {
         IBootstrap bootstrap = new Bootstrap();
         IPluginLoader<Collection<IPath>> pluginLoader = new PluginLoader(
-                VersionManager.getCurrentClassLoader(),
+                ModuleManager.getCurrentClassLoader(),
                 clz -> {
                     try {
                         if (Modifier.isAbstract(clz.getModifiers())) {

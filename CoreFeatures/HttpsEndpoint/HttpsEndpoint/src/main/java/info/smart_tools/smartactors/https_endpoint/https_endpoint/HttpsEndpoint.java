@@ -4,15 +4,15 @@ package info.smart_tools.smartactors.https_endpoint.https_endpoint;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
 import info.smart_tools.smartactors.endpoint.endpoint_channel_inbound_handler.EndpointChannelInboundHandler;
+import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.http_endpoint.http_request_handler.HttpRequestHandler;
 import info.smart_tools.smartactors.https_endpoint.https_server.HttpsServer;
-import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
+import info.smart_tools.smartactors.https_endpoint.interfaces.issl_engine_provider.ISslEngineProvider;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.message_processing.message_processor.MessageProcessor;
-import info.smart_tools.smartactors.scope.iscope.IScope;
-import info.smart_tools.smartactors.https_endpoint.interfaces.issl_engine_provider.ISslEngineProvider;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
-import info.smart_tools.smartactors.version_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.scope.iscope.IScope;
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import io.netty.handler.codec.http.FullHttpRequest;
 
 /**

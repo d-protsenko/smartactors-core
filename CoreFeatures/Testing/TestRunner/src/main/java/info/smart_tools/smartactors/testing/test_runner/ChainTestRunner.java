@@ -1,21 +1,21 @@
 package info.smart_tools.smartactors.testing.test_runner;
 
+import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.exception.EnvironmentHandleException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.testing.interfaces.itest_runner.ITestRunner;
 import info.smart_tools.smartactors.testing.interfaces.itest_runner.exception.TestExecutionException;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 
 /**
  * Runs tests on receiver chains.
@@ -110,12 +110,13 @@ public class ChainTestRunner implements ITestRunner {
         try {
             String chainName = (String) description.getValue(chainNameFieldName);
             Object chainId = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name"), chainName
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name"),
+                    chainName
+                    // ToDo: check if here we should setup message for correct chain Id resolution
             );
             IChainStorage chainStorage = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IChainStorage.class.getCanonicalName())
             );
-            VersionManager.setCurrentMessage(null);
             IReceiverChain testedChain = chainStorage.resolve(chainId);
 
             IEnvironmentHandler handler = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "test environment handler"));

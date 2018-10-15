@@ -5,7 +5,6 @@ import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy
 import info.smart_tools.smartactors.debugger.actor.wrappers.CommandMessage;
 import info.smart_tools.smartactors.debugger.actor.wrappers.DebuggableMessage;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSession;
-import info.smart_tools.smartactors.debugger.interfaces.exceptions.CommandExecutionException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
@@ -23,8 +22,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
 
 /**

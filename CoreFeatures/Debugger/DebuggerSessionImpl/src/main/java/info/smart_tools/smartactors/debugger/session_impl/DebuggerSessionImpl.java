@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.debugger.session_impl;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerBreakpointsStorage;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerCommand;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSequence;
@@ -24,6 +23,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageProcessorProcessException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -98,9 +98,8 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         commands.put("setChain", stopModeCommand(args -> {
             try {
                 // ToDo : check carefully
-                VersionManager.setCurrentMessage(message);
                 IChainStorage storage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
-                mainChain = storage.resolve(IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), args));
+                mainChain = storage.resolve(IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), args, message));
             } catch (ResolutionException e) {
                 throw new CommandExecutionException(e);
             } catch (ChainNotFoundException e) {
@@ -401,10 +400,8 @@ public class DebuggerSessionImpl implements IDebuggerSession {
     private Object call(final Object arg)
             throws CommandExecutionException {
         try {
-            // ToDo: check !!!
-            VersionManager.setCurrentMessage(message);
             IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
-            IReceiverChain chain = chainStorage.resolve(IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), arg));
+            IReceiverChain chain = chainStorage.resolve(IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), arg, message));
 
             sequence.callChain(chain);
 

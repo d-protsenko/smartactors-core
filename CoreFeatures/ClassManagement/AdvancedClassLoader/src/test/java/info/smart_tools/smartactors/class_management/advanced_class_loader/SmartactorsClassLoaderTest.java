@@ -1,14 +1,11 @@
 package info.smart_tools.smartactors.class_management.advanced_class_loader;
 
 import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import static org.junit.Assert.*;
 

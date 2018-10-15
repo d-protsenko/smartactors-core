@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.iobject.field_name;
 
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 
 import java.util.regex.Pattern;
 

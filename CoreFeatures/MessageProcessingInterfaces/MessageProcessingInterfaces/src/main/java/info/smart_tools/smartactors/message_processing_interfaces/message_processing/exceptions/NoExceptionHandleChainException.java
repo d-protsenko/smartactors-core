@@ -1,12 +1,10 @@
 package info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions;
 
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 
 import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 /**
  * Exception thrown by {@link

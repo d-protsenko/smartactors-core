@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
-import info.smart_tools.smartactors.version_management.version_manager.VersionManager;
 import info.smart_tools.smartactors.class_management.interfaces.iclass_generator.exception.ClassGenerationException;
+import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import org.junit.Test;
 
 import java.net.URL;
@@ -31,8 +31,8 @@ public class FromStringClassGeneratorTest {
                 "        return a;\n" +
                 "    }\n" +
                 "}\n";
-        VersionManager.addModule(VersionManager.coreId, VersionManager.coreName, VersionManager.coreVersion);
-        Class<?> clazz = classGenerator.generate(testSample, (ClassLoader) VersionManager.getModuleClassLoader(VersionManager.coreId));
+        ModuleManager.addModule(ModuleManager.coreId, ModuleManager.coreName, ModuleManager.coreVersion);
+        Class<?> clazz = classGenerator.generate(testSample, (ClassLoader) ModuleManager.getModuleClassLoader(ModuleManager.coreId));
         TestInterface inst = (TestInterface) clazz.newInstance();
     }
 
@@ -87,8 +87,8 @@ public class FromStringClassGeneratorTest {
     @Test (expected = ClassGenerationException.class)
     public void checkInvalidArgumentExceptionOnTestWithUndefinedInterface()
             throws Exception {
-        VersionManager.addModule("cl", "cl", "cl");
-        ClassLoader cl = (ClassLoader) VersionManager.getModuleClassLoader("cl");
+        ModuleManager.addModule("cl", "cl", "cl");
+        ClassLoader cl = (ClassLoader) ModuleManager.getModuleClassLoader("cl");
         FromStringClassGenerator classGenerator = new FromStringClassGenerator();
         String testSample = "package info.smart_tools.smartactors.class_management.test_class;\n" +
                 "import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.TestInterface;\n" +
@@ -111,8 +111,8 @@ public class FromStringClassGeneratorTest {
         Enumeration<JarEntry> e = jarFile.entries();
 
         URL url = new URL("jar:file:" + pathToJar+"!/");
-        VersionManager.addModule(VersionManager.coreId, VersionManager.coreName, VersionManager.coreVersion);
-        ISmartactorsClassLoader cl = VersionManager.getModuleClassLoader(VersionManager.coreId);
+        ModuleManager.addModule(ModuleManager.coreId, ModuleManager.coreName, ModuleManager.coreVersion);
+        ISmartactorsClassLoader cl = ModuleManager.getModuleClassLoader(ModuleManager.coreId);
         cl.addURL(url);
         while (e.hasMoreElements()) {
             JarEntry je = e.nextElement();
