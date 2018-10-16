@@ -49,6 +49,7 @@ public class CheckpointFailureActionsPlugin extends BootstrapPlugin {
                 IFieldName chainFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "targetChain");
                 IFieldName messageFieldFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "messageField");
 
+                // ToDo: setCurrentMessage
                 Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), config.getValue(chainFN));
                 IFieldName messageFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), config.getValue(messageFieldFN));
 

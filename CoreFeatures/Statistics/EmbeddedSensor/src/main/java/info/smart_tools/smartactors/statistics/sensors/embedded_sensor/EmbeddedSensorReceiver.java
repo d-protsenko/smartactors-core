@@ -38,7 +38,7 @@ public class EmbeddedSensorReceiver implements IMessageReceiver {
     private long maxPeriodItems;
     private IEmbeddedSensorStrategy<?> strategy;
     private final AtomicReference<IEmbeddedSensorObservationPeriod> currentPeriod = new AtomicReference<>();
-    private Object statisticsChainId;
+    private String statisticsChainName;
 
     private final ITimer timer;
     private final ITime systemTime;
@@ -81,7 +81,7 @@ public class EmbeddedSensorReceiver implements IMessageReceiver {
         maxPeriodItems = (maxItems == null) ? -1 : maxItems.longValue();
 
         strategy = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), args.getValue(strategyFieldName)), args);
-        statisticsChainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), args.getValue(statisticsChainFieldName));
+        statisticsChainName = (String)args.getValue(statisticsChainFieldName);
 
         currentPeriod.set(IOC.resolve(Keys.getOrAdd(IEmbeddedSensorObservationPeriod.class.getCanonicalName()),
                 observationStart, observationStart + observationPeriod, maxPeriodItems, strategy));
@@ -93,7 +93,7 @@ public class EmbeddedSensorReceiver implements IMessageReceiver {
             // Message is created and sent with some delay to let all threads write data to the old period
             timer.schedule(() -> {
                 try {
-                    MessageBus.send(period.createMessage(), statisticsChainId);
+                    MessageBus.send(period.createMessage(), statisticsChainName);
                 } catch (SendingMessageException | ResolutionException | InvalidArgumentException | ChangeValueException
                         | EmbeddedSensorStrategyException e) {
                     throw new TaskExecutionException(e);

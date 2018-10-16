@@ -29,13 +29,12 @@ public class ConditionChainChoiceStrategy implements IChainChoiceStrategy {
     @Override
     public Object chooseChain(final IMessageProcessor messageProcessor) throws ChainChoiceException {
         try {
-            Object name;
-            if ((Boolean) messageProcessor.getMessage().getValue(chainConditionFN)) {
-                name = messageProcessor.getSequence().getCurrentReceiverArguments().getValue(trueChainFN);
-            } else {
-                name = messageProcessor.getSequence().getCurrentReceiverArguments().getValue(falseChainFN);
-            }
-            return IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), name, messageProcessor.getMessage());
+            IFieldName chainFN = ((Boolean)messageProcessor.getMessage().getValue(chainConditionFN) ? trueChainFN : falseChainFN);
+            return IOC.resolve(
+                    Keys.getOrAdd("chain_id_from_map_name"),
+                    messageProcessor.getSequence().getCurrentReceiverArguments().getValue(chainFN),
+                    messageProcessor.getMessage()
+            );
         } catch (Exception e) {
             throw new ChainChoiceException("Could not execute condition chain choice strategy.");
         }

@@ -56,17 +56,28 @@ public class ChainIdFromMapNameStrategy implements IResolveDependencyStrategy {
     @Override
     public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
 
-        String mapName = String.valueOf(args[0]);
+        String mapName = (String)args[0];
         if (mapName == null) {
             throw new ResolveDependencyStrategyException("Map name cannot be null.");
         }
 
-        String version;
-        if (args.length > 1) {
-            version = chainVersionStrategies.get(mapName).resolveVersion((IObject)args[1]);
-        } else {
-            version = ModuleManager.getCurrentModule().getVersion();
+        IObject message = null;
+        String version = null;
+        if (args.length > 2) {
+            version = (String)args[2];
         }
+        if (args.length > 1) {
+            message = (IObject)args[1];
+        }
+
+        if (version == null) {
+            if (message == null) {
+                version = ModuleManager.getCurrentModule().getVersion();
+            } else {
+                version = chainVersionStrategies.get(mapName).resolveVersion(message);
+            }
+        }
+
         if (version == null) {
             throw new ResolveDependencyStrategyException("Resolution failed for map name '"+mapName+"'.");
         }

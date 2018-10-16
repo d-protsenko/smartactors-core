@@ -76,21 +76,16 @@ public class MessageBusSectionProcessingStrategy implements ISectionStrategy {
             IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(),
                     IChainStorage.class.getCanonicalName()));
             String startChainName = (String) messageBusObject.getValue(startChainNameFieldName);
-            Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), startChainName);
-            //ModuleManager.setCurrentMessage(null);
-            IReceiverChain chain = chainStorage.resolve(chainId);
 
             IAction<IObject> finalAction = IOC.resolve(Keys.getOrAdd("send response action"));
 
-            IMessageBusHandler handler = new MessageBusHandler(queue, stackDepth, chain, finalAction);
+            IMessageBusHandler handler = new MessageBusHandler(queue, stackDepth, startChainName, finalAction);
 
             ScopeProvider.getCurrentScope().setValue(MessageBus.getMessageBusKey(), handler);
         } catch (ReadValueException | InvalidArgumentException | ScopeProviderException | ScopeException e) {
             throw new ConfigurationProcessingException("Error occurred loading \"message bus\" configuration section.", e);
         } catch (ResolutionException e) {
             throw new ConfigurationProcessingException("Error occurred resolving \"message bus\".", e);
-        } catch (ChainNotFoundException e) {
-            throw new ConfigurationProcessingException("Error occurred resolving \"chain\".", e);
         }
     }
 

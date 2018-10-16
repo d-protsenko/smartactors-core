@@ -85,8 +85,8 @@ public class MapsSectionProcessingStrategy implements ISectionStrategy {
             while (sectionIterator.hasPrevious()) {
                 mapDescription = sectionIterator.previous();
                 try {
-                    Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), mapDescription.getValue(mapIdFieldName));
-                    chainStorage.unregister(mapId);
+                    Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), mapDescription.getValue(mapIdFieldName));
+                    chainStorage.unregister(chainId);
                 } catch (InvalidArgumentException | ReadValueException | ResolutionException e) {
                     exception.addSuppressed(e);
                 }

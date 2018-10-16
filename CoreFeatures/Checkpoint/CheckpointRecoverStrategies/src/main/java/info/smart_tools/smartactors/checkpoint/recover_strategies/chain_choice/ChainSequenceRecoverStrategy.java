@@ -82,9 +82,9 @@ public class ChainSequenceRecoverStrategy implements IRecoveryChainChoiceStrateg
                     trials.set(0, t);
                 }
             }
-
-            return IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName);
-        } catch (InvalidArgumentException | ReadValueException | ResolutionException e) {
+            // return IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName);
+            return chainName;
+        } catch (InvalidArgumentException | ReadValueException e) {
             throw new RecoverStrategyExecutionException("Error initializing recover strategy.", e);
         }
     }

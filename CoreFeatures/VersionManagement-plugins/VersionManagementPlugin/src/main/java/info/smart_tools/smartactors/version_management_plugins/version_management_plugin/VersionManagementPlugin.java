@@ -43,7 +43,7 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
                     try {
                         strategy.registerVersionResolutionStrategy(
                                 String.valueOf(args[0]),            // map name
-                                (IResolveDependencyStrategy)args[1] // version from message resolution strategy
+                                (IResolveDependencyStrategy)args[1] // message version resolution strategy
                         );
                     } catch (Exception e) {
                         throw new RuntimeException(e);

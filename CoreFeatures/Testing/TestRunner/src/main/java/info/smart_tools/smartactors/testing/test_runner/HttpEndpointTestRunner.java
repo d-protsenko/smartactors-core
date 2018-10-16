@@ -148,7 +148,7 @@ public class HttpEndpointTestRunner implements ITestRunner {
             IObject sourceObject = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject")
             );
-            String chainName = (String) description.getValue(this.chainFieldName);
+            String chainName = (String)description.getValue(this.chainFieldName);
             IObject message = (IObject)description.getValue(this.messageFieldName);
             Object chainId = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name"),

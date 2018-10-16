@@ -79,14 +79,20 @@ public class EmbeddedSensorCreationStrategy implements IResolveDependencyStrateg
     @Override
     public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
         try {
-            Object statisticsChainId = args[CHAIN_ID_STRATEGY_ARGUMENT_INDEX];
+            Object statisticsChainName = args[CHAIN_ID_STRATEGY_ARGUMENT_INDEX];
             IObject conf = (IObject) args[CONFIG_STRATEGY_ARGUMENT_INDEX];
 
             IObject commonArgs = (IObject) conf.getValue(argsFieldName);
             Collection<IObject> embedConf = (Collection<IObject>) conf.getValue(embedFieldName);
             List<IObject> replacements = new ArrayList<>(embedConf.size());
 
-            Object targetChainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), conf.getValue(chainFieldName));
+            // ToDo: check whether such way of chain Id resolution is correct for Embedded Sensors
+            String fullChainName = (String)conf.getValue(chainFieldName);
+            String[] parts = fullChainName.split(":");
+            String chainName = parts[0];
+            String chainVersion = parts.length < 2 ? null : parts[1];
+            // get chain Id by chain name and version
+            Object targetChainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName, null, chainVersion);
             IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
 
             for (IObject embedItemConf : embedConf) {
@@ -94,7 +100,7 @@ public class EmbeddedSensorCreationStrategy implements IResolveDependencyStrateg
                 itemArgs = (itemArgs == null) ? commonArgs : itemArgs;
                 final Object itemDependency = embedItemConf.getValue(dependencyFieldName);
 
-                itemArgs.setValue(statisticsChainFieldName, statisticsChainId);
+                itemArgs.setValue(statisticsChainFieldName, statisticsChainName);
 
                 IMessageReceiver sensor = IOC.resolve(
                         IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(),

@@ -19,7 +19,6 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageProcessorProcessException;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
-import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,21 +34,21 @@ public class MessageBusHandler implements IMessageBusHandler {
 
     private final IQueue<ITask> taskQueue;
     private final int stackDepth;
-    private final IReceiverChain chain;
+    private final String defaultChainName;
     private final IAction<IObject> replyAction;
 
     private final IResponseStrategy messageBusResponseStrategy;
     private final IResponseStrategy nullResponseStrategy;
+    private final IChainStorage chainStorage;
 
     /**
-     *
      * @param taskQueue Queue of the tasks
      * @param stackDepth Stack depth of the {@link IMessageProcessor}
-     * @param receiverChain the chain for processing incoming message
+     * @param receiverChainName the chain for processing incoming message
      * @param finalAction the final action for
      * @throws InvalidArgumentException if there is invalid arguments
      */
-    public MessageBusHandler(final IQueue<ITask> taskQueue, final int stackDepth, final IReceiverChain receiverChain, final IAction<IObject> finalAction)
+    public MessageBusHandler(final IQueue<ITask> taskQueue, final int stackDepth, final String receiverChainName, final IAction<IObject> finalAction)
             throws InvalidArgumentException, ResolutionException {
         if (null == taskQueue) {
             throw new InvalidArgumentException("Task queue should not be null.");
@@ -57,15 +56,15 @@ public class MessageBusHandler implements IMessageBusHandler {
         if (stackDepth < 0) {
             throw new InvalidArgumentException("Stack depth should be positive number.");
         }
-        if (null == receiverChain) {
-            throw new InvalidArgumentException("ReceiverChain should not be null.");
+        if (null == receiverChainName) {
+            throw new InvalidArgumentException("Receiver chain name should not be null.");
         }
         if (null == finalAction)  {
             throw new InvalidArgumentException("FinalAction should not be null.");
         }
         this.stackDepth = stackDepth;
         this.taskQueue = taskQueue;
-        this.chain = receiverChain;
+        this.defaultChainName = receiverChainName;
         this.replyAction = finalAction;
 
         this.finalActionsFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "finalActions");
@@ -74,17 +73,17 @@ public class MessageBusHandler implements IMessageBusHandler {
 
         this.messageBusResponseStrategy = IOC.resolve(Keys.getOrAdd("message bus response strategy"));
         this.nullResponseStrategy = IOC.resolve(Keys.getOrAdd("null response strategy"));
+        this.chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
     }
 
     @Override
     public void handle(final IObject message)
             throws MessageBusHandlerException {
-        // setCurrentMessage(msg)
-        handle0(message, this.chain);
+        handle0(message, resolveChain(defaultChainName, message));
     }
 
     @Override
-    public void handle(final IObject message, final Object chainName)
+    public void handle(final IObject message, final String chainName)
             throws MessageBusHandlerException {
         handle0(message, resolveChain(chainName, message));
     }
@@ -92,12 +91,11 @@ public class MessageBusHandler implements IMessageBusHandler {
     @Override
     public void handleForReply(final IObject message, final Object replyToChainName)
             throws MessageBusHandlerException {
-        // setCurrentMessage(msg)
-        handleForReply0(message, this.chain, replyToChainName);
+        handleForReply0(message, resolveChain(defaultChainName, message), replyToChainName);
     }
 
     @Override
-    public void handleForReply(final IObject message, final Object chainName, final Object replyToChainName)
+    public void handleForReply(final IObject message, final String chainName, final Object replyToChainName)
             throws MessageBusHandlerException {
         handleForReply0(message, resolveChain(chainName, message), replyToChainName);
     }
@@ -126,11 +124,9 @@ public class MessageBusHandler implements IMessageBusHandler {
             throws MessageBusHandlerException {
         try {
             Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName, message);
-            IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
-
             return chainStorage.resolve(chainId);
         } catch (ResolutionException | ChainNotFoundException e) {
-            throw new MessageBusHandlerException("Error occurred resolving target chain.", e);
+            throw new MessageBusHandlerException("Error occurred while resolving target chain Id.", e);
         }
     }
 

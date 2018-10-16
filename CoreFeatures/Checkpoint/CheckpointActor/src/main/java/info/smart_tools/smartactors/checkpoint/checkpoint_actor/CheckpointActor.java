@@ -42,7 +42,6 @@ public class CheckpointActor {
     private static final long COMPLETE_ENTRY_RESCHEDULE_DELAY = 1000;
 
     private final ISchedulerService service;
-    private final Object feedbackChainId;
 
     private final CheckpointSchedulerEntryStorageObserver storageObserver;
 
@@ -103,9 +102,6 @@ public class CheckpointActor {
         IAction<ISchedulerService> activationAction = IOC.resolve(
                 Keys.getOrAdd("scheduler service activation action for checkpoint actor"));
         activationAction.execute(service);
-
-        //
-        feedbackChainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), FEEDBACK_CHAIN_NAME);
 
         IUpCounter upCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
         upCounter.onShutdownRequest(this.toString(), mode -> {
@@ -272,6 +268,7 @@ public class CheckpointActor {
         feedbackMessage.setValue(prevCheckpointIdFieldName, checkpointStatus.getValue(responsibleCheckpointIdFieldName));
         feedbackMessage.setValue(prevCheckpointEntryIdFieldName, checkpointStatus.getValue(checkpointEntryIdFieldName));
 
+        Object feedbackChainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), FEEDBACK_CHAIN_NAME, feedbackMessage);
         MessageBus.send(feedbackMessage, feedbackChainId);
     }
 }
