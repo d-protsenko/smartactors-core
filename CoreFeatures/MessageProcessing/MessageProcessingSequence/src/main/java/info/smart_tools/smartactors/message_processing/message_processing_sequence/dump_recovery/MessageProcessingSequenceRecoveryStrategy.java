@@ -61,7 +61,7 @@ public class MessageProcessingSequenceRecoveryStrategy implements IResolveDepend
             // ToDo: check if here we should not setup message for correct chain Id resolution
             // ToDo: but have to store resolved chain Ids in message processor
             // ToDo: also we can directly use chain from stack for sequence creation!!! then we've done it
-            // ! Object mainChainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainsStack.next(), message);
+            // ! Object mainChainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name_and_message"), chainsStack.next(), message);
             int mainChainPos = ((Number) stepStack.next()).intValue();
 
             // ! IMessageProcessingSequence sequence = new MessageProcessingSequence(maxDepth, storage.resolve(mainChainId));
@@ -74,7 +74,7 @@ public class MessageProcessingSequenceRecoveryStrategy implements IResolveDepend
                 // ToDo: check if here we should not setup message for correct chain Id resolution
                 // ToDo: but have to store resolved chain Ids in message processor
                 // ToDo: also we can directly use chain from stack for sequence creation!!! then we've done it
-                // ! Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainsStack.next(), message);
+                // ! Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name_and_message"), chainsStack.next(), message);
                 int pos = ((Number) stepStack.next()).intValue();
 
                 // ! sequence.callChain(storage.resolve(chainId));

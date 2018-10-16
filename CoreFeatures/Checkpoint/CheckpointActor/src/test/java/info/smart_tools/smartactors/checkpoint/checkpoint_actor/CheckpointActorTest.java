@@ -110,7 +110,7 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
         IOC.register(Keys.getOrAdd("scheduler service activation action for checkpoint actor"),
                 new SingletonStrategy(activationActionMock));
 
-        IOC.register(Keys.getOrAdd("chain_id_from_map_name"), new IResolveDependencyStrategy() {
+        IOC.register(Keys.getOrAdd("chain_id_from_map_name_and_message"), new IResolveDependencyStrategy() {
             @Override
             public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
                 if ("checkpoint_feedback_chain".equals(args[0])) {

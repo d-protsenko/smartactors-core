@@ -171,7 +171,7 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
         when(this.chainMapIdResolveStrategy.resolve("chain2")).thenReturn(mapId2);
         when(this.chainMapIdResolveStrategy.resolve("chain3")).thenReturn(mapId3);
 
-        IKey chainIdFromMapNameKey = Keys.getOrAdd("chain_id_from_map_name");
+        IKey chainIdFromMapNameKey = Keys.getOrAdd("chain_id_from_map_name_and_message");
         IOC.register(chainIdFromMapNameKey,
                 this.chainMapIdResolveStrategy);
 

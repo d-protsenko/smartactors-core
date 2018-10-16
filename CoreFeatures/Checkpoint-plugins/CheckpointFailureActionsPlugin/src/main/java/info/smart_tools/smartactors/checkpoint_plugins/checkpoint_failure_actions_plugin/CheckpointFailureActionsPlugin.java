@@ -49,11 +49,11 @@ public class CheckpointFailureActionsPlugin extends BootstrapPlugin {
                 IFieldName chainFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "targetChain");
                 IFieldName messageFieldFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "messageField");
 
-                // ToDo: setCurrentMessage
-                Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), config.getValue(chainFN));
+                // Object chainName = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name_and_message"), config.getValue(chainFN));
+                Object chainName = config.getValue(chainFN);
                 IFieldName messageFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), config.getValue(messageFieldFN));
 
-                return new SendEnvelopeFailureAction(chainId, messageFN, currentAction);
+                return new SendEnvelopeFailureAction(chainName, messageFN, currentAction);
             } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
                 throw new FunctionExecutionException(e);
             }

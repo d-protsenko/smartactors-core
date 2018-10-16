@@ -8,16 +8,63 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ChainIdFromMapNameStrategy implements IResolveDependencyStrategy {
+public class ChainIdFromMapNameStrategy {
 
-    Map<String, Map<String, String>> chainIds = new ConcurrentHashMap<>();
-    private static Map<String, ChainVersionStrategies> chainVersionStrategies = new ConcurrentHashMap<>();
+    Map<Object, Map<Comparable, Object>> chainIds = new ConcurrentHashMap<>();
+    private static Map<Object, ChainVersionStrategies> chainVersionStrategies = new ConcurrentHashMap<>();
+    private IResolveDependencyStrategy resolve_by_message_strategy = new IResolveDependencyStrategy(){
+        @Override
+        public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
+            return (T) resolve_by_message(args[0], (IObject) args[1]);
+        }
+    };
 
-    public void registerVersionResolutionStrategy(String mapName, IResolveDependencyStrategy strategy)
+    private IResolveDependencyStrategy resolve_by_module_dependencies_strategy = new IResolveDependencyStrategy(){
+        @Override
+        public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
+            return (T) resolve_by_module_dependencies(args[0]);
+        }
+    };
+
+    private IResolveDependencyStrategy resolve_by_version_strategy = new IResolveDependencyStrategy(){
+        @Override
+        public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
+            return (T) resolve_by_version(args[0], (Comparable)args[1]);
+        }
+    };
+
+    private IResolveDependencyStrategy register_message_version_strategy = new IResolveDependencyStrategy(){
+        @Override
+        public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
+            registerVersionResolutionStrategy(
+                    args[0],                            // map name
+                    (IResolveDependencyStrategy)args[1] // message version resolution strategy
+            );
+            return (T) null;
+        }
+    };
+
+    public IResolveDependencyStrategy getRegisterMessageVersionStrategy() {
+        return resolve_by_message_strategy;
+    }
+
+    public IResolveDependencyStrategy getResolveByMessageStrategy() {
+        return resolve_by_message_strategy;
+    }
+
+    public IResolveDependencyStrategy getResolveByModuleDependenciesStrategy() {
+        return resolve_by_module_dependencies_strategy;
+    }
+
+    public IResolveDependencyStrategy getResolveByVersionStrategy() {
+        return resolve_by_version_strategy;
+    }
+
+    private void registerVersionResolutionStrategy(Object mapName, IResolveDependencyStrategy strategy)
             throws ResolveDependencyStrategyException {
-        String version = ModuleManager.getCurrentModule().getVersion();
+        Comparable version = ModuleManager.getCurrentModule().getVersion();
         if (mapName == null || version == null) {
-            throw new ResolveDependencyStrategyException("Map name and version cannot be null.");
+            throw new ResolveDependencyStrategyException("Chain name and version cannot be null.");
         }
         ChainVersionStrategies versionStrategies = chainVersionStrategies.get(mapName);
         if (versionStrategies == null) {
@@ -27,71 +74,75 @@ public class ChainIdFromMapNameStrategy implements IResolveDependencyStrategy {
         versionStrategies.registerVersionResolutionStrategy(version, strategy);
     }
 
-    private Map<String, String> registerMap(String mapName, String version)
+    private Object registerChain(Object mapName, Comparable version)
             throws ResolveDependencyStrategyException {
 
         if (mapName == null || version == null) {
             throw new ResolveDependencyStrategyException("Map name or version cannot be null.");
         }
 
-        Map<String, String> versions = chainIds.get(mapName);
+        Map<Comparable, Object> versions = chainIds.get(mapName);
         if (versions == null) {
             versions = new ConcurrentHashMap<>();
             chainIds.put(mapName, versions);
         }
 
-        String chainId = mapName + ":" + version;
-        String previous = versions.put(version, chainId);
+        String chainId = mapName.toString() + ":" + version.toString();
+        Object previous = versions.put(version, chainId);
         if (previous != null) {
             System.out.println(
                     "[WARNING] Replacing chain '" + chainId + "' by chain from feature " +
-                    ModuleManager.getCurrentModule().getName() + ":" + version
+                    ModuleManager.getCurrentModule().getName() + ":" + version.toString()
             );
         } else {
             registerVersionResolutionStrategy(mapName, null);
         }
-        return versions;
+        return chainId;
     }
 
-    @Override
-    public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
-
-        String mapName = (String)args[0];
-        if (mapName == null) {
-            throw new ResolveDependencyStrategyException("Map name cannot be null.");
+    private Object resolve_by_message(Object chainName, IObject message)
+            throws ResolveDependencyStrategyException {
+        if (chainName == null) {
+            throw new ResolveDependencyStrategyException("Chain name cannot be null.");
+        }
+        if (message == null) {
+            throw new ResolveDependencyStrategyException("Message for chain Id resolution cannot be null.");
         }
 
-        IObject message = null;
-        String version = null;
-        if (args.length > 2) {
-            version = (String)args[2];
-        }
-        if (args.length > 1) {
-            message = (IObject)args[1];
+        Comparable version = chainVersionStrategies.get(chainName).resolveVersion(message);
+        return resolve_by_version(chainName, version);
+    }
+
+    private Object resolve_by_module_dependencies(Object chainName)
+            throws ResolveDependencyStrategyException {
+
+        Comparable version = ModuleManager.getCurrentModule().getVersion();
+        return resolve_by_version(chainName, version);
+    }
+
+    private Object resolve_by_version(Object chainName, Comparable version)
+            throws ResolveDependencyStrategyException {
+
+        if (chainName == null) {
+            throw new ResolveDependencyStrategyException("Chain name cannot be null.");
         }
 
         if (version == null) {
-            if (message == null) {
-                version = ModuleManager.getCurrentModule().getVersion();
-            } else {
-                version = chainVersionStrategies.get(mapName).resolveVersion(message);
-            }
+            throw new ResolveDependencyStrategyException("Chain Id resolution failed for chain name '"+chainName+"'.");
         }
 
-        if (version == null) {
-            throw new ResolveDependencyStrategyException("Resolution failed for map name '"+mapName+"'.");
-        }
-
-        Map<String, String> versions = chainIds.get(mapName);
+        Map<Comparable, Object> versions = chainIds.get(chainName);
         if (versions == null) {
-            versions = registerMap(mapName, version);
+            registerChain(chainName, version);
+            versions = chainIds.get(chainName);
         }
 
-        String chainId = versions.get(version);
+        Object chainId = versions.get(version);
         if (chainId == null) {
-            registerMap(mapName, version);
+            chainId = registerChain(chainName, version);
         }
 
-        return (T) chainId;
+        return chainId;
     }
+
 }

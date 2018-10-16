@@ -54,7 +54,7 @@ public class QuerySensorSchedulerActionTest extends PluginsLoadingTestBase {
         schedulerEntryMock = mock(ISchedulerEntry.class);
         when(schedulerEntryMock.getState()).thenReturn(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
 
-        IOC.register(Keys.getOrAdd("chain_id_from_map_name"), new IResolveDependencyStrategy() {
+        IOC.register(Keys.getOrAdd("chain_id_from_map_name_and_message"), new IResolveDependencyStrategy() {
             @Override
             public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
                 return (T) String.valueOf(args[0]).concat("__0");

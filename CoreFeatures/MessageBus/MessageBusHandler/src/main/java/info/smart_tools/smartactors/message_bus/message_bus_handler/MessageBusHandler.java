@@ -123,7 +123,7 @@ public class MessageBusHandler implements IMessageBusHandler {
     private IReceiverChain resolveChain(final Object chainName, IObject message)
             throws MessageBusHandlerException {
         try {
-            Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName, message);
+            Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name_and_message"), chainName, message);
             return chainStorage.resolve(chainId);
         } catch (ResolutionException | ChainNotFoundException e) {
             throw new MessageBusHandlerException("Error occurred while resolving target chain Id.", e);

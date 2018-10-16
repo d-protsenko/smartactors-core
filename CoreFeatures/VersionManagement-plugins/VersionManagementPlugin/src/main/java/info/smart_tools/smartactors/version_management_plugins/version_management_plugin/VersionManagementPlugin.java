@@ -1,10 +1,13 @@
 package info.smart_tools.smartactors.version_management_plugins.version_management_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -35,22 +38,10 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
 
         ChainIdFromMapNameStrategy strategy = new ChainIdFromMapNameStrategy();
 
-        IOC.register(Keys.getOrAdd("chain_id_from_map_name"), strategy);
-
-        IOC.register(
-                Keys.getOrAdd("register_message_version_strategy"),
-                new ApplyFunctionToArgumentsStrategy((args) -> {
-                    try {
-                        strategy.registerVersionResolutionStrategy(
-                                String.valueOf(args[0]),            // map name
-                                (IResolveDependencyStrategy)args[1] // message version resolution strategy
-                        );
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                    return true;
-                })
-        );
+        IOC.register(Keys.getOrAdd("chain_id_from_map_name_and_message"), strategy.getResolveByMessageStrategy());
+        IOC.register(Keys.getOrAdd("chain_id_from_map_name_and_version"), strategy.getResolveByVersionStrategy());
+        IOC.register(Keys.getOrAdd("chain_id_from_map_name"), strategy.getResolveByModuleDependenciesStrategy());
+        IOC.register(Keys.getOrAdd("register_message_version_strategy"), strategy.getRegisterMessageVersionStrategy());
     }
 
     @Item("versioned_task_queue")
@@ -66,5 +57,56 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
                 throw new RuntimeException(e);
             }
         }));
+    }
+
+    @ItemRevert("versioned_chain_id_from_map_name_strategy")
+    public void unregisterChainIdFromMapNameStrategy()
+            throws ResolutionException, RegistrationException, InvalidArgumentException {
+
+        String itemName = "versioned_chain_id_from_map_name_strategy";
+        String keyName;
+
+        keyName = "register_message_version_strategy";
+        try {
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
+
+        keyName = "chain_id_from_map_name";
+        try {
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
+
+        keyName = "chain_id_from_map_name_and_version";
+        try {
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
+
+        keyName = "chain_id_from_map_name_and_message";
+        try {
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
+    }
+
+    @ItemRevert("versioned_task_queue")
+    public void unregisterVersionedTaskQueueStrategy()
+            throws ResolutionException, RegistrationException, InvalidArgumentException {
+
+        String itemName = "versioned_task_queue";
+        String keyName;
+
+        keyName = IQueue.class.getCanonicalName();
+        try {
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
     }
 }

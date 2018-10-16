@@ -91,7 +91,7 @@ public class MessageBusSectionProcessingStrategyTest {
                 )
         );
 
-        IKey chainIdFromMapNameKey = Keys.getOrAdd("chain_id_from_map_name");
+        IKey chainIdFromMapNameKey = Keys.getOrAdd("chain_id_from_map_name_and_message");
         IOC.register(chainIdFromMapNameKey,
                 new SingletonStrategy(mapId));
 

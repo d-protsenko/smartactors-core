@@ -98,7 +98,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         commands.put("setChain", stopModeCommand(args -> {
             try {
                 IChainStorage storage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
-                mainChain = storage.resolve(IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), args, message));
+                mainChain = storage.resolve(IOC.resolve(Keys.getOrAdd("chain_id_from_map_name_and_message"), args, message));
             } catch (ResolutionException e) {
                 throw new CommandExecutionException(e);
             } catch (ChainNotFoundException e) {
@@ -400,7 +400,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
             throws CommandExecutionException {
         try {
             IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
-            IReceiverChain chain = chainStorage.resolve(IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), arg, message));
+            IReceiverChain chain = chainStorage.resolve(IOC.resolve(Keys.getOrAdd("chain_id_from_map_name_and_message"), arg, message));
 
             sequence.callChain(chain);
 

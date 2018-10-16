@@ -92,7 +92,7 @@ public class BlockingMessageSchedulerActionTest extends PluginsLoadingTestBase {
         IOC.register(Keys.getOrAdd("default_stack_depth"), new SingletonStrategy(321));
         IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(queueMock));
 
-        IOC.register(Keys.getOrAdd("chain_id_from_map_name"), new IResolveDependencyStrategy() {
+        IOC.register(Keys.getOrAdd("chain_id_from_map_name_and_message"), new IResolveDependencyStrategy() {
             @Override
             public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
                 return (T) (String.valueOf(args[0]) + "__id");

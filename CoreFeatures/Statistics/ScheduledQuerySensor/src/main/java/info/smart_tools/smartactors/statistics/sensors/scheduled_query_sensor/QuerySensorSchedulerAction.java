@@ -74,7 +74,7 @@ public class QuerySensorSchedulerAction implements ISchedulerAction {
             message.setValue(periodStartFieldName, time);
             message.setValue(periodEndFieldName, time);
 
-            //Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), entry.getState().getValue(statisticsChainFieldName), message);
+            //Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name_and_message"), entry.getState().getValue(statisticsChainFieldName), message);
             //MessageBus.send(message, chainId);
             MessageBus.send(message, entry.getState().getValue(statisticsChainFieldName));
         } catch (ReadValueException | InvalidArgumentException | QueryExecutionException | ResolutionException | ChangeValueException

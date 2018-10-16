@@ -229,7 +229,7 @@ public class MessageProcessingTest {
         final AtomicBoolean done = new AtomicBoolean(false);
         ConcurrentMap<Long, Long> threadUseCount = new ConcurrentHashMap<>();
 
-        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id"),
+        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name"),
                 new ResolveByNameIocStrategy(objects -> String.valueOf(objects[0])));
 
         final IFieldName targetNameFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "target");

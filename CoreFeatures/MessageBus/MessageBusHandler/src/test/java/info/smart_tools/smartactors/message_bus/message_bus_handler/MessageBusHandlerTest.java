@@ -180,7 +180,7 @@ public class MessageBusHandlerTest {
         );
         IResolveDependencyStrategy chainIdStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name_and_message"),
                 chainIdStrategy
         );
         IResolveDependencyStrategy chainStorageStrategy = mock(IResolveDependencyStrategy.class);
@@ -242,7 +242,7 @@ public class MessageBusHandlerTest {
         );
         IResolveDependencyStrategy chainIdStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name_and_message"),
                 chainIdStrategy
         );
         IResolveDependencyStrategy chainStorageStrategy = mock(IResolveDependencyStrategy.class);
@@ -306,7 +306,7 @@ public class MessageBusHandlerTest {
         );
         IResolveDependencyStrategy chainIdStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name_and_message"),
                 chainIdStrategy
         );
         IResolveDependencyStrategy chainStorageStrategy = mock(IResolveDependencyStrategy.class);

@@ -125,7 +125,7 @@ public class BlockingMessageSchedulerAction implements ISchedulerAction {
 
             context.setValue(finalActionsFN, finalActionsList);
 
-            Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), entry.getState().getValue(chainFN), message);
+            Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name_and_message"), entry.getState().getValue(chainFN), message);
             IReceiverChain chain = chainStorage.resolve(chainId);
             IMessageProcessingSequence sequence = IOC.resolve(Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()),
                     entry.getState().getValue(stackDepthFN), chain);

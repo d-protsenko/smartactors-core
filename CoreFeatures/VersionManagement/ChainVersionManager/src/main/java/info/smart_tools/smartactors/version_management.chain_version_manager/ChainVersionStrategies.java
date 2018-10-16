@@ -9,17 +9,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 class ChainVersionStrategies {
-    private String mapName;
+    private Object mapName;
     private List<IResolveDependencyStrategy> versionResolutionStrategies;
-    private List<String> versions;
+    private List<Comparable> versions;
 
-    ChainVersionStrategies(String mapName) {
+    ChainVersionStrategies(Object mapName) {
         this.mapName = mapName;
         this.versionResolutionStrategies = Collections.synchronizedList(new LinkedList<>());
         this.versions = Collections.synchronizedList(new LinkedList<>());
     }
 
-    void registerVersionResolutionStrategy(String version, IResolveDependencyStrategy strategy) {
+    void registerVersionResolutionStrategy(Comparable version, IResolveDependencyStrategy strategy) {
         int idx, order;
         for (idx = 0; idx < versions.size(); idx++) {
             order = versions.get(idx).compareTo(version);
@@ -37,10 +37,10 @@ class ChainVersionStrategies {
         versionResolutionStrategies.add(idx, strategy);
     }
 
-    String resolveVersion(IObject message)
+    Comparable resolveVersion(IObject message)
             throws ResolveDependencyStrategyException {
 
-        String version = null;
+        Comparable version = null;
         for(IResolveDependencyStrategy strategy : versionResolutionStrategies) {
             if (strategy != null) {
                 try {
@@ -49,7 +49,7 @@ class ChainVersionStrategies {
                         break;
                     }
                 } catch (Throwable e) {
-                    System.out.println("[WARNING] Chain '"+ mapName +"' version resolution strategy thrown exception: "+ e.getMessage());
+                    System.out.println("[WARNING] Chain '"+ mapName.toString() +"' version resolution strategy thrown exception: "+ e.getMessage());
                     e.printStackTrace();
                 }
             }

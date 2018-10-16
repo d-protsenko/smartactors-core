@@ -88,7 +88,7 @@ public class HttpEndpointTestRunnerTest {
                 )
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name_and_message"),
                 new ApplyFunctionToArgumentsStrategy((a) -> {
                     return this.chainId;
                 })

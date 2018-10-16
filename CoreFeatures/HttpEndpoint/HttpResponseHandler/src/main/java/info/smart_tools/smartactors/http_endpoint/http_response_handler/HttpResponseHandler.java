@@ -106,7 +106,7 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
                 try {
                     IObject environment = getEnvironment(responseCopy);
                     IObject message = (IObject) environment.getValue(messageFieldName);
-                    Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), receiverMapName, message);
+                    Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name_and_message"), receiverMapName, message);
                     IReceiverChain receiverChain = chainStorage.resolve(chainId);
                     IMessageProcessingSequence processingSequence =
                             IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), stackDepth, receiverChain);

@@ -100,6 +100,7 @@ public class HttpEndpointTestRunner implements ITestRunner {
     private final IFieldName chainFieldName;
     private final IFieldName messageFieldName;
     private final IFieldName callbackFieldName;
+    private final IFieldName environmentFieldName;
 
     /**
      * Default constructor.
@@ -119,6 +120,9 @@ public class HttpEndpointTestRunner implements ITestRunner {
             );
             this.callbackFieldName = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "callback"
+            );
+            environmentFieldName = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "environment"
             );
         } catch (ResolutionException e) {
             throw new InitializationException("Could not create new instance of HttpEndpointTestRunner.", e);
@@ -149,9 +153,11 @@ public class HttpEndpointTestRunner implements ITestRunner {
                     IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject")
             );
             String chainName = (String)description.getValue(this.chainFieldName);
-            IObject message = (IObject)description.getValue(this.messageFieldName);
+            // ToDo: message obtaining was copied from TestEnvironmentHandler.handle - need to check correctness
+            IObject environment = (IObject) description.getValue(this.environmentFieldName);
+            IObject message = (IObject)environment.getValue(this.messageFieldName);
             Object chainId = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name"),
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name_and_message"),
                     chainName,
                     message
             );

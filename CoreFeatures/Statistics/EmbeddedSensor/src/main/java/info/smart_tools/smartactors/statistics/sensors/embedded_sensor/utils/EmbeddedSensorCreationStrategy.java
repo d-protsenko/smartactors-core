@@ -92,7 +92,7 @@ public class EmbeddedSensorCreationStrategy implements IResolveDependencyStrateg
             String chainName = parts[0];
             String chainVersion = parts.length < 2 ? null : parts[1];
             // get chain Id by chain name and version
-            Object targetChainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName, null, chainVersion);
+            Object targetChainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name_and_version"), chainName, chainVersion);
             IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
 
             for (IObject embedItemConf : embedConf) {

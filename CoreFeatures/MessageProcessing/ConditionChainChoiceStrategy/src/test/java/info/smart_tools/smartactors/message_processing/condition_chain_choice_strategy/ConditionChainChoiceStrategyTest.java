@@ -54,7 +54,7 @@ public class ConditionChainChoiceStrategyTest extends PluginsLoadingTestBase {
         when(chainIdStrategy.resolve(eq("trueChainId"))).thenReturn(trueId);
         when(chainIdStrategy.resolve(eq("falseChainId"))).thenReturn(falseId);
 
-        IOC.register(Keys.getOrAdd("chain_id_from_map_name"), chainIdStrategy);
+        IOC.register(Keys.getOrAdd("chain_id_from_map_name_and_message"), chainIdStrategy);
     }
 
     @Test

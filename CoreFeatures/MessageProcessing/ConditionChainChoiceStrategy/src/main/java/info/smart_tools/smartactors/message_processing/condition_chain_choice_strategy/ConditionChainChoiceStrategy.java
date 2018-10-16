@@ -31,7 +31,7 @@ public class ConditionChainChoiceStrategy implements IChainChoiceStrategy {
         try {
             IFieldName chainFN = ((Boolean)messageProcessor.getMessage().getValue(chainConditionFN) ? trueChainFN : falseChainFN);
             return IOC.resolve(
-                    Keys.getOrAdd("chain_id_from_map_name"),
+                    Keys.getOrAdd("chain_id_from_map_name_and_message"),
                     messageProcessor.getSequence().getCurrentReceiverArguments().getValue(chainFN),
                     messageProcessor.getMessage()
             );

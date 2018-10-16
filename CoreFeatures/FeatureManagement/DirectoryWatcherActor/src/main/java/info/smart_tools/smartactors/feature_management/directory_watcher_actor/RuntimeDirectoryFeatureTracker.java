@@ -53,7 +53,7 @@ public class RuntimeDirectoryFeatureTracker {
 
     private final static String EXTENSION_SEPARATOR = ".";
     private final static String TASK_QUEUE_IOC_NAME = "task_queue";
-    private final static String CHAIN_ID_STORAGE_STRATEGY_NAME = "chain_id_from_map_name";
+    private final static String CHAIN_ID_STORAGE_STRATEGY_NAME = "chain_id_from_map_name_and_message";
     private final static String IOBJECT_FACTORY_STRATEGY_NAME = "info.smart_tools.smartactors.iobject.iobject.IObject";
     private final static String FIELD_NAME_FACTORY_STARTEGY_NAME =
             "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";

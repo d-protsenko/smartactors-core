@@ -268,7 +268,7 @@ public class CheckpointActor {
         feedbackMessage.setValue(prevCheckpointIdFieldName, checkpointStatus.getValue(responsibleCheckpointIdFieldName));
         feedbackMessage.setValue(prevCheckpointEntryIdFieldName, checkpointStatus.getValue(checkpointEntryIdFieldName));
 
-        Object feedbackChainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), FEEDBACK_CHAIN_NAME, feedbackMessage);
+        Object feedbackChainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name_and_message"), FEEDBACK_CHAIN_NAME, feedbackMessage);
         MessageBus.send(feedbackMessage, feedbackChainId);
     }
 }

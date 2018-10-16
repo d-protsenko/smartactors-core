@@ -100,9 +100,8 @@ public class DebuggerBreakpointsStorageImpl implements IDebuggerBreakpointsStora
             int stepId = ((Number) desc.getValue(stepFN)).intValue();
 
             Object chainId = IOC.resolve(
-                    Keys.getOrAdd("chain_id_from_map_name"),
+                    Keys.getOrAdd("chain_id_from_map_name_and_version"),
                     chainName,
-                    null,
                     chainVersion
             );
             IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));

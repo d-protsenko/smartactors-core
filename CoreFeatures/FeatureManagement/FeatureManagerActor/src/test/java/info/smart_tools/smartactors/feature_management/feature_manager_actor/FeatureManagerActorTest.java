@@ -107,7 +107,7 @@ public class FeatureManagerActorTest {
                 Keys.getOrAdd("task_queue"), new SingletonStrategy(this.queue)
         );
         IOC.register(
-                Keys.getOrAdd("chain_id_from_map_name"), getChainIDByNameStrategy
+                Keys.getOrAdd("chain_id_from_map_name_and_message"), getChainIDByNameStrategy
         );
         IOC.register(
                 Keys.getOrAdd(IChainStorage.class.getCanonicalName()), new SingletonStrategy(this.storage)

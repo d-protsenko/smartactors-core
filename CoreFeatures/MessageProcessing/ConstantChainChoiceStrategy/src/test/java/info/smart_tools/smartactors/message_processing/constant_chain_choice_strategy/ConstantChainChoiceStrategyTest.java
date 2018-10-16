@@ -54,7 +54,7 @@ public class ConstantChainChoiceStrategyTest extends PluginsLoadingTestBase {
         when(messageProcessingSequenceMock.getCurrentReceiverArguments()).thenReturn(args);
         when(chainIdStrategy.resolve(eq("chain_to_call_name"))).thenReturn(id);
 
-        IOC.register(Keys.getOrAdd("chain_id_from_map_name"), chainIdStrategy);
+        IOC.register(Keys.getOrAdd("chain_id_from_map_name_and_message"), chainIdStrategy);
     }
 
     @Test

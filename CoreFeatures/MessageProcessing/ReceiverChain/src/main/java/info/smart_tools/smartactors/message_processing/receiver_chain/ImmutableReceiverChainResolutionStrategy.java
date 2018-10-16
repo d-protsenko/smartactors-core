@@ -74,7 +74,7 @@ public class ImmutableReceiverChainResolutionStrategy implements IResolveDepende
 
             IKey fieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
             IKey receiverIdKey = Keys.getOrAdd("receiver_id_from_iobject");
-            IKey chainIdKey = Keys.getOrAdd("chain_id");
+            IKey chainIdKey = Keys.getOrAdd("chain_id_from_map_name");
 
             IFieldName stepsFieldName = IOC.resolve(fieldNameKey, "steps");
             IFieldName exceptionalChainsFieldName = IOC.resolve(fieldNameKey, "exceptional");

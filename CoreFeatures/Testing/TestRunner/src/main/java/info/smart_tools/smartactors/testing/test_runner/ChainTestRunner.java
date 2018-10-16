@@ -15,7 +15,6 @@ import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.testing.interfaces.itest_runner.ITestRunner;
 import info.smart_tools.smartactors.testing.interfaces.itest_runner.exception.TestExecutionException;
-import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 
 /**
  * Runs tests on receiver chains.
@@ -121,7 +120,7 @@ public class ChainTestRunner implements ITestRunner {
             IObject environment = (IObject) description.getValue(environmentFieldName);
             IObject message = (IObject) environment.getValue(messageFieldName);
             Object chainId = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name"),
+                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name_and_message"),
                     chainName,
                     message
             );

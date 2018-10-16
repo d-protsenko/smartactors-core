@@ -112,7 +112,7 @@ public class HttpResponseHandlerTest {
         IOC.register(Keys.getOrAdd("cancelTimerOnRequest"),
                 new SingletonStrategy(obj));
 
-        IOC.register(Keys.getOrAdd("chain_id_from_map_name"), new SingletonStrategy(
+        IOC.register(Keys.getOrAdd("chain_id_from_map_name_and_message"), new SingletonStrategy(
                         mapId
                 )
         );
