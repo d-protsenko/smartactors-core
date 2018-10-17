@@ -16,7 +16,7 @@
         <module>IMessage</module>
         <module>IChainStorage</module>
         <module>IReceiverGenerator</module>
-        <module>MessageProcessingInterfaces</module>
+        <module>MessageProcessing</module>
         <module>IRouter</module>
         <module>IWrapperGenerator</module>
         <module>IResponseStrategy</module>

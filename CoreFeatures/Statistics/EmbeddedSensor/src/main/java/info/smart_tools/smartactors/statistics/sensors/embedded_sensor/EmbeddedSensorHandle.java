@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.statistics.sensors.embedded_sensor;
 
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainModificationException;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.statistics.sensors.interfaces.ISensorHandle;
 import info.smart_tools.smartactors.statistics.sensors.interfaces.exceptions.SensorShutdownException;
 

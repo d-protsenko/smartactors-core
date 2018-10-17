@@ -68,8 +68,13 @@ class ReceiverReplacingChainDecorator implements IReceiverChain {
     }
 
     @Override
-    public String getId() {
+    public Object getId() {
         return original.getId();
+    }
+
+    @Override
+    public Object getName() {
+        return original.getName();
     }
 
     @Override

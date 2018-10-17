@@ -18,7 +18,6 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationExce
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.testing.chain_testing.section_strategy.TestsSectionStrategy;
 import info.smart_tools.smartactors.testing.interfaces.itest_runner.ITestRunner;
 import info.smart_tools.smartactors.testing.test_environment_handler.MainTestChain;
@@ -136,7 +135,7 @@ public class PluginChainTesting implements IPlugin {
                             IOC.register(Keys.getOrAdd(MainTestChain.class.getCanonicalName()),
                                     new CreateNewInstanceStrategy(args -> {
                                         try {
-                                            return new MainTestChain((IReceiverChain) args[0], (IAction) args[1], (IObject) args[2]);
+                                            return new MainTestChain(args[0], (IAction) args[1], (IObject) args[2]);
                                         } catch (InvalidArgumentException | InitializationException e) {
                                             throw new RuntimeException(e);
                                         }

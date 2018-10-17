@@ -25,7 +25,6 @@ import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import io.netty.buffer.ByteBuf;

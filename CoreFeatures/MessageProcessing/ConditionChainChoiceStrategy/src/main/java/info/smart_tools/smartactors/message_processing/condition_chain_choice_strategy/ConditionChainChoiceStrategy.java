@@ -1,11 +1,12 @@
 package info.smart_tools.smartactors.message_processing.condition_chain_choice_strategy;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing.chain_call_receiver.IChainChoiceStrategy;
-import info.smart_tools.smartactors.message_processing.chain_call_receiver.exceptions.ChainChoiceException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 
 /**
@@ -27,16 +28,9 @@ public class ConditionChainChoiceStrategy implements IChainChoiceStrategy {
     }
 
     @Override
-    public Object chooseChain(final IMessageProcessor messageProcessor) throws ChainChoiceException {
-        try {
-            IFieldName chainFN = ((Boolean)messageProcessor.getMessage().getValue(chainConditionFN) ? trueChainFN : falseChainFN);
-            return IOC.resolve(
-                    Keys.getOrAdd("chain_id_from_map_name_and_message"),
-                    messageProcessor.getSequence().getCurrentReceiverArguments().getValue(chainFN),
-                    messageProcessor.getMessage()
-            );
-        } catch (Exception e) {
-            throw new ChainChoiceException("Could not execute condition chain choice strategy.");
-        }
+    public Object chooseChain(final IMessageProcessor messageProcessor)
+            throws InvalidArgumentException, ReadValueException {
+        IFieldName chainFN = ((Boolean)messageProcessor.getMessage().getValue(chainConditionFN) ? trueChainFN : falseChainFN);
+        return messageProcessor.getSequence().getCurrentReceiverArguments().getValue(chainFN);
     }
 }

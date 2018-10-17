@@ -5,7 +5,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 
 /**
  * Exception thrown by
- * {@link IMessageProcessingSequence#callChain(IReceiverChain)}
+ * {@link IMessageProcessingSequence#callChain(Object)}
  * when stack overflow occurs.
  */
 public class NestedChainStackOverflowException extends Exception {

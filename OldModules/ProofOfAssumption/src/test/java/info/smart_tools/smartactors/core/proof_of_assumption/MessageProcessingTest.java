@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.core.proof_of_assumption;
 
 import info.smart_tools.smartactors.task.blocking_queue.BlockingQueue;
 import info.smart_tools.smartactors.message_processing.chain_call_receiver.ChainCallReceiver;
-import info.smart_tools.smartactors.message_processing.chain_call_receiver.exceptions.ChainChoiceException;
+import info.smart_tools.smartactors.message_processing.message_processing_sequence.exceptions.ChainChoiceException;
 import info.smart_tools.smartactors.message_processing.chain_storage.ChainStorage;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;

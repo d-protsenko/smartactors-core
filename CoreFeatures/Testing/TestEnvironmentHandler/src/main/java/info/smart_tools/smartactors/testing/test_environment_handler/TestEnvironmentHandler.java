@@ -12,7 +12,6 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageProcessorProcessException;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
@@ -57,7 +56,7 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
     }
 
     @Override
-    public void handle(final IObject environment, final IReceiverChain receiverChain, final IAction<Throwable> callback)
+    public void handle(final IObject environment, final Object receiverChainName, final IAction<Throwable> callback)
             throws EnvironmentHandleException, InvalidArgumentException {
         if (null == environment) {
             throw new InvalidArgumentException("Description should not be null.");
@@ -65,7 +64,7 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
         if (null == callback) {
             throw new InvalidArgumentException("Callback should not be null.");
         }
-        if (null == receiverChain) {
+        if (null == receiverChainName) {
             throw new InvalidArgumentException("Receiver chain should not be null.");
         }
 
@@ -87,7 +86,7 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
             };
             MainTestChain mainTestChain = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), MainTestChain.class.getCanonicalName()),
-                    receiverChain,
+                    receiverChainName,
                     completionCallback,
                     checker.getSuccessfulReceiverArguments()
             );

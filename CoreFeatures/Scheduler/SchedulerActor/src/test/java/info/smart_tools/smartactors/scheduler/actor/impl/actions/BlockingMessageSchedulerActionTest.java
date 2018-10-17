@@ -24,7 +24,6 @@ import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerAct
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
-import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 

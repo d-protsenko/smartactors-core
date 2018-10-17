@@ -13,6 +13,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.Signal;
@@ -314,7 +315,7 @@ public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask,
     }
 
     private void enqueueNext() throws NestedChainStackOverflowException, InvalidArgumentException,
-            ChangeValueException, ReadValueException, ResolutionException {
+            ChangeValueException, ReadValueException, ResolutionException, ChainNotFoundException {
         checkSignal();
 
         if (messageProcessingSequence.next()) {
@@ -334,7 +335,7 @@ public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask,
 
     private void checkSignal()
             throws ChangeValueException, InvalidArgumentException, NestedChainStackOverflowException,
-            ReadValueException {
+            ReadValueException, ResolutionException, ChainNotFoundException {
         Throwable signal = this.signalException;
 
         if (null != signal) {

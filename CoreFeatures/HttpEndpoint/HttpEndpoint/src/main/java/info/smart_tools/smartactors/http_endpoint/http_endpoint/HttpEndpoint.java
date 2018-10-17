@@ -7,7 +7,6 @@ import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEn
 import info.smart_tools.smartactors.http_endpoint.http_request_handler.HttpRequestHandler;
 import info.smart_tools.smartactors.http_endpoint.http_server.HttpServer;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import io.netty.handler.codec.http.FullHttpRequest;

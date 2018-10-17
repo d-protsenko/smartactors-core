@@ -6,12 +6,12 @@ import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
-import info.smart_tools.smartactors.message_processing.chain_call_receiver.exceptions.ChainChoiceException;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainChoiceException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageReceiveException;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
@@ -46,13 +46,13 @@ public class ChainCallReceiverTest extends PluginsLoadingTestBase {
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrowWhenChainStorageIsNull()
             throws Exception {
-        new ChainCallReceiver(null, mock(IChainChoiceStrategy.class));
+        new ChainCallReceiver(mock(IChainChoiceStrategy.class));
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrowWhenStrategyIsNull()
             throws Exception {
-        new ChainCallReceiver(mock(IChainStorage.class), null);
+        new ChainCallReceiver(null);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class ChainCallReceiverTest extends PluginsLoadingTestBase {
         IObject chainDescriptionMock = mock(IObject.class);
         IObject contextMock = mock(IObject.class);
 
-        IMessageReceiver receiver = new ChainCallReceiver(chainStorageMock, chainChoiceStrategyMock);
+        IMessageReceiver receiver = new ChainCallReceiver(chainChoiceStrategyMock);
 
         when(chainChoiceStrategyMock.chooseChain(same(messageProcessorMock))).thenReturn(chainIdMock);
         when(chainStorageMock.resolve(same(chainIdMock))).thenReturn(chainMock);
@@ -80,7 +80,7 @@ public class ChainCallReceiverTest extends PluginsLoadingTestBase {
 
         receiver.receive(messageProcessorMock);
 
-        verify(sequenceMock).callChain(same(chainMock));
+        verify(sequenceMock).callChainSecurely(same(chainMock),messageProcessorMock);
 
         when(chainChoiceStrategyMock.chooseChain(same(messageProcessorMock))).thenThrow(exceptionMock);
 
@@ -106,7 +106,7 @@ public class ChainCallReceiverTest extends PluginsLoadingTestBase {
         IObject chainDescriptionMock = mock(IObject.class);
         IObject contextMock = mock(IObject.class);
 
-        IMessageReceiver receiver = new ChainCallReceiver(chainStorageMock, chainChoiceStrategyMock);
+        IMessageReceiver receiver = new ChainCallReceiver(chainChoiceStrategyMock);
 
         when(chainChoiceStrategyMock.chooseChain(same(messageProcessorMock))).thenReturn(chainIdMock);
         when(chainStorageMock.resolve(same(chainIdMock))).thenReturn(chainMock);

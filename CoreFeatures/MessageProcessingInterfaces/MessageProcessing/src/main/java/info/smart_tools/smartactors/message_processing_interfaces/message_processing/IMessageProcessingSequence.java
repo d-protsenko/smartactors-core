@@ -5,6 +5,8 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainChoiceException;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NoExceptionHandleChainException;
 
@@ -14,7 +16,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
  * May be used for processing o new messages when processing of current one is finished (see {@link #reset()}).
  *
  * Contains reference to a {@link IReceiverChain} (called main chain) used to process new messages. New chains may be
- * substituted using {@link #callChain(IReceiverChain)} method.
+ * substituted using {@link #callChain(Object)} method.
  */
 public interface IMessageProcessingSequence {
     /**
@@ -81,11 +83,22 @@ public interface IMessageProcessingSequence {
      * Interrupt execution of current chain by execution of a given one and when it is completed continue the previous.
      * Puts the new chain into a stack.
      *
-     * @param chain    the {@link IReceiverChain} to call
+     * @param chainName    the name of chain to call
+     * @param processor    the message processor to check access to chain
      * @throws NestedChainStackOverflowException if overflow of nested chains stack occurs
      */
-    void callChain(IReceiverChain chain)
-            throws NestedChainStackOverflowException;
+    void callChainSecurely(Object chainName, IMessageProcessor processor)
+            throws NestedChainStackOverflowException, ChainNotFoundException, ResolutionException, ChainChoiceException;
+
+    /**
+     * Interrupt execution of current chain by execution of a given one and when it is completed continue the previous.
+     * Puts the new chain into a stack.
+     *
+     * @param chainName    the name of chain to call
+     * @throws NestedChainStackOverflowException if overflow of nested chains stack occurs
+     */
+    void callChain(Object chainName)
+            throws NestedChainStackOverflowException, ChainNotFoundException, ResolutionException;
 
     /**
      * Switch to the chain that should be executed when exception occurs.
@@ -101,8 +114,9 @@ public interface IMessageProcessingSequence {
      * @throws ChangeValueException if error occurs during writing positions to context
      * @throws InvalidArgumentException if incoming argument is null
      * @throws ReadValueException if error occurs during reading data from exception description
-     * @see #callChain(IReceiverChain)
+     * @see #callChainSecurely(Object, IMessageProcessor)
      */
     void catchException(Throwable exception, IObject context)
-            throws NoExceptionHandleChainException, NestedChainStackOverflowException, ChangeValueException, InvalidArgumentException, ReadValueException;
+            throws NoExceptionHandleChainException, NestedChainStackOverflowException, ChangeValueException,
+            InvalidArgumentException, ReadValueException, ResolutionException, ChainNotFoundException;
 }

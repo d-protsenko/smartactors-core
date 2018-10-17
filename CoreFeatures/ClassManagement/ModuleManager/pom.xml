@@ -68,7 +68,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>version-management.interfaces.imodule</artifactId>
+            <artifactId>class-management.interfaces.imodule</artifactId>
             <version>0.4.0</version>
             <scope>compile</scope>
         </dependency>

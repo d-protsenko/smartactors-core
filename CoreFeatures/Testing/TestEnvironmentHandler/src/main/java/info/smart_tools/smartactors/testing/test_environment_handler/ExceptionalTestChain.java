@@ -23,7 +23,12 @@ class ExceptionalTestChain implements IReceiverChain {
     }
 
     @Override
-    public String getId() {
+    public Object getId() {
+        return "exceptional test chain";
+    }
+
+    @Override
+    public Object getName() {
         return "exceptional test chain";
     }
 

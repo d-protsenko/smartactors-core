@@ -1,6 +1,8 @@
 package info.smart_tools.smartactors.message_processing_interfaces.message_processing;
 
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 
 import java.util.Collection;
 
@@ -31,6 +33,13 @@ public interface IReceiverChain {
      * @return Id of this chain
      */
     Object getId();
+
+    /**
+     * Get name of this chain.
+     *
+     * @return name of this chain
+     */
+    Object getName();
 
     /**
      * Get the chain of receivers (and environments) that has to be executed if exception occurs during execution of this chain.

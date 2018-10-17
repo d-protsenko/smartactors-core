@@ -1,5 +1,6 @@
-package info.smart_tools.smartactors.message_processing.chain_call_receiver.exceptions;
+package info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions;
 
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainChoiceException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

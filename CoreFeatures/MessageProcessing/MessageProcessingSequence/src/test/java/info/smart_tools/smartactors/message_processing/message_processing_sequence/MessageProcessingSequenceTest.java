@@ -81,13 +81,13 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrow_When_invalidStackDepthGiven()
             throws Exception {
-        assertNotNull(new MessageProcessingSequence(0, mock(IReceiverChain.class)));
+        assertNotNull(new MessageProcessingSequence(0, mock(IReceiverChain.class), mock(IObject.class)));
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrow_When_nullMainChainGiven()
             throws Exception {
-        assertNotNull(new MessageProcessingSequence(1, null));
+        assertNotNull(new MessageProcessingSequence(1, null, null));
     }
 
     @Test(expected = InvalidArgumentException.class)
@@ -95,7 +95,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
             throws Exception {
         when(mainChainMock.get(eq(0))).thenReturn(null);
 
-        assertNotNull(new MessageProcessingSequence(1, mainChainMock));
+        assertNotNull(new MessageProcessingSequence(1, mainChainMock, mock(IObject.class)));
     }
 
     @Test(expected = NestedChainStackOverflowException.class)
@@ -103,7 +103,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
             throws Exception {
         when(mainChainMock.get(eq(0))).thenReturn(messageReceiverMocks[0]);
 
-        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock);
+        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock, mock(IObject.class));
 
         try {
             messageProcessingSequence.callChain(mainChainMock);
@@ -149,7 +149,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         when(chainMock3.getArguments(eq(0))).thenReturn(receiverArgsMocks[7]);
         when(chainMock3.getArguments(eq(1))).thenReturn(receiverArgsMocks[8]);
 
-        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock);
+        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock, mock(IObject.class));
 
         assertSame(messageReceiverMocks[0], messageProcessingSequence.getCurrentReceiver());
         assertSame(receiverArgsMocks[0], messageProcessingSequence.getCurrentReceiverArguments());
@@ -209,7 +209,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         when(mainChainMock.get(0)).thenReturn(messageReceiverMocks[3]);
         when(mainChainMock.get(1)).thenReturn(messageReceiverMocks[4]);
 
-        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock);
+        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock, mock(IObject.class));
 
         assertSame(messageReceiverMocks[3], messageProcessingSequence.getCurrentReceiver());
 
@@ -240,7 +240,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
 //        when(mainChainMock.getExceptionalChainNamesAndEnvironments(same(exception))).thenReturn(mock(IObject.class));
         when(mainChainMock.get(eq(0))).thenReturn(messageReceiverMocks[0]);
 
-        IMessageProcessingSequence sequence = new MessageProcessingSequence(5, mainChainMock);
+        IMessageProcessingSequence sequence = new MessageProcessingSequence(5, mainChainMock, mock(IObject.class));
 
         sequence.catchException(exception, contextMock);
     }
@@ -265,7 +265,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         when(secondaryChain.get(eq(1))).thenReturn(messageReceiverMocks[1]);
         when(exceptionalChain.get(eq(0))).thenReturn(messageReceiverMocks[0]);
 
-        MessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(5, mainChainMock);
+        MessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(5, mainChainMock, mock(IObject.class));
 
         messageProcessingSequence.next();
         messageProcessingSequence.callChain(mainChainMock);
@@ -287,7 +287,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
     @Test(expected = InvalidArgumentException.class)
     public void Should_goToThrow_When_positionIsOutOfRange()
             throws Exception {
-        new MessageProcessingSequence(5, mainChainMock).goTo(-1, 0);
+        new MessageProcessingSequence(5, mainChainMock, mock(IObject.class)).goTo(-1, 0);
     }
 
     @Test
@@ -295,7 +295,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
             throws Exception {
         when(mainChainMock.get(eq(0))).thenReturn(messageReceiverMocks[0]);
 
-        MessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(5, mainChainMock);
+        MessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(5, mainChainMock, mock(IObject.class));
 
         messageProcessingSequence.next();
         messageProcessingSequence.callChain(mainChainMock);
@@ -315,13 +315,13 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
     @Test(expected = InvalidArgumentException.class)
     public void Should_getStepAtLevelThrow_When_LevelIndexIsNegative()
             throws Exception {
-        new MessageProcessingSequence(5, mainChainMock).getStepAtLevel(-1);
+        new MessageProcessingSequence(5, mainChainMock, mock(IObject.class)).getStepAtLevel(-1);
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void Should_getStepAtLevelThrow_When_LevelIndexIsGreaterThanIndexOfCurrentLevel()
             throws Exception {
-        new MessageProcessingSequence(5, mainChainMock).getStepAtLevel(1);
+        new MessageProcessingSequence(5, mainChainMock, mock(IObject.class)).getStepAtLevel(1);
     }
 
     @Test
@@ -332,7 +332,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         when(mainChainMock.get(eq(1))).thenReturn(messageReceiverMocks[1]);
         when(mainChainMock.get(eq(2))).thenReturn(messageReceiverMocks[2]);
 
-        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock);
+        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock, mock(IObject.class));
         messageProcessingSequence.end();
         assertFalse(messageProcessingSequence.next());
     }
@@ -353,7 +353,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         when(mainChainMock.get(eq(1))).thenReturn(messageReceiverMocks[1]);
         when(mainChainMock.get(eq(2))).thenReturn(messageReceiverMocks[2]);
 
-        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock);
+        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock, mock(IObject.class));
 
         messageProcessingSequence.callChain(mainChainMock);
 
@@ -377,7 +377,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         when(mainChainMock.get(eq(1))).thenReturn(messageReceiverMocks[1]);
         when(mainChainMock.get(eq(2))).thenReturn(messageReceiverMocks[2]);
 
-        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock);
+        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock, mock(IObject.class));
         messageProcessingSequence.catchException(exception, contextMock);
 
         assertFalse(messageProcessingSequence.next());
@@ -417,7 +417,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         when(chain2.get(0)).thenReturn(messageReceiverMocks[0]);
         when(chain2.get(1)).thenReturn(messageReceiverMocks[1]);
 
-        MessageProcessingSequence sequence = new MessageProcessingSequence(10, chain1);
+        MessageProcessingSequence sequence = new MessageProcessingSequence(10, chain1, null);
 
         sequence.next();
         sequence.callChain(chain2);

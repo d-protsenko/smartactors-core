@@ -9,10 +9,12 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainChoiceException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageReceiveException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
 
@@ -28,16 +30,16 @@ public class MainTestChain implements IReceiverChain {
     private IObject successReceiverArgs;
     private IObject testChainReceiverArgs;
     private AtomicBoolean isCompleted;
-    private IReceiverChain testChain;
+    private Object testChainName;
 
-    private IFieldName chainFieldName;
+    private IFieldName chainNameFieldName;
 
     private class TestChainRunnerReceiver implements IMessageReceiver {
         public void receive(IMessageProcessor mp)
                 throws MessageReceiveException, AsynchronousOperationException {
             try {
-                mp.getSequence().callChain(testChain);
-            } catch (NestedChainStackOverflowException e) {
+                mp.getSequence().callChainSecurely(testChainName, mp);
+            } catch (ResolutionException | ChainChoiceException | ChainNotFoundException | NestedChainStackOverflowException e) {
                 throw new MessageReceiveException(e);
             }
         }
@@ -67,7 +69,7 @@ public class MainTestChain implements IReceiverChain {
     /**
      * The constructor.
      *
-     * @param chain the testing chain
+     * @param chainName the testing chain
      * @param completionCallback    the callback that should be called when chain completes successful (with {@code null} as the only
      *                              argument) or with exception (with that exception as first argument)
      * @param successReceiverArgs   object that will e returned by {@link #getArguments(int)} for a receiver reached in case of successful
@@ -75,20 +77,20 @@ public class MainTestChain implements IReceiverChain {
      * @throws InvalidArgumentException if {@code completionCallback} is {@code null}
      * @throws InitializationException if resolution dependency for {@link IObject} was failed
      */
-    public MainTestChain(final IReceiverChain chain, final IAction<Throwable> completionCallback, final IObject successReceiverArgs)
+    public MainTestChain(final Object chainName, final IAction<Throwable> completionCallback, final IObject successReceiverArgs)
             throws InvalidArgumentException, InitializationException {
         if (null == completionCallback) {
             throw new InvalidArgumentException("Callback should not be null.");
         }
-        if (null == chain) {
+        if (null == chainName) {
             throw new InvalidArgumentException("Test chain should not be null.");
         }
-        this.testChain = chain;
+        this.testChainName = chainName;
         this.completionCallback = completionCallback;
         this.successReceiverArgs = successReceiverArgs;
         this.isCompleted = new AtomicBoolean(false);
         try {
-            this.chainFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
+            this.chainNameFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
             this.testChainReceiverArgs = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
             if (null == this.successReceiverArgs) {
                 this.successReceiverArgs = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
@@ -117,7 +119,12 @@ public class MainTestChain implements IReceiverChain {
     }
 
     @Override
-    public String getId() {
+    public Object getId() {
+        return "root test chain";
+    }
+
+    @Override
+    public Object getName() {
         return "root test chain";
     }
 
@@ -126,7 +133,7 @@ public class MainTestChain implements IReceiverChain {
         IObject exceptionalChainAndEnv = null;
         try {
             exceptionalChainAndEnv = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
-            exceptionalChainAndEnv.setValue(this.chainFieldName, new ExceptionalTestChain());
+            exceptionalChainAndEnv.setValue(this.chainNameFieldName, new ExceptionalTestChain());
             if (isCompleted.compareAndSet(false, true)) {
                 completionCallback.execute(exception);
             }

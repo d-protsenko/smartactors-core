@@ -21,6 +21,7 @@ import java.util.Set;
  */
 public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
     private final Object id;
+    private final Object name;
     private final IMessageReceiver[] receivers;
     private final IObject[] arguments;
     private final Map<Class<? extends Throwable>, IObject> exceptionalChainNamesAndEnv;
@@ -67,18 +68,18 @@ public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
             throw new InvalidArgumentException("Exceptional chains list should not be null");
         }
 
+        IFieldName mapIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id");
+        IFieldName chainNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
+
         this.id = id;
+        this.name = chainDescription.getValue(mapIdFieldName);
         this.description = chainDescription;
         this.receivers = receivers;
         this.arguments = arguments;
         this.exceptionalChainNamesAndEnv = exceptionalChainNamesAndEnv;
-
-        allExceptionalChains = new HashSet<>();
-
-        IFieldName chainNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
-
+        this.allExceptionalChains = new HashSet<>();
         for (IObject exceptionEnv : exceptionalChainNamesAndEnv.values()) {
-            allExceptionalChains.add(exceptionEnv.getValue(chainNameFieldName));
+            this.allExceptionalChains.add(exceptionEnv.getValue(chainNameFieldName));
         }
     }
 
@@ -103,6 +104,11 @@ public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
     @Override
     public Object getId() {
         return id;
+    }
+
+    @Override
+    public Object getName() {
+        return name;
     }
 
     @Override

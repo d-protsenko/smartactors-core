@@ -20,8 +20,8 @@ import info.smart_tools.smartactors.message_processing.message_processing_sequen
 import info.smart_tools.smartactors.message_processing.message_processing_sequence.dump_recovery.MessageProcessingSequenceRecoveryStrategy;
 import info.smart_tools.smartactors.message_processing.message_processor.FinalTask;
 import info.smart_tools.smartactors.message_processing.message_processor.MessageProcessor;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 
@@ -194,7 +194,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
 
                                         try {
                                             return new MessageProcessingSequence(stackDepth, mainChainName, message);
-                                        } catch (InvalidArgumentException | ResolutionException e) {
+                                        } catch (InvalidArgumentException | ResolutionException | ChainNotFoundException e) {
                                             throw new RuntimeException(e);
                                         }
                                     }));

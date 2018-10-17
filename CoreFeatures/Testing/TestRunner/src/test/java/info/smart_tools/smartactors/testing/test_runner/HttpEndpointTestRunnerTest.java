@@ -23,7 +23,6 @@ import info.smart_tools.smartactors.testing.interfaces.isource.ISource;
 import info.smart_tools.smartactors.testing.interfaces.isource.exception.SourceExtractionException;
 import info.smart_tools.smartactors.testing.interfaces.itest_runner.ITestRunner;
 import info.smart_tools.smartactors.testing.interfaces.itest_runner.exception.TestExecutionException;
-import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import org.junit.Before;
 import org.junit.Test;
 

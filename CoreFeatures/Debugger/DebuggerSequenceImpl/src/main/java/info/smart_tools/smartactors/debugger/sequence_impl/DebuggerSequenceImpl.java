@@ -10,11 +10,14 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.exceptions.RouteNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainChoiceException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NoExceptionHandleChainException;
 
@@ -103,8 +106,8 @@ public class DebuggerSequenceImpl implements IDebuggerSequence, IDumpable {
                 wrapped.catchException(exception, exceptionContext);
                 exception = null;
                 return true;
-            } catch (NoExceptionHandleChainException | NestedChainStackOverflowException | ChangeValueException | InvalidArgumentException
-                    | ReadValueException | ResolutionException e) {
+            } catch (NoExceptionHandleChainException | NestedChainStackOverflowException | ChangeValueException |
+                    InvalidArgumentException | ReadValueException | ChainNotFoundException | ResolutionException e) {
                 e.addSuppressed(exception);
                 exception = e;
             }
@@ -171,13 +174,20 @@ public class DebuggerSequenceImpl implements IDebuggerSequence, IDumpable {
     }
 
     @Override
-    public void callChain(final IReceiverChain chain) throws NestedChainStackOverflowException {
-        wrapped.callChain(chain);
+    public void callChain(final Object chainName)
+            throws NestedChainStackOverflowException, ResolutionException, ChainNotFoundException {
+        wrapped.callChain(chainName);
     }
 
     @Override
-    public void catchException(final Throwable exc, final IObject context) {
-        this.exception = exc;
+    public void callChainSecurely(final Object chainName, IMessageProcessor processor)
+            throws NestedChainStackOverflowException, ResolutionException, ChainNotFoundException, ChainChoiceException {
+        wrapped.callChainSecurely(chainName, processor);
+    }
+
+    @Override
+    public void catchException(final Throwable exception, final IObject context) {
+        this.exception = exception;
         this.exceptionContext = context;
     }
 

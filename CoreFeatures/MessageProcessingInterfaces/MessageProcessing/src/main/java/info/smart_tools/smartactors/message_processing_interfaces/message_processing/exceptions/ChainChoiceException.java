@@ -1,10 +1,10 @@
-package info.smart_tools.smartactors.message_processing.chain_call_receiver.exceptions;
+package info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions;
 
-import info.smart_tools.smartactors.message_processing.chain_call_receiver.IChainChoiceStrategy;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 
 /**
- * Exception thrown by {@link IChainChoiceStrategy#chooseChain(IMessageProcessor)}
+ * Exception thrown by {@link IMessageProcessingSequence#callChainSecurely(Object,IMessageProcessor)}
  * when it's impossible to choose a chain to call.
  */
 public class ChainChoiceException extends Exception {

@@ -74,13 +74,7 @@ public class ChainCallReceiverPlugin implements IPlugin {
                                                                     ((IObject) args[0]).getValue(fieldName)
                                                             )
                                                     );
-                                                    IChainStorage storage = IOC.resolve(
-                                                            IOC.resolve(
-                                                                    IOC.getKeyForKeyByNameResolveStrategy(),
-                                                                    IChainStorage.class.getCanonicalName()
-                                                            )
-                                                    );
-                                                    return new ChainCallReceiver(storage, strategy);
+                                                    return new ChainCallReceiver(strategy);
                                                 } catch (Exception e) {
                                                     throw new RuntimeException(e);
                                                 }

@@ -5,7 +5,6 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
 import info.smart_tools.smartactors.class_management.module_manager.exception.ModuleManagerException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
