@@ -23,9 +23,9 @@ public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
     private final String name;
     private final IMessageReceiver[] receivers;
     private final IObject[] arguments;
-    private final Map<Class<? extends Throwable>, IObject> exceptionalChains;
+    private final Map<Class<? extends Throwable>, IObject> exceptionalChainsAndEnv;
     private final IObject description;
-    private final Set<IReceiverChain> allExceptionalChains;
+    private final Set<Object> allExceptionalChains;
 
     /**
      * The constructor.
@@ -71,14 +71,14 @@ public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
         this.description = chainDescription;
         this.receivers = receivers;
         this.arguments = arguments;
-        this.exceptionalChains = exceptionalChainsAndEnv;
+        this.exceptionalChainsAndEnv = exceptionalChainsAndEnv;
 
         allExceptionalChains = new HashSet<>();
 
-        IFieldName chainFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
+        IFieldName chainNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
 
         for (IObject exceptionEnv : exceptionalChainsAndEnv.values()) {
-            allExceptionalChains.add((IReceiverChain) exceptionEnv.getValue(chainFieldName));
+            allExceptionalChains.add(exceptionEnv.getValue(chainNameFieldName));
         }
     }
 
@@ -110,7 +110,7 @@ public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
         Throwable e = exception;
 
         do {
-            for (Map.Entry<Class<? extends Throwable>, IObject> entry : this.exceptionalChains.entrySet()) {
+            for (Map.Entry<Class<? extends Throwable>, IObject> entry : this.exceptionalChainsAndEnv.entrySet()) {
                 if (entry.getKey().isAssignableFrom(e.getClass())) {
                     return entry.getValue();
                 }
@@ -134,7 +134,7 @@ public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
     }
 
     @Override
-    public Collection<IReceiverChain> getExceptionalChains() {
+    public Collection<Object> getExceptionalChains() {
         return allExceptionalChains;
     }
 

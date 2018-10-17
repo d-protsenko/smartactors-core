@@ -74,12 +74,12 @@ public class ImmutableReceiverChainResolutionStrategy implements IResolveDepende
 
             IKey fieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
             IKey receiverIdKey = Keys.getOrAdd("receiver_id_from_iobject");
-            IKey chainIdKey = Keys.getOrAdd("chain_id_from_map_name");
+            //IKey chainIdKey = Keys.getOrAdd("chain_id_from_map_name");
 
             IFieldName stepsFieldName = IOC.resolve(fieldNameKey, "steps");
             IFieldName exceptionalChainsFieldName = IOC.resolve(fieldNameKey, "exceptional");
             IFieldName exceptionClassFieldName = IOC.resolve(fieldNameKey, "class");
-            IFieldName exceptionChainFieldName = IOC.resolve(fieldNameKey, "chain");
+            IFieldName exceptionChainNameFieldName = IOC.resolve(fieldNameKey, "chain");
             IFieldName exceptionAfterFieldName = IOC.resolve(fieldNameKey, "after");
 
             List chainSteps = (List) description.getValue(stepsFieldName);
@@ -102,18 +102,19 @@ public class ImmutableReceiverChainResolutionStrategy implements IResolveDepende
 
                 Class<?> clazz = this.getClass().getClassLoader().loadClass(String.valueOf(desc.getValue(exceptionClassFieldName)));
                 // setCurrentMessage
-                IReceiverChain chain = chainStorage.resolve(IOC.resolve(chainIdKey, desc.getValue(exceptionChainFieldName)));
+                //IReceiverChain chain = chainStorage.resolve(IOC.resolve(chainIdKey, desc.getValue(exceptionChainNameFieldName)));
+                Object chainName = desc.getValue(exceptionChainNameFieldName);
                 IAction<IMessageProcessingSequence> afterExceptionAction = IOC.resolve(
                         IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "afterExceptionAction#" + desc.getValue(exceptionAfterFieldName))
                 );
                 IObject chainAndEnv = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
-                chainAndEnv.setValue(exceptionChainFieldName, chain);
+                chainAndEnv.setValue(exceptionChainNameFieldName, chainName);
                 chainAndEnv.setValue(exceptionAfterFieldName, afterExceptionAction);
                 exceptionalChainsMap.put((Class<? extends Throwable>) clazz, chainAndEnv);
             }
 
             return (T) new ImmutableReceiverChain(String.valueOf(chainId), description, receivers, arguments, exceptionalChainsMap);
-        } catch (ChainNotFoundException | ClassNotFoundException | ResolutionException | ReadValueException |
+        } catch (ClassNotFoundException | ResolutionException | ReadValueException |
                 RouteNotFoundException | ChangeValueException | InvalidArgumentException e) {
             throw new ResolveDependencyStrategyException(e);
         }

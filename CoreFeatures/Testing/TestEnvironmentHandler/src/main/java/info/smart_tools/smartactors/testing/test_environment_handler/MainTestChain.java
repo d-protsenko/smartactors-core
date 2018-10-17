@@ -145,7 +145,7 @@ public class MainTestChain implements IReceiverChain {
     }
 
     @Override
-    public Collection<IReceiverChain> getExceptionalChains() {
+    public Collection<Object> getExceptionalChains() {
         return Collections.emptyList();
     }
 }

@@ -11,6 +11,8 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
  * Implementation of {@link IMessageProcessingSequence}.
  */
 public class MessageProcessingSequence implements IMessageProcessingSequence, IDumpable {
+    private final IChainStorage chainStorage;
     private final IReceiverChain mainChain;
     private final IReceiverChain[] chainStack;
     private final int[] stepStack;
@@ -92,6 +95,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         chainsDumpFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainsDump");
         excludeExceptionalFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "excludeExceptional");
         skipChainsFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "skipChains");
+        chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
 
         reset();
     }
@@ -192,8 +196,18 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         stackIndex = newStackIndex;
     }
 
+    private IReceiverChain resolveChain(final Object chainName, IObject message)
+            throws ReadValueException {
+        try {
+            Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name_and_message"), chainName, message);
+            return chainStorage.resolve(chainId);
+        } catch (ResolutionException | ChainNotFoundException e) {
+            throw new ReadValueException("Error occurred while resolving target chain Id.", e);
+        }
+    }
+
     @Override
-    public void catchException(final Throwable exception, final IObject context)
+    public void catchException(final Throwable exception, final IObject message, final IObject context)
             throws NoExceptionHandleChainException,
                    NestedChainStackOverflowException,
                    ChangeValueException,
@@ -208,7 +222,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
             IObject exceptionalChainAndEnv = chainStack[i].getExceptionalChainAndEnvironments(exception);
             if (null != exceptionalChainAndEnv) {
                 this.afterExceptionAction = (IAction<IMessageProcessingSequence>) exceptionalChainAndEnv.getValue(this.afterExceptionActionFieldName);
-                IReceiverChain exceptionalChain = (IReceiverChain) exceptionalChainAndEnv.getValue(this.chainFieldName);
+                IReceiverChain exceptionalChain = resolveChain(exceptionalChainAndEnv.getValue(this.chainFieldName), message);
                 caughtLevel = i;
                 caughtStep = stepStack[caughtLevel];
 
@@ -313,9 +327,9 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         }
     }
 
-    private void addChainsToDump(final Set<IReceiverChain> toDump, final IReceiverChain chain, final boolean skipExceptional) {
+    private void addChainsToDump(final Set<IReceiverChain> toDump, final Object chain, final boolean skipExceptional) {
         if (toDump.add(chain) && !skipExceptional) {
-            for (IReceiverChain exceptionalChain : chain.getExceptionalChains()) {
+            for (Object exceptionalChain : chain.getExceptionalChains()) {
                 addChainsToDump(toDump, exceptionalChain, false);
             }
         }

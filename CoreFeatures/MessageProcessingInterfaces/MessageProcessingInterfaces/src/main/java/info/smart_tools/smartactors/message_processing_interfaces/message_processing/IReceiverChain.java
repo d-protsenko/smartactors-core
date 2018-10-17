@@ -48,9 +48,9 @@ public interface IReceiverChain {
      *     This method may be used for serialization of chains to create clones of exceptional chains on deserialization.
      * </p>
      *
-     * @return list of all exceptional chains used by this one
+     * @return list of all exceptional chains (names) used by this one
      */
-    Collection<IReceiverChain> getExceptionalChains();
+    Collection<Object> getExceptionalChains();
 
     /**
      * Get chain description

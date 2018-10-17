@@ -102,6 +102,6 @@ public interface IMessageProcessingSequence {
      * @throws ReadValueException if error occurs during reading data from exception description
      * @see #callChain(IReceiverChain)
      */
-    void catchException(Throwable exception, IObject context)
+    void catchException(Throwable exception, IObject message, IObject context)
             throws NoExceptionHandleChainException, NestedChainStackOverflowException, ChangeValueException, InvalidArgumentException, ReadValueException;
 }
