@@ -125,21 +125,12 @@ public class RuntimeDirectoryFeatureTracker {
         message.setValue(this.fileNameFieldName, newFilePath);
         message.setValue(this.observedDirectoryFieldName, this.watchingDir);
 
-        Object chainId = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), CHAIN_ID_STORAGE_STRATEGY_NAME),
-                this.executionChainName,
-                message
-        );
-        IChainStorage chainStorage = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IChainStorage.class.getCanonicalName())
-        );
-        IReceiverChain chain = chainStorage.resolve(chainId);
-
         Integer stackDepth = IOC.resolve(Keys.getOrAdd("default_stack_depth"));
         IMessageProcessingSequence processingSequence = IOC.resolve(
                 IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), MESSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME),
                 stackDepth,
-                chain
+                this.executionChainName,
+                message
         );
 
         IQueue queue = IOC.resolve(Keys.getOrAdd(TASK_QUEUE_IOC_NAME));

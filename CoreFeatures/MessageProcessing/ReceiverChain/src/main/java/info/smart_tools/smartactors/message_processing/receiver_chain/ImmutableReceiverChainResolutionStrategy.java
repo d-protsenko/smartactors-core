@@ -95,25 +95,21 @@ public class ImmutableReceiverChainResolutionStrategy implements IResolveDepende
                 arguments[i] = step;
             }
 
-            LinkedHashMap<Class<? extends Throwable>, IObject> exceptionalChainsMap = new LinkedHashMap<>();
+            LinkedHashMap<Class<? extends Throwable>, IObject> exceptionalChainNamesMap = new LinkedHashMap<>();
 
             for (Object chainDesc : exceptionalChains) {
                 IObject desc = (IObject) chainDesc;
 
                 Class<?> clazz = this.getClass().getClassLoader().loadClass(String.valueOf(desc.getValue(exceptionClassFieldName)));
-                // setCurrentMessage
-                //IReceiverChain chain = chainStorage.resolve(IOC.resolve(chainIdKey, desc.getValue(exceptionChainNameFieldName)));
                 Object chainName = desc.getValue(exceptionChainNameFieldName);
-                IAction<IMessageProcessingSequence> afterExceptionAction = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "afterExceptionAction#" + desc.getValue(exceptionAfterFieldName))
-                );
-                IObject chainAndEnv = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
-                chainAndEnv.setValue(exceptionChainNameFieldName, chainName);
-                chainAndEnv.setValue(exceptionAfterFieldName, afterExceptionAction);
-                exceptionalChainsMap.put((Class<? extends Throwable>) clazz, chainAndEnv);
+                Object afterExceptionAction = "afterExceptionAction#" + desc.getValue(exceptionAfterFieldName);
+                IObject chainNameAndEnv = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                chainNameAndEnv.setValue(exceptionChainNameFieldName, chainName);
+                chainNameAndEnv.setValue(exceptionAfterFieldName, afterExceptionAction);
+                exceptionalChainNamesMap.put((Class<? extends Throwable>) clazz, chainNameAndEnv);
             }
 
-            return (T) new ImmutableReceiverChain(String.valueOf(chainId), description, receivers, arguments, exceptionalChainsMap);
+            return (T) new ImmutableReceiverChain(String.valueOf(chainId), description, receivers, arguments, exceptionalChainNamesMap);
         } catch (ClassNotFoundException | ResolutionException | ReadValueException |
                 RouteNotFoundException | ChangeValueException | InvalidArgumentException e) {
             throw new ResolveDependencyStrategyException(e);

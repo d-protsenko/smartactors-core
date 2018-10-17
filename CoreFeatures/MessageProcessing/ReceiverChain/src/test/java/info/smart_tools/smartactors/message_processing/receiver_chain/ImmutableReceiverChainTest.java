@@ -80,7 +80,7 @@ public class ImmutableReceiverChainTest extends PluginsLoadingTestBase {
 
         IReceiverChain chain = new ImmutableReceiverChain("theChain", mock(IObject.class), receivers, new IObject[0], mock(Map.class));
 
-        assertEquals("theChain", chain.getName());
+        assertEquals("theChain", chain.getId());
     }
 
     @Test
@@ -115,11 +115,11 @@ public class ImmutableReceiverChainTest extends PluginsLoadingTestBase {
 
         IReceiverChain chain = new ImmutableReceiverChain("theChain", mock(IObject.class), new IMessageReceiver[0], new IObject[0], mappingMap);
 
-        assertNull(chain.getExceptionalChainAndEnvironments(new NullPointerException()));
-        assertNull(chain.getExceptionalChainAndEnvironments(new IllegalStateException()));
-        assertNull(chain.getExceptionalChainAndEnvironments(selfCaused));
-        assertSame(mappingMap.get(InvalidArgumentException.class), chain.getExceptionalChainAndEnvironments(new InvalidArgumentException("invalid")));
-        assertSame(mappingMap.get(InvalidArgumentException.class), chain.getExceptionalChainAndEnvironments(
+        assertNull(chain.getExceptionalChainNamesAndEnvironments(new NullPointerException()));
+        assertNull(chain.getExceptionalChainNamesAndEnvironments(new IllegalStateException()));
+        assertNull(chain.getExceptionalChainNamesAndEnvironments(selfCaused));
+        assertSame(mappingMap.get(InvalidArgumentException.class), chain.getExceptionalChainNamesAndEnvironments(new InvalidArgumentException("invalid")));
+        assertSame(mappingMap.get(InvalidArgumentException.class), chain.getExceptionalChainNamesAndEnvironments(
                 new IllegalStateException(new InvalidArgumentException(new Throwable()))));
     }
 
@@ -159,7 +159,7 @@ public class ImmutableReceiverChainTest extends PluginsLoadingTestBase {
 
         IReceiverChain chain = new ImmutableReceiverChain("theChain", mock(IObject.class), new IMessageReceiver[0], new IObject[0], eMap);
 
-        Collection<IReceiverChain> eColl = chain.getExceptionalChains();
+        Collection<IReceiverChain> eColl = chain.getExceptionalChainNames();
 
         assertEquals(new HashSet<>(Arrays.asList(exceptional1, exceptional2)), eColl);
     }

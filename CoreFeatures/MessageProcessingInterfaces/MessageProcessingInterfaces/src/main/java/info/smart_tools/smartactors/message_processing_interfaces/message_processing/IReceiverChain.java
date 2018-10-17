@@ -26,11 +26,11 @@ public interface IReceiverChain {
     IObject getArguments(int index);
 
     /**
-     * Get name of this chain.
+     * Get Id of this chain.
      *
-     * @return name of this chain
+     * @return Id of this chain
      */
-    String getName();
+    Object getId();
 
     /**
      * Get the chain of receivers (and environments) that has to be executed if exception occurs during execution of this chain.
@@ -39,7 +39,7 @@ public interface IReceiverChain {
      * @return the chain of receivers (and environments) that has to be executed if exception occurs during execution of this chain or
      *         {@code null} if no such chain defined for this one
      */
-    IObject getExceptionalChainAndEnvironments(Throwable exception);
+    IObject getExceptionalChainNamesAndEnvironments(Throwable exception);
 
     /**
      * Get list of all exceptional chain used y this chain.
@@ -50,7 +50,7 @@ public interface IReceiverChain {
      *
      * @return list of all exceptional chains (names) used by this one
      */
-    Collection<Object> getExceptionalChains();
+    Collection<Object> getExceptionalChainNames();
 
     /**
      * Get chain description

@@ -9,6 +9,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
@@ -29,11 +30,13 @@ import java.util.stream.Collectors;
  */
 public class MessageProcessingSequence implements IMessageProcessingSequence, IDumpable {
     private final IChainStorage chainStorage;
+    private final IKey chainIdStrategyKey;
     private final IReceiverChain mainChain;
     private final IReceiverChain[] chainStack;
     private final int[] stepStack;
     private IMessageReceiver currentReceiver;
     private IObject currentArguments;
+    private IObject message;
     private int stackIndex;
 
     private boolean isException = false;
@@ -50,6 +53,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
     private final IFieldName chainsStackFieldName;
     private final IFieldName maxDepthFieldName;
     private final IFieldName chainsDumpFieldName;
+    // ToDo: to remove excludeExceptional at all
     private final IFieldName excludeExceptionalFieldName;
     private final IFieldName skipChainsFieldName;
 
@@ -57,27 +61,24 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
      * The constructor.
      *
      * @param stackDepth maximum depth of stack of nested chains
-     * @param mainChain the {@link IReceiverChain} to start message processing with
+     * @param mainChainName the {@link IReceiverChain} to start message processing with
      * @throws InvalidArgumentException if stack depth is not a positive number
      * @throws InvalidArgumentException if main chain is {@code null}
      * @throws InvalidArgumentException if main chain contains no receivers
      * @throws ResolutionException if resolution of any dependencies fails
      */
-    public MessageProcessingSequence(final int stackDepth, final IReceiverChain mainChain)
+    public MessageProcessingSequence(final int stackDepth, final Object mainChainName, final IObject message)
             throws InvalidArgumentException, ResolutionException {
         if (stackDepth < 1) {
             throw new InvalidArgumentException("Chain stack depth should be a positive number.");
         }
 
-        if (null == mainChain) {
+        if (null == mainChainName) {
             throw new InvalidArgumentException("Main chain should not be null.");
         }
 
-        if (null == mainChain.get(0)) {
-            throw new InvalidArgumentException("Main chain should contain at least one receiver.");
-        }
 
-        this.mainChain = mainChain;
+
         this.chainStack = new IReceiverChain[stackDepth];
         this.stepStack = new int[stackDepth];
 
@@ -93,11 +94,30 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         chainsStackFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainsStack");
         maxDepthFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maxDepth");
         chainsDumpFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainsDump");
+        // ToDo: to remove excludeExceptional at all
         excludeExceptionalFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "excludeExceptional");
         skipChainsFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "skipChains");
         chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
+        chainIdStrategyKey = Keys.getOrAdd("chain_id_from_map_name_and_message");
+        this.message = message;
+
+        try {
+            this.mainChain = resolveChain(mainChainName, message);
+        } catch (ChainNotFoundException e) {
+            throw new ResolutionException(e);
+        }
+
+        if (null == this.mainChain.get(0)) {
+            throw new InvalidArgumentException("Main chain should contain at least one receiver.");
+        }
 
         reset();
+    }
+
+    private IReceiverChain resolveChain(final Object chainName, IObject message)
+            throws ResolutionException, ChainNotFoundException {
+        Object chainId = IOC.resolve(chainIdStrategyKey, chainName, message);
+        return chainStorage.resolve(chainId);
     }
 
     private void uncheckedGoTo(final int level, final int step) {
@@ -196,18 +216,8 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         stackIndex = newStackIndex;
     }
 
-    private IReceiverChain resolveChain(final Object chainName, IObject message)
-            throws ReadValueException {
-        try {
-            Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name_and_message"), chainName, message);
-            return chainStorage.resolve(chainId);
-        } catch (ResolutionException | ChainNotFoundException e) {
-            throw new ReadValueException("Error occurred while resolving target chain Id.", e);
-        }
-    }
-
     @Override
-    public void catchException(final Throwable exception, final IObject message, final IObject context)
+    public void catchException(final Throwable exception, final IObject context)
             throws NoExceptionHandleChainException,
                    NestedChainStackOverflowException,
                    ChangeValueException,
@@ -219,22 +229,28 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         int caughtStep;
 
         for (int i = stackIndex; i >= 0; --i) {
-            IObject exceptionalChainAndEnv = chainStack[i].getExceptionalChainAndEnvironments(exception);
+            IObject exceptionalChainAndEnv = chainStack[i].getExceptionalChainNamesAndEnvironments(exception);
             if (null != exceptionalChainAndEnv) {
-                this.afterExceptionAction = (IAction<IMessageProcessingSequence>) exceptionalChainAndEnv.getValue(this.afterExceptionActionFieldName);
-                IReceiverChain exceptionalChain = resolveChain(exceptionalChainAndEnv.getValue(this.chainFieldName), message);
-                caughtLevel = i;
-                caughtStep = stepStack[caughtLevel];
+                try {
+                    this.afterExceptionAction = IOC.resolve(
+                            IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), exceptionalChainAndEnv.getValue(this.afterExceptionActionFieldName))
+                    );
+                    IReceiverChain exceptionalChain = resolveChain(exceptionalChainAndEnv.getValue(this.chainFieldName), message);
+                    caughtLevel = i;
+                    caughtStep = stepStack[caughtLevel];
 
-                context.setValue(causeLevelFieldName, causedLevel);
-                context.setValue(causeStepFieldName, causedStep);
-                context.setValue(catchLevelFieldName, caughtLevel);
-                context.setValue(catchStepFieldName, caughtStep);
-                context.setValue(exceptionFieldName, exception);
+                    context.setValue(causeLevelFieldName, causedLevel);
+                    context.setValue(causeStepFieldName, causedStep);
+                    context.setValue(catchLevelFieldName, caughtLevel);
+                    context.setValue(catchStepFieldName, caughtStep);
+                    context.setValue(exceptionFieldName, exception);
 
-                this.isException = true;
-                callChain(exceptionalChain);
-                return;
+                    this.isException = true;
+                    callChain(exceptionalChain);
+                    return;
+                } catch (ResolutionException | ChainNotFoundException e) {
+????
+                }
             }
         }
 
@@ -296,9 +312,10 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
             dump.setValue(stepsStackFieldName,
                     Arrays.stream(Arrays.copyOf(stepStack, stackIndex + 1)).boxed().collect(Collectors.toList()));
             dump.setValue(chainsStackFieldName,
-                    Arrays.stream(Arrays.copyOf(chainStack, stackIndex + 1)).map(IReceiverChain::getName).collect(Collectors.toList()));
+                    Arrays.stream(Arrays.copyOf(chainStack, stackIndex + 1)).map(IReceiverChain::getId).collect(Collectors.toList()));
 
             Object skipChains = options.getValue(skipChainsFieldName);
+            // ToDo: to remove excludeExceptional at all
             Object excludeExceptional = options.getValue(excludeExceptionalFieldName);
 
             if (skipChains == null || !(boolean) skipChains) {
@@ -315,7 +332,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
 
                 for (IReceiverChain chain : dumpedChains) {
                     Object chainDump = IOC.resolve(Keys.getOrAdd("make dump"), chain, options);
-                    IFieldName fieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), chain.getName());
+                    IFieldName fieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), chain.getId());
 
                     chainsDump.setValue(fieldName, chainDump);
                 }
@@ -327,11 +344,13 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         }
     }
 
-    private void addChainsToDump(final Set<IReceiverChain> toDump, final Object chain, final boolean skipExceptional) {
+    private void addChainsToDump(final Set<IReceiverChain> toDump, final IReceiverChain chain, final boolean skipExceptional) {
         if (toDump.add(chain) && !skipExceptional) {
-            for (Object exceptionalChain : chain.getExceptionalChains()) {
+            // ToDo: refactor to remove the block below
+            /* When restoring we use only chains from stack so exceptional chains are useless
+            for (Object exceptionalChain : chain.getExceptionalChainNames()) {
                 addChainsToDump(toDump, exceptionalChain, false);
-            }
+            }*/
         }
     }
 }

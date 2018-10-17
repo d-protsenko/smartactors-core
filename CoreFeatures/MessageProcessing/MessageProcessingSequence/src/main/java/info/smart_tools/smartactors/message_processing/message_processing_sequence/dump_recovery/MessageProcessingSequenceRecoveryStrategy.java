@@ -58,6 +58,7 @@ public class MessageProcessingSequenceRecoveryStrategy implements IResolveDepend
                     IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName())),
                     chainsDump);
 
+            // setcurrentmessage
             // ToDo: check if here we should not setup message for correct chain Id resolution
             // ToDo: but have to store resolved chain Ids in message processor
             // ToDo: also we can directly use chain from stack for sequence creation!!! then we've done it
@@ -65,7 +66,7 @@ public class MessageProcessingSequenceRecoveryStrategy implements IResolveDepend
             int mainChainPos = ((Number) stepStack.next()).intValue();
 
             // ! IMessageProcessingSequence sequence = new MessageProcessingSequence(maxDepth, storage.resolve(mainChainId));
-            IMessageProcessingSequence sequence = new MessageProcessingSequence(maxDepth, (IReceiverChain)chainsStack.next());
+            IMessageProcessingSequence sequence = new MessageProcessingSequence(maxDepth, ((IReceiverChain)chainsStack.next()).getId(), null);
             sequence.goTo(0, mainChainPos + 1);
 
             int level = 1;

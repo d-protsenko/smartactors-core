@@ -115,24 +115,10 @@ public class ChainTestRunner implements ITestRunner {
         }
 
         try {
-            String chainName = (String) description.getValue(chainNameFieldName);
-            // ToDo: message obtaining was copied from TestEnvironmentHandler.handle - need to check correctness
-            IObject environment = (IObject) description.getValue(environmentFieldName);
-            IObject message = (IObject) environment.getValue(messageFieldName);
-            Object chainId = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name_and_message"),
-                    chainName,
-                    message
-            );
-            IChainStorage chainStorage = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IChainStorage.class.getCanonicalName())
-            );
-            IReceiverChain testedChain = chainStorage.resolve(chainId);
-
+            Object chainName = description.getValue(chainNameFieldName);
             IEnvironmentHandler handler = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "test environment handler"));
-            handler.handle(description, testedChain, callback);
-        } catch (ResolutionException | ReadValueException | ChainNotFoundException |
-                EnvironmentHandleException e) {
+            handler.handle(description, chainName, callback);
+        } catch (ResolutionException | ReadValueException | EnvironmentHandleException e) {
             throw new TestExecutionException(e);
         }
     }

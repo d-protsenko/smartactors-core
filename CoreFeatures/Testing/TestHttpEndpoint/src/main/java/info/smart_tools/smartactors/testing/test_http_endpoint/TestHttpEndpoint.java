@@ -113,7 +113,7 @@ public class TestHttpEndpoint implements IAsyncService {
                         this.rule.execute(obj);
                         handler.handle(
                                 (IObject) obj.getValue(this.contentFieldName),
-                                (IReceiverChain) obj.getValue(this.chainFieldName),
+                                obj.getValue(this.chainFieldName),
                                 (IAction<Throwable>) obj.getValue(this.callbackFieldName)
                         );
                     }

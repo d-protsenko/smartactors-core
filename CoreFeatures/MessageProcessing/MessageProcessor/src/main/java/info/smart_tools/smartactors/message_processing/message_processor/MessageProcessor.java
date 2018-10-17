@@ -313,7 +313,8 @@ public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask,
         }
     }
 
-    private void enqueueNext() throws NestedChainStackOverflowException, InvalidArgumentException, ChangeValueException, ReadValueException {
+    private void enqueueNext() throws NestedChainStackOverflowException, InvalidArgumentException,
+            ChangeValueException, ReadValueException, ResolutionException {
         checkSignal();
 
         if (messageProcessingSequence.next()) {
@@ -332,7 +333,8 @@ public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask,
     }
 
     private void checkSignal()
-            throws ChangeValueException, InvalidArgumentException, NestedChainStackOverflowException, ReadValueException {
+            throws ChangeValueException, InvalidArgumentException, NestedChainStackOverflowException,
+            ReadValueException {
         Throwable signal = this.signalException;
 
         if (null != signal) {

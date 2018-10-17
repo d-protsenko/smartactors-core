@@ -26,13 +26,6 @@ public class ChainIdFromMapNameStrategy {
         }
     };
 
-    private IResolveDependencyStrategy resolve_by_version_strategy = new IResolveDependencyStrategy(){
-        @Override
-        public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
-            return (T) resolve_by_version(args[0], (Comparable)args[1]);
-        }
-    };
-
     private IResolveDependencyStrategy register_message_version_strategy = new IResolveDependencyStrategy(){
         @Override
         public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
@@ -45,7 +38,7 @@ public class ChainIdFromMapNameStrategy {
     };
 
     public IResolveDependencyStrategy getRegisterMessageVersionStrategy() {
-        return resolve_by_message_strategy;
+        return register_message_version_strategy;
     }
 
     public IResolveDependencyStrategy getResolveByMessageStrategy() {
@@ -54,10 +47,6 @@ public class ChainIdFromMapNameStrategy {
 
     public IResolveDependencyStrategy getResolveByModuleDependenciesStrategy() {
         return resolve_by_module_dependencies_strategy;
-    }
-
-    public IResolveDependencyStrategy getResolveByVersionStrategy() {
-        return resolve_by_version_strategy;
     }
 
     private void registerVersionResolutionStrategy(Object mapName, IResolveDependencyStrategy strategy)
@@ -105,6 +94,9 @@ public class ChainIdFromMapNameStrategy {
         if (chainName == null) {
             throw new ResolveDependencyStrategyException("Chain name cannot be null.");
         }
+        if (chainName.toString().indexOf(":") > -1) {
+            return chainName;
+        }
         if (message == null) {
             throw new ResolveDependencyStrategyException("Message for chain Id resolution cannot be null.");
         }
@@ -115,7 +107,9 @@ public class ChainIdFromMapNameStrategy {
 
     private Object resolve_by_module_dependencies(Object chainName)
             throws ResolveDependencyStrategyException {
-
+        if (chainName.toString().indexOf(":") > -1) {
+            return chainName;
+        }
         Comparable version = ModuleManager.getCurrentModule().getVersion();
         return resolve_by_version(chainName, version);
     }

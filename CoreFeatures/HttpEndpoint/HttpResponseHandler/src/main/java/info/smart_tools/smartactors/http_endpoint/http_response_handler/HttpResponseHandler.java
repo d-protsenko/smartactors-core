@@ -53,7 +53,6 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
     private boolean isReceived;
     private IScope currentScope;
     private IModule currentModule;
-    IChainStorage chainStorage;
 
     /**
      * Constructor
@@ -68,8 +67,6 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
         this.stackDepth = stackDepth;
 
         try {
-            chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(),
-                    IChainStorage.class.getCanonicalName()));
             receiverMapName = mapName;
             messageFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
             contextFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context");
@@ -106,17 +103,15 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
                 try {
                     IObject environment = getEnvironment(responseCopy);
                     IObject message = (IObject) environment.getValue(messageFieldName);
-                    Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name_and_message"), receiverMapName, message);
-                    IReceiverChain receiverChain = chainStorage.resolve(chainId);
                     IMessageProcessingSequence processingSequence =
-                            IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), stackDepth, receiverChain);
+                            IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), stackDepth, receiverMapName, message);
                     IMessageProcessor messageProcessor =
                             IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), taskQueue, processingSequence);
                     message.setValue(messageMapIdFieldName, messageMapId);
                     IObject context = (IObject) environment.getValue(contextFieldName);
                     messageProcessor.process(message, context);
                 } catch (ChangeValueException | ReadValueException | InvalidArgumentException | ResponseHandlerException |
-                        ResolutionException | MessageProcessorProcessException | ChainNotFoundException e) {
+                        ResolutionException | MessageProcessorProcessException e) {
                     throw new TaskExecutionException(e);
                 }
             };

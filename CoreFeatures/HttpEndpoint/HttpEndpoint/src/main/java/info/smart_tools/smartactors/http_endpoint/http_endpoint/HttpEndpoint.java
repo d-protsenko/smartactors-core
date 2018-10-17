@@ -22,9 +22,9 @@ public class HttpEndpoint extends HttpServer {
      * @param port             port of the endpoint
      * @param maxContentLength max length of the content
      * @param scope            scope for endpoint
-     * @param moduleId        the id of feature in which context HttpRequestHandler works
+     * @param module           the id of feature in which context HttpRequestHandler works
      * @param handler          handler for environment
-     * @param receiverChain    chain, that should receive {@link io.netty.channel.ChannelOutboundBuffer.MessageProcessor}
+     * @param receiverChainName chain name of chain that should receive {@link io.netty.channel.ChannelOutboundBuffer.MessageProcessor}
      * @param name             name of the endpoint
      * @param upCounter        up-counter to use to register shutdown callbacks
      * @throws ResolutionException if IOC cant resolve smth
@@ -32,10 +32,10 @@ public class HttpEndpoint extends HttpServer {
      */
     public HttpEndpoint(final int port, final int maxContentLength, final IScope scope,
                         final IModule module, final IEnvironmentHandler handler,
-                        final IReceiverChain receiverChain, final String name, final IUpCounter upCounter
+                        final Object receiverChainName, final String name, final IUpCounter upCounter
     ) throws ResolutionException, UpCounterCallbackExecutionException {
         super(port, maxContentLength, new EndpointChannelInboundHandler<>(
-                new HttpRequestHandler(scope, module, handler, receiverChain, name, upCounter),
+                new HttpRequestHandler(scope, module, handler, receiverChainName, name, upCounter),
                 FullHttpRequest.class
         ));
     }

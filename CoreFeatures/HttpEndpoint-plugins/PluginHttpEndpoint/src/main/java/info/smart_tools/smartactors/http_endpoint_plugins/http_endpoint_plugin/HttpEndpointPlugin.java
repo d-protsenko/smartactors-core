@@ -143,7 +143,7 @@ public class HttpEndpointPlugin implements IPlugin {
                                                             ScopeProvider.getCurrentScope(),
                                                             ModuleManager.getCurrentModule(),
                                                             environmentHandler,
-                                                            (IReceiverChain) configuration.getValue(startChainNameFieldName),
+                                                            configuration.getValue(startChainNameFieldName),
                                                             (String) configuration.getValue(endpointNameFieldName),
                                                             upCounter);
 

@@ -20,31 +20,31 @@ import java.util.Set;
  * Basic implementation of {@link IReceiverChain} -- immutable sequence of receivers.
  */
 public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
-    private final String name;
+    private final Object id;
     private final IMessageReceiver[] receivers;
     private final IObject[] arguments;
-    private final Map<Class<? extends Throwable>, IObject> exceptionalChainsAndEnv;
+    private final Map<Class<? extends Throwable>, IObject> exceptionalChainNamesAndEnv;
     private final IObject description;
     private final Set<Object> allExceptionalChains;
 
     /**
      * The constructor.
      *
-     * @param name                        name of the chain
+     * @param id                        id of the chain
      * @param chainDescription            the description of chain
      * @param receivers                   sequence (array) of receivers
      * @param arguments                   array of argument objects for receivers in the chain
-     * @param exceptionalChainsAndEnv           mapping from exception class to exceptional chain to use when it occurs
-     * @throws InvalidArgumentException if name is {@code null}
+     * @param exceptionalChainNamesAndEnv           mapping from exception class to exceptional chain to use when it occurs
+     * @throws InvalidArgumentException if id is {@code null}
      * @throws InvalidArgumentException if receivers is {@code null}
      * @throws ResolutionException if cannot resolve any dependency
-     * @throws ReadValueException if cannot read chains from {@code exceptionalChainsAndEnv}
+     * @throws ReadValueException if cannot read chains from {@code exceptionalChainNamesAndEnv}
      */
-    public ImmutableReceiverChain(final String name, final IObject chainDescription, final IMessageReceiver[] receivers, final IObject[] arguments,
-                                  final Map<Class<? extends Throwable>, IObject> exceptionalChainsAndEnv)
+    public ImmutableReceiverChain(final Object id, final IObject chainDescription, final IMessageReceiver[] receivers, final IObject[] arguments,
+                                  final Map<Class<? extends Throwable>, IObject> exceptionalChainNamesAndEnv)
             throws InvalidArgumentException, ResolutionException, ReadValueException {
-        if (null == name) {
-            throw new InvalidArgumentException("Chain name should not be null.");
+        if (null == id) {
+            throw new InvalidArgumentException("Chain id should not be null.");
         }
 
         if (null == chainDescription) {
@@ -63,21 +63,21 @@ public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
             throw new InvalidArgumentException("Length of arguments list  does not match length of receivers list.");
         }
 
-        if (null == exceptionalChainsAndEnv) {
+        if (null == exceptionalChainNamesAndEnv) {
             throw new InvalidArgumentException("Exceptional chains list should not be null");
         }
 
-        this.name = name;
+        this.id = id;
         this.description = chainDescription;
         this.receivers = receivers;
         this.arguments = arguments;
-        this.exceptionalChainsAndEnv = exceptionalChainsAndEnv;
+        this.exceptionalChainNamesAndEnv = exceptionalChainNamesAndEnv;
 
         allExceptionalChains = new HashSet<>();
 
         IFieldName chainNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
 
-        for (IObject exceptionEnv : exceptionalChainsAndEnv.values()) {
+        for (IObject exceptionEnv : exceptionalChainNamesAndEnv.values()) {
             allExceptionalChains.add(exceptionEnv.getValue(chainNameFieldName));
         }
     }
@@ -101,16 +101,16 @@ public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
     }
 
     @Override
-    public String getName() {
-        return name;
+    public Object getId() {
+        return id;
     }
 
     @Override
-    public IObject getExceptionalChainAndEnvironments(final Throwable exception) {
+    public IObject getExceptionalChainNamesAndEnvironments(final Throwable exception) {
         Throwable e = exception;
 
         do {
-            for (Map.Entry<Class<? extends Throwable>, IObject> entry : this.exceptionalChainsAndEnv.entrySet()) {
+            for (Map.Entry<Class<? extends Throwable>, IObject> entry : this.exceptionalChainNamesAndEnv.entrySet()) {
                 if (entry.getKey().isAssignableFrom(e.getClass())) {
                     return entry.getValue();
                 }
@@ -134,7 +134,7 @@ public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
     }
 
     @Override
-    public Collection<Object> getExceptionalChains() {
+    public Collection<Object> getExceptionalChainNames() {
         return allExceptionalChains;
     }
 

@@ -14,10 +14,10 @@ public interface IEnvironmentHandler {
      * Method for handle environment
      * @param environment Environment of the {@link IMessageProcessor}
 
-     * @param receiverChain Chain that should receive environment
+     * @param receiverChainName Chain that should receive environment
      * @param callback      the callback for processing exception
      * @throws EnvironmentHandleException exception for case if there are some problem on handle
      */
-    void handle(final IObject environment, final IReceiverChain receiverChain, final IAction<Throwable> callback)
+    void handle(final IObject environment, final Object receiverChainName, final IAction<Throwable> callback)
             throws EnvironmentHandleException, InvalidArgumentException;
 }

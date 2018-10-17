@@ -106,7 +106,7 @@ public class MainTestChainTest {
     public void Should_haveName()
             throws Exception {
         IReceiverChain chain = new MainTestChain(this.testingChain, this.completionCallbackMock, this.successArgumentsMock);
-        assertNotNull(chain.getName());
+        assertNotNull(chain.getId());
     }
 
     @Test
@@ -133,8 +133,8 @@ public class MainTestChainTest {
 
         IReceiverChain chain = new MainTestChain(this.testingChain, this.completionCallbackMock, this.successArgumentsMock);
 
-        chain.getExceptionalChainAndEnvironments(exceptionMock);
-        chain.getExceptionalChainAndEnvironments(exceptionMock);
+        chain.getExceptionalChainNamesAndEnvironments(exceptionMock);
+        chain.getExceptionalChainNamesAndEnvironments(exceptionMock);
 
         verify(this.completionCallbackMock, times(1)).execute(same(exceptionMock));
     }
@@ -170,7 +170,7 @@ public class MainTestChainTest {
             throws Exception {
         IReceiverChain chain = new MainTestChain(this.testingChain, this.completionCallbackMock, this.successArgumentsMock);
         doThrow(InvalidArgumentException.class).when(this.completionCallbackMock).execute(any(Exception.class));
-        IObject exceptionalChainAndEnv = chain.getExceptionalChainAndEnvironments(new Exception());
+        IObject exceptionalChainAndEnv = chain.getExceptionalChainNamesAndEnvironments(new Exception());
         IReceiverChain exceptionalChain = (IReceiverChain) exceptionalChainAndEnv.getValue(new FieldName("chain"));
         assertNotNull(exceptionalChain);
     }

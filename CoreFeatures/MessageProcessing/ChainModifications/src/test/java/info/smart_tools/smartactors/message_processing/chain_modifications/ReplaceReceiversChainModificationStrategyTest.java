@@ -65,16 +65,16 @@ public class ReplaceReceiversChainModificationStrategyTest extends PluginsLoadin
         verify(originalChainMock).getArguments(1);
         reset(originalChainMock);
 
-        decorated.getName();
-        verify(originalChainMock).getName();
+        decorated.getId();
+        verify(originalChainMock).getId();
         reset(originalChainMock);
 
-        decorated.getExceptionalChainAndEnvironments(null);
-        verify(originalChainMock).getExceptionalChainAndEnvironments(null);
+        decorated.getExceptionalChainNamesAndEnvironments(null);
+        verify(originalChainMock).getExceptionalChainNamesAndEnvironments(null);
         reset(originalChainMock);
 
-        decorated.getExceptionalChains();
-        verify(originalChainMock).getExceptionalChains();
+        decorated.getExceptionalChainNames();
+        verify(originalChainMock).getExceptionalChainNames();
         reset(originalChainMock);
 
         decorated.getChainDescription();

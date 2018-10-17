@@ -129,7 +129,7 @@ public class EndpointsSectionProcessingStrategyTest {
                             ScopeProvider.getCurrentScope(),
                             ModuleManager.getCurrentModule(),
                             environmentHandler,
-                            (IReceiverChain) configuration.getValue(new FieldName("startChain")),
+                            configuration.getValue(new FieldName("startChain")),
                                 "default", mock(IUpCounter.class));
                     } catch (ReadValueException | InvalidArgumentException
                         | ScopeProviderException | ResolutionException | UpCounterCallbackExecutionException e) {

@@ -189,10 +189,11 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                     Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                                     new CreateNewInstanceStrategy(args -> {
                                         int stackDepth = ((Number) args[0]).intValue();
-                                        IReceiverChain mainChain = (IReceiverChain) args[1];
+                                        Object mainChainName = args[1];
+                                        IObject message = (IObject)args[2];
 
                                         try {
-                                            return new MessageProcessingSequence(stackDepth, mainChain);
+                                            return new MessageProcessingSequence(stackDepth, mainChainName, message);
                                         } catch (InvalidArgumentException | ResolutionException e) {
                                             throw new RuntimeException(e);
                                         }

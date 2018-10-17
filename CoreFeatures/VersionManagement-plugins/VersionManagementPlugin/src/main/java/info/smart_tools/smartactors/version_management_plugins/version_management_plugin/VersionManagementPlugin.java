@@ -39,7 +39,6 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
         ChainIdFromMapNameStrategy strategy = new ChainIdFromMapNameStrategy();
 
         IOC.register(Keys.getOrAdd("chain_id_from_map_name_and_message"), strategy.getResolveByMessageStrategy());
-        IOC.register(Keys.getOrAdd("chain_id_from_map_name_and_version"), strategy.getResolveByVersionStrategy());
         IOC.register(Keys.getOrAdd("chain_id_from_map_name"), strategy.getResolveByModuleDependenciesStrategy());
         IOC.register(Keys.getOrAdd("register_message_version_strategy"), strategy.getRegisterMessageVersionStrategy());
     }
@@ -74,13 +73,6 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
         } catch (ResolutionException e) { }
 
         keyName = "chain_id_from_map_name";
-        try {
-            IOC.remove(Keys.getOrAdd(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
-
-        keyName = "chain_id_from_map_name_and_version";
         try {
             IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {

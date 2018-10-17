@@ -51,16 +51,16 @@ public class EnvironmentHandler implements IEnvironmentHandler {
         this.taskQueue = taskQueue;
     }
 
-    public void handle(final IObject environment, final IReceiverChain receiverChain, final IAction<Throwable> callback)
+    public void handle(final IObject environment, final Object receiverChainName, final IAction<Throwable> callback)
             throws EnvironmentHandleException {
         try {
+            IObject message = (IObject) environment.getValue(this.messageFieldName);
+            IObject context = (IObject) environment.getValue(this.contextFieldName);
             IMessageProcessingSequence processingSequence =
-                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), stackDepth, receiverChain);
+                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), stackDepth, receiverChainName, message);
             IMessageProcessor messageProcessor =
                     IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), taskQueue, processingSequence);
 
-            IObject message = (IObject) environment.getValue(this.messageFieldName);
-            IObject context = (IObject) environment.getValue(this.contextFieldName);
             context.setValue(this.fromExternalFieldName, true);
             messageProcessor.process(message, context);
         } catch (ResolutionException | InvalidArgumentException | ReadValueException | ChangeValueException

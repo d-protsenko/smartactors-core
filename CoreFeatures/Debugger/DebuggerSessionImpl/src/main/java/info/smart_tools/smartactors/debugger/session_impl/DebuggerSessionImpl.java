@@ -23,7 +23,6 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageProcessorProcessException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
-import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -46,7 +45,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
     private IMessageProcessor processor;
 
     private IObject message;
-    private IReceiverChain mainChain;
+    private Object mainChainName;
 
     private boolean paused;
     private boolean prePaused;
@@ -86,7 +85,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         //noinspection ThrowableResultOfMethodCallIgnored
         commands.put("getException", args -> ((sequence == null) ? null : sequence.getException()));
         commands.put("getMessage", args -> message);
-        commands.put("getChainName", args -> ((mainChain == null) ? null : mainChain.getName()));
+        commands.put("getChainName", args -> ((mainChainName == null) ? null : mainChainName));
         commands.put("isRunning", args -> isRunning());
         commands.put("isPaused", args -> isPaused());
         commands.put("isCompleted", args -> (sequence != null && sequence.isCompleted()));
@@ -96,15 +95,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         commands.put("setMessage", stopModeCommand(args -> message = (IObject) args));
         commands.put("setMessageField", this::setMessageField);
         commands.put("setChain", stopModeCommand(args -> {
-            try {
-                IChainStorage storage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
-                mainChain = storage.resolve(IOC.resolve(Keys.getOrAdd("chain_id_from_map_name_and_message"), args, message));
-            } catch (ResolutionException e) {
-                throw new CommandExecutionException(e);
-            } catch (ChainNotFoundException e) {
-                return "NO SUCH CHAIN";
-            }
-
+            mainChainName = args;
             return "OK";
         }));
         commands.put("setBreakOnException", args -> breakOnException = (Boolean) args);
@@ -234,14 +225,17 @@ public class DebuggerSessionImpl implements IDebuggerSession {
 
     private Object startDebugging(final Object arg)
             throws CommandExecutionException {
-        if (message == null || mainChain == null || isRunning() || isPaused()) {
+        if (message == null || mainChainName == null || isRunning() || isPaused()) {
             throw new CommandExecutionException("Can not start debugging.");
         }
 
         try {
             IMessageProcessingSequence innerSequence = IOC.resolve(
-                    Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), stackDepth, mainChain);
-
+                    Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                    stackDepth,
+                    mainChainName,
+                    message
+            );
             sequence = IOC.resolve(Keys.getOrAdd("new debugger sequence"), innerSequence, debuggerAddress);
 
             Object taskQueue = IOC.resolve(Keys.getOrAdd("task_queue"));

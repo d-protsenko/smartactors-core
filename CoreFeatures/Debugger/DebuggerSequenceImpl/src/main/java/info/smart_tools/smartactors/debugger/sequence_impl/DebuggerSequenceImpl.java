@@ -104,7 +104,7 @@ public class DebuggerSequenceImpl implements IDebuggerSequence, IDumpable {
                 exception = null;
                 return true;
             } catch (NoExceptionHandleChainException | NestedChainStackOverflowException | ChangeValueException | InvalidArgumentException
-                    | ReadValueException e) {
+                    | ReadValueException | ResolutionException e) {
                 e.addSuppressed(exception);
                 exception = e;
             }
@@ -176,9 +176,7 @@ public class DebuggerSequenceImpl implements IDebuggerSequence, IDumpable {
     }
 
     @Override
-    public void catchException(final Throwable exc, final IObject context)
-            throws NoExceptionHandleChainException, NestedChainStackOverflowException, ChangeValueException,
-            InvalidArgumentException, ReadValueException {
+    public void catchException(final Throwable exc, final IObject context) {
         this.exception = exc;
         this.exceptionContext = context;
     }

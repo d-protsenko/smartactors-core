@@ -27,7 +27,7 @@ public class NoExceptionHandleChainException extends Exception {
         super(
                 MessageFormat.format("No exceptional chain found for exception occurred at step {0} of chain ''{1}''.",
                         (stepsStack.length != 0) ? stepsStack[stepsStack.length - 1] : "<none>",
-                        (chainsStack.length != 0) ? chainsStack[chainsStack.length - 1].getName() : "<none>"),
+                        (chainsStack.length != 0) ? chainsStack[chainsStack.length - 1].getId() : "<none>"),
                 cause);
 
         this.chainsStack = new IObject[chainsStack.length];

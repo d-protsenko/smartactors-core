@@ -81,13 +81,11 @@ public class OnShutownRequestConfigurationSectionPlugin extends BootstrapPlugin 
                             if (null != modeFieldName) {
                                 message.setValue(modeFieldName, mode);
                             }
-
-                            Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name_and_message"), chainName, message);
-                            IReceiverChain chain = chainStorage.resolve(chainId);
                             IMessageProcessingSequence processingSequence = IOC.resolve(
                                     IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                                     stackDepth,
-                                    chain
+                                    chainName,
+                                    message
                             );
                             IMessageProcessor messageProcessor = IOC.resolve(
                                     IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),

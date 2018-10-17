@@ -25,7 +25,7 @@ import java.util.concurrent.ExecutionException;
  * @param <TRequest> type of a request received by endpoint
  */
 public abstract class EndpointHandler<TContext, TRequest> {
-    private final IReceiverChain receiverChain;
+    private final Object receiverChainName;
     private final IEnvironmentHandler environmentHandler;
     private final IScope scope;
     private final IModule module;
@@ -39,15 +39,15 @@ public abstract class EndpointHandler<TContext, TRequest> {
      * @param scope              scope for EndpointHandler
      * @param module             the module in which context EndpointHandler works
      * @param environmentHandler handler for environment
-     * @param receiver           chain, that should receive message
+     * @param receiverName       chain name of chain that should receive message
      * @param name               name of the endpoint
      * @throws ResolutionException if error occurs resolving any dependencies
      */
-    public EndpointHandler(final IReceiverChain receiver, final IEnvironmentHandler environmentHandler,
+    public EndpointHandler(final Object receiverName, final IEnvironmentHandler environmentHandler,
                            final IScope scope, final IModule module, final String name) throws ResolutionException {
         this.scope = scope;
         this.module = module;
-        this.receiverChain = receiver;
+        this.receiverChainName = receiverName;
         this.environmentHandler = environmentHandler;
         this.name = name;
 
@@ -90,7 +90,7 @@ public abstract class EndpointHandler<TContext, TRequest> {
             taskQueue.put(() -> {
                 try {
                     IObject environment = getEnvironment(ctx, request);
-                    environmentHandler.handle(environment, receiverChain, null);
+                    environmentHandler.handle(environment, receiverChainName, null);
                 } catch (Exception e) {
                     trySendExceptionalResponse(e, ctx, request);
 

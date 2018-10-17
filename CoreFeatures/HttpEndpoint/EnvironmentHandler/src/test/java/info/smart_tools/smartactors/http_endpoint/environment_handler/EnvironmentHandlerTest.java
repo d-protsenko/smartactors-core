@@ -84,7 +84,7 @@ public class EnvironmentHandlerTest {
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
-                                return new MessageProcessingSequence((int) args[0], (IReceiverChain) args[1]);
+                                return new MessageProcessingSequence((int) args[0], args[1], (IObject)args[2]);
                             } catch (InvalidArgumentException | ResolutionException ignored) {
                             }
                             return null;
@@ -140,10 +140,11 @@ public class EnvironmentHandlerTest {
         messageReceivers[0] = null;
         iObjects[0] = null;
         IReceiverChain chain = new ImmutableReceiverChain("name", mock(IObject.class), messageReceivers, iObjects, exceptionalChainsAndEnv);
+        // ToDo: put chain to chain storage
         IQueue<ITask> queue = new BlockingQueue(null);
 
         IEnvironmentHandler handler = new EnvironmentHandler(queue, 1);
-        handler.handle(environment, chain, null);
+        handler.handle(environment, "name", null);
         try {
             verify(messageProcessor, times(1)).process(
                     (IObject) environment.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message")),

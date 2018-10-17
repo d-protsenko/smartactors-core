@@ -22,7 +22,7 @@ public class ExceptionalTestChainTest {
     public void checkGetName()
             throws Exception {
         IReceiverChain chain = new ExceptionalTestChain();
-        assertNotNull(chain.getName());
+        assertNotNull(chain.getId());
     }
 
     @Test
@@ -31,6 +31,6 @@ public class ExceptionalTestChainTest {
         IReceiverChain chain = new ExceptionalTestChain();
         assertNull(chain.get(0));
         assertNull(chain.getArguments(0));
-        assertNull(chain.getExceptionalChainAndEnvironments(new Exception()));
+        assertNull(chain.getExceptionalChainNamesAndEnvironments(new Exception()));
     }
 }

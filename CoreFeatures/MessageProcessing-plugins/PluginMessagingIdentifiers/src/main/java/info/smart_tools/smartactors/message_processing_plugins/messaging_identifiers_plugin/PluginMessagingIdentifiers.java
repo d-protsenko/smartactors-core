@@ -68,7 +68,6 @@ public class PluginMessagingIdentifiers implements IPlugin {
 
                             IOC.register(Keys.getOrAdd("route_from_object_name"), toStringStrategy);
                             IOC.register(Keys.getOrAdd("chain_id_from_map_name_and_message"), toStringStrategy);
-                            IOC.register(Keys.getOrAdd("chain_id_from_map_name_and_version"), toStringStrategy);
                             IOC.register(Keys.getOrAdd("chain_id_from_map_name"), toStringStrategy);
                             IOC.register(Keys.getOrAdd("receiver_id_from_iobject"), targetToStringStrategy);
                         } catch (ResolutionException e) {
@@ -90,13 +89,6 @@ public class PluginMessagingIdentifiers implements IPlugin {
 
                         try {
                             keyName = "chain_id_from_map_name";
-                            IOC.remove(Keys.getOrAdd(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "chain_id_from_map_name_and_version";
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");

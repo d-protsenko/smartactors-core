@@ -16,6 +16,7 @@ import info.smart_tools.smartactors.http_endpoint.http_client.HttpClient;
 import info.smart_tools.smartactors.http_endpoint.http_server.HttpServer;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
@@ -52,7 +53,7 @@ public class HttpEndpointTest {
     protected HttpClient client;
     protected IEnvironmentHandler environmentHandler;
     protected BiConsumer<ChannelHandlerContext, FullHttpResponse> handlerStub;
-    protected IReceiverChain receiver;
+    protected String receiver;
 
 
     protected int getTestingPort() {
@@ -63,7 +64,7 @@ public class HttpEndpointTest {
     @BeforeMethod
     public void setUp() throws ExecutionException, InterruptedException, URISyntaxException, InvalidArgumentException, ResolutionException, RegistrationException, ScopeProviderException, RequestSenderException, UpCounterCallbackExecutionException {
         mapperStub = mock(IMessageMapper.class);
-        receiver = mock(IReceiverChain.class);
+        receiver = mock(String.class);
         environmentHandler = mock(IEnvironmentHandler.class);
         HttpEndpointTest me = this;
 
@@ -94,7 +95,7 @@ public class HttpEndpointTest {
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
-                                return new MessageProcessingSequence((int) args[0], (IReceiverChain) args[1]);
+                                return new MessageProcessingSequence((int) args[0], args[1], (IObject)args[2]);
                             } catch (InvalidArgumentException | ResolutionException ignored) {
                             }
                             return null;
@@ -175,12 +176,12 @@ public class HttpEndpointTest {
     }
 
     protected HttpServer createEndpoint(
-            IEnvironmentHandler environmentHandler, IReceiverChain receiver, IMessageMapper<byte[]> mapper
+            IEnvironmentHandler environmentHandler, Object receiverName, IMessageMapper<byte[]> mapper
     ) throws ResolutionException, ScopeProviderException, UpCounterCallbackExecutionException {
         Map<String, IDeserializeStrategy> strategies = new HashMap<>();
         strategies.put("application/json", new DeserializeStrategyPostJson(mapper));
         return new HttpEndpoint(getTestingPort(), 4096, ScopeProvider.getCurrentScope(),
-                ModuleManager.getCurrentModule(), environmentHandler, receiver, "", mock(IUpCounter.class));
+                ModuleManager.getCurrentModule(), environmentHandler, receiverName, "", mock(IUpCounter.class));
     }
 
     protected HttpClient createClient(IResponseHandler handler) throws URISyntaxException, RequestSenderException {

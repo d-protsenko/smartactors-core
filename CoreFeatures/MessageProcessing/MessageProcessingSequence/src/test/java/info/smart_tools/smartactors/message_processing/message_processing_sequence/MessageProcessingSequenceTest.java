@@ -197,7 +197,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         IAction afterAction = mock(IAction.class);
         Throwable exception = mock(Throwable.class);
 
-        when(chainMock2.getExceptionalChainAndEnvironments(same(exception))).thenReturn(exceptionalChainAndEnvMock);
+        when(chainMock2.getExceptionalChainNamesAndEnvironments(same(exception))).thenReturn(exceptionalChainAndEnvMock);
         when(exceptionalChainAndEnvMock.getValue(this.chainFieldName)).thenReturn(exceptionalChainMock);
         when(exceptionalChainAndEnvMock.getValue(this.afterActionFieldName)).thenReturn(afterAction);
 
@@ -237,7 +237,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
             throws Exception {
         Throwable exception = mock(Throwable.class);
 
-//        when(mainChainMock.getExceptionalChainAndEnvironments(same(exception))).thenReturn(mock(IObject.class));
+//        when(mainChainMock.getExceptionalChainNamesAndEnvironments(same(exception))).thenReturn(mock(IObject.class));
         when(mainChainMock.get(eq(0))).thenReturn(messageReceiverMocks[0]);
 
         IMessageProcessingSequence sequence = new MessageProcessingSequence(5, mainChainMock);
@@ -255,8 +255,8 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         IAction afterAction = mock(IAction.class);
         IReceiverChain secondaryChain = mock(IReceiverChain.class);
 
-        when(mainChainMock.getExceptionalChainAndEnvironments(same(exception))).thenReturn(exceptionalChainAndEnv);
-//        when(secondaryChain.getExceptionalChainAndEnvironments(same(exception))).thenReturn(mock(IObject.class));
+        when(mainChainMock.getExceptionalChainNamesAndEnvironments(same(exception))).thenReturn(exceptionalChainAndEnv);
+//        when(secondaryChain.getExceptionalChainNamesAndEnvironments(same(exception))).thenReturn(mock(IObject.class));
         when(exceptionalChainAndEnv.getValue(this.afterActionFieldName)).thenReturn(afterAction);
         when(exceptionalChainAndEnv.getValue(this.chainFieldName)).thenReturn(exceptionalChain);
 
@@ -345,7 +345,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         IObject exceptionalChainAndEnv = mock(IObject.class);
         IAction<IMessageProcessingSequence> afterAction = IMessageProcessingSequence::end;
 
-        when(mainChainMock.getExceptionalChainAndEnvironments(same(exception))).thenReturn(exceptionalChainAndEnv);
+        when(mainChainMock.getExceptionalChainNamesAndEnvironments(same(exception))).thenReturn(exceptionalChainAndEnv);
         when(exceptionalChainAndEnv.getValue(this.afterActionFieldName)).thenReturn(afterAction);
         when(exceptionalChainAndEnv.getValue(this.chainFieldName)).thenReturn(exceptionalChain);
 
@@ -369,7 +369,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         IObject exceptionalChainAndEnv = mock(IObject.class);
         IAction<IMessageProcessingSequence> afterAction = (mps) -> {throw new ActionExecuteException("exception");};
 
-        when(mainChainMock.getExceptionalChainAndEnvironments(same(exception))).thenReturn(exceptionalChainAndEnv);
+        when(mainChainMock.getExceptionalChainNamesAndEnvironments(same(exception))).thenReturn(exceptionalChainAndEnv);
         when(exceptionalChainAndEnv.getValue(this.afterActionFieldName)).thenReturn(afterAction);
         when(exceptionalChainAndEnv.getValue(this.chainFieldName)).thenReturn(exceptionalChain);
 
@@ -399,13 +399,13 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         IReceiverChain chain2 = mock(IReceiverChain.class);
         IReceiverChain chain3 = mock(IReceiverChain.class);
 
-        when(chain1.getName()).thenReturn("chain1");
-        when(chain2.getName()).thenReturn("chain2");
-        when(chain3.getName()).thenReturn("chain3");
+        when(chain1.getId()).thenReturn("chain1");
+        when(chain2.getId()).thenReturn("chain2");
+        when(chain3.getId()).thenReturn("chain3");
 
-        when(chain1.getExceptionalChains()).thenReturn(Collections.emptyList());
-        when(chain2.getExceptionalChains()).thenReturn(Collections.singletonList(chain3));
-        when(chain3.getExceptionalChains()).thenReturn(Collections.emptyList());
+        when(chain1.getExceptionalChainNames()).thenReturn(Collections.emptyList());
+        when(chain2.getExceptionalChainNames()).thenReturn(Collections.singletonList(chain3));
+        when(chain3.getExceptionalChainNames()).thenReturn(Collections.emptyList());
 
         when(makeDumpStrategy.resolve(same(chain1), same(options))).thenReturn(dump1);
         when(makeDumpStrategy.resolve(same(chain2), same(options))).thenReturn(dump2);

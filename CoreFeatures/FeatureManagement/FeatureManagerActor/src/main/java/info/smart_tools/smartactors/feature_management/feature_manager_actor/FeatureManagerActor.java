@@ -108,16 +108,9 @@ public class FeatureManagerActor {
             IMessageProcessor mp = wrapper.getMessageProcessor();
             mp.getContext().setValue(this.startTimeOfLoadingFeatureGroupFN, startLoadingTime);
 
-            IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd(TASK_QUEUE_IOC_NAME));
-            String scatterChainName = wrapper.getScatterChainName();
-            Object chainId = IOC.resolve(
-                    Keys.getOrAdd(CHAIN_ID_STORAGE_STRATEGY_NAME),
-                    scatterChainName,
-                    mp.getMessage()
-            );
-            IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
             int stackDepth = DEFAULT_STACK_DEPTH;
-            IReceiverChain scatterChain = chainStorage.resolve(chainId);
+            String scatterChainName = wrapper.getScatterChainName();
+            IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd(TASK_QUEUE_IOC_NAME));
 
             IQueue afterFeaturesCallbackQueue = IOC.resolve(Keys.getOrAdd(IQueue.class.getCanonicalName()));
 
@@ -125,7 +118,10 @@ public class FeatureManagerActor {
             for (IFeature feature : features) {
                 this.featuresInProgress.put(feature.getId(), feature);
                 IMessageProcessingSequence processingSequence = IOC.resolve(
-                        Keys.getOrAdd(MESSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME), stackDepth, scatterChain
+                        Keys.getOrAdd(MESSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME),
+                        stackDepth,
+                        scatterChainName,
+                        mp.getMessage()
                 );
                 IMessageProcessor messageProcessor = IOC.resolve(
                         Keys.getOrAdd(MESSAGE_PROCESSOR_FACTORY_STRATEGY_NAME), queue, processingSequence

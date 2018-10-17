@@ -79,62 +79,53 @@ public class MessageBusHandler implements IMessageBusHandler {
     @Override
     public void handle(final IObject message)
             throws MessageBusHandlerException {
-        handle0(message, resolveChain(defaultChainName, message));
+        handle0(message, defaultChainName);
     }
 
     @Override
-    public void handle(final IObject message, final String chainName)
+    public void handle(final IObject message, final Object chainName)
             throws MessageBusHandlerException {
-        handle0(message, resolveChain(chainName, message));
+        handle0(message, chainName);
     }
 
     @Override
     public void handleForReply(final IObject message, final Object replyToChainName)
             throws MessageBusHandlerException {
-        handleForReply0(message, resolveChain(defaultChainName, message), replyToChainName);
+        handleForReply0(message, defaultChainName, replyToChainName);
     }
 
     @Override
-    public void handleForReply(final IObject message, final String chainName, final Object replyToChainName)
+    public void handleForReply(final IObject message, final Object chainName, final Object replyToChainName)
             throws MessageBusHandlerException {
-        handleForReply0(message, resolveChain(chainName, message), replyToChainName);
+        handleForReply0(message, chainName, replyToChainName);
     }
 
-    private void handle0(final IObject message, final IReceiverChain dstChain)
+    private void handle0(final IObject message, final Object dstChainName)
             throws MessageBusHandlerException {
         try {
-            resolveMessageProcessor(dstChain)
+            resolveMessageProcessor(dstChainName, message)
                     .process(message, resolveDefaultContext());
         } catch (ResolutionException | InvalidArgumentException | ChangeValueException | MessageProcessorProcessException e) {
             throw new MessageBusHandlerException("Failed to handle message to MessageBus.", e);
         }
     }
 
-    private void handleForReply0(final IObject message, final IReceiverChain dstChain, final Object replyChainId)
+    private void handleForReply0(final IObject message, final Object dstChainName, final Object replyToChainName)
             throws MessageBusHandlerException {
         try {
-            resolveMessageProcessor(dstChain)
-                    .process(message, resolveReplyContext(replyChainId));
+            resolveMessageProcessor(dstChainName, message)
+                    .process(message, resolveReplyContext(replyToChainName));
         } catch (ResolutionException | ChangeValueException | InvalidArgumentException | MessageProcessorProcessException e) {
             throw new MessageBusHandlerException("Failed to handle message to MessageBus.", e);
         }
     }
 
-    private IReceiverChain resolveChain(final Object chainName, IObject message)
-            throws MessageBusHandlerException {
-        try {
-            Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name_and_message"), chainName, message);
-            return chainStorage.resolve(chainId);
-        } catch (ResolutionException | ChainNotFoundException e) {
-            throw new MessageBusHandlerException("Error occurred while resolving target chain Id.", e);
-        }
-    }
-
-    private IMessageProcessor resolveMessageProcessor(final IReceiverChain mpChain) throws ResolutionException {
+    private IMessageProcessor resolveMessageProcessor(final Object mpChainName, IObject message) throws ResolutionException {
         IMessageProcessingSequence processingSequence = IOC.resolve(
                 IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                 this.stackDepth,
-                mpChain
+                mpChainName,
+                message
         );
         return IOC.resolve(
                 IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
@@ -150,7 +141,7 @@ public class MessageBusHandler implements IMessageBusHandler {
         return context;
     }
 
-    private IObject resolveReplyContext(final Object replyChainId)
+    private IObject resolveReplyContext(final Object replyToChainName)
             throws InvalidArgumentException, ResolutionException, ChangeValueException {
         IObject context = resolveDefaultContext();
 
@@ -160,7 +151,7 @@ public class MessageBusHandler implements IMessageBusHandler {
         actionList.add(this.replyAction);
         context.setValue(this.finalActionsFieldName, actionList);
 
-        context.setValue(this.replyToFieldName, replyChainId);
+        context.setValue(this.replyToFieldName, replyToChainName);
 
         return context;
     }

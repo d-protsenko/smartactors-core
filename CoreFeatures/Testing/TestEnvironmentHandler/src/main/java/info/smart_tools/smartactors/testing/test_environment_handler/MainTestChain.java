@@ -117,12 +117,12 @@ public class MainTestChain implements IReceiverChain {
     }
 
     @Override
-    public String getName() {
+    public String getId() {
         return "root test chain";
     }
 
     @Override
-    public IObject getExceptionalChainAndEnvironments(final Throwable exception) {
+    public IObject getExceptionalChainNamesAndEnvironments(final Throwable exception) {
         IObject exceptionalChainAndEnv = null;
         try {
             exceptionalChainAndEnv = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
@@ -145,7 +145,7 @@ public class MainTestChain implements IReceiverChain {
     }
 
     @Override
-    public Collection<Object> getExceptionalChains() {
+    public Collection<Object> getExceptionalChainNames() {
         return Collections.emptyList();
     }
 }

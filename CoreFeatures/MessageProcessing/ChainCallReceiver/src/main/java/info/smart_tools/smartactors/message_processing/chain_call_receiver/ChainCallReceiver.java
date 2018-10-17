@@ -15,7 +15,6 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageReceiveException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
-import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 
 /**
  * Receiver that calls {@link IReceiverChain} chosen by a {@link IChainChoiceStrategy} on a message.
@@ -77,7 +76,7 @@ public class ChainCallReceiver implements IMessageReceiver {
                 if (!isExternal) {
                     processor.getContext().setValue(this.accessForbiddenFieldName, true);
                     //ToDo: need new constructor for all internal exceptions with string formatter
-                    throw new ChainChoiceException("External access forbidden to chain - " + chain.getName() + ".");
+                    throw new ChainChoiceException("External access forbidden to chain - " + chain.getId() + ".");
                 }
             }
         } catch (ReadValueException | ChangeValueException | InvalidArgumentException e) {

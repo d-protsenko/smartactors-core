@@ -91,18 +91,11 @@ public class DebuggerBreakpointsStorageImpl implements IDebuggerBreakpointsStora
     @Override
     public String addBreakpoint(final IObject desc) throws BreakpointStorageException {
         try {
-            String fullChainName = (String) desc.getValue(chainFN);
-
-            String[] chainNames = fullChainName.split(":");
-            String chainName = chainNames[0];
-            String chainVersion = chainNames.length < 2 ? null : chainNames[1];
-
             int stepId = ((Number) desc.getValue(stepFN)).intValue();
 
             Object chainId = IOC.resolve(
-                    Keys.getOrAdd("chain_id_from_map_name_and_version"),
-                    chainName,
-                    chainVersion
+                    Keys.getOrAdd("chain_id_from_map_name"),
+                    desc.getValue(chainFN)
             );
             IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
             IReceiverChain chain = chainStorage.resolve(chainId);

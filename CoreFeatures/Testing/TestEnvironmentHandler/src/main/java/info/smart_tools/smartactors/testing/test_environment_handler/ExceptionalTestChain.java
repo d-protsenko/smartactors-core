@@ -23,12 +23,12 @@ class ExceptionalTestChain implements IReceiverChain {
     }
 
     @Override
-    public String getName() {
+    public String getId() {
         return "exceptional test chain";
     }
 
     @Override
-    public IObject getExceptionalChainAndEnvironments(Throwable exception) {
+    public IObject getExceptionalChainNamesAndEnvironments(Throwable exception) {
         return null;
     }
 
@@ -38,7 +38,7 @@ class ExceptionalTestChain implements IReceiverChain {
     }
 
     @Override
-    public Collection<Object> getExceptionalChains() {
+    public Collection<Object> getExceptionalChainNames() {
         return Collections.emptyList();
     }
 }

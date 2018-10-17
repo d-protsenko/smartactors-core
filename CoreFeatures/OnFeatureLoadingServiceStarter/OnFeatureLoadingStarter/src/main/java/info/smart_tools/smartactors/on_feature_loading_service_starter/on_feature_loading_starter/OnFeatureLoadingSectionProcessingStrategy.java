@@ -103,11 +103,11 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                     String chainName = (String) task.getValue(this.chainFieldName);
                     List<IObject> messages = (List<IObject>)task.getValue(this.messagesFieldName);
                     for (IObject message : messages) {
-                        Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name_and_message"), chainName, message);
                         IMessageProcessingSequence processingSequence = IOC.resolve(
                                 IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                                 stackDepth,
-                                chainStorage.resolve(chainId)
+                                chainName,
+                                message
                         );
                         IMessageProcessor messageProcessor = IOC.resolve(
                                 IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
@@ -150,11 +150,11 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                         List<IObject> messages = (List<IObject>) task.getValue(this.messagesFieldName);
                         for (IObject message : messages) {
                             try {
-                                Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name_and_message"), chainName, message);
                                 IMessageProcessingSequence processingSequence = IOC.resolve(
                                         IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                                         stackDepth,
-                                        chainStorage.resolve(chainId)
+                                        chainName,
+                                        message
                                 );
                                 IMessageProcessor messageProcessor = IOC.resolve(
                                         IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),

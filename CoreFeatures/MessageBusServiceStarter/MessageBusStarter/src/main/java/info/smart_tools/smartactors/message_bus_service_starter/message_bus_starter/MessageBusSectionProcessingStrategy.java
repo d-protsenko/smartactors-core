@@ -73,8 +73,6 @@ public class MessageBusSectionProcessingStrategy implements ISectionStrategy {
 
             Integer stackDepth = Integer.valueOf(String.valueOf(messageBusObject.getValue(stackDepthFieldName)));
 
-            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(),
-                    IChainStorage.class.getCanonicalName()));
             String startChainName = (String) messageBusObject.getValue(startChainNameFieldName);
 
             IAction<IObject> finalAction = IOC.resolve(Keys.getOrAdd("send response action"));

@@ -68,18 +68,18 @@ class ReceiverReplacingChainDecorator implements IReceiverChain {
     }
 
     @Override
-    public String getName() {
-        return original.getName();
+    public String getId() {
+        return original.getId();
     }
 
     @Override
-    public IObject getExceptionalChainAndEnvironments(final Throwable exception) {
-        return original.getExceptionalChainAndEnvironments(exception);
+    public IObject getExceptionalChainNamesAndEnvironments(final Throwable exception) {
+        return original.getExceptionalChainNamesAndEnvironments(exception);
     }
 
     @Override
-    public Collection<Object> getExceptionalChains() {
-        return original.getExceptionalChains();
+    public Collection<Object> getExceptionalChainNames() {
+        return original.getExceptionalChainNames();
     }
 
     @Override
