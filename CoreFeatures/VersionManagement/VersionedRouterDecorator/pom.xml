@@ -7,7 +7,7 @@
         <artifactId>version-management</artifactId>
         <version>0.4.0</version>
     </parent>
-    <artifactId>version-management.versioned-task-queue-decorator</artifactId>
+    <artifactId>version-management.versioned-map-router-decorator</artifactId>
     <version>0.4.0</version>
     <dependencies>
         <dependency>
@@ -67,18 +67,6 @@
             <artifactId>class-management.module-manager</artifactId>
             <version>0.4.0</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>message-processing-interfaces.irouter</artifactId>
-            <version>0.4.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>message-processing.map-router</artifactId>
-            <version>0.4.0</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>

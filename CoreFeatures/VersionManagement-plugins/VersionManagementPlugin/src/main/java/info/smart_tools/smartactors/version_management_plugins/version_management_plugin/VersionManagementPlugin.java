@@ -1,22 +1,23 @@
 package info.smart_tools.smartactors.version_management_plugins.version_management_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.message_processing.map_router.MapRouter;
+import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.non_blocking_queue.NonBlockingQueue;
 import info.smart_tools.smartactors.version_management.chain_version_manager.ChainIdFromMapNameStrategy;
-import info.smart_tools.smartactors.version_management.versioned_task_queue_decorator.VersionedTaskQueueDecorator;
+import info.smart_tools.smartactors.version_management.versioned_map_router_decorator.VersionedRouterDecorator;
+import info.smart_tools.smartactors.version_management.versioned_map_router_decorator.VersionedTaskQueueDecorator;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class VersionManagementPlugin  extends BootstrapPlugin {
@@ -58,6 +59,25 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
         }));
     }
 
+    @Item("versioned_router")
+    @After({"router"})
+    @Before({"config_section:objects"})
+    public void registerVersionedRouterStrategy()
+            throws ResolutionException, RegistrationException, InvalidArgumentException {
+
+        IOC.register(Keys.getOrAdd(IRouter.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(args -> {
+            try {
+                return new VersionedRouterDecorator(
+                        new ConcurrentHashMap<>(),
+                        new MapRouter(new ConcurrentHashMap<>())
+                );
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }));
+    }
+
+    // ToDo: fix rollback to setup previous strategies
     @ItemRevert("versioned_chain_id_from_map_name_strategy")
     public void unregisterChainIdFromMapNameStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
@@ -87,6 +107,7 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
         } catch (ResolutionException e) { }
     }
 
+    // ToDo: fix rollback to setup previous strategies
     @ItemRevert("versioned_task_queue")
     public void unregisterVersionedTaskQueueStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
@@ -95,6 +116,22 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
         String keyName;
 
         keyName = IQueue.class.getCanonicalName();
+        try {
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
+    }
+
+    // ToDo: fix rollback to setup previous strategies
+    @ItemRevert("versioned_router")
+    public void unregisterVersionedRouterStrategy()
+            throws ResolutionException, RegistrationException, InvalidArgumentException {
+
+        String itemName = "versioned_router";
+        String keyName;
+
+        keyName = IRouter.class.getCanonicalName();
         try {
             IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {

@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>ChainVersionManager</module>
+        <module>VersionedRouterDecorator</module>
         <module>VersionedTaskQueueDecorator</module>
         <module>VersionManagementDistribution</module>
     </modules>

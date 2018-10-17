@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.version_management.versioned_task_queue_decorator;
+package info.smart_tools.smartactors.version_management.versioned_map_router_decorator;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
@@ -10,19 +10,19 @@ import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
 
 /**
- * Test for {@link VersionedTaskQueueDecorator}.
+ * Test for {@link VersionedRouterDecorator}.
  */
 public class VersionedTaskQueueDecoratorTest {
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrowWhenUnderlyingQueueIsNull() {
-        assertNotNull(new VersionedTaskQueueDecorator(null));
+        assertNotNull(new VersionedRouterDecorator(null));
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void Should_takeNotBeSupported()
             throws Exception {
         IQueue underlying = mock(IQueue.class);
-        IQueue queue = new VersionedTaskQueueDecorator(underlying);
+        IQueue queue = new VersionedRouterDecorator(underlying);
         queue.take();
     }
 
@@ -34,7 +34,7 @@ public class VersionedTaskQueueDecoratorTest {
 
         when(underlying.tryTake()).thenReturn(object3);
 
-        IQueue queue = new VersionedTaskQueueDecorator(underlying);
+        IQueue queue = new VersionedRouterDecorator(underlying);
 
         queue.put(object1);
 
@@ -52,7 +52,7 @@ public class VersionedTaskQueueDecoratorTest {
 
         //when(underlying.isEmpty()).thenReturn(true);
 
-        IQueue queue = new VersionedTaskQueueDecorator(underlying);
+        IQueue queue = new VersionedRouterDecorator(underlying);
 
         queue.addNewItemCallback(callback1);
         queue.addNewItemCallback(callback2);
@@ -73,7 +73,7 @@ public class VersionedTaskQueueDecoratorTest {
 
         //when(underlying.isEmpty()).thenReturn(false);
 
-        IQueue queue = new VersionedTaskQueueDecorator(underlying);
+        IQueue queue = new VersionedRouterDecorator(underlying);
 
         queue.addNewItemCallback(callback);
 
@@ -89,7 +89,7 @@ public class VersionedTaskQueueDecoratorTest {
 
         //when(underlying.isEmpty()).thenReturn(true);
 
-        IQueue queue = new VersionedTaskQueueDecorator(underlying);
+        IQueue queue = new VersionedRouterDecorator(underlying);
 
         queue.addNewItemCallback(callback);
         queue.removeNewItemCallback(callback);
