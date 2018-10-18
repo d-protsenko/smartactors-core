@@ -7,7 +7,7 @@
         <artifactId>version-management</artifactId>
         <version>0.4.0</version>
     </parent>
-    <artifactId>version-management.versioned-map-router-decorator</artifactId>
+    <artifactId>version-management.versioned-map-router</artifactId>
     <version>0.4.0</version>
     <dependencies>
         <dependency>

@@ -14,8 +14,8 @@ import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRoute
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.non_blocking_queue.NonBlockingQueue;
 import info.smart_tools.smartactors.version_management.chain_version_manager.ChainIdFromMapNameStrategy;
-import info.smart_tools.smartactors.version_management.versioned_map_router_decorator.VersionedRouterDecorator;
-import info.smart_tools.smartactors.version_management.versioned_map_router_decorator.VersionedTaskQueueDecorator;
+import info.smart_tools.smartactors.version_management.versioned_map_router.VersionedMapRouter;
+import info.smart_tools.smartactors.version_management.versioned_map_router.VersionedTaskQueueDecorator;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -67,10 +67,7 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
 
         IOC.register(Keys.getOrAdd(IRouter.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
-                return new VersionedRouterDecorator(
-                        new ConcurrentHashMap<>(),
-                        new MapRouter(new ConcurrentHashMap<>())
-                );
+                return new VersionedMapRouter(new ConcurrentHashMap<>());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

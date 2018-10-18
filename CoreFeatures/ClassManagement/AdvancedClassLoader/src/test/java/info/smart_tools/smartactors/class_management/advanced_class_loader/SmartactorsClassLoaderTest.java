@@ -17,21 +17,15 @@ public class SmartactorsClassLoaderTest {
     @Test
     public void checkSmartactorsClassLoaderCreation()
             throws Exception {
-        SmartactorsClassLoader.addModule(
-                "coreId",
-                "coreName",
-                "coreVersion"
-        );
-        SmartactorsClassLoader.setDefaultModuleId("coreId");
-        SmartactorsClassLoader.addModule("cl1", "cl1", null);
-        assertNotNull(SmartactorsClassLoader.getModuleClassLoader("cl1"));
-        SmartactorsClassLoader.addModule("cl2", "cl2", null);
-        assertNotNull(SmartactorsClassLoader.getModuleClassLoader("cl2"));
-        assertSame(SmartactorsClassLoader.getModuleClassLoader("cl2").getParent(), ClassLoader.getSystemClassLoader());
-        SmartactorsClassLoader.addModuleDependency("cl1", "cl2");
-        SmartactorsClassLoader.finalizeModuleDependencies("cl1");
-        SmartactorsClassLoader.finalizeModuleDependencies("cl2");
-        assertNotNull(SmartactorsClassLoader.getModuleClassLoader("coreId").getCompilationClassLoader());
+        ISmartactorsClassLoader ccl = SmartactorsClassLoader.newInstance("coreName", "coreVersion");
+        ccl.setDefault();
+        ISmartactorsClassLoader cl1 = SmartactorsClassLoader.newInstance("cl1", null);
+        assertNotNull(cl1);
+        ISmartactorsClassLoader cl2 = SmartactorsClassLoader.newInstance("cl2", null);
+        assertNotNull(cl2);
+        assertSame(((ClassLoader)cl2).getParent(), ClassLoader.getSystemClassLoader());
+        cl1.addDependency(cl2);
+        assertNotNull(ccl.getCompilationClassLoader());
     }
 
     @Test
@@ -40,14 +34,12 @@ public class SmartactorsClassLoaderTest {
         URL url1 = new URL("http", "host", 9000, "filename1");
         URL url2 = new URL("http", "host", 9000, "filename2");
         URL url3 = new URL("http", "host", 9000, "filename1");
-        SmartactorsClassLoader.addModule("cl", "cl", "cl");
-        ISmartactorsClassLoader cl0 = SmartactorsClassLoader.getModuleClassLoader("cl");
+        ISmartactorsClassLoader cl0 = SmartactorsClassLoader.newInstance("cl0", "cl0");
         assertNotNull(cl0);
-        SmartactorsClassLoader.addModule("clURL", "clURL", "clURL");
-        ISmartactorsClassLoader cl = SmartactorsClassLoader.getModuleClassLoader("clURL");
+        cl0.setDefault();
+        ISmartactorsClassLoader cl = SmartactorsClassLoader.newInstance("clURL", "clURL");
         assertNotNull(cl);
-        SmartactorsClassLoader.addModuleDependency("clURL", "cl");
-        SmartactorsClassLoader.setDefaultModuleId("cl");
+        cl.addDependency(cl0);
         cl0.addURL(url1);
         cl.addURL(url1);
         cl.addURL(url2);
@@ -76,8 +68,7 @@ public class SmartactorsClassLoaderTest {
     @Test
     public void checkGettersSetters() {
 
-        SmartactorsClassLoader.addModule("cl", "cl", null);
-        ISmartactorsClassLoader cl = SmartactorsClassLoader.getModuleClassLoader("cl");
+        ISmartactorsClassLoader cl = SmartactorsClassLoader.newInstance("cl", null);
 
         try {
             byte[] byteCode = { 1, 2 };
@@ -104,35 +95,26 @@ public class SmartactorsClassLoaderTest {
 
     private ClassLoader[] createClassLoaderSet()
             throws Exception {
-        ClassLoader cls[] = new SmartactorsClassLoader[22];
-        SmartactorsClassLoader.addModule("cl00", "DeadEnd-IField", "cl00");
-        cls[20] = SmartactorsClassLoader.getModuleClassLoader("cl00");
-        SmartactorsClassLoader.addModule("cl01", "PathToSCL-IField", "cl01");
-        cls[0] = SmartactorsClassLoader.getModuleClassLoader("cl01");
-        SmartactorsClassLoader.addModule("CL1", "CL1", "CL1");
-        cls[1] = SmartactorsClassLoader.getModuleClassLoader("CL1");
-        SmartactorsClassLoader.addModule("CL2", "CL2", "CL2");
-        cls[2] = SmartactorsClassLoader.getModuleClassLoader("CL2");
-        SmartactorsClassLoader.addModule("CL3", "CL3", "CL3");
-        cls[3] = SmartactorsClassLoader.getModuleClassLoader("CL3");
-        SmartactorsClassLoader.addModule("CL4", "CL4", "CL4");
-        cls[4] = SmartactorsClassLoader.getModuleClassLoader("CL4");
-        SmartactorsClassLoader.addModule("CL5", "CL5", "CL5");
-        cls[5] = SmartactorsClassLoader.getModuleClassLoader("CL5");
-        SmartactorsClassLoader.addModule("CL6", "CL6", "CL6");
-        cls[6] = SmartactorsClassLoader.getModuleClassLoader("CL6");
-        SmartactorsClassLoader.addModule("CL7", "CL7", "CL7");
-        cls[7] = SmartactorsClassLoader.getModuleClassLoader("CL7");
+        ISmartactorsClassLoader cls[] = new SmartactorsClassLoader[22];
+        cls[20] = SmartactorsClassLoader.newInstance("DeadEnd-IField", "cl00");
+        cls[0] = SmartactorsClassLoader.newInstance("PathToSCL-IField", "cl01");
+        cls[1] = SmartactorsClassLoader.newInstance("CL1", "CL1");
+        cls[2] = SmartactorsClassLoader.newInstance("CL2", "CL2");
+        cls[3] = SmartactorsClassLoader.newInstance("CL3", "CL3");
+        cls[4] = SmartactorsClassLoader.newInstance("CL4", "CL4");
+        cls[5] = SmartactorsClassLoader.newInstance("CL5", "CL5");
+        cls[6] = SmartactorsClassLoader.newInstance("CL6", "CL6");
+        cls[7] = SmartactorsClassLoader.newInstance("CL7", "CL7");
 
-        SmartactorsClassLoader.addModuleDependency("CL1", "cl00");
-        SmartactorsClassLoader.addModuleDependency("CL1", "cl01");
-        SmartactorsClassLoader.addModuleDependency("CL2", "cl01");
-        SmartactorsClassLoader.addModuleDependency("CL3", "CL1");
-        SmartactorsClassLoader.addModuleDependency("CL3", "CL2");
-        SmartactorsClassLoader.addModuleDependency("CL4", "CL2");
-        SmartactorsClassLoader.addModuleDependency("CL5", "CL4");
-        SmartactorsClassLoader.addModuleDependency("CL6", "CL5");
-        SmartactorsClassLoader.addModuleDependency("CL7", "CL6");
+        cls[1].addDependency(cls[20]);
+        cls[1].addDependency(cls[0]);
+        cls[2].addDependency(cls[0]);
+        cls[3].addDependency(cls[1]);
+        cls[3].addDependency(cls[2]);
+        cls[4].addDependency(cls[2]);
+        cls[5].addDependency(cls[4]);
+        cls[6].addDependency(cls[5]);
+        cls[7].addDependency(cls[6]);
 
         attachJarToClassLoader("ifield.jar", (ISmartactorsClassLoader)cls[20]);
         attachJarToClassLoader("ifield.jar", (ISmartactorsClassLoader)cls[0]);
@@ -140,7 +122,7 @@ public class SmartactorsClassLoaderTest {
         attachJarToClassLoader("iobject.jar", (ISmartactorsClassLoader)cls[2]);
         attachJarToClassLoader("iobject-wrapper.jar", (ISmartactorsClassLoader)cls[2]);
 
-        return cls;
+        return (ClassLoader[])cls;
     }
 
     @Test
