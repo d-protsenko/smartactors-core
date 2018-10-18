@@ -31,12 +31,12 @@ public class DebuggerBreakpointsStorageImpl implements IDebuggerBreakpointsStora
         private IObject asIObject;
         private boolean enabled;
 
-        private Breakpoint(final String chain, final int stepId, final String id, final boolean enabled, final IObject args)
+        private Breakpoint(final Object chainName, final int stepId, final String id, final boolean enabled, final IObject args)
                 throws ResolutionException, ChangeValueException, InvalidArgumentException {
             this.enabled = enabled;
 
             this.asIObject = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
-            this.asIObject.setValue(chainFN, chain);
+            this.asIObject.setValue(chainFN, chainName);
             this.asIObject.setValue(stepFN, stepId);
             this.asIObject.setValue(enabledFN, true);
             this.asIObject.setValue(idFN, id);
@@ -91,10 +91,10 @@ public class DebuggerBreakpointsStorageImpl implements IDebuggerBreakpointsStora
     public String addBreakpoint(final IObject desc) throws BreakpointStorageException {
         try {
             int stepId = ((Number) desc.getValue(stepFN)).intValue();
-
+            Object chainName = (String) desc.getValue(chainFN);
             Object chainId = IOC.resolve(
                     Keys.getOrAdd("chain_id_from_map_name"),
-                    desc.getValue(chainFN)
+                    chainName
             );
             IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
             IReceiverChain chain = chainStorage.resolve(chainId);

@@ -84,8 +84,6 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
             throws ConfigurationProcessingException {
         try {
             List<IObject> onFeatureLoadingConfig = (List<IObject>) config.getValue(this.sectionNameFieldName);
-            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(),
-                    IChainStorage.class.getCanonicalName()));
             IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
 
             Integer stackDepth;
@@ -118,8 +116,6 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
             }
         } catch (ReadValueException | InvalidArgumentException | ResolutionException | MessageProcessorProcessException e) {
             throw new ConfigurationProcessingException("Error occurred executing \"onFeatureLoading\" configuration section.", e);
-        } catch (ChainNotFoundException e) {
-            throw new ConfigurationProcessingException("Error occurred resolving \"chain\".", e);
         }
     }
 
@@ -129,8 +125,6 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
         ConfigurationProcessingException exception = new ConfigurationProcessingException("Error occurred reverting \"onFeatureLoading\" configuration section.");
         try {
             List<IObject> onFeatureLoadingConfig = (List<IObject>) config.getValue(this.sectionNameFieldName);
-            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(),
-                    IChainStorage.class.getCanonicalName()));
             IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
 
             Integer stackDepth;
@@ -169,7 +163,7 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                     exception.addSuppressed(e);
                 }
             }
-        } catch (ChainNotFoundException | ReadValueException | InvalidArgumentException | ResolutionException e) {
+        } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
             exception.addSuppressed(e);
         }
         if (exception.getSuppressed().length > 0) {

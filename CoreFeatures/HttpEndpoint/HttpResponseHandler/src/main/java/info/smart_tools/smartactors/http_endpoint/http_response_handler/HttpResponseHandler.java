@@ -34,7 +34,7 @@ import java.util.ArrayList;
 public class HttpResponseHandler implements IResponseHandler<ChannelHandlerContext, FullHttpResponse> {
     private IQueue<ITask> taskQueue;
     private int stackDepth;
-    private String receiverMapName;
+    private Object receiverMapName;
     private IObject request;
     private IFieldName messageFieldName;
     private IFieldName contextFieldName;
@@ -45,7 +45,7 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
     private IFieldName requestFieldName;
     private IFieldName messageMapIdFieldName;
     private IFieldName uuidFieldName;
-    private String messageMapId;
+    private Object messageMapId;
     private Object uuid;
     private boolean isReceived;
     private IScope currentScope;
@@ -58,7 +58,7 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
      * @param stackDepth    depth of the stack for {@link io.netty.channel.ChannelOutboundBuffer.MessageProcessor}
      * @param mapName chain, that should receive message
      */
-    public HttpResponseHandler(final IQueue<ITask> taskQueue, final int stackDepth, final String mapName,
+    public HttpResponseHandler(final IQueue<ITask> taskQueue, final int stackDepth, final Object mapName,
                                final IObject request, final IScope scope, IModule module) throws ResponseHandlerException {
         this.taskQueue = taskQueue;
         this.stackDepth = stackDepth;
@@ -78,7 +78,7 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
             messageMapIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "messageMapId");
             uuidFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uuid");
             this.request = request;
-            this.messageMapId = (String)request.getValue(messageMapIdFieldName);
+            this.messageMapId = request.getValue(messageMapIdFieldName);
             this.uuid = request.getValue(uuidFieldName);
             isReceived = false;
             currentScope = scope;

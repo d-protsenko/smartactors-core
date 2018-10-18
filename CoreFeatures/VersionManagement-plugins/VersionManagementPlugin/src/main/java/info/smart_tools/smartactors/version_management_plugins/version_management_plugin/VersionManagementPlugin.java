@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.version_management_plugins.version_manageme
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
@@ -14,8 +15,9 @@ import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRoute
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.non_blocking_queue.NonBlockingQueue;
 import info.smart_tools.smartactors.version_management.chain_version_manager.ChainIdFromMapNameStrategy;
-import info.smart_tools.smartactors.version_management.versioned_map_router.VersionedMapRouter;
-import info.smart_tools.smartactors.version_management.versioned_map_router.VersionedTaskQueueDecorator;
+import info.smart_tools.smartactors.version_management.versioned_router_decorator.VersionedMapRouter;
+import info.smart_tools.smartactors.version_management.versioned_router_decorator.VersionedRouterDecorator;
+import info.smart_tools.smartactors.version_management.versioned_router_decorator.VersionedTaskQueueDecorator;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -65,13 +67,17 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
     public void registerVersionedRouterStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
 
-        IOC.register(Keys.getOrAdd(IRouter.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(args -> {
-            try {
-                return new VersionedMapRouter(new ConcurrentHashMap<>());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }));
+        // IOC.register(
+        //          Keys.getOrAdd(IRouter.class.getCanonicalName()),
+        //          new SingletonStrategy(new VersionedMapRouter(new ConcurrentHashMap<>()))
+        // );
+        // alternative
+        IRouter router = IOC.resolve(Keys.getOrAdd(IRouter.class.getCanonicalName()));
+        IOC.register(
+                Keys.getOrAdd(IRouter.class.getCanonicalName()),
+                new SingletonStrategy(new VersionedRouterDecorator(new ConcurrentHashMap<>(), router))
+        );
+
     }
 
     // ToDo: fix rollback to setup previous strategies

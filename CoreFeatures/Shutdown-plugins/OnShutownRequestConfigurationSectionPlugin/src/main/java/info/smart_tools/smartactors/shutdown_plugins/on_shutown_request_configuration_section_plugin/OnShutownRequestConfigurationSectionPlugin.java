@@ -17,7 +17,6 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageProcessorProcessException;
@@ -92,7 +91,7 @@ public class OnShutownRequestConfigurationSectionPlugin extends BootstrapPlugin 
                             );
                             messageProcessor.process(message, (IObject) IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
                         }
-                    } catch (ResolutionException | ChangeValueException | MessageProcessorProcessException | ChainNotFoundException e) {
+                    } catch (ResolutionException | ChangeValueException | MessageProcessorProcessException e) {
                         throw new ActionExecuteException(e);
                     }
                 };

@@ -65,7 +65,7 @@ public class ImmutableReceiverChainResolutionStrategy implements IResolveDepende
         try {
             Object chainId = args[CHAIN_ID_ARG_INDEX];
             IObject description = (IObject) args[DESCRIPTION_ARG_INDEX];
-            IChainStorage chainStorage = (IChainStorage) args[STORAGE_ARG_INDEX];
+            //IChainStorage chainStorage = (IChainStorage) args[STORAGE_ARG_INDEX];
             IRouter router = (IRouter) args[ROUTER_ARG_INDEX];
 
             IKey fieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");

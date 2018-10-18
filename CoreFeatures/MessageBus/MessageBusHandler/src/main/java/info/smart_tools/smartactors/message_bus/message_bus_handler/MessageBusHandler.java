@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_handler.IMessageBusHandler;
@@ -38,6 +39,8 @@ public class MessageBusHandler implements IMessageBusHandler {
     private final IResponseStrategy messageBusResponseStrategy;
     private final IResponseStrategy nullResponseStrategy;
     private final IChainStorage chainStorage;
+    private final IKey keyIMessageProcessingSequence;
+    private final IKey keyIMessageProcessor;
 
     /**
      * @param taskQueue Queue of the tasks
@@ -64,6 +67,9 @@ public class MessageBusHandler implements IMessageBusHandler {
         this.taskQueue = taskQueue;
         this.defaultChainName = receiverChainName;
         this.replyAction = finalAction;
+
+        this.keyIMessageProcessingSequence = Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence");
+        this.keyIMessageProcessor = Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor");
 
         this.finalActionsFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "finalActions");
         this.replyToFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "messageBusReplyTo");
@@ -120,13 +126,13 @@ public class MessageBusHandler implements IMessageBusHandler {
 
     private IMessageProcessor resolveMessageProcessor(final Object mpChainName, IObject message) throws ResolutionException {
         IMessageProcessingSequence processingSequence = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                this.keyIMessageProcessingSequence,
                 this.stackDepth,
                 mpChainName,
                 message
         );
         return IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+                this.keyIMessageProcessor,
                 this.taskQueue,
                 processingSequence
         );

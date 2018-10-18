@@ -66,9 +66,9 @@ public class ChainIdFromMapNameStrategy {
     private Object registerChain(Object mapName, Comparable version)
             throws ResolveDependencyStrategyException {
 
-        if (mapName == null || version == null) {
-            throw new ResolveDependencyStrategyException("Map name or version cannot be null.");
-        }
+        //if (mapName == null || version == null) {
+        //    throw new ResolveDependencyStrategyException("Map name or version cannot be null.");
+        //}
 
         Map<Comparable, Object> versions = chainIds.get(mapName);
         if (versions == null) {
@@ -117,9 +117,9 @@ public class ChainIdFromMapNameStrategy {
     private Object resolve_by_version(Object chainName, Comparable version)
             throws ResolveDependencyStrategyException {
 
-        if (chainName == null) {
-            throw new ResolveDependencyStrategyException("Chain name cannot be null.");
-        }
+        //if (chainName == null) {
+        //    throw new ResolveDependencyStrategyException("Chain name cannot be null.");
+        //}
 
         if (version == null) {
             throw new ResolveDependencyStrategyException("Chain Id resolution failed for chain name '"+chainName+"'.");

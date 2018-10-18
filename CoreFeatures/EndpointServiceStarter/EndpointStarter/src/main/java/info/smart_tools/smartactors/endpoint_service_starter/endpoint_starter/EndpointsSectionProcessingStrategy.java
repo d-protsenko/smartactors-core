@@ -95,18 +95,14 @@ public class EndpointsSectionProcessingStrategy implements ISectionStrategy {
     public void onLoadConfig(final IObject config) throws ConfigurationProcessingException {
         try {
             List<IObject> endpointObjects = (List<IObject>) config.getValue(name);
-            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(),
-                    IChainStorage.class.getCanonicalName()));
             IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
             for (IObject endpoint : endpointObjects) {
                 // TODO: 25.07.16 remove stack depth from endpoint config
                 String type = (String) endpoint.getValue(typeFieldName);
                 String startChainName = (String) endpoint.getValue(startChainNameFieldName);
-                // This is exactly case when we have to resolve chainId based on dependencies (without message)
-                Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), startChainName);
-                IReceiverChain chain = chainStorage.resolve(chainId);
 
-                endpoint.setValue(startChainNameFieldName, chain);
+
+                endpoint.setValue(startChainNameFieldName, startChainName);
                 endpoint.setValue(queueFieldName, queue);
                 IAsyncService endpointService =
                         IOC.resolve(Keys.getOrAdd(type + "_endpoint"), endpoint);
@@ -116,8 +112,6 @@ public class EndpointsSectionProcessingStrategy implements ISectionStrategy {
             throw new ConfigurationProcessingException("Error occurred loading \"endpoint\" configuration section.", e);
         } catch (ResolutionException e) {
             throw new ConfigurationProcessingException("Error occurred resolving \"endpoint\".", e);
-        } catch (ChainNotFoundException e) {
-            throw new ConfigurationProcessingException("Error occurred resolving \"chain\".", e);
         } catch (ChangeValueException e) {
             e.printStackTrace();
         }

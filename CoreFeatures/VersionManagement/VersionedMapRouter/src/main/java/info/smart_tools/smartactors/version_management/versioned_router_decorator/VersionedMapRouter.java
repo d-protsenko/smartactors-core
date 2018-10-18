@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.version_management.versioned_map_router;
+package info.smart_tools.smartactors.version_management.versioned_router_decorator;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
@@ -67,12 +67,12 @@ public class VersionedMapRouter implements IRouter {
 
         IModule currentModule = ModuleManager.getCurrentModule();
         for(IModule module : versions.keySet()) {
-            if (currentModule.getName().equals(module.getName())) {
-                System.out.println(MessageFormat.format(
-                        "[WARNING] Receiver with Id ({0}) already registered in module '{1}:{2}', but registering in module '{3}:{4}'",
-                        targetId.toString(), module.getName(), module.getVersion(),
-                        currentModule.getName(), currentModule.getVersion()
-                ));
+            if (!currentModule.getName().equals(module.getName())) {
+                System.out.println(
+                        "[WARNING] Receiver with Id '"+targetId.toString()+
+                        "' already registered in module '"+module.getName()+":"+module.getVersion()+
+                        "', but registering in module '"+currentModule.getName()+":"+currentModule.getVersion()+"'."
+                );
             }
         }
 

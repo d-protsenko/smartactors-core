@@ -55,7 +55,6 @@ public class FeatureManagerActor {
     private final IFieldName startTimeOfLoadingFeatureGroupFN;
 
     private final static String TASK_QUEUE_IOC_NAME = "task_queue";
-    private final static String CHAIN_ID_STORAGE_STRATEGY_NAME = "chain_id_from_map_name_and_message";
     private final static String IOBJECT_FACTORY_STRATEGY_NAME = "info.smart_tools.smartactors.iobject.iobject.IObject";
     private final static String FIELD_NAME_FACTORY_STARTEGY_NAME =
             "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
@@ -138,12 +137,11 @@ public class FeatureManagerActor {
             }
         } catch (
                 ReadValueException |
-                        ChangeValueException |
-                        InvalidArgumentException |
-                        ResolutionException |
-                        ChainNotFoundException |
-                        MessageProcessorProcessException |
-                        AsynchronousOperationException e
+                ChangeValueException |
+                InvalidArgumentException |
+                ResolutionException |
+                MessageProcessorProcessException |
+                AsynchronousOperationException e
         ) {
             throw new FeatureManagementException(e);
         }
@@ -372,14 +370,22 @@ public class FeatureManagerActor {
                 !this.featuresInProgress.isEmpty()
                         && minDependencies > 0
         ) {
-            Set<String> unresolved = new HashSet<>();
+            Set<String> allUnresolved = new HashSet<>();
             for(IFeature feature : this.featuresInProgress.values()) {
                 if (feature.getDependencies() != null) {
-                    unresolved.addAll(feature.getDependencies());
+                    allUnresolved.addAll(feature.getDependencies());
                 }
             }
 
-            Iterator<String> iterator = unresolved.iterator();
+            Set<String> unresolved = new HashSet<>(allUnresolved);
+            for(String dependency : allUnresolved) {
+                for (IFeature feature : this.featuresInProgress.values()) {
+                    if (compareFeatureToDependency(feature, dependency) >= 0) {
+                        unresolved.remove(dependency);
+                    }
+                }
+            }
+            /*Iterator<String> iterator = unresolved.iterator();
             while (iterator.hasNext()) {
                 String dependency = iterator.next();
 
@@ -388,7 +394,7 @@ public class FeatureManagerActor {
                         iterator.remove();
                     }
                 }
-            }
+            }*/
 
             System.out.println("[INFO] The server waits for the following features to continue: " +
                     unresolved.stream().map(a -> "\n\t\t" + a).collect(Collectors.toList())
