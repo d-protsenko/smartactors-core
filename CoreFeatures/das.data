@@ -1779,14 +1779,6 @@
   "rawName" : "NonBlockingQueue",
   "version" : "0.4.0"
 }, {
-  "artifactId" : "task.task-queue-decorator",
-  "uploadRepositories" : [ {
-  "uploadRepositoryId" : "archiva.smartactors-modules",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
-} ],
-  "rawName" : "TaskQueueDecorator",
-  "version" : "0.4.0"
-}, {
   "artifactId" : "task.interfaces.itask",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",

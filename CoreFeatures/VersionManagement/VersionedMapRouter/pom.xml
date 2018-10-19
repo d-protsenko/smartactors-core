@@ -64,12 +64,6 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>class-management.module-manager</artifactId>
-            <version>0.4.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-interfaces.irouter</artifactId>
             <version>0.4.0</version>
             <scope>compile</scope>
@@ -109,7 +103,7 @@
                             <inherited>false</inherited>
                             <configuration>
                                 <generatePom>true</generatePom>
-                                <file>target/task.task-queue-decorator-0.4.0.jar</file>
+                                <file>target/version-management.versioned-map-router-0.4.0.jar</file>
                                 <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
                                 <repositoryId>archiva.smartactors-modules</repositoryId>
                                 <groupId>${project.groupId}</groupId>

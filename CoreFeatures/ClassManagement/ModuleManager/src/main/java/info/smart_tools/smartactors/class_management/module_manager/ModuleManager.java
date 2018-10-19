@@ -66,10 +66,7 @@ public final class ModuleManager {
         if (moduleId == null) {
             throw new InvalidArgumentException("Module id cannot be null.");
         }
-
-        if (modules.get(moduleId).getDependencies().size() == 0) {
-            modules.get(moduleId).addDependency(modules.get(coreId));
-        }
+        modules.get(moduleId).finalizeDependencies(modules.get(coreId));
     }
 
     public static IModule getModuleById(Object moduleId) { return modules.get(moduleId); }
@@ -80,38 +77,7 @@ public final class ModuleManager {
         return currentModule.get();
     }
 
-    public static <T> T getFromMap(IModule module, Map<IModule, T> objects) {
-        T object = objects.get(module);
-        if (object == null) {
-            for(IModule dependency : module.getDependencies()) {
-                object = objects.get(dependency);
-                if (object != null) {
-                    break;
-                }
-            }
-        }
-        return object;
-    }
+    public static <T> T getFromMap(Map<IModule, T> objects) { return getCurrentModule().getFromMap(objects); }
 
-    public static <T> T getFromMap(Map<IModule, T> objects) {
-        return getFromMap(getCurrentModule(), objects);
-    }
-
-    public static <T> T removeFromMap(IModule module, Map<IModule, T> objects) {
-        T object = objects.remove(module);
-        if (object == null) {
-            for(Object dependency : module.getDependencies()) {
-                object = objects.remove(dependency);
-                if (object != null) {
-                    break;
-                }
-            }
-        }
-        return object;
-    }
-
-    public static <T> T removeFromMap(Map<IModule, T> objects) {
-        return removeFromMap(getCurrentModule(), objects);
-    }
-
+    public static <T> T removeFromMap(Map<IModule, T> objects) { return getCurrentModule().removeFromMap(objects); }
 }

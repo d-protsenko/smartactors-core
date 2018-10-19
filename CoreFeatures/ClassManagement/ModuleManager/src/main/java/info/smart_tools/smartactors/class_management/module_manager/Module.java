@@ -4,42 +4,95 @@ import info.smart_tools.smartactors.class_management.hierarchical_class_loader.S
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 class Module implements IModule {
     private String name;
     private String version;
     private Object id;
-    private Set<IModule> dependsOn;
+    private List<IModule> dependencies;
     private ISmartactorsClassLoader classLoader;
 
     Module(Object id, String name, String version) {
         this.name = name;
         this.version = version;
         this.id = id;
-        this.dependsOn = Collections.synchronizedSet(new HashSet<>());
+        this.dependencies = new /*CopyOnWrite*/ArrayList<>();
         this.classLoader = SmartactorsClassLoader.newInstance(name, version);
     }
 
+    @Override
     public String getName() { return name; }
 
+    @Override
     public String getVersion() { return version; }
 
+    @Override
     public Object getId() { return id; }
 
-    public Set<IModule> getDependencies() { return dependsOn; }
+    @Override
+    public List<IModule> getDependencies() { return dependencies; }
 
+    @Override
     public ISmartactorsClassLoader getClassLoader() { return classLoader; }
 
+    @Override
     public void addDependency(IModule base) {
-        if (base != this) {
-            dependsOn.add(base);
-            dependsOn.addAll(base.getDependencies());
-            classLoader.addDependency(base.getClassLoader());
+        synchronized (dependencies) {
+            if (base != this) {
+                dependencies.add(base);
+                for (IModule dependency : base.getDependencies()) {
+                    if (!dependencies.contains(dependency)) {
+                        dependencies.add(dependency);
+                    }
+                }
+                classLoader.addDependency(base.getClassLoader());
+            }
+        }
+    }
+
+    @Override
+    public void finalizeDependencies(IModule defaultModule) {
+        synchronized (dependencies) {
+            if (dependencies.size() == 0) {
+                addDependency(defaultModule);
+            }
         }
     }
 
     public void setDefault() { classLoader.setDefault(); }
+
+    @Override
+    public <T> T getFromMap(Map<IModule, T> objects) {
+        T object = objects.get(this);
+        if (object == null) {
+            for(IModule dependency : dependencies) {
+                object = objects.get(dependency);
+                if (object != null) {
+                    break;
+                }
+            }
+        }
+        return object;
+    }
+
+    @Override
+    public <T> T removeFromMap(Map<IModule, T> objects) {
+        T object = objects.remove(this);
+        /*
+        // if we need to remove value from dependencies too then uncomment the following
+        if (object == null) {
+            for(Object dependency : dependencies) {
+                object = objects.remove(dependency);
+                if (object != null) {
+                    break;
+                }
+            }
+        }
+        */
+        return object;
+    }
+
 }

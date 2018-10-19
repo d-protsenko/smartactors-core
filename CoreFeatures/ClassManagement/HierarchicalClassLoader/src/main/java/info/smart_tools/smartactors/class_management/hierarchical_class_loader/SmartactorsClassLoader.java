@@ -4,10 +4,7 @@ import info.smart_tools.smartactors.class_management.interfaces.ismartactors_cla
 
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Extension of {@link URLClassLoader}
@@ -18,7 +15,7 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
 
     private String moduleName;
     private String moduleVersion;
-    private Set<SmartactorsClassLoader> dependsOn = new HashSet<>(); //Collections.synchronizedSet(new HashSet<>());
+    private Set<SmartactorsClassLoader> dependencies = new HashSet<>();
 
     /**
      * Redefined constructor
@@ -42,21 +39,21 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
     public void addDependency(ISmartactorsClassLoader base) {
         if (base != null && base != this) {
             synchronized (this) {
-                dependsOn.add((SmartactorsClassLoader)base);
+                dependencies.add((SmartactorsClassLoader)base);
             }
         }
     }
 
     private void addDependenciesToSet(Set<ClassLoader> classLoaders) {
         classLoaders.add(this);
-        if (dependsOn.size() == 0) {
+        if (dependencies.size() == 0) {
             ClassLoader parent = this.getParent();
             while(parent != null) {
                 classLoaders.add(parent);
                 parent = parent.getParent();
             }
         } else {
-            for(SmartactorsClassLoader classLoader : dependsOn) {
+            for(SmartactorsClassLoader classLoader : dependencies) {
                 classLoader.addDependenciesToSet(classLoaders);
             }
         }
@@ -89,7 +86,7 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
     private final Class<?> searchClassInDependencies(String className) {
         Class clazz = this.findLoadedClass(className);
         if (null == clazz) {
-            for(SmartactorsClassLoader dependency : this.dependsOn) {
+            for(SmartactorsClassLoader dependency : this.dependencies) {
                 clazz = dependency.searchClassInDependencies(className);
                 if (clazz != null) {
                     break;
@@ -101,7 +98,7 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
 
     private Class<?> loadClassFromDependencies(String className, ClassLoader scl, ClassLoader dcl, boolean[] rclUsed )
             throws ClassNotFoundException {
-        if (dependsOn.size() == 0) {
+        if (dependencies.size() == 0) {
             try {
                 ClassLoader parent = getParent();
                 if (parent != scl) {
@@ -112,7 +109,7 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
                 }
             } catch (ClassNotFoundException e) { }
         } else {
-            for (SmartactorsClassLoader dependency : dependsOn) {
+            for (SmartactorsClassLoader dependency : dependencies) {
                 try {
                     if (dependency != dcl) {
                         return dependency.loadClassFromDependencies(className, scl, dcl, rclUsed);

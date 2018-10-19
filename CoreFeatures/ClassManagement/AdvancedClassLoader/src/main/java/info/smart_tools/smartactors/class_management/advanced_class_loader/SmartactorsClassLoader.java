@@ -14,7 +14,7 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
 
     private String moduleName;
     private String moduleVersion;
-    private Set<SmartactorsClassLoader> dependsOn = new HashSet<>(); //Collections.synchronizedSet(new HashSet<>());
+    private Set<SmartactorsClassLoader> dependencies = new HashSet<>(); //Collections.synchronizedSet(new HashSet<>());
     private Map<String, ClassLoader> classMap = new ConcurrentHashMap<>();
 
     /**
@@ -43,13 +43,13 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
             Set<SmartactorsClassLoader> classLoaders = new HashSet<SmartactorsClassLoader>();
             classLoaders.add((SmartactorsClassLoader)base);
             synchronized (base) {
-                classLoaders.addAll(((SmartactorsClassLoader)base).dependsOn);
+                classLoaders.addAll(((SmartactorsClassLoader)base).dependencies);
             }
             synchronized (this) {
                 for (SmartactorsClassLoader cl : classLoaders) {
                     classMap.put(cl.moduleName, cl);
                 }
-                dependsOn.addAll(classLoaders);
+                dependencies.addAll(classLoaders);
             }
         }
     }
@@ -58,8 +58,8 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
 
         Set<ClassLoader> classLoaders = new HashSet<ClassLoader>();
         classLoaders.add(this);
-        classLoaders.addAll(dependsOn);
-        for(ClassLoader classLoader : dependsOn) {
+        classLoaders.addAll(dependencies);
+        for(ClassLoader classLoader : dependencies) {
             ClassLoader parent = classLoader.getParent();
             while(parent != null) {
                 classLoaders.add(parent);
@@ -140,7 +140,7 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
                 }
 
                 if (clazz == null && upperLevel) {
-                    for (SmartactorsClassLoader dependency : dependsOn) {
+                    for (SmartactorsClassLoader dependency : dependencies) {
                         if (dependency != classLoader) {
                             try {
                                 clazz = dependency.loadClass0(className, false);

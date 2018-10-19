@@ -170,12 +170,6 @@
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>class-management.module-manager</artifactId>
             <version>0.4.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>class-management.module-manager</artifactId>
-            <version>0.4.0</version>
         </dependency>
     </dependencies>
     <build>
