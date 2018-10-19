@@ -31,8 +31,7 @@ public class FromStringClassGeneratorTest {
                 "        return a;\n" +
                 "    }\n" +
                 "}\n";
-        ModuleManager.addModule(ModuleManager.coreId, ModuleManager.coreName, ModuleManager.coreVersion);
-        Class<?> clazz = classGenerator.generate(testSample, (ClassLoader) ModuleManager.getModuleClassLoader(ModuleManager.coreId));
+        Class<?> clazz = classGenerator.generate(testSample, (ClassLoader) ModuleManager.getCurrentClassLoader());
         TestInterface inst = (TestInterface) clazz.newInstance();
     }
 
@@ -88,7 +87,8 @@ public class FromStringClassGeneratorTest {
     public void checkInvalidArgumentExceptionOnTestWithUndefinedInterface()
             throws Exception {
         ModuleManager.addModule("cl", "cl", "cl");
-        ClassLoader cl = (ClassLoader) ModuleManager.getModuleClassLoader("cl");
+        ModuleManager.setCurrentModule(ModuleManager.getModuleById("cl"));
+        ClassLoader cl = (ClassLoader) ModuleManager.getCurrentClassLoader();
         FromStringClassGenerator classGenerator = new FromStringClassGenerator();
         String testSample = "package info.smart_tools.smartactors.class_management.test_class;\n" +
                 "import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.TestInterface;\n" +
@@ -111,8 +111,8 @@ public class FromStringClassGeneratorTest {
         Enumeration<JarEntry> e = jarFile.entries();
 
         URL url = new URL("jar:file:" + pathToJar+"!/");
-        ModuleManager.addModule(ModuleManager.coreId, ModuleManager.coreName, ModuleManager.coreVersion);
-        ISmartactorsClassLoader cl = ModuleManager.getModuleClassLoader(ModuleManager.coreId);
+        ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
+        ISmartactorsClassLoader cl = ModuleManager.getCurrentClassLoader();
         cl.addURL(url);
         while (e.hasMoreElements()) {
             JarEntry je = e.nextElement();
