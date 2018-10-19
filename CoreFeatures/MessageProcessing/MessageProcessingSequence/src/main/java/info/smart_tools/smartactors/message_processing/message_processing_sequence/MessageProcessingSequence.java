@@ -13,19 +13,21 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainChoiceException;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainChoiceException;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NoExceptionHandleChainException;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.stream.Collectors;
 
 /**
@@ -34,14 +36,14 @@ import java.util.stream.Collectors;
 public class MessageProcessingSequence implements IMessageProcessingSequence, IDumpable {
     private final IChainStorage chainStorage;
     private final IKey chainIdStrategyKey;
-    private final IReceiverChain mainChain;
     private final IReceiverChain[] chainStack;
     private final int[] stepStack;
+    private final Boolean[] scopeRestorationsStack;
     private IMessageReceiver currentReceiver;
     private IObject currentArguments;
     private IObject message;
     private int stackIndex;
-    private Object scopeRestorationChain;
+    private Object scopeRestorationChainName;
 
     private boolean isException = false;
     private IAction<IMessageProcessingSequence> afterExceptionAction = null;
@@ -55,19 +57,43 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
     private final IFieldName afterExceptionActionFieldName;
     private final IFieldName stepsStackFieldName;
     private final IFieldName chainsStackFieldName;
+    private final IFieldName scopeRestorationsStackFieldName;
     private final IFieldName maxDepthFieldName;
-    //private final IFieldName chainsDumpFieldName;
-    //private final IFieldName excludeExceptionalFieldName;
-    //private final IFieldName skipChainsFieldName;
     private final IFieldName externalAccessFieldName;
     private final IFieldName fromExternalFieldName;
     private final IFieldName accessForbiddenFieldName;
+
+    {
+        IKey iFieldNameStrategyKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+
+        causeLevelFieldName = IOC.resolve(iFieldNameStrategyKey, "causeLevel");
+        causeStepFieldName = IOC.resolve(iFieldNameStrategyKey, "causeStep");
+        catchLevelFieldName = IOC.resolve(iFieldNameStrategyKey, "catchLevel");
+        catchStepFieldName = IOC.resolve(iFieldNameStrategyKey, "catchStep");
+        exceptionFieldName = IOC.resolve(iFieldNameStrategyKey, "exception");
+        this.afterExceptionActionFieldName = IOC.resolve(iFieldNameStrategyKey, "after");
+        this.chainFieldName = IOC.resolve(iFieldNameStrategyKey, "chain");
+
+        stepsStackFieldName = IOC.resolve(iFieldNameStrategyKey, "stepsStack");
+        chainsStackFieldName = IOC.resolve(iFieldNameStrategyKey, "chainsStack");
+        scopeRestorationsStackFieldName = IOC.resolve(iFieldNameStrategyKey, "scopeRestorationsStack");
+        maxDepthFieldName = IOC.resolve(iFieldNameStrategyKey, "maxDepth");
+        externalAccessFieldName = IOC.resolve(iFieldNameStrategyKey, "externalAccess");
+        fromExternalFieldName = IOC.resolve(iFieldNameStrategyKey, "fromExternal");
+        accessForbiddenFieldName = IOC.resolve(iFieldNameStrategyKey, "accessToChainForbiddenError");
+
+        chainIdStrategyKey = Keys.getOrAdd("chain_id_from_map_name_and_message");
+        chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
+        scopeRestorationChainName = null;
+        stackIndex = -1;
+    }
 
     /**
      * The constructor.
      *
      * @param stackDepth maximum depth of stack of nested chains
      * @param mainChainName the {@link IReceiverChain} to start message processing with
+     * @param message to resolve chains in sequence
      * @throws InvalidArgumentException if stack depth is not a positive number
      * @throws InvalidArgumentException if main chain is {@code null}
      * @throws InvalidArgumentException if main chain contains no receivers
@@ -75,52 +101,77 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
      */
     public MessageProcessingSequence(final int stackDepth, final Object mainChainName, final IObject message)
             throws InvalidArgumentException, ResolutionException, ChainNotFoundException {
+
+        this.message = message;
+
         if (stackDepth < 1) {
             throw new InvalidArgumentException("Chain stack depth should be a positive number.");
         }
+        this.chainStack = new IReceiverChain[stackDepth];
+        this.stepStack = new int[stackDepth];
+        this.scopeRestorationsStack = new Boolean[stackDepth];
 
         if (null == mainChainName) {
             throw new InvalidArgumentException("Main chain should not be null.");
         }
 
+        try {
+            callChain(mainChainName);
+        } catch(NestedChainStackOverflowException | ScopeProviderException e) {}
 
-
-        this.scopeRestorationChain = null;
-        this.chainStack = new IReceiverChain[stackDepth];
-        this.stepStack = new int[stackDepth];
-
-        causeLevelFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "causeLevel");
-        causeStepFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "causeStep");
-        catchLevelFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "catchLevel");
-        catchStepFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "catchStep");
-        exceptionFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "exception");
-        this.afterExceptionActionFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "after");
-        this.chainFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
-
-        stepsStackFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "stepsStack");
-        chainsStackFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainsStack");
-        maxDepthFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maxDepth");
-        //chainsDumpFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainsDump");
-        //excludeExceptionalFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "excludeExceptional");
-        //skipChainsFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "skipChains");
-        externalAccessFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "externalAccess");
-        fromExternalFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "fromExternal");
-        accessForbiddenFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "accessToChainForbiddenError");
-
-        chainIdStrategyKey = Keys.getOrAdd("chain_id_from_map_name_and_message");
-        chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
-        this.message = message;
-
-        this.mainChain = resolveChain(mainChainName, message);
-
-        if (null == this.mainChain.get(0)) {
+        if (stackIndex < 0) {
             throw new InvalidArgumentException("Main chain should contain at least one receiver.");
         }
 
         reset();
     }
 
-    private IReceiverChain resolveChain(final Object chainName, IObject message)
+    /**
+     * The constructor.
+     *
+     * @param stackDepth maximum depth of stack of nested chains
+     * @param dump the of sequence to recover from
+     * @param message to resolve chains in sequence
+     * @throws InvalidArgumentException if stack depth is not a positive number
+     * @throws InvalidArgumentException if main chain is {@code null}
+     * @throws InvalidArgumentException if main chain contains no receivers
+     * @throws ResolutionException if resolution of any dependencies fails
+     */
+    public MessageProcessingSequence(final IObject dump, final IObject message)
+            throws InvalidArgumentException, ResolutionException, ReadValueException, ChainNotFoundException {
+
+        this.message = message;
+
+        int stackDepth = ((Number) dump.getValue(maxDepthFieldName)).intValue();
+        if (stackDepth < 1) {
+            throw new InvalidArgumentException("Chain stack depth should be a positive number.");
+        }
+        this.chainStack = new IReceiverChain[stackDepth];
+        this.stepStack = new int[stackDepth];
+        this.scopeRestorationsStack = new Boolean[stackDepth];
+
+        Iterator stepStack = ((Collection) dump.getValue(stepsStackFieldName)).iterator();
+        Iterator chainsStack = ((Collection) dump.getValue(chainsStackFieldName)).iterator();
+        Iterator scopeRestorationsStack = ((Collection) dump.getValue(scopeRestorationsStackFieldName)).iterator();
+
+        int level = 0;
+
+        while (stepStack.hasNext()) {
+            Object chainName = chainsStack.next();
+            if ((Boolean) scopeRestorationsStack.next()) {
+                setScopeRestorationChainName(chainName);
+            }
+            try {
+                callChain(chainName);
+            } catch(NestedChainStackOverflowException | ScopeProviderException e) {}
+            int pos = ((Number) stepStack.next()).intValue();
+            uncheckedGoTo(level++, pos + 1);
+        }
+
+        next();
+    }
+
+    private IReceiverChain resolveChain(final Object chainName)
             throws ResolutionException, ChainNotFoundException {
         Object chainId = IOC.resolve(chainIdStrategyKey, chainName, message);
         return chainStorage.resolve(chainId);
@@ -133,10 +184,9 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
 
     @Override
     public void reset() {
-        this.chainStack[0] = mainChain;
         this.stepStack[0] = 0;
-        this.currentReceiver = mainChain.get(0);
-        this.currentArguments = mainChain.getArguments(0);
+        this.currentReceiver = chainStack[0].get(0);
+        this.currentArguments = chainStack[0].getArguments(0);
         this.stackIndex = 0;
     }
 
@@ -206,14 +256,15 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
     }
 
     @Override
+    public void setScopeRestorationChainName(Object chainName) { scopeRestorationChainName = chainName; }
+
+    @Override
     public void callChainSecurely(final Object chainName, IMessageProcessor processor)
             throws NestedChainStackOverflowException, ResolutionException, ChainNotFoundException,
             ChainChoiceException, ScopeProviderException {
 
-        IReceiverChain chain = resolveChain(chainName, message);
-        if (processor != null) {
-            checkAccess(chain, processor);
-        }
+        IReceiverChain chain = resolveChain(chainName);
+        checkAccess(chain, processor);
         putChainToStack(chain);
     }
 
@@ -221,7 +272,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
     public void callChain(final Object chainName)
             throws NestedChainStackOverflowException, ResolutionException, ChainNotFoundException, ScopeProviderException {
 
-        IReceiverChain chain = resolveChain(chainName, message);
+        IReceiverChain chain = resolveChain(chainName);
         putChainToStack(chain);
     }
 
@@ -237,12 +288,16 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
 
         chainStack[newStackIndex] = chain;
         stepStack[newStackIndex] = -1;
+        scopeRestorationsStack[newStackIndex] = false;
 
         stackIndex = newStackIndex;
+        scopeRestorationsStack[stackIndex] = chain.getName().equals(scopeRestorationChainName);
 
-        if (chain.getName().equals(scopeRestorationChain)) {
+        if (scopeRestorationsStack[stackIndex]) {
             ScopeProvider.setCurrentScope(chain.getScope());
             ModuleManager.setCurrentModule(chain.getModule());
+            setScopeRestorationChainName(null);
+            scopeRestorationsStack[newStackIndex] = false;
         }
     }
 
@@ -357,7 +412,9 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
             dump.setValue(stepsStackFieldName,
                     Arrays.stream(Arrays.copyOf(stepStack, stackIndex + 1)).boxed().collect(Collectors.toList()));
             dump.setValue(chainsStackFieldName,
-                    Arrays.stream(Arrays.copyOf(chainStack, stackIndex + 1)).map(IReceiverChain::getId).collect(Collectors.toList()));
+                    Arrays.stream(Arrays.copyOf(chainStack, stackIndex + 1)).map(IReceiverChain::getName).collect(Collectors.toList()));
+            dump.setValue(scopeRestorationsStackFieldName,
+                    Arrays.stream(Arrays.copyOf(scopeRestorationsStack, stackIndex + 1)).collect(Collectors.toList()));
 
             // ToDo: check if entire chain dump is necessary ?
             /*

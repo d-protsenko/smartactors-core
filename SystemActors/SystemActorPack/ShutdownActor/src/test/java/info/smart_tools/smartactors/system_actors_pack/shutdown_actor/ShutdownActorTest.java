@@ -13,7 +13,6 @@ import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginSc
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import info.smart_tools.smartactors.system_actors_pack.shutdown_actor.wrapper.ForceShutdownRequestMessage;
 import info.smart_tools.smartactors.system_actors_pack.shutdown_actor.wrapper.ShutdownRequestMessage;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.mockito.Matchers.eq;

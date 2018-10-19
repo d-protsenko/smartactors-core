@@ -1,11 +1,11 @@
 package info.smart_tools.smartactors.version_management.versioned_router_decorator;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.exceptions.RouteNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
-import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
-import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -56,7 +56,6 @@ public class VersionedMapRouter implements IRouter {
         Map<IModule, IMessageReceiver> versions = map.get(targetId);
 
         if (versions == null) {
-            // ToDo: check whether it works ok?
             try {
                 versions = map.getClass().newInstance();
             } catch (IllegalAccessException | InstantiationException e) {

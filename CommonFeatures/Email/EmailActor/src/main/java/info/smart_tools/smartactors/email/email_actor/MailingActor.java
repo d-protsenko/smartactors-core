@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.email.email_actor;
 
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.email.email_actor.email.MessageAttributeSetters;
 import info.smart_tools.smartactors.email.email_actor.email.MessagePartCreators;
 import info.smart_tools.smartactors.email.email_actor.email.SMTPMessageAdaptor;
@@ -9,11 +10,10 @@ import info.smart_tools.smartactors.email.email_actor.exception.SendFailureExcep
 import info.smart_tools.smartactors.email.email_actor.wrapper.MailingMessage;
 import info.smart_tools.smartactors.field.field.Field;
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import me.normanmaurer.niosmtp.delivery.Authentication;
@@ -36,7 +36,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
 import java.util.function.Function;
 
 /**

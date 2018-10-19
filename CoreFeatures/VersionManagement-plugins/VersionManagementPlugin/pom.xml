@@ -93,6 +93,11 @@
             <artifactId>version-management.versioned-router-decorator</artifactId>
             <version>0.4.0</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>version-management.versioned-recursive-strategy-container</artifactId>
+            <version>0.4.0</version>
+        </dependency>
     </dependencies>
     <build>
         <pluginManagement>

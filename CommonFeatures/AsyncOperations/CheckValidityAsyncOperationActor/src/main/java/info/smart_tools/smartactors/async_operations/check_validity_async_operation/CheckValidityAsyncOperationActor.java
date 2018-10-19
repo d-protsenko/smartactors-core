@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.async_operations.check_validity_async_operation;
 
-import info.smart_tools.smartactors.async_operations.check_validity_async_operation.wrapper.CheckValidityMessage;
 import info.smart_tools.smartactors.async_operations.check_validity_async_operation.exception.InvalidAsyncOperationIdException;
+import info.smart_tools.smartactors.async_operations.check_validity_async_operation.wrapper.CheckValidityMessage;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 

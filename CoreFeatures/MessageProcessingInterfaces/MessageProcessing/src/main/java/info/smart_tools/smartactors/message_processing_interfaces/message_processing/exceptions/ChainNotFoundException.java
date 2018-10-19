@@ -1,7 +1,8 @@
 package info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions;
 
-import java.text.MessageFormat;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
+
+import java.text.MessageFormat;
 
 /**
  * Exception thrown by {@link IMessageProcessingSequence#callChain(Object)} when there

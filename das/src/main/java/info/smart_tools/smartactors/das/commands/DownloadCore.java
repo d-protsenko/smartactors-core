@@ -1,12 +1,10 @@
 package info.smart_tools.smartactors.das.commands;
 
-import com.amazonaws.services.simpleworkflow.model.Run;
 import com.jcabi.aether.Aether;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IBiAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.das.utilities.CommandLineArgsResolver;
 import info.smart_tools.smartactors.das.utilities.JsonFile;
 import info.smart_tools.smartactors.das.utilities.exception.InvalidCommandLineArgumentException;
 import info.smart_tools.smartactors.das.utilities.interfaces.ICommandLineArgsResolver;
@@ -22,11 +20,6 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.zip.ZipException;
 

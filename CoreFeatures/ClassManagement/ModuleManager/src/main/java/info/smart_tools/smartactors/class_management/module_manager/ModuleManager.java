@@ -83,7 +83,7 @@ public final class ModuleManager {
     public static <T> T getFromMap(IModule module, Map<IModule, T> objects) {
         T object = objects.get(module);
         if (object == null) {
-            for(Object dependency : module.getDependencies()) {
+            for(IModule dependency : module.getDependencies()) {
                 object = objects.get(dependency);
                 if (object != null) {
                     break;

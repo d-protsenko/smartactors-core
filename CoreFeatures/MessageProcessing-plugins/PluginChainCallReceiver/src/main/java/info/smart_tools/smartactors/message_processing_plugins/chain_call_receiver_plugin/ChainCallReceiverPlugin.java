@@ -15,7 +15,6 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing.chain_call_receiver.ChainCallReceiver;
 import info.smart_tools.smartactors.message_processing.chain_call_receiver.IChainChoiceStrategy;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 
 /**
  * Implementation of {@link IPlugin}.

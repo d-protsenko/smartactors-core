@@ -13,14 +13,11 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.Signal;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageProcessorProcessException;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NoExceptionHandleChainException;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.*;
+import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.shutdown.ishutdown_aware_task.IShutdownAwareTask;
 import info.smart_tools.smartactors.shutdown.ishutdown_aware_task.exceptions.ShutdownAwareTaskNotificationException;
 import info.smart_tools.smartactors.task.imanaged_task.IManagedTask;
@@ -315,7 +312,7 @@ public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask,
     }
 
     private void enqueueNext() throws NestedChainStackOverflowException, InvalidArgumentException,
-            ChangeValueException, ReadValueException, ResolutionException, ChainNotFoundException {
+            ChangeValueException, ReadValueException, ResolutionException, ChainNotFoundException, ScopeProviderException {
         checkSignal();
 
         if (messageProcessingSequence.next()) {
@@ -335,7 +332,7 @@ public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask,
 
     private void checkSignal()
             throws ChangeValueException, InvalidArgumentException, NestedChainStackOverflowException,
-            ReadValueException, ResolutionException, ChainNotFoundException {
+            ReadValueException, ResolutionException, ChainNotFoundException, ScopeProviderException {
         Throwable signal = this.signalException;
 
         if (null != signal) {

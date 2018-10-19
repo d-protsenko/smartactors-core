@@ -10,15 +10,12 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainChoiceException;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageReceiveException;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.*;
 import info.smart_tools.smartactors.scope.iscope.IScope;
+import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -43,7 +40,8 @@ public class MainTestChain implements IReceiverChain {
                 throws MessageReceiveException, AsynchronousOperationException {
             try {
                 mp.getSequence().callChainSecurely(testChainName, mp);
-            } catch (ResolutionException | ChainChoiceException | ChainNotFoundException | NestedChainStackOverflowException e) {
+            } catch (ResolutionException | ChainChoiceException | ChainNotFoundException |
+                    NestedChainStackOverflowException | ScopeProviderException e) {
                 throw new MessageReceiveException(e);
             }
         }

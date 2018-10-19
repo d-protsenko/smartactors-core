@@ -2,8 +2,6 @@ package info.smart_tools.smartactors.message_processing_interfaces.message_proce
 
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 
 import java.util.Collection;

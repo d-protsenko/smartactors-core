@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -47,16 +48,19 @@ public class ChainChoiceStrategyPlugin implements IPlugin {
                     .after("IFieldNamePlugin")
                     .process(() -> {
                         try {
+                            IFieldName messageMapIdFieldName =
+                                    IOC.resolve(
+                                            IOC.resolve(
+                                                    IOC.getKeyForKeyByNameResolveStrategy(),
+                                                    "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"
+                                            ),
+                                            "messageMapId"
+                                    );
                             IChainChoiceStrategy strategy = (a) -> {
                                 try {
-                                    return a.getMessage().getValue(
-                                            IOC.resolve(
-                                                    IOC.resolve(
-                                                            IOC.getKeyForKeyByNameResolveStrategy(),
-                                                            "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"
-                                                    ), "messageMapId"
-                                            )
-                                    );
+                                    Object chainName = a.getMessage().getValue(messageMapIdFieldName);
+                                    a.getSequence().setScopeRestorationChainName(chainName);
+                                    return chainName;
                                 } catch (Exception e) {
                                     throw new RuntimeException("Could not execute chain choice strategy.");
                                 }

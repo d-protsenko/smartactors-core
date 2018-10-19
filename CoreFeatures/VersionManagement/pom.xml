@@ -12,6 +12,8 @@
     <version>0.4.0</version>
     <packaging>pom</packaging>
     <modules>
+        <module>VersionedStrategyContainer</module>
+        <module>VersionedRecursiveStrategyContainer</module>
         <module>ChainVersionManager</module>
         <module>VersionedMapRouter</module>
         <module>VersionedRouterDecorator</module>

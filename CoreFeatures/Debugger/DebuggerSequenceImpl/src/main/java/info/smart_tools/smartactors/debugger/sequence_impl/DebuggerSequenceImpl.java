@@ -19,6 +19,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NoExceptionHandleChainException;
+import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 
 /**
  * Implementation of {@link IDebuggerSequence}.
@@ -106,7 +107,8 @@ public class DebuggerSequenceImpl implements IDebuggerSequence, IDumpable {
                 exception = null;
                 return true;
             } catch (NoExceptionHandleChainException | NestedChainStackOverflowException | ChangeValueException |
-                    InvalidArgumentException | ReadValueException | ChainNotFoundException | ResolutionException e) {
+                    InvalidArgumentException | ReadValueException | ChainNotFoundException | ResolutionException |
+                    ScopeProviderException e) {
                 e.addSuppressed(exception);
                 exception = e;
             }
@@ -173,14 +175,18 @@ public class DebuggerSequenceImpl implements IDebuggerSequence, IDumpable {
     }
 
     @Override
+    public void setScopeRestorationChainName(Object chainName) { wrapped.setScopeRestorationChainName(chainName); }
+
+    @Override
     public void callChain(final Object chainName)
-            throws NestedChainStackOverflowException, ResolutionException, ChainNotFoundException {
+            throws NestedChainStackOverflowException, ResolutionException, ChainNotFoundException, ScopeProviderException {
         wrapped.callChain(chainName);
     }
 
     @Override
     public void callChainSecurely(final Object chainName, IMessageProcessor processor)
-            throws NestedChainStackOverflowException, ResolutionException, ChainNotFoundException, ChainChoiceException {
+            throws NestedChainStackOverflowException, ResolutionException, ChainNotFoundException,
+            ChainChoiceException, ScopeProviderException {
         wrapped.callChainSecurely(chainName, processor);
     }
 

@@ -1,10 +1,6 @@
 package info.smart_tools.smartactors.das.utilities.interfaces;
 
 import info.smart_tools.smartactors.das.utilities.exception.InvalidCommandLineArgumentException;
-import net.sourceforge.argparse4j.ArgumentParsers;
-import net.sourceforge.argparse4j.inf.ArgumentParser;
-import net.sourceforge.argparse4j.inf.ArgumentParserException;
-import net.sourceforge.argparse4j.inf.Namespace;
 
 public interface ICommandLineArgsResolver {
 

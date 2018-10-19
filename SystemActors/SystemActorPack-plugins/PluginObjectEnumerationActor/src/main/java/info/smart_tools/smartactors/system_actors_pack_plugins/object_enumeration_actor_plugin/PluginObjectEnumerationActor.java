@@ -1,11 +1,11 @@
 package info.smart_tools.smartactors.system_actors_pack_plugins.object_enumeration_actor_plugin;
 
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.system_actors_pack.object_enumeration_actor.ObjectEnumerationActor;
-import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 
 /**
  * Plugin for {@link ObjectEnumerationActor}.

@@ -2,8 +2,6 @@ package info.smart_tools.smartactors.class_management.module_manager;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.class_management.module_manager.exception.ModuleManagerException;
-import info.smart_tools.smartactors.iobject.ds_object.DSObject;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

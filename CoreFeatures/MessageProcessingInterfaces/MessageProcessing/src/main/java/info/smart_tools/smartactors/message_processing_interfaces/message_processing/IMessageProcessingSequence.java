@@ -93,6 +93,14 @@ public interface IMessageProcessingSequence {
             ChainChoiceException, ScopeProviderException;
 
     /**
+     * Setup resoration chain name for sequence. When chain which such name is called by callChain method then
+     * current scope and module are restored from this chain.
+     *
+     * @param chainName    the name of chain to call
+     */
+    void setScopeRestorationChainName(Object chainName);
+
+    /**
      * Interrupt execution of current chain by execution of a given one and when it is completed continue the previous.
      * Puts the new chain into a stack.
      *
@@ -120,5 +128,6 @@ public interface IMessageProcessingSequence {
      */
     void catchException(Throwable exception, IObject context)
             throws NoExceptionHandleChainException, NestedChainStackOverflowException, ChangeValueException,
-            InvalidArgumentException, ReadValueException, ResolutionException, ChainNotFoundException;
+            InvalidArgumentException, ReadValueException, ResolutionException, ChainNotFoundException,
+            ScopeProviderException;
 }

@@ -15,12 +15,13 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageProcessorProcessException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
+import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -397,6 +398,8 @@ public class DebuggerSessionImpl implements IDebuggerSession {
             return "STACK OVERFLOW";
         } catch (ChainNotFoundException e) {
             return "NO SUCH CHAIN";
+        } catch (ScopeProviderException e) {
+            return "WRONG CHAIN SCOPE";
         } catch (ResolutionException e) {
             throw new CommandExecutionException(e);
         }
