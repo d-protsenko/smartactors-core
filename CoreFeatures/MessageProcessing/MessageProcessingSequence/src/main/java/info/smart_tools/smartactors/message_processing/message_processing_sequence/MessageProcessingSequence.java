@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.message_processing.message_processing_seque
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.dumpable_interface.idumpable.IDumpable;
 import info.smart_tools.smartactors.dumpable_interface.idumpable.exceptions.DumpException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -21,6 +22,8 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NoExceptionHandleChainException;
+import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -38,6 +41,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
     private IObject currentArguments;
     private IObject message;
     private int stackIndex;
+    private Object scopeRestorationChain;
 
     private boolean isException = false;
     private IAction<IMessageProcessingSequence> afterExceptionAction = null;
@@ -81,6 +85,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
 
 
 
+        this.scopeRestorationChain = null;
         this.chainStack = new IReceiverChain[stackDepth];
         this.stepStack = new int[stackDepth];
 
@@ -202,7 +207,8 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
 
     @Override
     public void callChainSecurely(final Object chainName, IMessageProcessor processor)
-            throws NestedChainStackOverflowException, ResolutionException, ChainNotFoundException, ChainChoiceException {
+            throws NestedChainStackOverflowException, ResolutionException, ChainNotFoundException,
+            ChainChoiceException, ScopeProviderException {
 
         IReceiverChain chain = resolveChain(chainName, message);
         if (processor != null) {
@@ -213,14 +219,14 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
 
     @Override
     public void callChain(final Object chainName)
-            throws NestedChainStackOverflowException, ResolutionException, ChainNotFoundException {
+            throws NestedChainStackOverflowException, ResolutionException, ChainNotFoundException, ScopeProviderException {
 
         IReceiverChain chain = resolveChain(chainName, message);
         putChainToStack(chain);
     }
 
     private void putChainToStack(IReceiverChain chain)
-            throws NestedChainStackOverflowException {
+            throws NestedChainStackOverflowException, ScopeProviderException {
         int newStackIndex = stackIndex + 1;
 
         if (newStackIndex >= chainStack.length) {
@@ -233,6 +239,11 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         stepStack[newStackIndex] = -1;
 
         stackIndex = newStackIndex;
+
+        if (chain.getName().equals(scopeRestorationChain)) {
+            ScopeProvider.setCurrentScope(chain.getScope());
+            ModuleManager.setCurrentModule(chain.getModule());
+        }
     }
 
     private void checkAccess(final IReceiverChain chain, final IMessageProcessor processor)
@@ -244,7 +255,6 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
                 processor.getContext().setValue(fromExternalFieldName, false);
                 if (!isExternal) {
                     processor.getContext().setValue(this.accessForbiddenFieldName, true);
-                    //ToDo: need new constructor for all internal exceptions with string formatter
                     throw new ChainChoiceException("External access forbidden to chain - " + chain.getId() + ".");
                 }
             }
@@ -261,7 +271,8 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
                    InvalidArgumentException,
                    ChainNotFoundException,
                    ResolutionException,
-                   ReadValueException {
+                   ReadValueException,
+                   ScopeProviderException {
         int causedLevel = stackIndex;
         int causedStep = stepStack[causedLevel];
         int caughtLevel;

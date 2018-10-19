@@ -69,13 +69,21 @@ public class ChainStorageDecorator implements IChainStorage {
 
             IObject dump = (IObject) dumps.getValue(dumpFieldName);
 
-            IReceiverChain chain = null;
+            IReceiverChain baseChain = systemStorage.resolve(chainId);
+            IReceiverChain chain;
 
             if (dump == null) {
-                chain = systemStorage.resolve(chainId);
+                chain = baseChain;
             } else {
                 IRouter router = IOC.resolve(Keys.getOrAdd(IRouter.class.getCanonicalName()));
-                chain = IOC.resolve(Keys.getOrAdd(IReceiverChain.class.getCanonicalName()), chainId, dump, this, router);
+                chain = IOC.resolve(
+                        Keys.getOrAdd(IReceiverChain.class.getCanonicalName()),
+                        chainId,
+                        dump,
+                        router,
+                        baseChain.getScope(),
+                        baseChain.getModule()
+                );
             }
 
             chainsCache.put(chainId, chain);

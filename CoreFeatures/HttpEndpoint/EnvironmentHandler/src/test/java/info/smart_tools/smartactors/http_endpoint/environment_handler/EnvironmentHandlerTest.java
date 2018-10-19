@@ -22,6 +22,7 @@ import info.smart_tools.smartactors.message_processing.receiver_chain.ImmutableR
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
@@ -85,7 +86,7 @@ public class EnvironmentHandlerTest {
                         (args) -> {
                             try {
                                 return new MessageProcessingSequence((int) args[0], args[1], (IObject)args[2]);
-                            } catch (InvalidArgumentException | ResolutionException ignored) {
+                            } catch (InvalidArgumentException | ResolutionException | ChainNotFoundException ignored) {
                             }
                             return null;
                         }
@@ -139,7 +140,7 @@ public class EnvironmentHandlerTest {
         IObject iObjects[] = new IObject[1];
         messageReceivers[0] = null;
         iObjects[0] = null;
-        IReceiverChain chain = new ImmutableReceiverChain("name", mock(IObject.class), messageReceivers, iObjects, exceptionalChainsAndEnv);
+        IReceiverChain chain = new ImmutableReceiverChain("name", mock(IObject.class), messageReceivers, iObjects, exceptionalChainsAndEnv, null, null);
         // ToDo: put chain to chain storage
         IQueue<ITask> queue = new BlockingQueue(null);
 

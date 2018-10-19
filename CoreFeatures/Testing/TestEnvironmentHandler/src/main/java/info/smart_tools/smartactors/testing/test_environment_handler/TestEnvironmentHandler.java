@@ -13,11 +13,15 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageProcessorProcessException;
+import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.testing.interfaces.iresult_checker.IResultChecker;
 import info.smart_tools.smartactors.testing.test_environment_handler.exception.InvalidTestDescriptionException;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 
+import javax.xml.ws.handler.MessageContext;
 import java.util.List;
 
 /**
@@ -88,7 +92,9 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
                     IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), MainTestChain.class.getCanonicalName()),
                     receiverChainName,
                     completionCallback,
-                    checker.getSuccessfulReceiverArguments()
+                    checker.getSuccessfulReceiverArguments(),
+                    ScopeProvider.getCurrentScope(),
+                    ModuleManager.getCurrentModule()
             );
             IMessageProcessingSequence sequence = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
@@ -104,7 +110,8 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
             fmp[0] = mp;
             mp.process(message, context);
 
-        } catch (ReadValueException | ResolutionException | MessageProcessorProcessException | InitializationException e) {
+        } catch (ReadValueException | ResolutionException | MessageProcessorProcessException |
+                InitializationException | ScopeProviderException e) {
             throw new EnvironmentHandleException(e);
         } catch (ClassCastException e) {
             throw new EnvironmentHandleException("Could not cast value to required type.", e);

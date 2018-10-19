@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.message_processing.receiver_chain;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
@@ -15,6 +16,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.exceptions.RouteNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
+import info.smart_tools.smartactors.scope.iscope.IScope;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -57,20 +59,21 @@ import java.util.List;
 public class ImmutableReceiverChainResolutionStrategy implements IResolveDependencyStrategy {
     private static final int CHAIN_ID_ARG_INDEX = 0;
     private static final int DESCRIPTION_ARG_INDEX = 1;
-    private static final int STORAGE_ARG_INDEX = 2;
-    private static final int ROUTER_ARG_INDEX = 3;
+    private static final int ROUTER_ARG_INDEX = 2;
+    private static final int SCOPE_ARG_INDEX = 3;
+    private static final int MODULE_ARG_INDEX = 4;
 
     @Override
     public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
         try {
             Object chainId = args[CHAIN_ID_ARG_INDEX];
             IObject description = (IObject) args[DESCRIPTION_ARG_INDEX];
-            //IChainStorage chainStorage = (IChainStorage) args[STORAGE_ARG_INDEX];
             IRouter router = (IRouter) args[ROUTER_ARG_INDEX];
+            IScope scope = (IScope) args[SCOPE_ARG_INDEX];
+            IModule module = (IModule) args[MODULE_ARG_INDEX];
 
             IKey fieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
             IKey receiverIdKey = Keys.getOrAdd("receiver_id_from_iobject");
-            //IKey chainIdKey = Keys.getOrAdd("chain_id_from_map_name");
 
             IFieldName stepsFieldName = IOC.resolve(fieldNameKey, "steps");
             IFieldName exceptionalChainsFieldName = IOC.resolve(fieldNameKey, "exceptional");
@@ -105,7 +108,7 @@ public class ImmutableReceiverChainResolutionStrategy implements IResolveDepende
                 exceptionalChainNamesMap.put((Class<? extends Throwable>) clazz, chainNameAndEnv);
             }
 
-            return (T) new ImmutableReceiverChain(String.valueOf(chainId), description, receivers, arguments, exceptionalChainNamesMap);
+            return (T) new ImmutableReceiverChain(String.valueOf(chainId), description, receivers, arguments, exceptionalChainNamesMap, scope, module);
         } catch (ClassNotFoundException | ResolutionException | ReadValueException |
                 RouteNotFoundException | ChangeValueException | InvalidArgumentException e) {
             throw new ResolveDependencyStrategyException(e);

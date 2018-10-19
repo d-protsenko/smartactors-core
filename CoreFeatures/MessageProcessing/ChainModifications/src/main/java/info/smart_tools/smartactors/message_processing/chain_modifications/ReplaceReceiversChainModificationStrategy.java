@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.message_processing.chain_modifications;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -11,6 +12,7 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.scope.iscope.IScope;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -76,6 +78,12 @@ class ReceiverReplacingChainDecorator implements IReceiverChain {
     public Object getName() {
         return original.getName();
     }
+
+    @Override
+    public IScope getScope() { return original.getScope(); }
+
+    @Override
+    public IModule getModule() { return original.getModule(); }
 
     @Override
     public IObject getExceptionalChainNamesAndEnvironments(final Throwable exception) {

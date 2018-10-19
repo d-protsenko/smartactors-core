@@ -9,6 +9,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NoExceptionHandleChainException;
+import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 
 /**
  * Object managing order of operations executed on a single message.
@@ -88,7 +89,8 @@ public interface IMessageProcessingSequence {
      * @throws NestedChainStackOverflowException if overflow of nested chains stack occurs
      */
     void callChainSecurely(Object chainName, IMessageProcessor processor)
-            throws NestedChainStackOverflowException, ChainNotFoundException, ResolutionException, ChainChoiceException;
+            throws NestedChainStackOverflowException, ChainNotFoundException, ResolutionException,
+            ChainChoiceException, ScopeProviderException;
 
     /**
      * Interrupt execution of current chain by execution of a given one and when it is completed continue the previous.
@@ -98,7 +100,7 @@ public interface IMessageProcessingSequence {
      * @throws NestedChainStackOverflowException if overflow of nested chains stack occurs
      */
     void callChain(Object chainName)
-            throws NestedChainStackOverflowException, ChainNotFoundException, ResolutionException;
+            throws NestedChainStackOverflowException, ChainNotFoundException, ResolutionException, ScopeProviderException;
 
     /**
      * Switch to the chain that should be executed when exception occurs.

@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.message_processing.receiver_chain;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.dumpable_interface.idumpable.IDumpable;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -10,6 +11,7 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.scope.iscope.IScope;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -27,6 +29,8 @@ public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
     private final Map<Class<? extends Throwable>, IObject> exceptionalChainNamesAndEnv;
     private final IObject description;
     private final Set<Object> allExceptionalChains;
+    private final IScope scope;
+    private final IModule module;
 
     /**
      * The constructor.
@@ -42,7 +46,7 @@ public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
      * @throws ReadValueException if cannot read chains from {@code exceptionalChainNamesAndEnv}
      */
     public ImmutableReceiverChain(final Object id, final IObject chainDescription, final IMessageReceiver[] receivers, final IObject[] arguments,
-                                  final Map<Class<? extends Throwable>, IObject> exceptionalChainNamesAndEnv)
+                                  final Map<Class<? extends Throwable>, IObject> exceptionalChainNamesAndEnv, IScope scope, IModule module)
             throws InvalidArgumentException, ResolutionException, ReadValueException {
         if (null == id) {
             throw new InvalidArgumentException("Chain id should not be null.");
@@ -81,6 +85,8 @@ public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
         for (IObject exceptionEnv : exceptionalChainNamesAndEnv.values()) {
             this.allExceptionalChains.add(exceptionEnv.getValue(chainNameFieldName));
         }
+        this.scope = scope;
+        this.module = module;
     }
 
     @Override
@@ -110,6 +116,12 @@ public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
     public Object getName() {
         return name;
     }
+
+    @Override
+    public IScope getScope() { return scope; }
+
+    @Override
+    public IModule getModule() { return module; }
 
     @Override
     public IObject getExceptionalChainNamesAndEnvironments(final Throwable exception) {

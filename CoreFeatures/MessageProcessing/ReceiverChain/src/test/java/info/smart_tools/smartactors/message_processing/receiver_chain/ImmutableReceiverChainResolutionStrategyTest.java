@@ -117,7 +117,7 @@ public class ImmutableReceiverChainResolutionStrategyTest {
         when(routerMock.route("rec1")).thenReturn(receiver1);
         when(routerMock.route("rec2")).thenReturn(receiver2);
 
-        IReceiverChain chain = new ImmutableReceiverChainResolutionStrategy().resolve(chainId, description, chainStorageMock, routerMock);
+        IReceiverChain chain = new ImmutableReceiverChainResolutionStrategy().resolve(chainId, description, chainStorageMock, routerMock, null, null);
 
         assertNotNull(chain);
     }
@@ -129,7 +129,6 @@ public class ImmutableReceiverChainResolutionStrategyTest {
 
         when(description.getValue(any())).thenThrow(ReadValueException.class);
 
-        new ImmutableReceiverChainResolutionStrategy()
-                .resolve("chain", description, chainStorageMock, routerMock);
+        new ImmutableReceiverChainResolutionStrategy().resolve("chain", description, chainStorageMock, routerMock, null, null);
     }
 }

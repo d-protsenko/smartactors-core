@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
@@ -18,6 +19,7 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationExce
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.testing.chain_testing.section_strategy.TestsSectionStrategy;
 import info.smart_tools.smartactors.testing.interfaces.itest_runner.ITestRunner;
 import info.smart_tools.smartactors.testing.test_environment_handler.MainTestChain;
@@ -135,7 +137,8 @@ public class PluginChainTesting implements IPlugin {
                             IOC.register(Keys.getOrAdd(MainTestChain.class.getCanonicalName()),
                                     new CreateNewInstanceStrategy(args -> {
                                         try {
-                                            return new MainTestChain(args[0], (IAction) args[1], (IObject) args[2]);
+                                            return new MainTestChain(args[0], (IAction) args[1], (IObject) args[2],
+                                                    (IScope)args[3], (IModule)args[4]);
                                         } catch (InvalidArgumentException | InitializationException e) {
                                             throw new RuntimeException(e);
                                         }

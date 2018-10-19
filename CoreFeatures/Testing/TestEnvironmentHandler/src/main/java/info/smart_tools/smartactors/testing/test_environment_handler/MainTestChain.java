@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.base.exception.initialization_exception.Init
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
@@ -17,6 +18,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainChoiceException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageReceiveException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
+import info.smart_tools.smartactors.scope.iscope.IScope;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -31,6 +33,8 @@ public class MainTestChain implements IReceiverChain {
     private IObject testChainReceiverArgs;
     private AtomicBoolean isCompleted;
     private Object testChainName;
+    private final IScope scope;
+    private final IModule module;
 
     private IFieldName chainNameFieldName;
 
@@ -77,7 +81,8 @@ public class MainTestChain implements IReceiverChain {
      * @throws InvalidArgumentException if {@code completionCallback} is {@code null}
      * @throws InitializationException if resolution dependency for {@link IObject} was failed
      */
-    public MainTestChain(final Object chainName, final IAction<Throwable> completionCallback, final IObject successReceiverArgs)
+    public MainTestChain(final Object chainName, final IAction<Throwable> completionCallback, final IObject successReceiverArgs,
+                         IScope scope, IModule module)
             throws InvalidArgumentException, InitializationException {
         if (null == completionCallback) {
             throw new InvalidArgumentException("Callback should not be null.");
@@ -98,6 +103,8 @@ public class MainTestChain implements IReceiverChain {
         } catch (ResolutionException e) {
             throw new InitializationException("Could not resolve dependency for IObject.", e);
         }
+        this.scope = scope;
+        this.module = module;
     }
 
     @Override
@@ -127,6 +134,12 @@ public class MainTestChain implements IReceiverChain {
     public Object getName() {
         return "root test chain";
     }
+
+    @Override
+    public IScope getScope() { return scope; }
+
+    @Override
+    public IModule getModule() { return module; }
 
     @Override
     public IObject getExceptionalChainNamesAndEnvironments(final Throwable exception) {

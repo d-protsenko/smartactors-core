@@ -12,6 +12,9 @@ import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -65,7 +68,12 @@ public class ChainStorage implements IChainStorage {
         try {
             IReceiverChain newChain = IOC.resolve(
                     Keys.getOrAdd(IReceiverChain.class.getCanonicalName()),
-                    chainId, description, this, router);
+                    chainId,
+                    description,
+                    router,
+                    ScopeProvider.getCurrentScope(),
+                    ModuleManager.getCurrentModule()
+            );
 
             IChainState oldState;
 
@@ -79,7 +87,7 @@ public class ChainStorage implements IChainStorage {
                 System.out.println(MessageFormat.format("Warning: replacing chain ({0}) registered as ''{1}'' by {2}",
                         oldState.getCurrent().toString(), chainId.toString(), newChain.toString()));
             }
-        } catch (ResolutionException  e) {
+        } catch (ResolutionException | ScopeProviderException e) {
             throw new ChainCreationException(MessageFormat.format("Could not create a chain ''{0}''", chainId.toString()), e);
         }
     }
