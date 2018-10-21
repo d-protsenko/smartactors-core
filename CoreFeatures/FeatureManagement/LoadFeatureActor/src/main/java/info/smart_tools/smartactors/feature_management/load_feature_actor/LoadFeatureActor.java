@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
@@ -76,6 +77,7 @@ public class LoadFeatureActor {
         } catch (ReadValueException e) {
             throw new LoadFeatureException("Feature should not be null.");
         }
+        IModule currentModule = ModuleManager.getCurrentModule();
         try {
             System.out.println("[INFO] Start loading feature '" + feature.getDisplayName() + "'.");
 
@@ -135,5 +137,6 @@ public class LoadFeatureActor {
             System.out.println("[FAILED] ---------- Feature '" + feature.getDisplayName() + "' loading failed with exception:");
             e.printStackTrace(System.out);
         }
+        ModuleManager.setCurrentModule(currentModule);
     }
 }

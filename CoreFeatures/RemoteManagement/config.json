@@ -1,6 +1,6 @@
 {
   "featureName": "info.smart_tools.smartactors:remote-management",
-  "afterFeatures": [],
+  "afterFeatures": ["info.smart_tools.smartactors:version-management-plugins"],
   "objects": [
     {
       "name": "feature-load-starter-actor",
