@@ -24,6 +24,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainChoiceException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageReceiveException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NoExceptionHandleChainException;
@@ -220,6 +221,10 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
 
         assertFalse(messageProcessingSequence.next());
         assertNull(messageProcessingSequence.getCurrentReceiver());
+
+        messageProcessingSequence.reset();
+        assertSame(messageReceiverMocks[0], messageProcessingSequence.getCurrentReceiver());
+        assertSame(receiverArgsMocks[0], messageProcessingSequence.getCurrentReceiverArguments());
     }
 
     @Test
@@ -242,6 +247,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
 
         when(chainMock1.getName()).thenReturn(chain1);
         when(chainMock2.getName()).thenReturn(chain2);
+        when(exceptionalChainMock.getName()).thenReturn(exceptionalChainName);
 
         when(chainMock2.getExceptionalChainNamesAndEnvironments(same(exception))).thenReturn(exceptionalChainAndEnvMock);
         when(exceptionalChainAndEnvMock.getValue(eq(this.chainFieldName))).thenReturn(exceptionalChainName);
@@ -286,7 +292,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
 //        when(mainChainMock.getExceptionalChainNamesAndEnvironments(same(exception))).thenReturn(mock(IObject.class));
         when(mainChainMock.get(eq(0))).thenReturn(messageReceiverMocks[0]);
 
-        IMessageProcessingSequence sequence = new MessageProcessingSequence(5, mainChainMock, mock(IObject.class));
+        IMessageProcessingSequence sequence = new MessageProcessingSequence(5, mainChainName, mock(IObject.class));
 
         sequence.catchException(exception, contextMock);
     }
@@ -301,24 +307,32 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         IAction afterAction = mock(IAction.class);
         IReceiverChain secondaryChain = mock(IReceiverChain.class);
 
+        Object secondaryChainName = "secondaryChain";
+        when(chainStorage.resolve(eq(secondaryChainName))).thenReturn(secondaryChain);
+        when(secondaryChain.getName()).thenReturn(secondaryChainName);
+
+        Object exceptionalChainName = "exceptional chain";
+        when(chainStorage.resolve(eq(exceptionalChainName))).thenReturn(exceptionalChain);
+        when(exceptionalChain.getName()).thenReturn(exceptionalChainName);
+
         when(mainChainMock.getExceptionalChainNamesAndEnvironments(same(exception))).thenReturn(exceptionalChainAndEnv);
 //        when(secondaryChain.getExceptionalChainNamesAndEnvironments(same(exception))).thenReturn(mock(IObject.class));
         when(exceptionalChainAndEnv.getValue(this.afterActionFieldName)).thenReturn(afterAction);
-        when(exceptionalChainAndEnv.getValue(this.chainFieldName)).thenReturn(exceptionalChain);
+        when(exceptionalChainAndEnv.getValue(this.chainFieldName)).thenReturn(exceptionalChainName);
 
         when(mainChainMock.get(eq(0))).thenReturn(messageReceiverMocks[0]);
         when(secondaryChain.get(eq(0))).thenReturn(messageReceiverMocks[0]);
         when(secondaryChain.get(eq(1))).thenReturn(messageReceiverMocks[1]);
         when(exceptionalChain.get(eq(0))).thenReturn(messageReceiverMocks[0]);
 
-        MessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(5, mainChainMock, mock(IObject.class));
+        MessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(5, mainChainName, mock(IObject.class));
 
         messageProcessingSequence.next();
-        messageProcessingSequence.callChain(mainChainMock);
+        messageProcessingSequence.callChain(mainChainName);
         messageProcessingSequence.next();
-        messageProcessingSequence.callChain(secondaryChain);
+        messageProcessingSequence.callChain(secondaryChainName);
         messageProcessingSequence.next();
-        messageProcessingSequence.callChain(secondaryChain);
+        messageProcessingSequence.callChain(secondaryChainName);
         messageProcessingSequence.next();
         messageProcessingSequence.next();
 
@@ -333,7 +347,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
     @Test(expected = InvalidArgumentException.class)
     public void Should_goToThrow_When_positionIsOutOfRange()
             throws Exception {
-        new MessageProcessingSequence(5, mainChainMock, mock(IObject.class)).goTo(-1, 0);
+        new MessageProcessingSequence(5, mainChainName, mock(IObject.class)).goTo(-1, 0);
     }
 
     @Test
@@ -341,12 +355,12 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
             throws Exception {
         when(mainChainMock.get(eq(0))).thenReturn(messageReceiverMocks[0]);
 
-        MessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(5, mainChainMock, mock(IObject.class));
+        MessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(5, mainChainName, mock(IObject.class));
 
         messageProcessingSequence.next();
-        messageProcessingSequence.callChain(mainChainMock);
+        messageProcessingSequence.callChain(mainChainName);
         messageProcessingSequence.next();
-        messageProcessingSequence.callChain(mainChainMock);
+        messageProcessingSequence.callChain(mainChainName);
         messageProcessingSequence.next();
 
         assertEquals(2, messageProcessingSequence.getCurrentLevel());
@@ -361,13 +375,13 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
     @Test(expected = InvalidArgumentException.class)
     public void Should_getStepAtLevelThrow_When_LevelIndexIsNegative()
             throws Exception {
-        new MessageProcessingSequence(5, mainChainMock, mock(IObject.class)).getStepAtLevel(-1);
+        new MessageProcessingSequence(5, mainChainName, mock(IObject.class)).getStepAtLevel(-1);
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void Should_getStepAtLevelThrow_When_LevelIndexIsGreaterThanIndexOfCurrentLevel()
             throws Exception {
-        new MessageProcessingSequence(5, mainChainMock, mock(IObject.class)).getStepAtLevel(1);
+        new MessageProcessingSequence(5, mainChainName, mock(IObject.class)).getStepAtLevel(1);
     }
 
     @Test
@@ -378,7 +392,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         when(mainChainMock.get(eq(1))).thenReturn(messageReceiverMocks[1]);
         when(mainChainMock.get(eq(2))).thenReturn(messageReceiverMocks[2]);
 
-        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock, mock(IObject.class));
+        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainName, mock(IObject.class));
         messageProcessingSequence.end();
         assertFalse(messageProcessingSequence.next());
     }
@@ -391,17 +405,21 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         IObject exceptionalChainAndEnv = mock(IObject.class);
         IAction<IMessageProcessingSequence> afterAction = IMessageProcessingSequence::end;
 
+        Object exceptionalChainName = "exceptional chain";
+        when(chainStorage.resolve(eq(exceptionalChainName))).thenReturn(exceptionalChain);
+        when(exceptionalChain.getName()).thenReturn(exceptionalChainName);
+
         when(mainChainMock.getExceptionalChainNamesAndEnvironments(same(exception))).thenReturn(exceptionalChainAndEnv);
         when(exceptionalChainAndEnv.getValue(this.afterActionFieldName)).thenReturn(afterAction);
-        when(exceptionalChainAndEnv.getValue(this.chainFieldName)).thenReturn(exceptionalChain);
+        when(exceptionalChainAndEnv.getValue(this.chainFieldName)).thenReturn(exceptionalChainName);
 
         when(mainChainMock.get(eq(0))).thenReturn(messageReceiverMocks[0]);
         when(mainChainMock.get(eq(1))).thenReturn(messageReceiverMocks[1]);
         when(mainChainMock.get(eq(2))).thenReturn(messageReceiverMocks[2]);
 
-        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock, mock(IObject.class));
+        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainName, mock(IObject.class));
 
-        messageProcessingSequence.callChain(mainChainMock);
+        messageProcessingSequence.callChain(mainChainName);
 
         messageProcessingSequence.catchException(exception, contextMock);
 
@@ -415,15 +433,19 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         IObject exceptionalChainAndEnv = mock(IObject.class);
         IAction<IMessageProcessingSequence> afterAction = (mps) -> {throw new ActionExecuteException("exception");};
 
+        Object exceptionalChainName = "exceptional chain";
+        when(chainStorage.resolve(eq(exceptionalChainName))).thenReturn(exceptionalChain);
+        when(exceptionalChain.getName()).thenReturn(exceptionalChainName);
+
         when(mainChainMock.getExceptionalChainNamesAndEnvironments(same(exception))).thenReturn(exceptionalChainAndEnv);
         when(exceptionalChainAndEnv.getValue(this.afterActionFieldName)).thenReturn(afterAction);
-        when(exceptionalChainAndEnv.getValue(this.chainFieldName)).thenReturn(exceptionalChain);
+        when(exceptionalChainAndEnv.getValue(this.chainFieldName)).thenReturn(exceptionalChainName);
 
         when(mainChainMock.get(eq(0))).thenReturn(messageReceiverMocks[0]);
         when(mainChainMock.get(eq(1))).thenReturn(messageReceiverMocks[1]);
         when(mainChainMock.get(eq(2))).thenReturn(messageReceiverMocks[2]);
 
-        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock, mock(IObject.class));
+        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainName, mock(IObject.class));
         messageProcessingSequence.catchException(exception, contextMock);
 
         assertFalse(messageProcessingSequence.next());
@@ -441,13 +463,21 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         IObject dump3 = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'chain':'3'}".replace('\'','"'));
 
+        Object chain1nm = "chain1";
+        Object chain2nm = "chain2";
+        Object chain3nm = "chain3";
+
         IReceiverChain chain1 = mock(IReceiverChain.class);
         IReceiverChain chain2 = mock(IReceiverChain.class);
         IReceiverChain chain3 = mock(IReceiverChain.class);
 
-        when(chain1.getId()).thenReturn("chain1");
-        when(chain2.getId()).thenReturn("chain2");
-        when(chain3.getId()).thenReturn("chain3");
+        when(chainStorage.resolve(eq(chain1nm))).thenReturn(chain1);
+        when(chainStorage.resolve(eq(chain2nm))).thenReturn(chain2);
+        when(chainStorage.resolve(eq(chain3nm))).thenReturn(chain3);
+
+        when(chain1.getName()).thenReturn(chain1nm);
+        when(chain2.getName()).thenReturn(chain2nm);
+        when(chain3.getName()).thenReturn(chain3nm);
 
         when(chain1.getExceptionalChainNames()).thenReturn(Collections.emptyList());
         when(chain2.getExceptionalChainNames()).thenReturn(Collections.singletonList(chain3));
@@ -463,16 +493,17 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         when(chain2.get(0)).thenReturn(messageReceiverMocks[0]);
         when(chain2.get(1)).thenReturn(messageReceiverMocks[1]);
 
-        MessageProcessingSequence sequence = new MessageProcessingSequence(10, chain1, null);
+        MessageProcessingSequence sequence = new MessageProcessingSequence(10, chain1nm, null);
 
         sequence.next();
-        sequence.callChain(chain2);
+        sequence.callChain(chain2nm);
         sequence.next();
 
         IObject dump = sequence.dump(options);
 
         assertNotNull(dump);
 
+        /*
         IObject chainsDump = (IObject) dump.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainsDump"));
 
         assertNotNull(chainsDump);
@@ -480,6 +511,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         assertSame(dump1, chainsDump.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain1")));
         assertSame(dump2, chainsDump.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain2")));
         assertSame(dump3, chainsDump.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain3")));
+        */
 
         Collection ss = (Collection) dump.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "stepsStack"));
 
@@ -491,36 +523,43 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         assertNotNull(cs);
         assertEquals(Arrays.asList("chain1", "chain2"), cs);
 
+        Collection srs = (Collection) dump.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "scopeRestorationsStack"));
+
+        assertNotNull(srs);
+        assertEquals(Arrays.asList(new Boolean(false), new Boolean(false)), srs);
+
         assertEquals(10, dump.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maxDepth")));
     }
 
     @Test
     public void checkMessageReceiveExceptionOnAccessForbidden()
             throws Exception {
-        IChainStorage chainStorageMock = mock(IChainStorage.class);
-        IChainChoiceStrategy chainChoiceStrategyMock = mock(IChainChoiceStrategy.class);
 
-        Object chainIdMock = mock(Object.class);
+        Object chainName = "chain1";
         IReceiverChain chainMock = mock(IReceiverChain.class);
-        IMessageProcessor messageProcessorMock = mock(IMessageProcessor.class);
-        IMessageProcessingSequence messageProcessingSequence = mock(IMessageProcessingSequence.class);
         IObject chainDescriptionMock = mock(IObject.class);
-        IObject contextMock = mock(IObject.class);
-
-        IMessageReceiver receiver = new ChainCallReceiver(chainChoiceStrategyMock);
-
-        when(chainChoiceStrategyMock.chooseChain(same(messageProcessorMock))).thenReturn(chainIdMock);
-        when(chainStorageMock.resolve(same(chainIdMock))).thenReturn(chainMock);
-        when(messageProcessorMock.getContext()).thenReturn(contextMock);
-        when(messageProcessorMock.getSequence()).thenReturn(messageProcessingSequence);
         when(chainMock.getChainDescription()).thenReturn(chainDescriptionMock);
-        when(contextMock.getValue(new FieldName("fromExternal"))).thenReturn(true);
         when(chainDescriptionMock.getValue(new FieldName("externalAccess"))).thenReturn(false);
 
+        when(chainStorage.resolve(eq(chainName))).thenReturn(chainMock);
+        when(chainMock.getName()).thenReturn(chainName);
+        when(mainChainMock.get(eq(0))).thenReturn(messageReceiverMocks[0]);
+
+        MessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(5, mainChainName, mock(IObject.class));
+
+        IMessageProcessor messageProcessorMock = mock(IMessageProcessor.class);
+        IObject contextMock = mock(IObject.class);
+        when(contextMock.getValue(new FieldName("fromExternal"))).thenReturn(true);
+
+        when(messageProcessorMock.getContext()).thenReturn(contextMock);
+        when(messageProcessorMock.getSequence()).thenReturn(messageProcessingSequence);
+
+
+
         try {
-            receiver.receive(messageProcessorMock);
+            messageProcessingSequence.callChainSecurely(chainName, messageProcessorMock);
             fail();
-        } catch (MessageReceiveException e) {
+        } catch (ChainChoiceException e) {
             verify(contextMock, times(1)).setValue(new FieldName("fromExternal"), false);
             verify(contextMock, times(1)).setValue(new FieldName("accessToChainForbiddenError"), true);
         }
