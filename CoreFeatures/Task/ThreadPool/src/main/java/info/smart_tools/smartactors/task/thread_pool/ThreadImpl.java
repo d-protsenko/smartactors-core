@@ -33,9 +33,8 @@ class ThreadImpl {
                 }
 
                 try {
-                    ITask task = setTaskRef.get();
-                    task.execute();
-                } catch (TaskExecutionException /*| ScopeProviderException*/ e) {
+                    setTaskRef.get().execute();
+                } catch (TaskExecutionException e) {
                     // TODO: Handle
                     e.printStackTrace();
                 }

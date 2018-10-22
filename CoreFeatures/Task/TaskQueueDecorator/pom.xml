@@ -4,10 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
-        <artifactId>version-management</artifactId>
+        <artifactId>task</artifactId>
         <version>0.4.0</version>
     </parent>
-    <artifactId>version-management.versioned-task-queue-decorator</artifactId>
+    <artifactId>task.task-queue-decorator</artifactId>
     <version>0.4.0</version>
     <dependencies>
         <dependency>

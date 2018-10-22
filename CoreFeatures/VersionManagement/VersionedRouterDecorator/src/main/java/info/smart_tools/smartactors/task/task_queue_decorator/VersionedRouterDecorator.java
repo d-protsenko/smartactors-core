@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.version_management.versioned_router_decorator;
+package info.smart_tools.smartactors.task.task_queue_decorator;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;

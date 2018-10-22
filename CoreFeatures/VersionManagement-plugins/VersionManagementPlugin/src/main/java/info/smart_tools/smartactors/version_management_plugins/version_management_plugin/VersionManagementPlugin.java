@@ -2,7 +2,6 @@ package info.smart_tools.smartactors.version_management_plugins.version_manageme
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -16,12 +15,9 @@ import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRoute
 import info.smart_tools.smartactors.scope.iscope.exception.ScopeException;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
-import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
-import info.smart_tools.smartactors.task.non_blocking_queue.NonBlockingQueue;
 import info.smart_tools.smartactors.version_management.chain_version_manager.ChainIdFromMapNameStrategy;
 import info.smart_tools.smartactors.version_management.versioned_recursive_strategy_container.StrategyContainer;
-import info.smart_tools.smartactors.version_management.versioned_router_decorator.VersionedRouterDecorator;
-import info.smart_tools.smartactors.version_management.versioned_router_decorator.VersionedTaskQueueDecorator;
+import info.smart_tools.smartactors.task.task_queue_decorator.VersionedRouterDecorator;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -48,21 +44,6 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
         IOC.register(Keys.getOrAdd("chain_id_from_map_name_and_message"), strategy.getResolveByMessageStrategy());
         IOC.register(Keys.getOrAdd("chain_id_from_map_name"), strategy.getResolveByModuleDependenciesStrategy());
         IOC.register(Keys.getOrAdd("register_message_version_strategy"), strategy.getRegisterMessageVersionStrategy());
-    }
-
-    @Item("versioned_task_queue")
-    @After({"queue"})
-    @Before({"config_section:objects"})
-    public void registerVersionedTaskQueueStrategy()
-            throws ResolutionException, RegistrationException, InvalidArgumentException {
-
-        IOC.register(Keys.getOrAdd(IQueue.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(args -> {
-            try {
-                return new VersionedTaskQueueDecorator(new NonBlockingQueue<>(new ConcurrentLinkedQueue<>()));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }));
     }
 
     @Item("versioned_router")
@@ -141,22 +122,6 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
         } catch (ResolutionException e) { }
 
         keyName = "chain_id_from_map_name_and_message";
-        try {
-            IOC.remove(Keys.getOrAdd(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
-    }
-
-    // ToDo: fix rollback to setup previous strategies
-    @ItemRevert("versioned_task_queue")
-    public void unregisterVersionedTaskQueueStrategy()
-            throws ResolutionException, RegistrationException, InvalidArgumentException {
-
-        String itemName = "versioned_task_queue";
-        String keyName;
-
-        keyName = IQueue.class.getCanonicalName();
         try {
             IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {

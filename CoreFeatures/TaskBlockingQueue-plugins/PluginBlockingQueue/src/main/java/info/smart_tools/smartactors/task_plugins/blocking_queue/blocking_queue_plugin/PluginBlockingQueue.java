@@ -16,6 +16,7 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.task.blocking_queue.BlockingQueue;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.task.task_queue_decorator.TaskQueueDecorator;
 
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -57,7 +58,7 @@ public class PluginBlockingQueue implements IPlugin {
                                         queueSize = (int) conf.getValue(queueSizeFieldName);
                                     }
 
-                                    return new BlockingQueue<>(new ArrayBlockingQueue<>(queueSize));
+                                    return new TaskQueueDecorator(new BlockingQueue<>(new ArrayBlockingQueue<>(queueSize)));
                                 } catch (Exception e) {
                                     throw new RuntimeException(e);
                                 }

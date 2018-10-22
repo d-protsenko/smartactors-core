@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.class_management.module_manager;
 
-import info.smart_tools.smartactors.class_management.hierarchical_class_loader.SmartactorsClassLoader;
+import info.smart_tools.smartactors.class_management.advanced_class_loader.SmartactorsClassLoader;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
 

@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.version_management.versioned_router_decorator;
+package info.smart_tools.smartactors.task.task_queue_decorator;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
@@ -13,7 +13,7 @@ import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 /**
  * Decorator for implementation of {@link IQueue}.
  */
-public class VersionedTaskQueueDecorator implements IQueue<ITask> {
+public class TaskQueueDecorator implements IQueue<ITask> {
 
     private final IQueue<ITask> queue;
 
@@ -23,7 +23,7 @@ public class VersionedTaskQueueDecorator implements IQueue<ITask> {
      * @param queue    underlying standard queue
      * @throws InvalidArgumentException if queue queue is {@code null}
      */
-    public VersionedTaskQueueDecorator(final IQueue<ITask> queue) {
+    public TaskQueueDecorator(final IQueue<ITask> queue) {
         this.queue = queue;
     }
 
