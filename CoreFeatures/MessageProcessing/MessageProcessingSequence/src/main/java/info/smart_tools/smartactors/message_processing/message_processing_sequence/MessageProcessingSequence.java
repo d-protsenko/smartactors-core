@@ -131,7 +131,6 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
     /**
      * The constructor.
      *
-     * @param stackDepth maximum depth of stack of nested chains
      * @param dump the of sequence to recover from
      * @param message to resolve chains in sequence
      * @throws InvalidArgumentException if stack depth is not a positive number
@@ -338,9 +337,8 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         for (int i = stackIndex; i >= 0; --i) {
             IObject exceptionalChainAndEnv = chainStack[i].getExceptionalChainNamesAndEnvironments(exception);
             if (null != exceptionalChainAndEnv) {
-                this.afterExceptionAction = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), exceptionalChainAndEnv.getValue(this.afterExceptionActionFieldName))
-                );
+                //this.afterExceptionAction = IOC.resolve(Keys.getOrAdd((String)exceptionalChainAndEnv.getValue(this.afterExceptionActionFieldName)));
+                this.afterExceptionAction = (IAction<IMessageProcessingSequence>)exceptionalChainAndEnv.getValue(this.afterExceptionActionFieldName);
                 caughtLevel = i;
                 caughtStep = stepStack[caughtLevel];
 

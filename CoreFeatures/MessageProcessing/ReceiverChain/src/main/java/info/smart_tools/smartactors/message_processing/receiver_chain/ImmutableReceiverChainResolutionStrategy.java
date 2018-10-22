@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.message_processing.receiver_chain;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
@@ -15,6 +16,7 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.exceptions.RouteNotFoundException;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 
@@ -101,7 +103,10 @@ public class ImmutableReceiverChainResolutionStrategy implements IResolveDepende
 
                 Class<?> clazz = this.getClass().getClassLoader().loadClass(String.valueOf(desc.getValue(exceptionClassFieldName)));
                 Object chainName = desc.getValue(exceptionChainNameFieldName);
-                Object afterExceptionAction = "afterExceptionAction#" + desc.getValue(exceptionAfterFieldName);
+                IAction<IMessageProcessingSequence> afterExceptionAction = IOC.resolve(
+                        Keys.getOrAdd("afterExceptionAction#" + desc.getValue(exceptionAfterFieldName))
+                );
+                //Object afterExceptionAction = "afterExceptionAction#" + desc.getValue(exceptionAfterFieldName);
                 IObject chainNameAndEnv = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
                 chainNameAndEnv.setValue(exceptionChainNameFieldName, chainName);
                 chainNameAndEnv.setValue(exceptionAfterFieldName, afterExceptionAction);
