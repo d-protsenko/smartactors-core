@@ -45,8 +45,8 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
     private int stackIndex;
     private Object scopeRestorationChainName;
 
-    private boolean isException = false;
-    private IAction<IMessageProcessingSequence> afterExceptionAction = null;
+    private boolean isException;
+    private IAction<IMessageProcessingSequence> afterExceptionAction;
 
     private final IFieldName causeLevelFieldName;
     private final IFieldName causeStepFieldName;
@@ -86,6 +86,8 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
         scopeRestorationChainName = null;
         stackIndex = -1;
+        isException = false;
+        afterExceptionAction = null;
     }
 
     /**
@@ -119,11 +121,11 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
             callChain(mainChainName);
         } catch(NestedChainStackOverflowException | ScopeProviderException e) {}
 
-        if (stackIndex < 0) {
+        if (!next()) {
             throw new InvalidArgumentException("Main chain should contain at least one receiver.");
         }
 
-        reset();
+        //reset();
     }
 
     /**

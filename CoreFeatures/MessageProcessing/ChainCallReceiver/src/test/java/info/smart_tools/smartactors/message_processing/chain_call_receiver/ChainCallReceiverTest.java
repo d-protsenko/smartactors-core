@@ -61,7 +61,7 @@ public class ChainCallReceiverTest extends PluginsLoadingTestBase {
         IChainStorage chainStorageMock = mock(IChainStorage.class);
         IChainChoiceStrategy chainChoiceStrategyMock = mock(IChainChoiceStrategy.class);
 
-        Object chainIdMock = mock(Object.class);
+        Object chainNameMock = mock(Object.class);
         IReceiverChain chainMock = mock(IReceiverChain.class);
         IMessageProcessor messageProcessorMock = mock(IMessageProcessor.class);
         IMessageProcessingSequence sequenceMock = mock(IMessageProcessingSequence.class);
@@ -71,8 +71,8 @@ public class ChainCallReceiverTest extends PluginsLoadingTestBase {
 
         IMessageReceiver receiver = new ChainCallReceiver(chainChoiceStrategyMock);
 
-        when(chainChoiceStrategyMock.chooseChain(same(messageProcessorMock))).thenReturn(chainIdMock);
-        when(chainStorageMock.resolve(same(chainIdMock))).thenReturn(chainMock);
+        when(chainChoiceStrategyMock.chooseChain(same(messageProcessorMock))).thenReturn(chainNameMock);
+        when(chainStorageMock.resolve(same(chainNameMock))).thenReturn(chainMock);
         when(messageProcessorMock.getSequence()).thenReturn(sequenceMock);
         when(messageProcessorMock.getContext()).thenReturn(contextMock);
         when(chainMock.getChainDescription()).thenReturn(chainDescriptionMock);
@@ -80,7 +80,7 @@ public class ChainCallReceiverTest extends PluginsLoadingTestBase {
 
         receiver.receive(messageProcessorMock);
 
-        verify(sequenceMock).callChainSecurely(same(chainMock),messageProcessorMock);
+        verify(sequenceMock).callChainSecurely(same(chainNameMock),same(messageProcessorMock));
 
         when(chainChoiceStrategyMock.chooseChain(same(messageProcessorMock))).thenThrow(exceptionMock);
 
@@ -92,35 +92,5 @@ public class ChainCallReceiverTest extends PluginsLoadingTestBase {
         }
 
         receiver.dispose();
-    }
-
-    @Test
-    public void checkMessageReceiveExceptionOnAccessForbidden()
-            throws Exception {
-        IChainStorage chainStorageMock = mock(IChainStorage.class);
-        IChainChoiceStrategy chainChoiceStrategyMock = mock(IChainChoiceStrategy.class);
-
-        Object chainIdMock = mock(Object.class);
-        IReceiverChain chainMock = mock(IReceiverChain.class);
-        IMessageProcessor messageProcessorMock = mock(IMessageProcessor.class);
-        IObject chainDescriptionMock = mock(IObject.class);
-        IObject contextMock = mock(IObject.class);
-
-        IMessageReceiver receiver = new ChainCallReceiver(chainChoiceStrategyMock);
-
-        when(chainChoiceStrategyMock.chooseChain(same(messageProcessorMock))).thenReturn(chainIdMock);
-        when(chainStorageMock.resolve(same(chainIdMock))).thenReturn(chainMock);
-        when(messageProcessorMock.getContext()).thenReturn(contextMock);
-        when(chainMock.getChainDescription()).thenReturn(chainDescriptionMock);
-        when(contextMock.getValue(new FieldName("fromExternal"))).thenReturn(true);
-        when(chainDescriptionMock.getValue(new FieldName("externalAccess"))).thenReturn(false);
-
-        try {
-            receiver.receive(messageProcessorMock);
-            fail();
-        } catch (MessageReceiveException e) {
-            verify(contextMock, times(1)).setValue(new FieldName("fromExternal"), false);
-            verify(contextMock, times(1)).setValue(new FieldName("accessToChainForbiddenError"), true);
-        }
     }
 }

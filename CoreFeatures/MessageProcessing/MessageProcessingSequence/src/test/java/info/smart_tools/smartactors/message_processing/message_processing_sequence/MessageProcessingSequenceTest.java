@@ -4,7 +4,10 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
@@ -12,9 +15,16 @@ import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldName
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
+import info.smart_tools.smartactors.message_processing.chain_call_receiver.ChainCallReceiver;
+import info.smart_tools.smartactors.message_processing.chain_call_receiver.IChainChoiceStrategy;
+import info.smart_tools.smartactors.message_processing.chain_storage.ChainStorage;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
+import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageReceiveException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NoExceptionHandleChainException;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
@@ -24,6 +34,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
@@ -45,6 +56,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
     }
 
     private IReceiverChain mainChainMock;
+    private Object mainChainName;
     private IMessageReceiver[] messageReceiverMocks;
     private IObject[] receiverArgsMocks;
     private IObject contextMock;
@@ -53,6 +65,9 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
     private IFieldName afterActionFieldName;
 
     private IResolveDependencyStrategy makeDumpStrategy;
+    private IResolveDependencyStrategy chainIdStrategy;
+    private IChainStorage chainStorage;
+    private IRouter router;
 
     @Override
     public void registerMocks()
@@ -75,13 +90,22 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         afterActionFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "after");
 
         makeDumpStrategy = mock(IResolveDependencyStrategy.class);
+        chainIdStrategy = new ApplyFunctionToArgumentsStrategy(args -> { return args[0]; });
+                //mock(IResolveDependencyStrategy.class);
         IOC.register(Keys.getOrAdd("make dump"), makeDumpStrategy);
+        router = mock(IRouter.class);
+        mainChainName = "main chain";
+        chainStorage = mock(ChainStorage.class);
+        IOC.register(Keys.getOrAdd(IChainStorage.class.getCanonicalName()), new SingletonStrategy(chainStorage));
+        IOC.register(Keys.getOrAdd("chain_id_from_map_name_and_message"), chainIdStrategy);
+        when(chainStorage.resolve(mainChainName)).thenReturn(mainChainMock);
+        when(mainChainMock.getName()).thenReturn(mainChainName);
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrow_When_invalidStackDepthGiven()
             throws Exception {
-        assertNotNull(new MessageProcessingSequence(0, mock(IReceiverChain.class), mock(IObject.class)));
+        assertNotNull(new MessageProcessingSequence(0, mainChainName, mock(IObject.class)));
     }
 
     @Test(expected = InvalidArgumentException.class)
@@ -94,8 +118,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
     public void Should_constructorThrow_When_mainChainContainsNoReceivers()
             throws Exception {
         when(mainChainMock.get(eq(0))).thenReturn(null);
-
-        assertNotNull(new MessageProcessingSequence(1, mainChainMock, mock(IObject.class)));
+        assertNotNull(new MessageProcessingSequence(1, mainChainName, mock(IObject.class)));
     }
 
     @Test(expected = NestedChainStackOverflowException.class)
@@ -103,12 +126,12 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
             throws Exception {
         when(mainChainMock.get(eq(0))).thenReturn(messageReceiverMocks[0]);
 
-        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock, mock(IObject.class));
+        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainName, mock(IObject.class));
 
         try {
-            messageProcessingSequence.callChain(mainChainMock);
-            messageProcessingSequence.callChain(mainChainMock);
-            messageProcessingSequence.callChain(mainChainMock);
+            messageProcessingSequence.callChain(mainChainName);
+            messageProcessingSequence.callChain(mainChainName);
+            messageProcessingSequence.callChain(mainChainName);
         } catch (NestedChainStackOverflowException e) {
             fail();
         }
@@ -122,6 +145,18 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         IReceiverChain chainMock1 = mock(IReceiverChain.class);
         IReceiverChain chainMock2 = mock(IReceiverChain.class);
         IReceiverChain chainMock3 = mock(IReceiverChain.class);
+
+        Object chain1 = "chain1";
+        Object chain2 = "chain2";
+        Object chain3 = "chain3";
+
+        when(chainStorage.resolve(eq(chain1))).thenReturn(chainMock1);
+        when(chainStorage.resolve(eq(chain2))).thenReturn(chainMock2);
+        when(chainStorage.resolve(eq(chain3))).thenReturn(chainMock3);
+
+        when(chainMock1.getName()).thenReturn(chain1);
+        when(chainMock2.getName()).thenReturn(chain2);
+        when(chainMock3.getName()).thenReturn(chain3);
 
         when(mainChainMock.get(eq(0))).thenReturn(messageReceiverMocks[0]);
         when(mainChainMock.get(eq(1))).thenReturn(messageReceiverMocks[1]);
@@ -149,7 +184,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         when(chainMock3.getArguments(eq(0))).thenReturn(receiverArgsMocks[7]);
         when(chainMock3.getArguments(eq(1))).thenReturn(receiverArgsMocks[8]);
 
-        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock, mock(IObject.class));
+        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainName, mock(IObject.class));
 
         assertSame(messageReceiverMocks[0], messageProcessingSequence.getCurrentReceiver());
         assertSame(receiverArgsMocks[0], messageProcessingSequence.getCurrentReceiverArguments());
@@ -158,19 +193,19 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         assertTrue(messageProcessingSequence.next());
         assertSame(messageReceiverMocks[1], messageProcessingSequence.getCurrentReceiver());
 
-        messageProcessingSequence.callChain(chainMock1);
+        messageProcessingSequence.callChain(chain1);
 
         assertTrue(messageProcessingSequence.next());
         assertSame(messageReceiverMocks[3], messageProcessingSequence.getCurrentReceiver());
 
-        messageProcessingSequence.callChain(chainMock2);
+        messageProcessingSequence.callChain(chain2);
 
         assertTrue(messageProcessingSequence.next());
         assertSame(messageReceiverMocks[5], messageProcessingSequence.getCurrentReceiver());
         assertTrue(messageProcessingSequence.next());
         assertSame(messageReceiverMocks[6], messageProcessingSequence.getCurrentReceiver());
 
-        messageProcessingSequence.callChain(chainMock3);
+        messageProcessingSequence.callChain(chain3);
 
         assertTrue(messageProcessingSequence.next());
         assertSame(messageReceiverMocks[7], messageProcessingSequence.getCurrentReceiver());
@@ -194,12 +229,23 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         IReceiverChain chainMock2 = mock(IReceiverChain.class);
         IObject exceptionalChainAndEnvMock = mock(IObject.class);
         IReceiverChain exceptionalChainMock = mock(IReceiverChain.class);
+        Object exceptionalChainName = "exceptional chain";
         IAction afterAction = mock(IAction.class);
         Throwable exception = mock(Throwable.class);
 
+        Object chain1 = "chain1";
+        Object chain2 = "chain2";
+
+        when(chainStorage.resolve(eq(chain1))).thenReturn(chainMock1);
+        when(chainStorage.resolve(eq(chain2))).thenReturn(chainMock2);
+        when(chainStorage.resolve(eq(exceptionalChainName))).thenReturn(exceptionalChainMock);
+
+        when(chainMock1.getName()).thenReturn(chain1);
+        when(chainMock2.getName()).thenReturn(chain2);
+
         when(chainMock2.getExceptionalChainNamesAndEnvironments(same(exception))).thenReturn(exceptionalChainAndEnvMock);
-        when(exceptionalChainAndEnvMock.getValue(this.chainFieldName)).thenReturn(exceptionalChainMock);
-        when(exceptionalChainAndEnvMock.getValue(this.afterActionFieldName)).thenReturn(afterAction);
+        when(exceptionalChainAndEnvMock.getValue(eq(this.chainFieldName))).thenReturn(exceptionalChainName);
+        when(exceptionalChainAndEnvMock.getValue(eq(this.afterActionFieldName))).thenReturn(afterAction);
 
         when(exceptionalChainMock.get(eq(0))).thenReturn(messageReceiverMocks[0]);
 
@@ -209,12 +255,12 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         when(mainChainMock.get(0)).thenReturn(messageReceiverMocks[3]);
         when(mainChainMock.get(1)).thenReturn(messageReceiverMocks[4]);
 
-        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainMock, mock(IObject.class));
+        IMessageProcessingSequence messageProcessingSequence = new MessageProcessingSequence(4, mainChainName, mock(IObject.class));
 
         assertSame(messageReceiverMocks[3], messageProcessingSequence.getCurrentReceiver());
 
-        messageProcessingSequence.callChain(chainMock1);
-        messageProcessingSequence.callChain(chainMock2);
+        messageProcessingSequence.callChain(chain1);
+        messageProcessingSequence.callChain(chain2);
 
         assertTrue(messageProcessingSequence.next());
 
@@ -447,4 +493,37 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
 
         assertEquals(10, dump.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maxDepth")));
     }
+
+    @Test
+    public void checkMessageReceiveExceptionOnAccessForbidden()
+            throws Exception {
+        IChainStorage chainStorageMock = mock(IChainStorage.class);
+        IChainChoiceStrategy chainChoiceStrategyMock = mock(IChainChoiceStrategy.class);
+
+        Object chainIdMock = mock(Object.class);
+        IReceiverChain chainMock = mock(IReceiverChain.class);
+        IMessageProcessor messageProcessorMock = mock(IMessageProcessor.class);
+        IMessageProcessingSequence messageProcessingSequence = mock(IMessageProcessingSequence.class);
+        IObject chainDescriptionMock = mock(IObject.class);
+        IObject contextMock = mock(IObject.class);
+
+        IMessageReceiver receiver = new ChainCallReceiver(chainChoiceStrategyMock);
+
+        when(chainChoiceStrategyMock.chooseChain(same(messageProcessorMock))).thenReturn(chainIdMock);
+        when(chainStorageMock.resolve(same(chainIdMock))).thenReturn(chainMock);
+        when(messageProcessorMock.getContext()).thenReturn(contextMock);
+        when(messageProcessorMock.getSequence()).thenReturn(messageProcessingSequence);
+        when(chainMock.getChainDescription()).thenReturn(chainDescriptionMock);
+        when(contextMock.getValue(new FieldName("fromExternal"))).thenReturn(true);
+        when(chainDescriptionMock.getValue(new FieldName("externalAccess"))).thenReturn(false);
+
+        try {
+            receiver.receive(messageProcessorMock);
+            fail();
+        } catch (MessageReceiveException e) {
+            verify(contextMock, times(1)).setValue(new FieldName("fromExternal"), false);
+            verify(contextMock, times(1)).setValue(new FieldName("accessToChainForbiddenError"), true);
+        }
+    }
+
 }
