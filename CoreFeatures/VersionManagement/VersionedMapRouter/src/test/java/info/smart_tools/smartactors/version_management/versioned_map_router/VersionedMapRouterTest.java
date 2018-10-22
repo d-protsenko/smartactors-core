@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.task.task_queue_decorator;
+package info.smart_tools.smartactors.version_management.versioned_map_router;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
@@ -9,44 +9,36 @@ import info.smart_tools.smartactors.message_processing_interfaces.irouter.except
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
 
 /**
  * Tests for {@link VersionedMapRouter}.
  */
-public class VersionedRouterDecoratorTest {
+public class VersionedMapRouterTest {
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrow_When_mapIsNull()
             throws Exception {
-        assertNull(new VersionedRouterDecorator(null, null));
+        assertNull(new VersionedMapRouter(null));
     }
 
     @Test
     public void Should_storeAndRevertReceivers()
             throws Exception {
-        Map<Object, Map<IModule, Object>> map = new ConcurrentHashMap<>();
+        Map<Object, Map<IModule, IMessageReceiver>> map = mock(Map.class);
         Object id = mock(Object.class);
         IMessageReceiver receiver0 = mock(IMessageReceiver.class);
         IMessageReceiver receiver1 = mock(IMessageReceiver.class);
         IModule module = mock(IModule.class);
-        IModule core = mock(IModule.class);
-        ModuleManager.setCurrentModule(core);
-        when(core.getId()).thenReturn("coreId");
-        when(module.getId()).thenReturn("moduleId");
-        when(core.getName()).thenReturn("core");
-        when(module.getName()).thenReturn("module");
+        IModule core = ModuleManager.getCurrentModule();
 
-        IRouter router = new VersionedRouterDecorator(map, new MapRouter(new ConcurrentHashMap<>()));
+        IRouter router = new VersionedMapRouter(map);
 
         router.register(id, receiver0);
-        //verify(map).put(same(id), any());
+        verify(map).put(same(id), any());
         assertSame(receiver0, router.route(id));
 
         ModuleManager.setCurrentModule(module);
@@ -57,10 +49,7 @@ public class VersionedRouterDecoratorTest {
         assertSame(receiver0, router.route(id));
 
         router.unregister(id);
-        try {
-            router.route(id);
-            fail();
-        } catch(RouteNotFoundException e) {}
+        assertNull(router.route(id));
 
         ModuleManager.setCurrentModule(module);
         router.unregister(id);
@@ -70,24 +59,18 @@ public class VersionedRouterDecoratorTest {
     @Test(expected = RouteNotFoundException.class)
     public void Should_throwWhenNoRouteFound()
             throws Exception {
-        new VersionedRouterDecorator(mock(Map.class), mock(MapRouter.class)).route(mock(Object.class));
+        new MapRouter(mock(Map.class)).route(mock(Object.class));
     }
 
     @Test
     public void Should_enumerate_returnListOfIdentifiersOfAllReceivers()
             throws Exception {
-        IModule core = mock(IModule.class);
-        ModuleManager.setCurrentModule(core);
-        when(core.getId()).thenReturn("coreId");
-        ArrayList<Object> keys = new ArrayList<>(Arrays.asList(new Object(), new Object()));
-        Map<Object, Map<IModule, Object>> map = new ConcurrentHashMap<>();
+        Set<Object> keys = new HashSet<>(Arrays.asList(new Object(), new Object()));
+        Map<Object, Map<IModule, IMessageReceiver>> mapMock = mock(Map.class);
+        when(mapMock.keySet()).thenReturn(keys);
 
-        IRouter router = new VersionedRouterDecorator(map, new MapRouter(new ConcurrentHashMap<>()));
-        router.register(keys.get(0), mock(IMessageReceiver.class));
-        router.register(keys.get(1), mock(IMessageReceiver.class));
+        IRouter router = new VersionedMapRouter(mapMock);
 
-        List<Object> keys1 = router.enumerate();
-        assertSame(keys.get(0), keys1.get(0));
-        assertSame(keys.get(1), keys1.get(1));
+        assertEquals(new ArrayList<Object>(keys), router.enumerate());
     }
 }

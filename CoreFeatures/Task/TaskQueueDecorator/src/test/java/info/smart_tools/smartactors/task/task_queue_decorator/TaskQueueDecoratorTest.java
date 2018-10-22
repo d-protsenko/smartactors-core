@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.task.task_queue_decorator;
 
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.task.task_queue_decorator.TaskQueueDecorator;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;

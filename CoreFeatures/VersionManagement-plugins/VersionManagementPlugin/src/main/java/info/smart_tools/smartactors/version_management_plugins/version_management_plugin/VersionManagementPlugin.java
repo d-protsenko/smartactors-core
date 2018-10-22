@@ -17,10 +17,9 @@ import info.smart_tools.smartactors.scope.iscope_provider_container.exception.Sc
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.version_management.chain_version_manager.ChainIdFromMapNameStrategy;
 import info.smart_tools.smartactors.version_management.versioned_recursive_strategy_container.StrategyContainer;
-import info.smart_tools.smartactors.task.task_queue_decorator.VersionedRouterDecorator;
+import info.smart_tools.smartactors.version_management.versioned_router_decorator.VersionedRouterDecorator;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class VersionManagementPlugin  extends BootstrapPlugin {
 
