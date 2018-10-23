@@ -413,7 +413,7 @@ public class FeatureManagerActor {
             return -1;
         }
         if (dependency[2].equals("")) {
-            return 0;
+            return 1;
         }
         return  emptify(feature.getVersion()).compareTo(dependency[2]);
     }

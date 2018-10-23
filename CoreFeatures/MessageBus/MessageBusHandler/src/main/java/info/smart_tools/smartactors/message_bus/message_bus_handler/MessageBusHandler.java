@@ -38,7 +38,6 @@ public class MessageBusHandler implements IMessageBusHandler {
 
     private final IResponseStrategy messageBusResponseStrategy;
     private final IResponseStrategy nullResponseStrategy;
-    private final IChainStorage chainStorage;
     private final IKey keyIMessageProcessingSequence;
     private final IKey keyIMessageProcessor;
 
@@ -77,7 +76,6 @@ public class MessageBusHandler implements IMessageBusHandler {
 
         this.messageBusResponseStrategy = IOC.resolve(Keys.getOrAdd("message bus response strategy"));
         this.nullResponseStrategy = IOC.resolve(Keys.getOrAdd("null response strategy"));
-        this.chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
     }
 
     @Override

@@ -44,10 +44,10 @@ public class HandlerRoutingReceiver implements IMessageReceiver {
             IMessageReceiver handlerReceiver = handlerReceiversMap.get(handlerId);
 
             if (null == handlerReceiver) {
-                throw new MessageReceiveException("Handler not found.");
-            } else {
-                handlerReceiver.receive(processor);
+                throw new MessageReceiveException("Handler with Id '"+handlerId.toString()+"' not found.");
             }
+            handlerReceiver.receive(processor);
+
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new MessageReceiveException("Error reading handler name.");
         }
