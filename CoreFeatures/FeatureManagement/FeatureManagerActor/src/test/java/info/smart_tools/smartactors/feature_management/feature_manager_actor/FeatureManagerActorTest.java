@@ -165,22 +165,37 @@ public class FeatureManagerActorTest {
 
         when(feature1.getName()).thenReturn("feature 1");
         when(feature1.getGroupId()).thenReturn("groupId1");
-        when(feature1.getDependencies()).thenReturn(new HashSet<String>(){{add("groupId2:feature 2");}});
+        when(feature1.getDependencies())
+                .thenReturn(new HashSet<String>(){{add("groupId2:feature 2");}})
+                .thenReturn(new HashSet<>())
+                .thenReturn(new HashSet<>())
+                .thenReturn(null);
+        when(feature1.updateFromClone(any())).thenReturn(true);
         when(feature2.getGroupId()).thenReturn("groupId2");
         when(feature2.getName()).thenReturn("feature 2");
+        when(feature2.updateFromClone(any())).thenReturn(true);
+        when(feature2.getDependencies())
+                .thenReturn(new HashSet<>())
+                .thenReturn(new HashSet<>())
+                .thenReturn(null);
         when(feature3.getGroupId()).thenReturn("groupId3");
         when(feature3.getName()).thenReturn("feature 3");
-        when(feature1.getDependencies()).thenReturn(new HashSet<String>(){{add("feature 2");}});
+        when(feature3.updateFromClone(any())).thenReturn(true);
+        when(feature3.getDependencies())
+                .thenReturn(new HashSet<String>(){{add("feature 2");}})
+                .thenReturn(new HashSet<>())
+                .thenReturn(new HashSet<>())
+                .thenReturn(null);
         when(feature1.getId()).thenReturn(uuid1);
         when(feature2.getId()).thenReturn(uuid2);
         when(feature3.getId()).thenReturn(uuid3);
 
         IMessageProcessingSequence sequence = mock(IMessageProcessingSequence.class);
-        when(this.getSequence.resolve(5, this.chain)).thenReturn(sequence);
+        when(this.getSequence.resolve(any(), any(), any())).thenReturn(sequence);
         IMessageProcessor mpf1 = mock(IMessageProcessor.class);
         IMessageProcessor mpf2 = mock(IMessageProcessor.class);
         IMessageProcessor mpf3 = mock(IMessageProcessor.class);
-        when(this.getProcessor.resolve(this.queue, sequence)).thenReturn(mpf1).thenReturn(mpf2).thenReturn(mpf3);
+        when(this.getProcessor.resolve(this.queue, sequence)).thenReturn(mpf1).thenReturn(mpf2).thenReturn(mpf1).thenReturn(mpf2).thenReturn(mpf1).thenReturn(mpf2).thenReturn(mpf3);
 
         when(this.afterFeaturesCallbackStrategy.resolve())
                 .thenReturn(this.afterFeaturesCallbackQueue1)
@@ -200,19 +215,19 @@ public class FeatureManagerActorTest {
         verify(mpf1, times(1)).process(any(IObject.class), any(IObject.class));
         verify(mpf2, times(1)).process(any(IObject.class), any(IObject.class));
 
-        // check addition two already added features
+        // check addition two already added features (must be processed anyway)
         actor.addFeatures(wrapper);
 
-        verify(mp2, times(0)).pauseProcess();
-        verify(mpf1, times(1)).process(any(IObject.class), any(IObject.class));
-        verify(mpf2, times(1)).process(any(IObject.class), any(IObject.class));
+        verify(mp2, times(1)).pauseProcess();
+        verify(mpf1, times(2)).process(any(IObject.class), any(IObject.class));
+        verify(mpf2, times(2)).process(any(IObject.class), any(IObject.class));
 
         // check addition one new feature and one already added feature
         actor.addFeatures(wrapper);
         verify(mp3, times(1)).pauseProcess();
-        verify(mpf1, times(1)).process(any(IObject.class), any(IObject.class));
-        verify(mpf2, times(1)).process(any(IObject.class), any(IObject.class));
-        verify(mpf3, times(1)).process(any(IObject.class), any(IObject.class));
+        verify(mpf1, times(3)).process(any(IObject.class), any(IObject.class));
+        verify(mpf2, times(3)).process(any(IObject.class), any(IObject.class));
+        //verify(mpf3, times(1)).process(any(IObject.class), any(IObject.class));
 
         // check 'onFeatureStepCompleted' method
         Map<IMessageProcessor, IFeature> featureProcess = new HashMap<>();
@@ -222,9 +237,8 @@ public class FeatureManagerActorTest {
                 .thenReturn(feature2)
                 .thenReturn(feature3)
                 .thenReturn(feature3)
-                .thenReturn(feature3)
-                .thenReturn(feature1)
-                .thenReturn(feature3);
+                .thenReturn(feature2)
+                .thenReturn(feature1);
         when(onFeatureStepCompletedWrapper.getMessageProcessor())
                 .thenReturn(mpf1)
                 .thenReturn(mpf2)
@@ -252,8 +266,6 @@ public class FeatureManagerActorTest {
         actor.onFeatureStepCompleted(onFeatureStepCompletedWrapper);
         actor.onFeatureStepCompleted(onFeatureStepCompletedWrapper);
         actor.onFeatureLoaded(onFeatureLoadedWrapper);
-        when(feature1.getDependencies()).thenReturn(new HashSet<String>(){{add("feature 2");}});
-        actor.onFeatureStepCompleted(onFeatureStepCompletedWrapper);
         actor.onFeatureStepCompleted(onFeatureStepCompletedWrapper);
         actor.onFeatureLoaded(onFeatureLoadedWrapper);
         actor.onFeatureLoaded(onFeatureLoadedWrapper);

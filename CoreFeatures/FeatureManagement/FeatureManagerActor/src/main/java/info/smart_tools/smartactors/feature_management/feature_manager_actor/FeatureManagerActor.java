@@ -344,7 +344,7 @@ public class FeatureManagerActor {
                     } catch(InvalidArgumentException e) {
                         throw new FeatureManagementException("Cannot add dependency to module.", e);
                     }
-                    if (order != 0) {
+                    if (order == 1) {
                         System.out.println(
                                 "[WARNING] Version of base feature '"+baseFeature.getDisplayName()+
                                 "' is greater than in feature '"+feature.getDisplayName()+"' dependencies."
@@ -413,7 +413,7 @@ public class FeatureManagerActor {
             return -1;
         }
         if (dependency[2].equals("")) {
-            return 1;
+            return 2;
         }
         return  emptify(feature.getVersion()).compareTo(dependency[2]);
     }

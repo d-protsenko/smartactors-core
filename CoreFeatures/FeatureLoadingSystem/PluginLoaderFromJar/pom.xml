@@ -68,6 +68,12 @@
             <artifactId>class-management.class-generator-with-java-compile-api</artifactId>
             <version>0.4.0</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>class-management.module-manager</artifactId>
+            <version>0.4.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <pluginManagement>

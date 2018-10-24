@@ -56,10 +56,13 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
 
     public URL[] getURLsFromDependencies() {
 
-        Set<ClassLoader> classLoaders = new HashSet<ClassLoader>();
-        classLoaders.add(this);
-        classLoaders.addAll(dependencies);
+        Set<ClassLoader> dependencies = new HashSet<>();
+        dependencies.add(this);
+        dependencies.addAll(this.dependencies);
+
+        Set<ClassLoader> classLoaders = new HashSet<>();
         for(ClassLoader classLoader : dependencies) {
+            classLoaders.add(classLoader);
             ClassLoader parent = classLoader.getParent();
             while(parent != null) {
                 classLoaders.add(parent);

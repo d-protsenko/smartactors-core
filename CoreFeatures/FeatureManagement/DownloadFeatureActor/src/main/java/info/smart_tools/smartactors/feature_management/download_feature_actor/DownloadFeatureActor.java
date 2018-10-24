@@ -114,14 +114,16 @@ public class DownloadFeatureActor {
                     }
             ).collect(Collectors.toList());
 
-            List<Artifact> artifacts = new Aether(remotes, local).resolve(
-                    new DefaultArtifact(
-                            feature.getGroupId(),
-                            feature.getName(),
-                            "",
-                            feature.getPackageType() != null ? feature.getPackageType() : DEF_PACKAGE_TYPE,
-                            feature.getVersion()
-                    ),
+            DefaultArtifact defaultArtifact = new DefaultArtifact(
+                    feature.getGroupId(),
+                    feature.getName(),
+                    "",
+                    feature.getPackageType() != null ? feature.getPackageType() : DEF_PACKAGE_TYPE,
+                    feature.getVersion()
+            );
+            Aether aether = new Aether(remotes, local);
+            List<Artifact> artifacts = aether.resolve(
+                    defaultArtifact,
                     MAVEN_ARTIFACT_SCOPE
             );
             File artifact = artifacts.get(0).getFile();

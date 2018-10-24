@@ -22,6 +22,7 @@ public class FromStringClassGeneratorTest {
     @Test
     public void check()
             throws Exception {
+        ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
         FromStringClassGenerator classGenerator = new FromStringClassGenerator();
         String testSample = "package info.smart_tools.smartactors.class_management.test_class;\n" +
                 "import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.TestInterface;\n" +

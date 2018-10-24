@@ -40,6 +40,10 @@ public class FeaturesCreatorActor {
     private final IFieldName repositoriesFN;
     private final IFieldName packageTypeFN;
 
+    private final IFieldName repositoryIdFN;
+    private final IFieldName repositoryTypeFN;
+    private final IFieldName repositoryUrlFN;
+
     private final static String END_OF_INPUT_DELIMITER = "\\Z";
     private final static String EXTENSION_SEPARATOR = ".";
     private final static String IOBJECT_FACTORY_STRATEGY_NAME = "info.smart_tools.smartactors.iobject.iobject.IObject";
@@ -66,6 +70,9 @@ public class FeaturesCreatorActor {
         this.versionFN =         IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "version");
         this.featureLocationFN = IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "featureLocation");
         this.packageTypeFN =     IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "packageType");
+        this.repositoryIdFN =    IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "repositoryId");
+        this.repositoryTypeFN =  IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "type");
+        this.repositoryUrlFN =   IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "url");
 
         //TODO: need refactoring. This actions would be took out to the plugin.
         this.creationFunctions = new HashMap<String, IBiAction<File, CreateMessageWrapper>>(){{
@@ -131,8 +138,19 @@ public class FeaturesCreatorActor {
             List<IObject> repositories = wrapper.getRepositoriesDescription();
             List<IObject> repositoryStorage = IOC.resolve(Keys.getOrAdd(IOC_FEATURE_REPOSITORY_STORAGE_NAME));
 
-            if (null != repositories) {
-                repositoryStorage.addAll(repositories);
+            for(IObject repository : repositories) {
+                boolean found = false;
+                for(IObject stored : repositoryStorage ) {
+                    if (stored.getValue(this.repositoryIdFN).equals(repository.getValue(this.repositoryIdFN)) &&
+                        stored.getValue(this.repositoryTypeFN).equals(repository.getValue(this.repositoryTypeFN)) &&
+                        stored.getValue(this.repositoryUrlFN).equals(repository.getValue(this.repositoryUrlFN))) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    repositoryStorage.add(repository);
+                }
             }
             List<IObject> featuresFromJson = wrapper.getFeaturesDescription();
             IPath directory = new Path(wrapper.getFeatureDirectory());
