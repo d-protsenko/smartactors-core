@@ -10,6 +10,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import org.junit.Test;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.same;
@@ -28,17 +29,18 @@ public class VersionedMapRouterTest {
     @Test
     public void Should_storeAndRevertReceivers()
             throws Exception {
-        Map<Object, Map<IModule, IMessageReceiver>> map = mock(Map.class);
+        ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
+        Map<Object, Map<IModule, IMessageReceiver>> map = new ConcurrentHashMap<>();
         Object id = mock(Object.class);
         IMessageReceiver receiver0 = mock(IMessageReceiver.class);
         IMessageReceiver receiver1 = mock(IMessageReceiver.class);
-        IModule module = mock(IModule.class);
+        ModuleManager.addModule("module", "module", "");
+        IModule module = ModuleManager.getModuleById("module");
         IModule core = ModuleManager.getCurrentModule();
 
         IRouter router = new VersionedMapRouter(map);
 
         router.register(id, receiver0);
-        verify(map).put(same(id), any());
         assertSame(receiver0, router.route(id));
 
         ModuleManager.setCurrentModule(module);
@@ -49,7 +51,10 @@ public class VersionedMapRouterTest {
         assertSame(receiver0, router.route(id));
 
         router.unregister(id);
-        assertNull(router.route(id));
+        try {
+            router.route(id);
+            fail();
+        } catch(RouteNotFoundException e) {}
 
         ModuleManager.setCurrentModule(module);
         router.unregister(id);

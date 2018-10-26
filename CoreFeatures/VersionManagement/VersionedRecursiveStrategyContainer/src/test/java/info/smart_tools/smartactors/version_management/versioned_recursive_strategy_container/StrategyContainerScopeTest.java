@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.version_management.versioned_recursive_stra
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
@@ -34,6 +35,7 @@ public class StrategyContainerScopeTest {
 
     @Before
     public void setUp() throws ScopeProviderException, InvalidArgumentException, RegistrationException {
+        ScopeProvider.clearListOfSubscribers();
         ScopeProvider.subscribeOnCreationNewScope(
                 scope -> {
                     try {
@@ -57,6 +59,7 @@ public class StrategyContainerScopeTest {
         childScope = ScopeProvider.getScope(childScopeKey);
 
         ScopeProvider.setCurrentScope(parentScope);
+        ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
         IOC.register(IOC.getKeyForKeyByNameResolveStrategy(), new ResolveByNameIocStrategy(
                 (a) -> {
                     try {
