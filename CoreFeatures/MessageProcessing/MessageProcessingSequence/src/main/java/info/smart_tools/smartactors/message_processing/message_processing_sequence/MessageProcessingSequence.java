@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.message_processing.message_processing_seque
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.dumpable_interface.idumpable.IDumpable;
 import info.smart_tools.smartactors.dumpable_interface.idumpable.exceptions.DumpException;
@@ -22,6 +23,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NoExceptionHandleChainException;
+import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 
@@ -44,6 +46,8 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
     private IObject message;
     private int stackIndex;
     private Object scopeRestorationChainName;
+    private final IScope[] scopeStack;
+    private final IModule[] moduleStack;
 
     private boolean isException;
     private IAction<IMessageProcessingSequence> afterExceptionAction;
@@ -112,6 +116,8 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         this.chainStack = new IReceiverChain[stackDepth];
         this.stepStack = new int[stackDepth];
         this.scopeRestorationsStack = new Boolean[stackDepth];
+        this.scopeStack = new IScope[stackDepth];
+        this.moduleStack = new IModule[stackDepth];
 
         if (null == mainChainName) {
             throw new InvalidArgumentException("Main chain should not be null.");
@@ -150,6 +156,8 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         this.chainStack = new IReceiverChain[stackDepth];
         this.stepStack = new int[stackDepth];
         this.scopeRestorationsStack = new Boolean[stackDepth];
+        this.scopeStack = new IScope[stackDepth];
+        this.moduleStack = new IModule[stackDepth];
 
         Iterator stepStack = ((Collection) dump.getValue(stepsStackFieldName)).iterator();
         Iterator chainsStack = ((Collection) dump.getValue(chainsStackFieldName)).iterator();
@@ -189,6 +197,12 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         this.currentReceiver = chainStack[0].get(0);
         this.currentArguments = chainStack[0].getArguments(0);
         this.stackIndex = 0;
+        try {
+            ScopeProvider.setCurrentScope(scopeStack[0]);
+        } catch (ScopeProviderException e) {
+            throw new RuntimeException(e);
+        }
+        ModuleManager.setCurrentModule(moduleStack[0]);
     }
 
     @Override
@@ -209,6 +223,15 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
                 } catch (Throwable e) {
                     return false;
                 }
+            }
+
+            if(scopeRestorationsStack[stackIndex]) {
+                try {
+                    ScopeProvider.setCurrentScope(scopeStack[stackIndex]);
+                } catch (ScopeProviderException e) {
+                    throw new RuntimeException(e);
+                }
+                ModuleManager.setCurrentModule(moduleStack[stackIndex]);
             }
 
             --stackIndex;
@@ -289,17 +312,17 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
 
         chainStack[newStackIndex] = chain;
         stepStack[newStackIndex] = -1;
-        scopeRestorationsStack[newStackIndex] = false;
+        scopeStack[newStackIndex] = ScopeProvider.getCurrentScope();
+        moduleStack[newStackIndex] = ModuleManager.getCurrentModule();
 
-        stackIndex = newStackIndex;
-        scopeRestorationsStack[stackIndex] = chain.getName().equals(scopeRestorationChainName);
-
-        if (scopeRestorationsStack[stackIndex]) {
+        scopeRestorationsStack[newStackIndex] = chain.getName().equals(scopeRestorationChainName);
+        if (scopeRestorationsStack[newStackIndex]) {
             ScopeProvider.setCurrentScope(chain.getScope());
             ModuleManager.setCurrentModule(chain.getModule());
             setScopeRestorationChainName(null);
-            scopeRestorationsStack[newStackIndex] = false;
         }
+
+        stackIndex = newStackIndex;
     }
 
     private void checkAccess(final IReceiverChain chain, final IMessageProcessor processor)

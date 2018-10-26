@@ -52,6 +52,25 @@
       ],
       "exceptional": [
       ]
+    },
+    {
+      "id":"getServerStatistics",
+      "externalAccess": true,
+      "steps":[
+        {
+          "handler":"getState",
+          "wrapper":{
+            "out_setFrozenRequests":"response/frozenFeatureRequests",
+            "out_setLoadedFeatures":"response/loadedFeatures",
+            "out_setFailedFeatures":"response/failedFeatures",
+            "out_setProcessingFeatures":"response/processingFeatures",
+            "out_setFrozenFeatureProcesses":"response/frozenFeatureProcesses"
+          },
+          "target":"feature-manager"
+        }
+      ],
+      "exceptional":[
+      ]
     }
   ]
 }

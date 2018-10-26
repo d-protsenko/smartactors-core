@@ -37,8 +37,8 @@
                         <unpack>${build.unpack}</unpack>
                         <scope>runtime</scope>
                         <outputDirectory>/</outputDirectory>
-                        <!--<includes>-->
-                            <!--<include>com.jcabi:jcabi-aether</include>-->
+                        <!--<includes>
+                            <include>com.jcabi:jcabi-aether</include>-->
                             <!---->
                             <!--<include>org.sonatype.aether:aether-api</include>-->
                             <!--<include>org.apache.maven:maven-core</include>-->

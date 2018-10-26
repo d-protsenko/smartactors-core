@@ -16,6 +16,7 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
     private String moduleVersion;
     private Set<SmartactorsClassLoader> dependencies = new HashSet<>(); //Collections.synchronizedSet(new HashSet<>());
     private Map<String, ClassLoader> classMap = new ConcurrentHashMap<>();
+    private SmartactorsClassLoader compilationClassLoader = null;
 
     /**
      * Redefined constructor
@@ -93,7 +94,16 @@ public class SmartactorsClassLoader extends URLClassLoader implements ISmartacto
         return defineClass(className, classByteCode, 0, classByteCode.length);
     }
 
-    public ClassLoader getCompilationClassLoader() { return this; }
+    public ClassLoader getCompilationClassLoader() {
+        if (compilationClassLoader == null) {
+            compilationClassLoader = new SmartactorsClassLoader(
+                    "wrapper-compilation-class-loader",
+                    ""
+            );
+            compilationClassLoader.addDependency(this);
+        }
+        return compilationClassLoader;
+    }
 
     /**
      * Add new instance of {@link URL} to the current url class loader if url class loader doesn't contain this instance of {@link URL}
