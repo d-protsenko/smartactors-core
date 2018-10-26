@@ -7,7 +7,6 @@ import info.smart_tools.smartactors.message_processing.map_router.MapRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.exceptions.RouteNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
-import info.smart_tools.smartactors.version_management.versioned_router_decorator.VersionedRouterDecorator;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Tests for {@link VersionedMapRouter}.
+ * Tests for {@link VersionedRouterDecorator}.
  */
 public class VersionedRouterDecoratorTest {
     @Test(expected = InvalidArgumentException.class)
@@ -32,17 +31,14 @@ public class VersionedRouterDecoratorTest {
     @Test
     public void Should_storeAndRevertReceivers()
             throws Exception {
+        ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
         Map<Object, Map<IModule, Object>> map = new ConcurrentHashMap<>();
         Object id = mock(Object.class);
         IMessageReceiver receiver0 = mock(IMessageReceiver.class);
         IMessageReceiver receiver1 = mock(IMessageReceiver.class);
-        IModule module = mock(IModule.class);
-        IModule core = mock(IModule.class);
-        ModuleManager.setCurrentModule(core);
-        when(core.getId()).thenReturn("coreId");
-        when(module.getId()).thenReturn("moduleId");
-        when(core.getName()).thenReturn("core");
-        when(module.getName()).thenReturn("module");
+        ModuleManager.addModule("module", "module", "");
+        IModule module = ModuleManager.getModuleById("module");
+        IModule core = ModuleManager.getCurrentModule();
 
         IRouter router = new VersionedRouterDecorator(map, new MapRouter(new ConcurrentHashMap<>()));
 
@@ -77,9 +73,7 @@ public class VersionedRouterDecoratorTest {
     @Test
     public void Should_enumerate_returnListOfIdentifiersOfAllReceivers()
             throws Exception {
-        IModule core = mock(IModule.class);
-        ModuleManager.setCurrentModule(core);
-        when(core.getId()).thenReturn("coreId");
+        ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
         ArrayList<Object> keys = new ArrayList<>(Arrays.asList(new Object(), new Object()));
         Map<Object, Map<IModule, Object>> map = new ConcurrentHashMap<>();
 
