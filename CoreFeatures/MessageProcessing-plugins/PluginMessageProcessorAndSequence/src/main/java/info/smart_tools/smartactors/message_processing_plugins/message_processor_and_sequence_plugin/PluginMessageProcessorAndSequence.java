@@ -86,21 +86,21 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                             keyName = "afterExceptionAction#break";
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "afterExceptionAction#continue";
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "afterExceptionAction#repeat";
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
                     });
             bootstrap.add(afterExceptionActions);
@@ -164,14 +164,14 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                             keyName = "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor";
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "final task";
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
                     });
 
@@ -208,7 +208,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                         try {
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
                     });
 
@@ -235,7 +235,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                         try {
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
                     });
 

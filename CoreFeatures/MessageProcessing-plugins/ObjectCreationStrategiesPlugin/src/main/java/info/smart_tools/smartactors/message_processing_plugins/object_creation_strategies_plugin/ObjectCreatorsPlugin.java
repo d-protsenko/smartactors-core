@@ -88,7 +88,7 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
         try {
             IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         if (null != namedFilterConfig) {
@@ -104,7 +104,7 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
             try {
                 IOC.remove(Keys.getOrAdd(keyName));
             } catch(DeletionException e) {
-                System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
             } catch (ResolutionException e) { }
         }
     }
@@ -179,14 +179,14 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
         try {
             IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         keyName = "named filter config#thread-safe wrapper creator";
         try {
             IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         unregisterCreatorType("decorate receiver", itemName,null);
@@ -246,21 +246,21 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
             keyName = "object kind filter sequence#raw";
             IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "object kind filter sequence#stateless_actor";
             IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "object kind filter sequence#actor";
             IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
     }
 }

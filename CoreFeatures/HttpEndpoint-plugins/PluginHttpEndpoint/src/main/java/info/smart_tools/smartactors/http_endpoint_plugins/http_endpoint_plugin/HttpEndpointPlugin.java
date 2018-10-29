@@ -191,98 +191,98 @@ public class HttpEndpointPlugin implements IPlugin {
                             keyName = "info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty";
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "EmptyIObject";
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "http_request_key_for_response_sender";
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = IParseTree.class.getCanonicalName();
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "http_request_key_for_deserialize";
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "http_endpoint";
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = IEnvironmentHandler.class.getCanonicalName();
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "HttpShuttingDownException";
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "HttpInternalException";
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "HttpRequestParametersToIObjectException";
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "HttpPostParametersToIObjectException";
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "key_for_response_status_setter";
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "key_for_headers_extractor";
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "key_for_cookies_extractor";
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
                     });
 

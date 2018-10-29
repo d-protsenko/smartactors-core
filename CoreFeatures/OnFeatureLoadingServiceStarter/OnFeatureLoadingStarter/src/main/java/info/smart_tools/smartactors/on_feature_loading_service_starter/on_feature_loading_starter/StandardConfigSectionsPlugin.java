@@ -79,7 +79,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                             try {
                                 strategy.remove("onFeatureLoading");
                             } catch (AdditionDependencyStrategyException e) {
-                                System.out.println("[WARNING] Deregitration of \"onFeatureLoading\" strategy has failed while reverting \"config_section:onFeatureLoading\" plugin.");
+                                System.out.println("[WARNING] Deregistration of \"onFeatureLoading\" strategy has failed while reverting \"config_section:onFeatureLoading\" plugin.");
                             }
                         } catch (ResolutionException e) { }
                         try {
@@ -88,7 +88,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                             ISectionStrategy sectionStrategy = new OnFeatureLoadingSectionProcessingStrategy();
                             configurationManager.removeSectionStrategy(sectionStrategy.getSectionName());
                         } catch ( InvalidArgumentException e) {
-                            System.out.println("[WARNING] Deregitration of \"OnFeatureLoadingSectionProcessingStrategy\" has failed while reverting \"config_section:onFeatureLoading\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \"OnFeatureLoadingSectionProcessingStrategy\" has failed while reverting \"config_section:onFeatureLoading\" plugin.");
                         } catch (ResolutionException e) { }
                     });
             bootstrap.add(onFeatureLoadingItem);

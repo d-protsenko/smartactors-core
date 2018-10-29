@@ -48,13 +48,13 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
         try {
             IOC.remove(Keys.getOrAdd("wrapper creator receiver decorator non thread safe map"));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"wrapper creator receiver decorator non thread safe map\" has failed while reverting \"wrapper_creator_receiver_decorator_map_strategies\" plugin.");
+            System.out.println("[WARNING] Deregistration of \"wrapper creator receiver decorator non thread safe map\" has failed while reverting \"wrapper_creator_receiver_decorator_map_strategies\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             IOC.remove(Keys.getOrAdd("wrapper creator receiver decorator thread safe map"));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \"wrapper creator receiver decorator thread safe map\" has failed while reverting \"wrapper_creator_receiver_decorator_map_strategies\" plugin.");
+            System.out.println("[WARNING] Deregistration of \"wrapper creator receiver decorator thread safe map\" has failed while reverting \"wrapper_creator_receiver_decorator_map_strategies\" plugin.");
         } catch (ResolutionException e) { }
     }
 
@@ -125,14 +125,14 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
         try {
             IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         keyName = "non thread safe environment wrapper creation strategy";
         try {
             IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
     }
 
@@ -167,14 +167,14 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
         try {
             IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         keyName = "non thread safe wrapper creator receiver decorator";
         try {
             IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
     }
 

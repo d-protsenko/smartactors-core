@@ -88,21 +88,21 @@ public class ActorReceiverCreatorPlugin  implements IPlugin {
                             keyName = IRoutedObjectCreator.class.getCanonicalName() + "#actor";
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "actor_receiver_busyness_flag";
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "actor_receiver_queue";
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
                     });
             this.bootstrap.add(item);

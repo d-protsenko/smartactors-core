@@ -63,7 +63,7 @@ public class PluginStandardObjectCreators implements IPlugin {
                         try {
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
                     });
 

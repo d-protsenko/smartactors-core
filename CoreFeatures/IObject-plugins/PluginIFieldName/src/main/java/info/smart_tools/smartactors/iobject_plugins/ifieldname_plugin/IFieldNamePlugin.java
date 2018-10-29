@@ -82,7 +82,7 @@ public class IFieldNamePlugin implements IPlugin {
                             keyName = "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
                             IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
                     });
             bootstrap.add(item);

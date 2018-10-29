@@ -107,21 +107,21 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                 keyName = "expandable_strategy#resolve key for configuration object";
                                 IOC.remove(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), keyName));
                             } catch(DeletionException e) {
-                                System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                                System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                             } catch (ResolutionException e) { }
 
                             try {
                                 keyName = "resolve key for configuration object";
                                 IOC.remove(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), keyName));
                             } catch(DeletionException e) {
-                                System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                                System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                             } catch (ResolutionException e) { }
 
                             try {
                                 keyName = "configuration object";
                                 IOC.remove(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), keyName));
                             } catch(DeletionException e) {
-                                System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                                System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                             } catch (ResolutionException e) { }
                     });
             this.bootstrap.add(item);

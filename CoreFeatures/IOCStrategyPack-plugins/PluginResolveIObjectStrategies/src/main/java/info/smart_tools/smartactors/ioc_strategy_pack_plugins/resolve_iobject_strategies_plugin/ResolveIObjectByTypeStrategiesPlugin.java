@@ -87,14 +87,14 @@ public class ResolveIObjectByTypeStrategiesPlugin implements IPlugin {
                         keyName = "expandable_strategy#" + "info.smart_tools.smartactors.iobject.iobject.IObject";
                         IOC.remove(Keys.getOrAdd(keyName));
                     } catch(DeletionException e) {
-                        System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                     } catch (ResolutionException e) { }
 
                     try {
                         keyName = "info.smart_tools.smartactors.iobject.iobject.IObject" + "convert";
                         IOC.remove(Keys.getOrAdd(keyName));
                     } catch(DeletionException e) {
-                        System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                     } catch (ResolutionException e) { }
                 });
             bootstrap.add(item);
