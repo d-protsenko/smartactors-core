@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.message_processing.message_processing_seque
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
@@ -17,6 +18,8 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
+import info.smart_tools.smartactors.scope.iscope.IScope;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import org.junit.Test;
@@ -69,16 +72,17 @@ public class MessageProcessingSequenceRecoveryStrategyTest extends PluginsLoadin
 
         IObject seqDump = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
-                        "'maxDepth':3," +
+                        "'maxDepth':4," +
                         "'chainsStack':['a','b','a']," +
                         "'stepsStack':[1,4,2]," +
+                        "'scopeRestorationsStack':[false,true,false]," +
                         "'chainsDump':{" +
                         "   'a': {'this-is':'chain-a dump'}" +
                         "}" +
                         "}").replace('\'','"'));
 
         when(chainStorageMock.resolve("b")).thenReturn(chainB);
-        when(chainStorageMock.resolve("a")).thenThrow(ChainNotFoundException.class);
+        when(chainStorageMock.resolve("a")).thenReturn(chainA);//thenThrow(ChainNotFoundException.class);
         when(chainResolutionStrategyMock.resolve(
                 eq("a"),
                 same(((IObject) seqDump
@@ -91,8 +95,17 @@ public class MessageProcessingSequenceRecoveryStrategyTest extends PluginsLoadin
         when(chainA.get(1)).thenReturn(mock(IMessageReceiver.class));
         when(chainA.get(2)).thenReturn(mock(IMessageReceiver.class));
         when(chainA.get(3)).thenReturn(mock(IMessageReceiver.class));
+        when(chainB.get(0)).thenReturn(mock(IMessageReceiver.class));
+        when(chainB.get(1)).thenReturn(mock(IMessageReceiver.class));
+        when(chainB.get(2)).thenReturn(mock(IMessageReceiver.class));
+        when(chainB.get(3)).thenReturn(mock(IMessageReceiver.class));
+        when(chainB.getScope()).thenReturn(ScopeProvider.getCurrentScope());
+        when(chainA.getScope()).thenReturn(ScopeProvider.getCurrentScope());
+        when(chainB.getModule()).thenReturn(mock(IModule.class));
+        when(chainA.getName()).thenReturn("a");
+        when(chainB.getName()).thenReturn("b");
 
-        IMessageProcessingSequence sequence = new MessageProcessingSequenceRecoveryStrategy().resolve(seqDump);
+        IMessageProcessingSequence sequence = new MessageProcessingSequenceRecoveryStrategy().resolve(seqDump, null);
 
         assertNotNull(sequence);
 
@@ -101,8 +114,10 @@ public class MessageProcessingSequenceRecoveryStrategyTest extends PluginsLoadin
         assertEquals(4, sequence.getStepAtLevel(1));
         assertEquals(1, sequence.getStepAtLevel(0));
 
+        sequence.setScopeRestorationChainName("a");
+        sequence.callChain("a");
         try {
-            sequence.callChain(chainA);
+            sequence.callChain("a");
             fail();
         } catch (NestedChainStackOverflowException ok) {}
     }

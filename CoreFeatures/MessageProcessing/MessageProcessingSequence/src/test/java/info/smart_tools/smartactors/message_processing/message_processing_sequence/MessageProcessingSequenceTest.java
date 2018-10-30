@@ -15,8 +15,6 @@ import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldName
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
-import info.smart_tools.smartactors.message_processing.chain_call_receiver.ChainCallReceiver;
-import info.smart_tools.smartactors.message_processing.chain_call_receiver.IChainChoiceStrategy;
 import info.smart_tools.smartactors.message_processing.chain_storage.ChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
@@ -25,7 +23,6 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainChoiceException;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageReceiveException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NoExceptionHandleChainException;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
@@ -529,6 +526,8 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         assertEquals(Arrays.asList(new Boolean(false), new Boolean(false)), srs);
 
         assertEquals(10, dump.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maxDepth")));
+
+        MessageProcessingSequence sequenceFromDump = new MessageProcessingSequence(dump, null);
     }
 
     @Test

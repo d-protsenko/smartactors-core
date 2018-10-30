@@ -82,7 +82,8 @@ public class VersionedRouterDecoratorTest {
         router.register(keys.get(1), mock(IMessageReceiver.class));
 
         List<Object> keys1 = router.enumerate();
-        assertSame(keys.get(0), keys1.get(0));
-        assertSame(keys.get(1), keys1.get(1));
+        if (!keys1.containsAll(keys)) {
+            fail();
+        }
     }
 }

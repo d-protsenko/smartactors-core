@@ -436,8 +436,15 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
                     Arrays.stream(Arrays.copyOf(stepStack, stackIndex + 1)).boxed().collect(Collectors.toList()));
             dump.setValue(chainsStackFieldName,
                     Arrays.stream(Arrays.copyOf(chainStack, stackIndex + 1)).map(IReceiverChain::getName).collect(Collectors.toList()));
+
+            // on restoration start in main chain module context ???
+            //scopeRestorationsStack[0] = true;
+
             dump.setValue(scopeRestorationsStackFieldName,
                     Arrays.stream(Arrays.copyOf(scopeRestorationsStack, stackIndex + 1)).collect(Collectors.toList()));
+
+            // after dump restore original value which is always false ???
+            //scopeRestorationsStack[0] = false;
 
             // ToDo: check if entire chain dump is necessary ?
             /*
