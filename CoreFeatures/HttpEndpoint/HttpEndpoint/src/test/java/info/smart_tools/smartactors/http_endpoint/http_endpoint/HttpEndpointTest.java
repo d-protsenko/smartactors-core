@@ -26,6 +26,7 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.message_processing.message_processing_sequence.MessageProcessingSequence;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
@@ -94,8 +95,9 @@ public class HttpEndpointTest {
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
-                                return new MessageProcessingSequence((int) args[0], args[1], (IObject)args[2]);
-                            } catch (InvalidArgumentException | ResolutionException ignored) {
+                                boolean switchScopeOnStartup = args.length > 3 ? (Boolean)args[3] : true;
+                                return new MessageProcessingSequence((int) args[0], args[1], (IObject)args[2], switchScopeOnStartup);
+                            } catch (InvalidArgumentException | ResolutionException | ChainNotFoundException ignored) {
                             }
                             return null;
                         }

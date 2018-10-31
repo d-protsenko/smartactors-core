@@ -193,7 +193,8 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                         IObject message = (IObject)args[2];
 
                                         try {
-                                            return new MessageProcessingSequence(stackDepth, mainChainName, message);
+                                            boolean switchScopeOnStartup = args.length > 3 ? (Boolean)args[3] : true;
+                                            return new MessageProcessingSequence(stackDepth, mainChainName, message, switchScopeOnStartup);
                                         } catch (InvalidArgumentException | ResolutionException | ChainNotFoundException e) {
                                             throw new RuntimeException(e);
                                         }

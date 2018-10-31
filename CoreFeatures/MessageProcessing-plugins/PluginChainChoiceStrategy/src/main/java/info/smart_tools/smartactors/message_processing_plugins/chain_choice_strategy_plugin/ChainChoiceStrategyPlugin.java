@@ -58,9 +58,7 @@ public class ChainChoiceStrategyPlugin implements IPlugin {
                                     );
                             IChainChoiceStrategy strategy = (a) -> {
                                 try {
-                                    Object chainName = a.getMessage().getValue(messageMapIdFieldName);
-                                    a.getSequence().setScopeRestorationChainName(chainName);
-                                    return chainName;
+                                    return a.getMessage().getValue(messageMapIdFieldName);
                                 } catch (Exception e) {
                                     throw new RuntimeException("Could not execute chain choice strategy.");
                                 }

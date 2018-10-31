@@ -1,8 +1,12 @@
 package info.smart_tools.smartactors.message_processing.chain_call_receiver;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
@@ -19,6 +23,7 @@ public class ChainCallReceiver implements IMessageReceiver {
 
 
     private IChainChoiceStrategy chainChoiceStrategy;
+    private final IFieldName scopeSwitchingFieldName;
 
     /**
      * The constructor.
@@ -28,12 +33,15 @@ public class ChainCallReceiver implements IMessageReceiver {
      * @throws InvalidArgumentException     if strategy is {@code null}
      */
     public ChainCallReceiver(final IChainChoiceStrategy chainChoiceStrategy)
-            throws InvalidArgumentException {
+            throws InvalidArgumentException, ResolutionException {
         if (null == chainChoiceStrategy) {
             throw new InvalidArgumentException("Strategy should not be null.");
         }
 
+        IKey iFieldNameStrategyKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+
         this.chainChoiceStrategy = chainChoiceStrategy;
+        this.scopeSwitchingFieldName = IOC.resolve(iFieldNameStrategyKey, "scopeSwitching");
     }
 
     @Override
@@ -41,6 +49,10 @@ public class ChainCallReceiver implements IMessageReceiver {
             throws MessageReceiveException {
         try {
             Object chainName = chainChoiceStrategy.chooseChain(processor);
+            Boolean scopeSwitching = (Boolean) processor.getSequence().getCurrentReceiverArguments().getValue(scopeSwitchingFieldName);
+            if (scopeSwitching == null || scopeSwitching) {
+                processor.getSequence().setScopeSwitchingChainName(chainName);
+            }
             processor.getSequence().callChainSecurely(chainName, processor);
         } catch (ChainChoiceException | ChainNotFoundException | NestedChainStackOverflowException |
                 ResolutionException | ReadValueException | InvalidArgumentException | ScopeProviderException e) {

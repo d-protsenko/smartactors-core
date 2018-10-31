@@ -40,12 +40,12 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
     private final IKey chainIdStrategyKey;
     private final IReceiverChain[] chainStack;
     private final int[] stepStack;
-    private final Boolean[] scopeRestorationsStack;
+    private final Boolean[] scopeSwitchingStack;
     private IMessageReceiver currentReceiver;
     private IObject currentArguments;
     private IObject message;
     private int stackIndex;
-    private Object scopeRestorationChainName;
+    private Object scopeSwitchingChainName;
     private final IScope[] scopeStack;
     private final IModule[] moduleStack;
 
@@ -61,7 +61,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
     private final IFieldName afterExceptionActionFieldName;
     private final IFieldName stepsStackFieldName;
     private final IFieldName chainsStackFieldName;
-    private final IFieldName scopeRestorationsStackFieldName;
+    private final IFieldName scopeSwitchingStackFieldName;
     private final IFieldName maxDepthFieldName;
     private final IFieldName externalAccessFieldName;
     private final IFieldName fromExternalFieldName;
@@ -80,7 +80,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
 
         stepsStackFieldName = IOC.resolve(iFieldNameStrategyKey, "stepsStack");
         chainsStackFieldName = IOC.resolve(iFieldNameStrategyKey, "chainsStack");
-        scopeRestorationsStackFieldName = IOC.resolve(iFieldNameStrategyKey, "scopeRestorationsStack");
+        scopeSwitchingStackFieldName = IOC.resolve(iFieldNameStrategyKey, "scopeSwitchingStack");
         maxDepthFieldName = IOC.resolve(iFieldNameStrategyKey, "maxDepth");
         externalAccessFieldName = IOC.resolve(iFieldNameStrategyKey, "externalAccess");
         fromExternalFieldName = IOC.resolve(iFieldNameStrategyKey, "fromExternal");
@@ -88,7 +88,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
 
         chainIdStrategyKey = Keys.getOrAdd("chain_id_from_map_name_and_message");
         chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
-        scopeRestorationChainName = null;
+        scopeSwitchingChainName = null;
         stackIndex = -1;
         isException = false;
         afterExceptionAction = null;
@@ -105,7 +105,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
      * @throws InvalidArgumentException if main chain contains no receivers
      * @throws ResolutionException if resolution of any dependencies fails
      */
-    public MessageProcessingSequence(final int stackDepth, final Object mainChainName, final IObject message)
+    public MessageProcessingSequence(final int stackDepth, final Object mainChainName, final IObject message, final boolean switchScopeOnStartup)
             throws InvalidArgumentException, ResolutionException, ChainNotFoundException {
 
         this.message = message;
@@ -115,7 +115,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         }
         this.chainStack = new IReceiverChain[stackDepth];
         this.stepStack = new int[stackDepth];
-        this.scopeRestorationsStack = new Boolean[stackDepth];
+        this.scopeSwitchingStack = new Boolean[stackDepth];
         this.scopeStack = new IScope[stackDepth];
         this.moduleStack = new IModule[stackDepth];
 
@@ -123,6 +123,9 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
             throw new InvalidArgumentException("Main chain should not be null.");
         }
 
+        if (switchScopeOnStartup) {
+            setScopeSwitchingChainName(mainChainName);
+        }
         try {
             callChain(mainChainName);
         } catch(NestedChainStackOverflowException | ScopeProviderException e) {}
@@ -130,8 +133,6 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         if (!next()) {
             throw new InvalidArgumentException("Main chain should contain at least one receiver.");
         }
-
-        //reset();
     }
 
     /**
@@ -155,20 +156,20 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         }
         this.chainStack = new IReceiverChain[stackDepth];
         this.stepStack = new int[stackDepth];
-        this.scopeRestorationsStack = new Boolean[stackDepth];
+        this.scopeSwitchingStack = new Boolean[stackDepth];
         this.scopeStack = new IScope[stackDepth];
         this.moduleStack = new IModule[stackDepth];
 
         Iterator stepStack = ((Collection) dump.getValue(stepsStackFieldName)).iterator();
         Iterator chainsStack = ((Collection) dump.getValue(chainsStackFieldName)).iterator();
-        Iterator scopeRestorationsStack = ((Collection) dump.getValue(scopeRestorationsStackFieldName)).iterator();
+        Iterator scopeSwitchingStack = ((Collection) dump.getValue(scopeSwitchingStackFieldName)).iterator();
 
         int level = 0;
 
         while (stepStack.hasNext()) {
             Object chainName = chainsStack.next();
-            if ((Boolean) scopeRestorationsStack.next()) {
-                setScopeRestorationChainName(chainName);
+            if ((Boolean) scopeSwitchingStack.next()) {
+                setScopeSwitchingChainName(chainName);
             }
             try {
                 callChain(chainName);
@@ -198,11 +199,16 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         this.currentArguments = chainStack[0].getArguments(0);
         this.stackIndex = 0;
         try {
-            ScopeProvider.setCurrentScope(scopeStack[0]);
+            if (scopeSwitchingStack[0]) {
+                ModuleManager.setCurrentModule(chainStack[0].getModule());
+                ScopeProvider.setCurrentScope(chainStack[0].getScope());
+            } else {
+                ModuleManager.setCurrentModule(moduleStack[0]);
+                ScopeProvider.setCurrentScope(scopeStack[0]);
+            }
         } catch (ScopeProviderException e) {
             throw new RuntimeException(e);
         }
-        ModuleManager.setCurrentModule(moduleStack[0]);
     }
 
     @Override
@@ -225,13 +231,13 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
                 }
             }
 
-            if(scopeRestorationsStack[stackIndex]) {
+            if(scopeSwitchingStack[stackIndex]) {
+                ModuleManager.setCurrentModule(moduleStack[stackIndex]);
                 try {
                     ScopeProvider.setCurrentScope(scopeStack[stackIndex]);
                 } catch (ScopeProviderException e) {
                     throw new RuntimeException(e);
                 }
-                ModuleManager.setCurrentModule(moduleStack[stackIndex]);
             }
 
             --stackIndex;
@@ -280,7 +286,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
     }
 
     @Override
-    public void setScopeRestorationChainName(Object chainName) { scopeRestorationChainName = chainName; }
+    public void setScopeSwitchingChainName(Object chainName) { scopeSwitchingChainName = chainName; }
 
     @Override
     public void callChainSecurely(final Object chainName, IMessageProcessor processor)
@@ -315,11 +321,11 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         scopeStack[newStackIndex] = ScopeProvider.getCurrentScope();
         moduleStack[newStackIndex] = ModuleManager.getCurrentModule();
 
-        scopeRestorationsStack[newStackIndex] = chain.getName().equals(scopeRestorationChainName);
-        if (scopeRestorationsStack[newStackIndex]) {
+        scopeSwitchingStack[newStackIndex] = chain.getName().equals(scopeSwitchingChainName);
+        if (scopeSwitchingStack[newStackIndex]) {
             ScopeProvider.setCurrentScope(chain.getScope());
             ModuleManager.setCurrentModule(chain.getModule());
-            setScopeRestorationChainName(null);
+            setScopeSwitchingChainName(null);
         }
 
         stackIndex = newStackIndex;
@@ -360,7 +366,6 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         for (int i = stackIndex; i >= 0; --i) {
             IObject exceptionalChainAndEnv = chainStack[i].getExceptionalChainNamesAndEnvironments(exception);
             if (null != exceptionalChainAndEnv) {
-                //this.afterExceptionAction = IOC.resolve(Keys.getOrAdd((String)exceptionalChainAndEnv.getValue(this.afterExceptionActionFieldName)));
                 this.afterExceptionAction = (IAction<IMessageProcessingSequence>)exceptionalChainAndEnv.getValue(this.afterExceptionActionFieldName);
                 caughtLevel = i;
                 caughtStep = stepStack[caughtLevel];
@@ -394,23 +399,9 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
      *         "chainsStack":                            // Names of chains at levels
      *              ["rootChain", "nestedChain",
      *              "otherChain", "oneMreChain"],
-     *         "maxDepth": 5,                            // Depth limit
-     *         "chainsDump": {                           // Chins in the same format as they are described in configuration
-     *             "rootChain": {
-     *                 ...
-     *             },
-     *             "nestedChain": {
-     *                 ... ,
-     *                 "exceptional": [
-     *                     {
-     *                         "class": "java.lang.NullPointerException",
-     *                         "chain": "npeChain",
-     *                         "after": "break"
-     *                     }
-     *                 ]
-     *             },
-     *             "npeChain": {...}
-     *         }
+     *         "scopeSwitchingStack":
+     *              [ true, true, false, true],
+     *         "maxDepth": 5                             // Depth limit
      *     }
      * </pre>
      *
@@ -437,55 +428,17 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
             dump.setValue(chainsStackFieldName,
                     Arrays.stream(Arrays.copyOf(chainStack, stackIndex + 1)).map(IReceiverChain::getName).collect(Collectors.toList()));
 
-            // on restoration start in main chain module context ???
-            //scopeRestorationsStack[0] = true;
+            dump.setValue(scopeSwitchingStackFieldName,
+                    Arrays.stream(Arrays.copyOf(scopeSwitchingStack, stackIndex + 1)).collect(Collectors.toList()));
 
-            dump.setValue(scopeRestorationsStackFieldName,
-                    Arrays.stream(Arrays.copyOf(scopeRestorationsStack, stackIndex + 1)).collect(Collectors.toList()));
+            // KAA
+            // ToDo: should we put to dump the module and scope of module in which sequence was initialized
+            // ToDo: to restore in this module and scope context
 
-            // after dump restore original value which is always false ???
-            //scopeRestorationsStack[0] = false;
-
-            // ToDo: check if entire chain dump is necessary ?
-            /*
-            Object skipChains = options.getValue(skipChainsFieldName);
-            Object excludeExceptional = options.getValue(excludeExceptionalFieldName);
-
-            if (skipChains == null || !(boolean) skipChains) {
-                IObject chainsDump = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
-
-                dump.setValue(chainsDumpFieldName, chainsDump);
-
-                Set<IReceiverChain> dumpedChains = new HashSet<>();
-
-                for (int i = 0; i <= stackIndex; i++) {
-                    addChainsToDump(dumpedChains, chainStack[i],
-                            excludeExceptional != null && (boolean) excludeExceptional);
-                }
-
-                for (IReceiverChain chain : dumpedChains) {
-                    Object chainDump = IOC.resolve(Keys.getOrAdd("make dump"), chain, options);
-                    IFieldName fieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), chain.getId());
-
-                    chainsDump.setValue(fieldName, chainDump);
-                }
-            }
-            */
             return dump;
         } catch (ResolutionException | ChangeValueException | InvalidArgumentException
                 /*| ReadValueException | ChainNotFoundException*/ e) {
             throw new DumpException("Error occurred creating dump of message processing sequence.", e);
         }
     }
-
-    /*
-    private void addChainsToDump(final Set<IReceiverChain> toDump, final IReceiverChain chain, final boolean skipExceptional)
-            throws ChainNotFoundException, ResolutionException {
-        if (toDump.add(chain) && !skipExceptional) {
-            for (Object exceptionalChain : chain.getExceptionalChainNames()) {
-                addChainsToDump(toDump, resolveChain(exceptionalChain, message), false);
-            }
-        }
-    }
-    */
 }

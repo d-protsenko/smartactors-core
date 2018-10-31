@@ -30,4 +30,6 @@ public interface IModule {
     <T> T getFromMap(Map<IModule, T> objects);
 
     <T> T removeFromMap(Map<IModule, T> objects);
+
+    <T> T putToMap(Map<IModule, T> objects, T object);
 }

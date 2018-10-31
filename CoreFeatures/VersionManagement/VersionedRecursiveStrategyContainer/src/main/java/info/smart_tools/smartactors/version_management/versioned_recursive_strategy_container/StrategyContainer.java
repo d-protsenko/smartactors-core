@@ -72,7 +72,7 @@ public class StrategyContainer implements IStrategyContainer {
             strategyVersions = new ConcurrentHashMap<>();
             strategyStorage.put(key, strategyVersions);
         }
-        strategyVersions.put(ModuleManager.getCurrentModule(), strategy);
+        ModuleManager.putToMap(strategyVersions, strategy);
     }
 
     /**
@@ -86,19 +86,9 @@ public class StrategyContainer implements IStrategyContainer {
             throws StrategyContainerException {
         Map<IModule, IResolveDependencyStrategy> strategyVersions = strategyStorage.get(key);
         if (strategyVersions != null) {
-            IResolveDependencyStrategy strategy = ModuleManager.removeFromMap(strategyVersions);
-            if (strategy != null) {
-                if (strategyVersions.size() == 0) {
-                    strategyStorage.remove(key);
-                }
-            } else {
-                if (parent != null) {
-                    parent.remove(key);
-                }
-            }
-        } else {
-            if (parent != null) {
-                parent.remove(key);
+            ModuleManager.removeFromMap(strategyVersions);
+            if (strategyVersions.size() == 0) {
+                strategyStorage.remove(key);
             }
         }
     }

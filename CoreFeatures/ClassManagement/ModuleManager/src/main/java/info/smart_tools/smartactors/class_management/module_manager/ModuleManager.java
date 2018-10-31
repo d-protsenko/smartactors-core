@@ -80,4 +80,6 @@ public final class ModuleManager {
     public static <T> T getFromMap(Map<IModule, T> objects) { return getCurrentModule().getFromMap(objects); }
 
     public static <T> T removeFromMap(Map<IModule, T> objects) { return getCurrentModule().removeFromMap(objects); }
+
+    public static <T> T putToMap(Map<IModule, T> objects, T object) { return getCurrentModule().putToMap(objects, object); }
 }

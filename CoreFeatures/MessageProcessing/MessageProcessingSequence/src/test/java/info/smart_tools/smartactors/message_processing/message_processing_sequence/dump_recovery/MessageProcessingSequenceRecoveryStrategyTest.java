@@ -16,9 +16,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRoute
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
-import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
@@ -114,7 +112,7 @@ public class MessageProcessingSequenceRecoveryStrategyTest extends PluginsLoadin
         assertEquals(4, sequence.getStepAtLevel(1));
         assertEquals(1, sequence.getStepAtLevel(0));
 
-        sequence.setScopeRestorationChainName("a");
+        sequence.setScopeSwitchingChainName("a");
         sequence.callChain("a");
         try {
             sequence.callChain("a");

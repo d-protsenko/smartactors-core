@@ -75,7 +75,7 @@ public class VersionedMapRouter implements IRouter {
             }
         }
 
-        IMessageReceiver oldReceiver = versions.put(currentModule, receiver);
+        IMessageReceiver oldReceiver = ModuleManager.putToMap(versions, receiver);
 
         if (null != oldReceiver) {
             System.out.println(MessageFormat.format("[WARNING] Replacing receiver ({0}) registered as ''{1}'' by {2}",
@@ -89,7 +89,7 @@ public class VersionedMapRouter implements IRouter {
         Map<IModule, IMessageReceiver> versions = map.get(targetId);
 
         if (versions != null) {
-            receiver = versions.remove(ModuleManager.getCurrentModule());
+            receiver = ModuleManager.removeFromMap(versions);
             if (versions.size() == 0) {
                 map.remove(targetId);
             }

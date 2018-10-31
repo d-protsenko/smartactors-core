@@ -98,7 +98,7 @@ public interface IMessageProcessingSequence {
      *
      * @param chainName    the name of chain to call
      */
-    void setScopeRestorationChainName(Object chainName);
+    void setScopeSwitchingChainName(Object chainName);
 
     /**
      * Interrupt execution of current chain by execution of a given one and when it is completed continue the previous.

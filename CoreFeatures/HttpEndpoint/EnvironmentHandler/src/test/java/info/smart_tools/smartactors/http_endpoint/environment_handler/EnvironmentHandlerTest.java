@@ -85,7 +85,8 @@ public class EnvironmentHandlerTest {
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
-                                return new MessageProcessingSequence((int) args[0], args[1], (IObject)args[2]);
+                                boolean switchScopeOnStartup = args.length > 3 ? (Boolean)args[3] : true;
+                                return new MessageProcessingSequence((int) args[0], args[1], (IObject)args[2], switchScopeOnStartup);
                             } catch (InvalidArgumentException | ResolutionException | ChainNotFoundException ignored) {
                             }
                             return null;

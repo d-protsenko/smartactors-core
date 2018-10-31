@@ -175,7 +175,7 @@ public class DebuggerSequenceImpl implements IDebuggerSequence, IDumpable {
     }
 
     @Override
-    public void setScopeRestorationChainName(Object chainName) { wrapped.setScopeRestorationChainName(chainName); }
+    public void setScopeSwitchingChainName(Object chainName) { wrapped.setScopeSwitchingChainName(chainName); }
 
     @Override
     public void callChain(final Object chainName)
