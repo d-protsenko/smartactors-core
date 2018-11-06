@@ -47,7 +47,7 @@ public class SampleDBActorPlugin implements IPlugin {
             item
                 .process(() -> {
                 try {
-                    IOC.register(Keys.getOrAdd("PostgresConnectionOptions"), new IResolveDependencyStrategy() {
+                    IOC.register(Keys.getKeyByName("PostgresConnectionOptions"), new IResolveDependencyStrategy() {
                         @Override
                         public ConnectionOptions resolve(Object... args) throws ResolveDependencyStrategyException {
                             Properties connectionProperties = new Properties();
@@ -88,7 +88,7 @@ public class SampleDBActorPlugin implements IPlugin {
                             }
                         }
                     });
-                    IOC.register(Keys.getOrAdd("SampleDBActor"), new IResolveDependencyStrategy() {
+                    IOC.register(Keys.getKeyByName("SampleDBActor"), new IResolveDependencyStrategy() {
                         @Override
                         public SampleDBActor resolve(Object... args) throws ResolveDependencyStrategyException {
                             try {

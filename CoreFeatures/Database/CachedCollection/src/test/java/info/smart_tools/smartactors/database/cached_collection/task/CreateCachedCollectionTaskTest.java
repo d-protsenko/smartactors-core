@@ -37,7 +37,7 @@ public class CreateCachedCollectionTaskTest {
     private IField keyNameField;
     private IField indexesField;
 
-    private Key keyForGetOrAdd;
+    private Key keyForGetKeyByName;
 
     private static final String ORDERED_INDEX = "ordered";
     private static final String DATE_TIME_INDEX = "datetime";
@@ -50,7 +50,7 @@ public class CreateCachedCollectionTaskTest {
         keyNameField = PowerMockito.mock(IField.class);
         indexesField = PowerMockito.mock(IField.class);
         IKey keyField = PowerMockito.mock(IKey.class);
-        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(keyField);
+        when(Keys.getKeyByName(IField.class.getCanonicalName())).thenReturn(keyField);
         when(IOC.resolve(keyField, "keyName")).thenReturn(keyNameField);
         when(IOC.resolve(keyField, "indexes")).thenReturn(indexesField);
 
@@ -58,8 +58,8 @@ public class CreateCachedCollectionTaskTest {
 
         testTask = new CreateCachedCollectionTask(task);
 
-        keyForGetOrAdd = mock(Key.class);
-        when(Keys.getOrAdd(CreateCachedCollectionQuery.class.toString())).thenReturn(keyForGetOrAdd);
+        keyForGetKeyByName = mock(Key.class);
+        when(Keys.getKeyByName(CreateCachedCollectionQuery.class.toString())).thenReturn(keyForGetKeyByName);
     }
 
     @Test

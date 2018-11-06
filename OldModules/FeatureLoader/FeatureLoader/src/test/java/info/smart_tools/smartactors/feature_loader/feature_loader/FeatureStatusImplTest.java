@@ -62,7 +62,7 @@ public class FeatureStatusImplTest {
         mockStatic(IOC.class, Keys.class);
 
         taskQueueMock = mock(IQueue.class);
-        when(Keys.getOrAdd(eq("task_queue"))).thenReturn(taskQueueKey);
+        when(Keys.getKeyByName(eq("task_queue"))).thenReturn(taskQueueKey);
         when(IOC.resolve(taskQueueKey)).thenReturn(taskQueueMock);
 
         loadActionMock = mock(IBiAction.class);

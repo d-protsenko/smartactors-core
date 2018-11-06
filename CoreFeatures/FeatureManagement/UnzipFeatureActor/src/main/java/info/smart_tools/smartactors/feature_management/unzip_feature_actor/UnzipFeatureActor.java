@@ -47,8 +47,8 @@ public class UnzipFeatureActor {
      */
     public UnzipFeatureActor()
             throws ResolutionException {
-        this.dependenciesFieldName = IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "afterFeatures");
-        this.featureNameFN =         IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "featureName");
+        this.dependenciesFieldName = IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "afterFeatures");
+        this.featureNameFN =         IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "featureName");
 
         //TODO: need refactoring. This actions would be took out to the plugin.
         this.unzipFunctions = new HashMap<String, IBiFunction<File, IFeature, File>>(){{
@@ -190,7 +190,7 @@ public class UnzipFeatureActor {
     private void updateFeature(final File f, final IFeature feature)
             throws Exception {
         String content = new Scanner(f).useDelimiter(END_OF_INPUT_DELIMITER).next();
-        IObject config = IOC.resolve(Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME), content);
+        IObject config = IOC.resolve(Keys.getKeyByName(IOBJECT_FACTORY_STRATEGY_NAME), content);
         List<String> dependencies = (List<String>) config.getValue(this.dependenciesFieldName);
         String fullFeatureName = (String) config.getValue(this.featureNameFN);
         String[] featureNames = parseFullName(fullFeatureName);

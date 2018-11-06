@@ -41,12 +41,12 @@ public class IFieldPlugin implements IPlugin {
                 .after("IOC")
                 .process(() -> {
                     try {
-                        IKey fieldKey = Keys.getOrAdd(IField.class.getCanonicalName());
+                        IKey fieldKey = Keys.getKeyByName(IField.class.getCanonicalName());
                         IOC.register(fieldKey, new ResolveByNameIocStrategy(
                             (args) -> {
                                 String fieldName = String.valueOf(args[0]);
                                 try {
-                                    return new Field(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), fieldName));
+                                    return new Field(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), fieldName));
                                 } catch (InvalidArgumentException | ResolutionException e) {
                                     throw new RuntimeException("Can't resolve IField: ", e);
                                 }
@@ -63,7 +63,7 @@ public class IFieldPlugin implements IPlugin {
                     String itemName = "IFieldPlugin";
                     String keyName = IField.class.getCanonicalName();
                     try {
-                        IOC.remove(Keys.getOrAdd(keyName));
+                        IOC.remove(Keys.getKeyByName(keyName));
                     } catch(DeletionException e) {
                         System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                     } catch (ResolutionException e) { }

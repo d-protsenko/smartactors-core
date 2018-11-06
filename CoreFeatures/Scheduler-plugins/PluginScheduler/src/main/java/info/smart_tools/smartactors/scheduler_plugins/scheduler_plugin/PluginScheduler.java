@@ -60,15 +60,15 @@ public class PluginScheduler extends BootstrapPlugin {
         IResolveDependencyStrategy blockingMessageActionS = new SingletonStrategy(new BlockingMessageSchedulerAction());
 
         IOC.register(
-                Keys.getOrAdd("blocking message scheduler action"),
+                Keys.getKeyByName("blocking message scheduler action"),
                 blockingMessageActionS
         );
         IOC.register(
-                Keys.getOrAdd("non-blocking scheduler action"),
+                Keys.getKeyByName("non-blocking scheduler action"),
                 nonBlockingMessageActionS
         );
         IOC.register(
-                Keys.getOrAdd("default scheduler action"),
+                Keys.getKeyByName("default scheduler action"),
                 nonBlockingMessageActionS
         );
     }
@@ -84,7 +84,7 @@ public class PluginScheduler extends BootstrapPlugin {
     public void registerEntry()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
-                Keys.getOrAdd("new scheduler entry"),
+                Keys.getKeyByName("new scheduler entry"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     try {
                         return EntryImpl.newEntry((IObject) args[0], (ISchedulerEntryStorage) args[1]);
@@ -94,7 +94,7 @@ public class PluginScheduler extends BootstrapPlugin {
                 })
         );
         IOC.register(
-                Keys.getOrAdd("restore scheduler entry"),
+                Keys.getKeyByName("restore scheduler entry"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     try {
                         return EntryImpl.restoreEntry((IObject) args[0], (ISchedulerEntryStorage) args[1]);
@@ -125,22 +125,22 @@ public class PluginScheduler extends BootstrapPlugin {
     public void registerDefaultRefreshIntervals()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         // RRI = BASE_INTERVAL sec
-        IOC.register(Keys.getOrAdd("scheduler storage refresh interval: rri"),
+        IOC.register(Keys.getKeyByName("scheduler storage refresh interval: rri"),
                 new SingletonStrategy(DEFAULT_BASE_REFRESH_INTERVAL));
         // RAI = 1.5 * BASE_INTERVAL sec
-        IOC.register(Keys.getOrAdd("scheduler storage refresh interval: rai"),
+        IOC.register(Keys.getKeyByName("scheduler storage refresh interval: rai"),
                 new SingletonStrategy(DEFAULT_BASE_REFRESH_INTERVAL + DEFAULT_BASE_REFRESH_INTERVAL / 2));
         // RSI = 2 * BASE_INTERVAL sec
-        IOC.register(Keys.getOrAdd("scheduler storage refresh interval: rsi"),
+        IOC.register(Keys.getKeyByName("scheduler storage refresh interval: rsi"),
                 new SingletonStrategy(DEFAULT_BASE_REFRESH_INTERVAL * 2));
 
-        IOC.register(Keys.getOrAdd("scheduler storage refresh max page size"),
+        IOC.register(Keys.getKeyByName("scheduler storage refresh max page size"),
                 new SingletonStrategy(DEFAULT_REFRESH_PAGE_SIZE_MAX));
 
-        IOC.register(Keys.getOrAdd("scheduler storage refresh min page size"),
+        IOC.register(Keys.getKeyByName("scheduler storage refresh min page size"),
                 new SingletonStrategy(DEFAULT_REFRESH_PAGE_SIZE_MIN));
 
-        IOC.register(Keys.getOrAdd("scheduler storage refresh local entries limit"),
+        IOC.register(Keys.getKeyByName("scheduler storage refresh local entries limit"),
                 new SingletonStrategy(DEFAULT_REFRESH_LOCAL_ENTRIES));
     }
 
@@ -158,17 +158,17 @@ public class PluginScheduler extends BootstrapPlugin {
     })
     public void registerRefresher()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("scheduler entry storage refresher"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.getKeyByName("scheduler entry storage refresher"), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
                 EntryStorage storage = (EntryStorage) args[0];
                 IRemoteEntryStorage remoteEntryStorage = (IRemoteEntryStorage) args[1];
 
-                long rrInterval = IOC.resolve(Keys.getOrAdd("scheduler storage refresh interval: rri"), args);
-                long raInterval = IOC.resolve(Keys.getOrAdd("scheduler storage refresh interval: rai"), args);
-                long rsInterval = IOC.resolve(Keys.getOrAdd("scheduler storage refresh interval: rsi"), args);
-                int refreshPageSize = IOC.<Number>resolve(Keys.getOrAdd("scheduler storage refresh max page size"), args).intValue();
-                int refreshMinPageSize = IOC.<Number>resolve(Keys.getOrAdd("scheduler storage refresh min page size"), args).intValue();
-                int maxLocalEntries = IOC.<Number>resolve(Keys.getOrAdd("scheduler storage refresh local entries limit"), args).intValue();
+                long rrInterval = IOC.resolve(Keys.getKeyByName("scheduler storage refresh interval: rri"), args);
+                long raInterval = IOC.resolve(Keys.getKeyByName("scheduler storage refresh interval: rai"), args);
+                long rsInterval = IOC.resolve(Keys.getKeyByName("scheduler storage refresh interval: rsi"), args);
+                int refreshPageSize = IOC.<Number>resolve(Keys.getKeyByName("scheduler storage refresh max page size"), args).intValue();
+                int refreshMinPageSize = IOC.<Number>resolve(Keys.getKeyByName("scheduler storage refresh min page size"), args).intValue();
+                int maxLocalEntries = IOC.<Number>resolve(Keys.getKeyByName("scheduler storage refresh local entries limit"), args).intValue();
                 return new EntryStorageRefresher(
                         storage, remoteEntryStorage, rrInterval, raInterval, rsInterval, refreshPageSize, refreshMinPageSize, maxLocalEntries);
             } catch (ClassCastException | ResolutionException e) {
@@ -187,7 +187,7 @@ public class PluginScheduler extends BootstrapPlugin {
     @Item("timer_service")
     public void registerTimerService()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("new timer service"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.getKeyByName("new timer service"), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
                 ITimer timer = (ITimer) args[0];
                 return new SchedulerTimer(timer);
@@ -211,18 +211,18 @@ public class PluginScheduler extends BootstrapPlugin {
     })
     public void registerStorage()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("new scheduler service"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.getKeyByName("new scheduler service"), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
                 ISchedulerEntryStorageObserver observer = (args.length > 2) ? (ISchedulerEntryStorageObserver) args[2] : null;
                 IRemoteEntryStorage remoteEntryStorage = new DatabaseRemoteStorage((IPool) args[0], (String) args[1]);
 
-                Object systemTimer = IOC.resolve(Keys.getOrAdd("timer"));
-                IDelayedSynchronousService timerService = IOC.resolve(Keys.getOrAdd("new timer service"), systemTimer);
+                Object systemTimer = IOC.resolve(Keys.getKeyByName("timer"));
+                IDelayedSynchronousService timerService = IOC.resolve(Keys.getKeyByName("new timer service"), systemTimer);
 
                 EntryStorage storage = new EntryStorage(remoteEntryStorage, observer, (ITimer) timerService);
 
                 ISchedulerStorageRefresher refresher = IOC.resolve(
-                        Keys.getOrAdd("scheduler entry storage refresher"),
+                        Keys.getKeyByName("scheduler entry storage refresher"),
                         storage, remoteEntryStorage);
 
                 return new SchedulingService(timerService, refresher, storage);
@@ -230,7 +230,7 @@ public class PluginScheduler extends BootstrapPlugin {
                 throw new FunctionExecutionException(e);
             }
         }));
-        IOC.register(Keys.getOrAdd("local only scheduler entry storage"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.getKeyByName("local only scheduler entry storage"), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
                 ISchedulerEntryStorageObserver observer = (args.length > 0) ? (ISchedulerEntryStorageObserver) args[0] : null;
                 return new EntryStorage(NullRemoteStorage.INSTANCE,  observer);
@@ -250,7 +250,7 @@ public class PluginScheduler extends BootstrapPlugin {
     @Item("default_scheduler_actor_service_activation_action")
     public void registerDefaultActivationAction()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("scheduler service activation action for scheduler actor"),
+        IOC.register(Keys.getKeyByName("scheduler service activation action for scheduler actor"),
                 new SingletonStrategy((IAction<ISchedulerService>) service -> { }));
     }
 
@@ -265,7 +265,7 @@ public class PluginScheduler extends BootstrapPlugin {
     @Item("scheduler_pre_shutdown_mode_entry_filter")
     public void registerPreShutdownModeEntryFilter()
             throws ResolutionException, InvalidArgumentException, RegistrationException {
-        IOC.register(Keys.getOrAdd("pre shutdown mode entry filter"),
+        IOC.register(Keys.getKeyByName("pre shutdown mode entry filter"),
                 new SingletonStrategy(new SchedulerPreShutdownModeEntryFilter()));
     }
 
@@ -285,7 +285,7 @@ public class PluginScheduler extends BootstrapPlugin {
     })
     public void registerActor()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("scheduler actor"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.getKeyByName("scheduler actor"), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
                 return new SchedulerActor((IObject) args[0]);
             } catch (Exception e) {

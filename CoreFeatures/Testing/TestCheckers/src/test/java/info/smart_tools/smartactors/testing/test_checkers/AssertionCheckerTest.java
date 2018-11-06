@@ -61,14 +61,14 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
 
         Mockito.when(messageProcessorMock.getEnvironment()).thenReturn(environmentMock);
 
-        IOC.register(Keys.getOrAdd("assertion of type atype1"), new SingletonStrategy(assertion1Mock));
-        IOC.register(Keys.getOrAdd("assertion of type atype2"), new SingletonStrategy(assertion2Mock));
+        IOC.register(Keys.getKeyByName("assertion of type atype1"), new SingletonStrategy(assertion1Mock));
+        IOC.register(Keys.getKeyByName("assertion of type atype2"), new SingletonStrategy(assertion2Mock));
     }
 
     @Test(expected = InitializationException.class)
     public void Should_constructorThrowWhenCannotResolveAssertionDependency()
             throws Exception {
-        IObject a1desc = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject a1desc = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'type': 'nonexist', 'name': 'Nope'}".replace('\'', '"'));
 
         new AssertionChecker(Collections.singletonList(a1desc));
@@ -77,10 +77,10 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
     @Test(expected = InitializationException.class)
     public void Should_constructorThrowWhenCannotResolveFieldNameDependency()
             throws Exception {
-        IObject a1desc = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject a1desc = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'type': 'atype1', 'name': 'Nope'}".replace('\'', '"'));
 
-        IOC.remove(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"));
+        IOC.remove(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"));
 
         new AssertionChecker(Collections.singletonList(a1desc));
     }
@@ -88,7 +88,7 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
     @Test(expected = InitializationException.class)
     public void Should_constructorThrowWhenCannotResolveIObjectDependency()
             throws Exception {
-        IObject a1desc = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject a1desc = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'type': 'atype1', 'name': 'Nope'}".replace('\'', '"'));
 
         IResolveDependencyStrategy strategy = new ApplyFunctionToArgumentsStrategy(
@@ -115,7 +115,7 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
     @Test
     public void Should_checkAssertions()
             throws Exception {
-        IObject a1desc = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject a1desc = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'type': 'atype1', 'name': 'Ass1'}".replace('\'', '"'));
 
         AssertionChecker checker = new AssertionChecker(Collections.singletonList(a1desc));
@@ -126,7 +126,7 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
     @Test(expected = AssertionFailureException.class)
     public void Should_throwWhenCannotReadValueFromEnvironment()
             throws Exception {
-        IObject a1desc = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject a1desc = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'type': 'atype1', 'name': 'Ass1'}".replace('\'', '"'));
 
         Mockito.when(environmentMock.getValue(Matchers.any())).thenThrow(ReadValueException.class);
@@ -139,7 +139,7 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
     @Test(expected = AssertionFailureException.class)
     public void Should_throwWhenAssertionFails()
             throws Exception {
-        IObject a1desc = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject a1desc = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'type': 'atype1', 'name': 'Ass1'}".replace('\'', '"'));
 
         Mockito.doThrow(AssertionFailureException.class).when(assertion1Mock).check(Matchers.same(a1desc), Matchers.any());
@@ -152,7 +152,7 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
     @Test(expected = AssertionFailureException.class)
     public void Should_throwWhenExceptionOccurs()
             throws Exception {
-        IObject a1desc = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject a1desc = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'type': 'atype1', 'name': 'Ass1'}".replace('\'', '"'));
 
         Mockito.doThrow(AssertionFailureException.class).when(assertion1Mock).check(Matchers.same(a1desc), Matchers.any());
@@ -165,7 +165,7 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
     @Test
     public void Should_createWrapperDescription()
             throws Exception {
-        IAdditionDependencyStrategy strategy = IOC.resolve(Keys.getOrAdd("expandable_strategy#resolve key for configuration object"));
+        IAdditionDependencyStrategy strategy = IOC.resolve(Keys.getKeyByName("expandable_strategy#resolve key for configuration object"));
         strategy.register("in_", new ApplyFunctionToArgumentsStrategy(
                 (a) -> {
                     try {
@@ -185,7 +185,7 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
                 })
         );
 
-        IObject a1desc = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject a1desc = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'type': 'atype1', 'name': 'Ass1', 'value': 'message/x'}".replace('\'', '"'));
 
         Mockito.doThrow(AssertionFailureException.class).when(assertion1Mock).check(Matchers.same(a1desc), Matchers.any());

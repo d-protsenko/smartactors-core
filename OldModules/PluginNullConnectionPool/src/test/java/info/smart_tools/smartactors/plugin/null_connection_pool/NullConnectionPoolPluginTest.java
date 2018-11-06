@@ -28,18 +28,18 @@ public class NullConnectionPoolPluginTest {
 
     @Test
     public void testPoolRegistered() throws Exception {
-        assertTrue(IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool")) instanceof IPool);
+        assertTrue(IOC.resolve(Keys.getKeyByName("DatabaseConnectionPool")) instanceof IPool);
     }
 
     @Test
     public void testPoolRegisteredWithOptions() throws Exception {
         ConnectionOptions options = mock(ConnectionOptions.class);
-        assertTrue(IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool"), options) instanceof IPool);
+        assertTrue(IOC.resolve(Keys.getKeyByName("DatabaseConnectionPool"), options) instanceof IPool);
     }
 
     @Test
     public void testPoolGuarded() throws Exception {
-        IPool pool = IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool"));
+        IPool pool = IOC.resolve(Keys.getKeyByName("DatabaseConnectionPool"));
         try (PoolGuard guard = new PoolGuard(pool)) {
             assertTrue(guard.getObject() instanceof IStorageConnection);
         }

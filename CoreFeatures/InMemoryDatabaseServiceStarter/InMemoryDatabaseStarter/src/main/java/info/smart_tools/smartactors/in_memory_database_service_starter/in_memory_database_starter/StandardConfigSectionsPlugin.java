@@ -46,7 +46,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =
-                                    IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
+                                    IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
 
                             configurationManager.addSectionStrategy(new InMemoryDBSectionProcessingStrategy());
                         } catch (ResolutionException | InvalidArgumentException e) {
@@ -54,7 +54,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                         }
                     });
             bootstrap.add(inMemoryDatabaseItem);
-            IOC.register(Keys.getOrAdd("IObjectByString"), new ApplyFunctionToArgumentsStrategy(
+            IOC.register(Keys.getKeyByName("IObjectByString"), new ApplyFunctionToArgumentsStrategy(
                             (args) ->
                                     new DSObject((String) args[0])
                     )

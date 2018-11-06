@@ -47,8 +47,8 @@ public class MapsSectionProcessingStrategy implements ISectionStrategy {
      */
     public MapsSectionProcessingStrategy()
             throws ResolutionException {
-        this.name = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maps");
-        this.mapIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id");
+        this.name = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maps");
+        this.mapIdFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id");
     }
 
     @Override
@@ -57,10 +57,10 @@ public class MapsSectionProcessingStrategy implements ISectionStrategy {
         try {
             List<IObject> section = (List<IObject>) config.getValue(name);
 
-            IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
+            IChainStorage chainStorage = IOC.resolve(Keys.getKeyByName(IChainStorage.class.getCanonicalName()));
 
             for (IObject mapDescription : section) {
-                Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), mapDescription.getValue(mapIdFieldName));
+                Object chainId = IOC.resolve(Keys.getKeyByName("chain_id_from_map_name"), mapDescription.getValue(mapIdFieldName));
                 try {
                     chainStorage.register(chainId, mapDescription);
                 } catch (ChainCreationException e) {
@@ -79,13 +79,13 @@ public class MapsSectionProcessingStrategy implements ISectionStrategy {
         try {
             List<IObject> section = (List<IObject>) config.getValue(name);
             ListIterator<IObject> sectionIterator = section.listIterator(section.size());
-            IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
+            IChainStorage chainStorage = IOC.resolve(Keys.getKeyByName(IChainStorage.class.getCanonicalName()));
             IObject mapDescription;
 
             while (sectionIterator.hasPrevious()) {
                 mapDescription = sectionIterator.previous();
                 try {
-                    Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), mapDescription.getValue(mapIdFieldName));
+                    Object chainId = IOC.resolve(Keys.getKeyByName("chain_id_from_map_name"), mapDescription.getValue(mapIdFieldName));
                     chainStorage.unregister(chainId);
                 } catch (InvalidArgumentException | ReadValueException | ResolutionException e) {
                     exception.addSuppressed(e);

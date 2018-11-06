@@ -28,7 +28,7 @@ public class SaveTimestampReceiver implements IMessageReceiver {
     public SaveTimestampReceiver(final IFieldName fieldName)
             throws ResolutionException {
         this.timeContextField = fieldName;
-        this.systemTime = IOC.resolve(Keys.getOrAdd("time"));
+        this.systemTime = IOC.resolve(Keys.getKeyByName("time"));
     }
 
     @Override

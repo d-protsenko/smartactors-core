@@ -69,7 +69,7 @@ public class FeaturesCreatorActorTest {
                         }
                 )
         );
-        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     if (args.length == 0) {
                         return new DSObject();
@@ -154,7 +154,7 @@ public class FeaturesCreatorActorTest {
     public void checkCreationFeatureByMessageMethodBasedOnJsonFile()
             throws Exception {
         List<IObject> repositoryStorage = new ArrayList<>();
-        IOC.register(Keys.getOrAdd("feature-repositories"), new SingletonStrategy(repositoryStorage));
+        IOC.register(Keys.getKeyByName("feature-repositories"), new SingletonStrategy(repositoryStorage));
 
         FeaturesCreatorActor actor = new FeaturesCreatorActor();
         CreateFeaturesWrapper wrapper = mock(CreateFeaturesWrapper.class);
@@ -204,7 +204,7 @@ public class FeaturesCreatorActorTest {
     public void checkCreationFeatureByMessageMethodBasedOnZipFile()
             throws Exception {
         List<IObject> repositoryStorage = new ArrayList<>();
-        IOC.register(Keys.getOrAdd("feature-repositories"), new SingletonStrategy(repositoryStorage));
+        IOC.register(Keys.getKeyByName("feature-repositories"), new SingletonStrategy(repositoryStorage));
 
         FeaturesCreatorActor actor = new FeaturesCreatorActor();
         CreateFeaturesWrapper wrapper = mock(CreateFeaturesWrapper.class);

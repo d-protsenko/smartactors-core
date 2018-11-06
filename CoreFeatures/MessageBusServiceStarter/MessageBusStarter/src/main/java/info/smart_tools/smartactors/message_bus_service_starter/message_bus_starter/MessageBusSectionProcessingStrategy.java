@@ -65,13 +65,13 @@ public class MessageBusSectionProcessingStrategy implements ISectionStrategy {
         try {
             IObject messageBusObject = (IObject) config.getValue(name);
 
-            IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
+            IQueue<ITask> queue = IOC.resolve(Keys.getKeyByName("task_queue"));
 
             Integer stackDepth = Integer.valueOf(String.valueOf(messageBusObject.getValue(stackDepthFieldName)));
 
             String startChainName = (String) messageBusObject.getValue(startChainNameFieldName);
 
-            IAction<IObject> finalAction = IOC.resolve(Keys.getOrAdd("send response action"));
+            IAction<IObject> finalAction = IOC.resolve(Keys.getKeyByName("send response action"));
 
             IMessageBusHandler handler = new MessageBusHandler(queue, stackDepth, startChainName, finalAction);
 

@@ -38,10 +38,10 @@ public class CheckpointAutoStartupPlugin extends BootstrapPlugin {
     @Item("checkpoint_actor_delayed_startup_action")
     public void doSomeThing()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("scheduler service activation action for checkpoint actor"),
+        IOC.register(Keys.getKeyByName("scheduler service activation action for checkpoint actor"),
                 new SingletonStrategy((IAction<ISchedulerService>) service -> {
                     try {
-                        IQueue<ITask> featureLoadCompletionQueue = IOC.resolve(Keys.getOrAdd("feature group load completion task queue"));
+                        IQueue<ITask> featureLoadCompletionQueue = IOC.resolve(Keys.getKeyByName("feature group load completion task queue"));
                         featureLoadCompletionQueue.put(() -> {
                             try {
                                 service.start();

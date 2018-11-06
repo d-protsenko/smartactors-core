@@ -34,6 +34,6 @@ public class PluginDebuggerActor extends BootstrapPlugin {
     @After({"debugger:session"})
     public void registerActor()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("debugger actor"), new ApplyFunctionToArgumentsStrategy(args -> new DebuggerActor()));
+        IOC.register(Keys.getKeyByName("debugger actor"), new ApplyFunctionToArgumentsStrategy(args -> new DebuggerActor()));
     }
 }

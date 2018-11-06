@@ -34,7 +34,7 @@ final class SearchClauses {
      * @throws Exception if the clause cannot be written
      */
     static void writeSearchWhere(final QueryStatement statement, final IObject criteria) throws Exception {
-        IKey fieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey fieldNameKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         Writer body = statement.getBodyWriter();
         try {
             IFieldName filterField = IOC.resolve(fieldNameKey, "filter");
@@ -57,7 +57,7 @@ final class SearchClauses {
      * @throws Exception if the clause cannot be written
      */
     static void writeSearchOrder(final QueryStatement statement, final IObject criteria) throws Exception {
-        IKey fieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey fieldNameKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         Writer body = statement.getBodyWriter();
         try {
             IFieldName sortField = IOC.resolve(fieldNameKey, "sort");
@@ -80,7 +80,7 @@ final class SearchClauses {
      * @throws Exception if the clause cannot be written
      */
     static void writeSearchPaging(final QueryStatement statement, final IObject criteria) throws Exception {
-        IKey fieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey fieldNameKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         Writer body = statement.getBodyWriter();
         try {
             IFieldName pageField = IOC.resolve(fieldNameKey, "page");

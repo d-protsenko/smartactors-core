@@ -63,16 +63,16 @@ public class FeaturesCreatorActor {
      */
     public FeaturesCreatorActor()
             throws ResolutionException {
-        this.featuresFN =        IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "features");
-        this.repositoriesFN =    IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "repositories");
-        this.nameFN =            IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "name");
-        this.groupFN =           IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "group");
-        this.versionFN =         IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "version");
-        this.featureLocationFN = IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "featureLocation");
-        this.packageTypeFN =     IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "packageType");
-        this.repositoryIdFN =    IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "repositoryId");
-        this.repositoryTypeFN =  IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "type");
-        this.repositoryUrlFN =   IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "url");
+        this.featuresFN =        IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "features");
+        this.repositoriesFN =    IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "repositories");
+        this.nameFN =            IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "name");
+        this.groupFN =           IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "group");
+        this.versionFN =         IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "version");
+        this.featureLocationFN = IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "featureLocation");
+        this.packageTypeFN =     IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "packageType");
+        this.repositoryIdFN =    IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "repositoryId");
+        this.repositoryTypeFN =  IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "type");
+        this.repositoryUrlFN =   IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "url");
 
         //TODO: need refactoring. This actions would be took out to the plugin.
         this.creationFunctions = new HashMap<String, IBiAction<File, CreateMessageWrapper>>(){{
@@ -136,7 +136,7 @@ public class FeaturesCreatorActor {
         try {
             Map<String, IFeature> features = new HashMap<>();
             List<IObject> repositories = wrapper.getRepositoriesDescription();
-            List<IObject> repositoryStorage = IOC.resolve(Keys.getOrAdd(IOC_FEATURE_REPOSITORY_STORAGE_NAME));
+            List<IObject> repositoryStorage = IOC.resolve(Keys.getKeyByName(IOC_FEATURE_REPOSITORY_STORAGE_NAME));
 
             for(IObject repository : repositories) {
                 boolean found = false;
@@ -188,7 +188,7 @@ public class FeaturesCreatorActor {
             Matcher matcher = pattern.matcher(file.getName());
             String version = matcher.find() ? matcher.group() : null;
             List<IObject> featuresDescription = new ArrayList<>();
-            IObject featureDescription = IOC.resolve(Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME));
+            IObject featureDescription = IOC.resolve(Keys.getKeyByName(IOBJECT_FACTORY_STRATEGY_NAME));
             featureDescription.setValue(this.nameFN, name);
             featureDescription.setValue(this.groupFN, null);
             featureDescription.setValue(this.versionFN, version);
@@ -206,7 +206,7 @@ public class FeaturesCreatorActor {
             throws FeatureCreationException {
         try {
             IObject jsonConfig = IOC.resolve(
-                    Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME),
+                    Keys.getKeyByName(IOBJECT_FACTORY_STRATEGY_NAME),
                     new Scanner(file).useDelimiter(END_OF_INPUT_DELIMITER).next()
             );
             return (List<IObject>) jsonConfig.getValue(fieldName);

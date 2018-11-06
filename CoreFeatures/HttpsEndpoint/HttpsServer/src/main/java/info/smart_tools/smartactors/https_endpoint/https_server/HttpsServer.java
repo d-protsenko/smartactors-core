@@ -48,7 +48,7 @@ public class HttpsServer extends TcpServer {
      */
     public void setSSL(final IObject configuration) throws ServerInitializationException {
         try {
-            this.engineProvider = IOC.resolve(Keys.getOrAdd(ISslEngineProvider.class.getCanonicalName()), configuration);
+            this.engineProvider = IOC.resolve(Keys.getKeyByName(ISslEngineProvider.class.getCanonicalName()), configuration);
         } catch (ResolutionException e) {
             throw new ServerInitializationException("Failed to resolve ssl context provider", e);
         }

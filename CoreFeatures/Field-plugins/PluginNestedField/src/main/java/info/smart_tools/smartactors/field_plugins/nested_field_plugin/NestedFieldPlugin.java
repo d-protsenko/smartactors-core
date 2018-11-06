@@ -39,7 +39,7 @@ public class NestedFieldPlugin implements IPlugin {
                     .after("IOC")
                     .process(() -> {
                         try {
-                            IKey fieldKey = Keys.getOrAdd(NestedField.class.getCanonicalName());
+                            IKey fieldKey = Keys.getKeyByName(NestedField.class.getCanonicalName());
                             IOC.register(fieldKey, new ResolveByNameIocStrategy(
                                     (args) -> {
                                         try {
@@ -62,7 +62,7 @@ public class NestedFieldPlugin implements IPlugin {
                         String keyName = NestedField.class.getCanonicalName();
 
                         try {
-                            IOC.remove(Keys.getOrAdd(keyName));
+                            IOC.remove(Keys.getKeyByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

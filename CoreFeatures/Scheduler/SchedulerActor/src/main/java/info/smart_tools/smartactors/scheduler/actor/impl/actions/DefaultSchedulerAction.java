@@ -32,9 +32,9 @@ public class DefaultSchedulerAction implements ISchedulerAction {
      */
     public DefaultSchedulerAction()
             throws ResolutionException {
-        messageFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
-        setEntryIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "setEntryId");
-        preShutdownExecFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "preShutdownExec");
+        messageFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
+        setEntryIdFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "setEntryId");
+        preShutdownExecFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "preShutdownExec");
     }
 
     @Override
@@ -50,7 +50,7 @@ public class DefaultSchedulerAction implements ISchedulerAction {
             String entryIdFieldFN = (String) args.getValue(setEntryIdFieldName);
 
             if (entryIdFieldFN != null && !entryIdFieldFN.isEmpty()) {
-                ((IObject) message).setValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), entryIdFieldFN), entry.getId());
+                ((IObject) message).setValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), entryIdFieldFN), entry.getId());
             }
 
             entry.getState().setValue(messageFieldName, message);
@@ -71,7 +71,7 @@ public class DefaultSchedulerAction implements ISchedulerAction {
 
             String serialized = message.serialize();
 
-            message = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), serialized);
+            message = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), serialized);
 
             MessageBus.send(message);
         } catch (ReadValueException | InvalidArgumentException | SendingMessageException | SerializeException | ResolutionException e) {

@@ -42,12 +42,12 @@ public class CheckpointFibonacciRepeatStrategyTest extends PluginsLoadingTestBas
 
     private void makeEntry(final String stateSrc) throws Exception {
         entryMock = mock(ISchedulerEntry.class);
-        entryState = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), stateSrc.replace('\'','"'));
+        entryState = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), stateSrc.replace('\'','"'));
         when(entryMock.getState()).thenReturn(entryState);
     }
 
     private IObject makeArgs(final String src) throws Exception {
-        return IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), src.replace('\'','"'));
+        return IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), src.replace('\'','"'));
     }
 
 
@@ -73,7 +73,7 @@ public class CheckpointFibonacciRepeatStrategyTest extends PluginsLoadingTestBas
         verify(entryMock).scheduleNext(eq(13666L + Duration.parse("PT2M4S").toMillis() * (1)));
         verify(entryMock).save();
 
-        assertNull(entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "completed")));
+        assertNull(entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "completed")));
 
         reset(entryMock);
 
@@ -86,7 +86,7 @@ public class CheckpointFibonacciRepeatStrategyTest extends PluginsLoadingTestBas
         verify(entryMock).scheduleNext(eq(13666L + Duration.parse("PT2M4S").toMillis() * (1 + 1)));
         verify(entryMock).save();
 
-        assertNull(entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "completed")));
+        assertNull(entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "completed")));
 
         reset(entryMock);
 
@@ -99,7 +99,7 @@ public class CheckpointFibonacciRepeatStrategyTest extends PluginsLoadingTestBas
         verify(entryMock).scheduleNext(eq(13666L + Duration.parse("PT2M4S").toMillis() * (1 + 2)));
         verify(entryMock).save();
 
-        assertNull(entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "completed")));
+        assertNull(entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "completed")));
 
         reset(entryMock);
 
@@ -112,7 +112,7 @@ public class CheckpointFibonacciRepeatStrategyTest extends PluginsLoadingTestBas
         verify(entryMock).scheduleNext(eq(13666L + Duration.parse("PT2M4S").toMillis() * (2 + 3)));
         verify(entryMock).save();
 
-        assertNull(entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "completed")));
+        assertNull(entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "completed")));
 
         reset(entryMock);
 
@@ -125,7 +125,7 @@ public class CheckpointFibonacciRepeatStrategyTest extends PluginsLoadingTestBas
         verify(entryMock).scheduleNext(eq(13666L + Duration.parse("PT400H").toMillis()));
         verify(entryMock).save();
 
-        assertNotNull(entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "completed")));
+        assertNotNull(entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "completed")));
 
         reset(entryMock);
     }
@@ -146,14 +146,14 @@ public class CheckpointFibonacciRepeatStrategyTest extends PluginsLoadingTestBas
         verify(entryMock).save();
         verify(entryMock).scheduleNext(anyLong());
 
-        assertEquals("PT3H", entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "baseInterval")));
-        assertEquals("PT3H", entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "postRestoreDelay")));
-        assertEquals("PT3H", entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "postCompletionDelay")));
-        assertEquals(2, entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "times")));
-        assertEquals(1, entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "remainingTimes")));
+        assertEquals("PT3H", entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "baseInterval")));
+        assertEquals("PT3H", entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "postRestoreDelay")));
+        assertEquals("PT3H", entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "postCompletionDelay")));
+        assertEquals(2, entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "times")));
+        assertEquals(1, entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "remainingTimes")));
 
         // Strategy calculated interval one time so (0,1) replaced by (1,1)
-        assertEquals(1, entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "number1")));
-        assertEquals(1, entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "number2")));
+        assertEquals(1, entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "number1")));
+        assertEquals(1, entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "number2")));
     }
 }

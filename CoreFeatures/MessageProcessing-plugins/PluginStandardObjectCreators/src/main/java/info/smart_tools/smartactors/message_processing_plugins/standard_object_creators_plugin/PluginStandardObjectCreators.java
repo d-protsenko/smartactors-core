@@ -46,7 +46,7 @@ public class PluginStandardObjectCreators implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.getOrAdd(IRoutedObjectCreator.class.getCanonicalName() + "#raw"),
+                                    Keys.getKeyByName(IRoutedObjectCreator.class.getCanonicalName() + "#raw"),
                                     new SingletonStrategy(new RawObjectCreator()));
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("StandardObjectCreators plugin can't load: can't get StandardObjectCreators key", e);
@@ -61,7 +61,7 @@ public class PluginStandardObjectCreators implements IPlugin {
                         String keyName = IRoutedObjectCreator.class.getCanonicalName() + "#raw";
 
                         try {
-                            IOC.remove(Keys.getOrAdd(keyName));
+                            IOC.remove(Keys.getKeyByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

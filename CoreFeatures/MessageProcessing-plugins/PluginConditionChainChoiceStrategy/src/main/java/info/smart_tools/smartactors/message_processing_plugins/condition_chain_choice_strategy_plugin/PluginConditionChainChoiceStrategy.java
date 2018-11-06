@@ -36,7 +36,7 @@ public class PluginConditionChainChoiceStrategy extends BootstrapPlugin {
     @BootstrapPlugin.Before({"ChainCallReceiver"})
     public void item()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("condition chain choice strategy"), new SingletonStrategy(new ConditionChainChoiceStrategy()));
+        IOC.register(Keys.getKeyByName("condition chain choice strategy"), new SingletonStrategy(new ConditionChainChoiceStrategy()));
     }
 
     /**
@@ -47,7 +47,7 @@ public class PluginConditionChainChoiceStrategy extends BootstrapPlugin {
         String itemName = "condition_chain_choice_strategy";
         String keyName = "condition chain choice strategy";
         try {
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.getKeyByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }

@@ -118,7 +118,7 @@ public class PluginChainTesting implements IPlugin {
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =
-                                    IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
+                                    IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
 
                             configurationManager.addSectionStrategy(new TestsSectionStrategy());
                         } catch (ResolutionException | InvalidArgumentException e) {
@@ -134,7 +134,7 @@ public class PluginChainTesting implements IPlugin {
                     //.after("IOC")
                     .process(() -> {
                         try {
-                            IOC.register(Keys.getOrAdd(MainTestChain.class.getCanonicalName()),
+                            IOC.register(Keys.getKeyByName(MainTestChain.class.getCanonicalName()),
                                     new CreateNewInstanceStrategy(args -> {
                                         try {
                                             return new MainTestChain(args[0], (IAction) args[1], (IObject) args[2],

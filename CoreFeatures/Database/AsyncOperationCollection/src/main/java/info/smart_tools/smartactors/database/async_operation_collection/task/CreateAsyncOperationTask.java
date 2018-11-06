@@ -32,8 +32,8 @@ public class CreateAsyncOperationTask implements IDatabaseTask {
         this.connection = connection;
 
         try {
-            documentField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document");
-            collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+            documentField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "document");
+            collectionNameField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
         } catch (ResolutionException e) {
             throw new CreateAsyncOperationException("Can't resolve one of fields", e);
         }
@@ -53,7 +53,7 @@ public class CreateAsyncOperationTask implements IDatabaseTask {
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
             task = IOC.resolve(
-                    Keys.getOrAdd("db.collection.upsert"),
+                    Keys.getKeyByName("db.collection.upsert"),
                     connection,
                     collectionNameField.in(query),
                     documentField.in(query)

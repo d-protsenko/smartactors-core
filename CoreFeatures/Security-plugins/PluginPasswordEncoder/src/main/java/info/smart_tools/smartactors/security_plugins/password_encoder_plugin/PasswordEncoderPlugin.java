@@ -42,7 +42,7 @@ public class PasswordEncoderPlugin implements IPlugin {
             item
                 .process(() -> {
                     try {
-                        IOC.register(Keys.getOrAdd("CharSequenceCodec"), new ApplyFunctionToArgumentsStrategy(
+                        IOC.register(Keys.getKeyByName("CharSequenceCodec"), new ApplyFunctionToArgumentsStrategy(
                                 (args) -> {
                                     try {
                                         String charset = String.valueOf(args[0]);
@@ -53,7 +53,7 @@ public class PasswordEncoderPlugin implements IPlugin {
                                 }
                             )
                         );
-                        IOC.register(Keys.getOrAdd("Base64Encoder"), new ApplyFunctionToArgumentsStrategy(
+                        IOC.register(Keys.getKeyByName("Base64Encoder"), new ApplyFunctionToArgumentsStrategy(
                                 (args) -> {
                                     try {
                                         return Base64.create();
@@ -63,7 +63,7 @@ public class PasswordEncoderPlugin implements IPlugin {
                                 }
                             )
                         );
-                        IOC.register(Keys.getOrAdd("HexEncoder"), new ApplyFunctionToArgumentsStrategy(
+                        IOC.register(Keys.getKeyByName("HexEncoder"), new ApplyFunctionToArgumentsStrategy(
                                 (args) -> {
                                     try {
                                         return Hex.create();
@@ -73,15 +73,15 @@ public class PasswordEncoderPlugin implements IPlugin {
                                 }
                             )
                         );
-                        IOC.register(Keys.getOrAdd("PasswordEncoder"), new ApplyFunctionToArgumentsStrategy(
+                        IOC.register(Keys.getKeyByName("PasswordEncoder"), new ApplyFunctionToArgumentsStrategy(
                                 (args) -> {
                                     try {
                                         String algorithm = String.valueOf(args[0]);
                                         String encoderType = String.valueOf(args[1]);
                                         String charset = String.valueOf(args[2]);
 
-                                        IEncoder encoder = IOC.resolve(Keys.getOrAdd(encoderType));
-                                        ICharSequenceCodec charSequenceCodec = IOC.resolve(Keys.getOrAdd("CharSequenceCodec"), charset);
+                                        IEncoder encoder = IOC.resolve(Keys.getKeyByName(encoderType));
+                                        ICharSequenceCodec charSequenceCodec = IOC.resolve(Keys.getKeyByName("CharSequenceCodec"), charset);
                                         return MDPasswordEncoder.create(algorithm, encoder, charSequenceCodec);
                                     } catch (Exception e) {
                                         throw new RuntimeException("Error during resolving password encoder", e);

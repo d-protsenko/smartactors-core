@@ -48,7 +48,7 @@ public class WDSObjectFieldTest {
                         })
         );
         IOC.register(
-                Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                Keys.getKeyByName(IFieldName.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -59,7 +59,7 @@ public class WDSObjectFieldTest {
                         })
         );
         IOC.register(
-                Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.getKeyByName(IResolveDependencyStrategy.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> a[1]
                 )
@@ -122,13 +122,13 @@ public class WDSObjectFieldTest {
             throws Exception {
         IResolveDependencyStrategy strategy1 = mock(IResolveDependencyStrategy.class);
         IOC.resolve(
-                Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.getKeyByName(IResolveDependencyStrategy.class.getCanonicalName()),
                 "GetValue",
                 strategy1
         );
         IResolveDependencyStrategy strategy2 = mock(IResolveDependencyStrategy.class);
         IOC.resolve(
-                Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.getKeyByName(IResolveDependencyStrategy.class.getCanonicalName()),
                 "Transform",
                 strategy2
         );
@@ -165,7 +165,7 @@ public class WDSObjectFieldTest {
             throws Exception {
         IResolveDependencyStrategy strategy1 = mock(IResolveDependencyStrategy.class);
         IOC.resolve(
-                Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.getKeyByName(IResolveDependencyStrategy.class.getCanonicalName()),
                 "GetValue",
                 strategy1
         );
@@ -184,13 +184,13 @@ public class WDSObjectFieldTest {
             throws Exception {
         IResolveDependencyStrategy strategy1 = mock(IResolveDependencyStrategy.class);
         IOC.resolve(
-                Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.getKeyByName(IResolveDependencyStrategy.class.getCanonicalName()),
                 "GetValue",
                 strategy1
         );
         IResolveDependencyStrategy strategy2 = mock(IResolveDependencyStrategy.class);
         IOC.resolve(
-                Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.getKeyByName(IResolveDependencyStrategy.class.getCanonicalName()),
                 "Transform",
                 strategy2
         );
@@ -232,7 +232,7 @@ public class WDSObjectFieldTest {
             throws Exception {
         IResolveDependencyStrategy strategy1 = mock(IResolveDependencyStrategy.class);
         IOC.resolve(
-                Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.getKeyByName(IResolveDependencyStrategy.class.getCanonicalName()),
                 "GetValue",
                 strategy1
         );

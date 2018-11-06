@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 public class KeysTest {
 
     @Test
-    public void checkGetOrAdd()
+    public void checkGetKeyByName()
             throws Exception {
         IStrategyContainer strategyContainer = mock(IStrategyContainer.class);
         IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
@@ -39,7 +39,7 @@ public class KeysTest {
         ScopeProvider.setCurrentScope(scope);
         when(strategyContainer.resolve(any())).thenReturn(strategy);
         when(strategy.resolve("test")).thenReturn(key);
-        IKey result = Keys.getOrAdd("test");
+        IKey result = Keys.getKeyByName("test");
         assertNotNull(result);
         assertEquals(result, key);
     }

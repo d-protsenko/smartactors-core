@@ -43,7 +43,7 @@ Plus Postgres JDBC driver:
 Resolving of DatabaseConnectionPool requires ConnectionOptions.
 
     ConnectionOptions connectionOptions = new SomeConnectionOptions();
-    IPool pool = IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool"), connectionOptions);
+    IPool pool = IOC.resolve(Keys.getKeyByName("DatabaseConnectionPool"), connectionOptions);
     
 Connection options contains host, port of the server, database name, username and password.
     

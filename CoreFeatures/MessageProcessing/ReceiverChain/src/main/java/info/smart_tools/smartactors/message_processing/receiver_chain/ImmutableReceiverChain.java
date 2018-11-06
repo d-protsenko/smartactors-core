@@ -72,8 +72,8 @@ public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
             throw new InvalidArgumentException("Exceptional chains list should not be null");
         }
 
-        IFieldName mapIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id");
-        IFieldName chainNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
+        IFieldName mapIdFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id");
+        IFieldName chainNameFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
 
         this.id = id;
         this.name = chainDescription.getValue(mapIdFieldName);

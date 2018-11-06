@@ -36,7 +36,7 @@ public class RouterRegistrationObjectListener implements IReceiverObjectListener
         }
 
         try {
-            IRouter router = IOC.resolve(Keys.getOrAdd(IRouter.class.getCanonicalName()));
+            IRouter router = IOC.resolve(Keys.getKeyByName(IRouter.class.getCanonicalName()));
 
             router.register(itemId, receiver);
         } catch (ResolutionException e) {

@@ -41,7 +41,7 @@ public class FieldNamePlugin implements IPlugin {
                     .after("IOC")
                     .process(() -> {
                         try {
-                            IKey iFieldNameKey = Keys.getOrAdd(FieldName.class.getCanonicalName());
+                            IKey iFieldNameKey = Keys.getKeyByName(FieldName.class.getCanonicalName());
                             IOC.register(iFieldNameKey,
                                     new ResolveByNameIocStrategy(
                                             (args) -> {
@@ -64,7 +64,7 @@ public class FieldNamePlugin implements IPlugin {
                                             }
                                     )
                             );
-                            IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                            IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                                     new ResolveByNameIocStrategy(
                                             (args) -> {
                                                 try {
@@ -100,14 +100,14 @@ public class FieldNamePlugin implements IPlugin {
 
                         try {
                             keyName = FieldName.class.getCanonicalName();
-                            IOC.remove(Keys.getOrAdd(keyName));
+                            IOC.remove(Keys.getKeyByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         keyName = "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
                         try {
-                            IOC.remove(Keys.getOrAdd(keyName));
+                            IOC.remove(Keys.getKeyByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

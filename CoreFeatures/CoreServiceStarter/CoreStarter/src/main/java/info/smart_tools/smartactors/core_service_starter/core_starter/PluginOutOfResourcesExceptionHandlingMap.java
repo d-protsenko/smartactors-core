@@ -50,12 +50,12 @@ public class PluginOutOfResourcesExceptionHandlingMap implements IPlugin {
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =
-                                    IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
+                                    IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
 
-                            IKey fieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
-                            IObject templateObj = IOC.resolve(Keys.getOrAdd("configuration object"));
+                            IKey fieldNameKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+                            IObject templateObj = IOC.resolve(Keys.getKeyByName("configuration object"));
 
-                            IObject object = IOC.resolve(Keys.getOrAdd("configuration object"));
+                            IObject object = IOC.resolve(Keys.getKeyByName("configuration object"));
                             object.setValue(IOC.resolve(fieldNameKey, "kind"), "raw");
                             object.setValue(IOC.resolve(fieldNameKey, "dependency"), "RetryingToTakeResourceExceptionHandler");
                             object.setValue(IOC.resolve(fieldNameKey, "name"), "retryingToTakeResourceExceptionHandler");
@@ -64,10 +64,10 @@ public class PluginOutOfResourcesExceptionHandlingMap implements IPlugin {
                             objectsSection.add(object);
                             templateObj.setValue(IOC.resolve(fieldNameKey, "objects"), objectsSection);
 
-                            IObject map = IOC.resolve(Keys.getOrAdd("configuration object"));
+                            IObject map = IOC.resolve(Keys.getKeyByName("configuration object"));
                             map.setValue(IOC.resolve(fieldNameKey, "id"), "tryToTakeResourceMap");
 
-                            IObject step = IOC.resolve(Keys.getOrAdd("configuration object"));
+                            IObject step = IOC.resolve(Keys.getKeyByName("configuration object"));
                             step.setValue(IOC.resolve(fieldNameKey, "target"), "retryingToTakeResourceExceptionHandler");
 
                             List<IObject> steps = new ArrayList<>(1);

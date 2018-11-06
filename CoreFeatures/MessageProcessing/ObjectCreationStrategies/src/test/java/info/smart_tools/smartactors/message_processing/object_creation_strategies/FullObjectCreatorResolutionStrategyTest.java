@@ -46,14 +46,14 @@ public class FullObjectCreatorResolutionStrategyTest extends PluginsLoadingTestB
         when(creator1ResolutionStrategyMock.resolve(isNull(), any(), any())).thenReturn(creator1Mock);
         when(creator2ResolutionStrategyMock.resolve(same(creator1Mock), any(), any())).thenReturn(creator2Mock);
 
-        IOC.register(Keys.getOrAdd("filter 1 dependency"), creator1ResolutionStrategyMock);
-        IOC.register(Keys.getOrAdd("filter 2 dependency"), creator2ResolutionStrategyMock);
+        IOC.register(Keys.getKeyByName("filter 1 dependency"), creator1ResolutionStrategyMock);
+        IOC.register(Keys.getKeyByName("filter 2 dependency"), creator2ResolutionStrategyMock);
     }
 
     @Test
     public void Should_resolveCreatorsPipeline()
             throws Exception {
-        IObject objectConfig = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject objectConfig = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                  "  'filters':[" +
                  "      {" +

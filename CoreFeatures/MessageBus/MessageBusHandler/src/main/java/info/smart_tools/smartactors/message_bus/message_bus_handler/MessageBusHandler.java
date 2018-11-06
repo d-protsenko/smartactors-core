@@ -11,7 +11,6 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_handler.IMessageBusHandler;
 import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_handler.exception.MessageBusHandlerException;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.iresponse_strategy.IResponseStrategy;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
@@ -67,15 +66,15 @@ public class MessageBusHandler implements IMessageBusHandler {
         this.defaultChainName = receiverChainName;
         this.replyAction = finalAction;
 
-        this.keyIMessageProcessingSequence = Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence");
-        this.keyIMessageProcessor = Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor");
+        this.keyIMessageProcessingSequence = Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence");
+        this.keyIMessageProcessor = Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor");
 
-        this.finalActionsFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "finalActions");
-        this.replyToFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "messageBusReplyTo");
-        this.responseStrategyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responseStrategy");
+        this.finalActionsFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "finalActions");
+        this.replyToFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "messageBusReplyTo");
+        this.responseStrategyFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responseStrategy");
 
-        this.messageBusResponseStrategy = IOC.resolve(Keys.getOrAdd("message bus response strategy"));
-        this.nullResponseStrategy = IOC.resolve(Keys.getOrAdd("null response strategy"));
+        this.messageBusResponseStrategy = IOC.resolve(Keys.getKeyByName("message bus response strategy"));
+        this.nullResponseStrategy = IOC.resolve(Keys.getKeyByName("null response strategy"));
     }
 
     @Override
@@ -138,7 +137,7 @@ public class MessageBusHandler implements IMessageBusHandler {
 
     private IObject resolveDefaultContext()
             throws InvalidArgumentException, ResolutionException, ChangeValueException {
-        IObject context = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject context = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
         context.setValue(responseStrategyFieldName, nullResponseStrategy);
         return context;
     }

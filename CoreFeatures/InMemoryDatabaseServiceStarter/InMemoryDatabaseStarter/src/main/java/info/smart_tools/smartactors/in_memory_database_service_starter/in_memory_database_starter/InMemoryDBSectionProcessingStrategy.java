@@ -61,13 +61,13 @@ public class InMemoryDBSectionProcessingStrategy implements ISectionStrategy {
     public void onLoadConfig(final IObject config) throws ConfigurationProcessingException {
         try {
             List<IObject> databaseObject = (List<IObject>) config.getValue(name);
-            IDatabase dataBase = IOC.resolve(Keys.getOrAdd(InMemoryDatabase.class.getCanonicalName()));
+            IDatabase dataBase = IOC.resolve(Keys.getKeyByName(InMemoryDatabase.class.getCanonicalName()));
             for (IObject collection : databaseObject) {
                 String collectionName = (String) collection.getValue(nameFieldName);
                 dataBase.createCollection(collectionName);
                 List<String> documents = (List<String>) collection.getValue(documentsFieldName);
                 for (String document : documents) {
-                    dataBase.insert(IOC.resolve(Keys.getOrAdd("IObjectByString"), document), collectionName);
+                    dataBase.insert(IOC.resolve(Keys.getKeyByName("IObjectByString"), document), collectionName);
                 }
             }
         } catch (ReadValueException | InvalidArgumentException e) {

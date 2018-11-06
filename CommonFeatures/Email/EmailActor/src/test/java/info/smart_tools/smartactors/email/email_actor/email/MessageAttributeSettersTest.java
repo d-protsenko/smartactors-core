@@ -46,7 +46,7 @@ public class MessageAttributeSettersTest {
                 IOC.getKeyForKeyByNameResolveStrategy(),
                 new ResolveByNameIocStrategy()
         );
-        IKey keyIField = Keys.getOrAdd(IField.class.getCanonicalName());
+        IKey keyIField = Keys.getKeyByName(IField.class.getCanonicalName());
         IOC.register(keyIField, new ApplyFunctionToArgumentsStrategy(
                 (args) -> {
                     String fieldName = String.valueOf(args[0]);

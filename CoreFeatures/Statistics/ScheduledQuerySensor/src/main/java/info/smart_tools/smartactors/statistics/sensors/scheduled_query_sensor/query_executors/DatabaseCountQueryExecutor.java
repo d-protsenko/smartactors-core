@@ -39,10 +39,10 @@ public class DatabaseCountQueryExecutor implements IQueryExecutor {
      */
     public DatabaseCountQueryExecutor()
             throws ResolutionException {
-        collectionFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collection");
-        connectionOptionsDependencyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "connectionOptionsDependency");
-        connectionPoolDependencyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "connectionPoolDependency");
-        filterFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "filter");
+        collectionFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collection");
+        connectionOptionsDependencyFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "connectionOptionsDependency");
+        connectionPoolDependencyFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "connectionPoolDependency");
+        filterFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "filter");
     }
 
     @Override
@@ -70,7 +70,7 @@ public class DatabaseCountQueryExecutor implements IQueryExecutor {
 
             try (PoolGuard pg = new PoolGuard(connectionPool)) {
                 ITask task = IOC.resolve(
-                        Keys.getOrAdd("db.collection.count"),
+                        Keys.getKeyByName("db.collection.count"),
                         pg.getObject(),
                         entry.getState().getValue(collectionFieldName),
                         entry.getState().getValue(filterFieldName),

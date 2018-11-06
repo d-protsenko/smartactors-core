@@ -62,7 +62,7 @@ public class GetFirstNotNullRulePluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey strategyKey = mock(IKey.class);
-        when(Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName())).thenReturn(strategyKey);
+        when(Keys.getKeyByName(IResolveDependencyStrategy.class.getCanonicalName())).thenReturn(strategyKey);
 
         GetFirstNotNullRule targetObject = mock(GetFirstNotNullRule.class);
         whenNew(GetFirstNotNullRule.class).withNoArguments().thenReturn(targetObject);
@@ -70,7 +70,7 @@ public class GetFirstNotNullRulePluginTest {
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName());
+        Keys.getKeyByName(IResolveDependencyStrategy.class.getCanonicalName());
 
         verifyNew(GetFirstNotNullRule.class).withNoArguments();
 

@@ -67,12 +67,12 @@ public class PostgresDeleteTask implements IDatabaseTask {
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-            DeleteMessage message = IOC.resolve(Keys.getOrAdd(DeleteMessage.class.getCanonicalName()), query);
+            DeleteMessage message = IOC.resolve(Keys.getKeyByName(DeleteMessage.class.getCanonicalName()), query);
             collection = message.getCollectionName();
 
             document = message.getDocument();
             idField = IOC.resolve(
-                    Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                    Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                     String.format(PostgresSchema.ID_FIELD_PATTERN, collection.toString()));
             id = document.getValue(idField);
 

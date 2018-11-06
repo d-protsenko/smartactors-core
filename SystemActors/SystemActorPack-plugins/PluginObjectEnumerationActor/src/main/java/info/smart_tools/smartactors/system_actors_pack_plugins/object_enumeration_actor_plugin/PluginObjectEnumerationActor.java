@@ -30,7 +30,7 @@ public class PluginObjectEnumerationActor extends BootstrapPlugin {
     public void objectEnumerationActor()
             throws Exception {
         IOC.register(
-                Keys.getOrAdd("ObjectEnumerationActor"),
+                Keys.getKeyByName("ObjectEnumerationActor"),
                 new SingletonStrategy(new ObjectEnumerationActor()));
     }
 }

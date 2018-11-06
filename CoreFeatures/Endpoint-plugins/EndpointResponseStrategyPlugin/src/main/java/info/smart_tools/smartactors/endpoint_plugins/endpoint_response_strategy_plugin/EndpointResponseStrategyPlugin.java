@@ -26,7 +26,7 @@ public class EndpointResponseStrategyPlugin extends BootstrapPlugin {
     public void registerHttpResponseStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
-                Keys.getOrAdd("endpoint response strategy"),
+                Keys.getKeyByName("endpoint response strategy"),
                 new SingletonStrategy(
                         new EndpointResponseStrategy()
                 )
@@ -39,7 +39,7 @@ public class EndpointResponseStrategyPlugin extends BootstrapPlugin {
         String keyName = "endpoint response strategy";
 
         try {
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.getKeyByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }

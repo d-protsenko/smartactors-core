@@ -51,7 +51,7 @@ public class DatabaseSectionStrategyTest {
                 new ResolveByNameIocStrategy()
         );
 
-        IKey iFieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
+        IKey iFieldNameKey = Keys.getKeyByName(IFieldName.class.getCanonicalName());
         IOC.register(iFieldNameKey,
                 new CreateNewInstanceStrategy(
                         (args) -> {
@@ -65,7 +65,7 @@ public class DatabaseSectionStrategyTest {
                 )
         );
 
-        IOC.register(Keys.getOrAdd("TestStrategy"),
+        IOC.register(Keys.getKeyByName("TestStrategy"),
                 new CreateNewInstanceStrategy(
                         (args) -> configMock
                 )
@@ -86,10 +86,10 @@ public class DatabaseSectionStrategyTest {
                 "     }");
         DatabaseSectionStrategy strategy = new DatabaseSectionStrategy();
         strategy.onLoadConfig(config);
-        assertSame(configMock, IOC.resolve(Keys.getOrAdd("databaseKey")));
+        assertSame(configMock, IOC.resolve(Keys.getKeyByName("databaseKey")));
         strategy.onRevertConfig(config);
         try {
-            IOC.resolve(Keys.getOrAdd("databaseKey"));
+            IOC.resolve(Keys.getKeyByName("databaseKey"));
             fail();
         } catch(ResolutionException e) {
         }

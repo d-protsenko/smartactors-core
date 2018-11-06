@@ -22,7 +22,7 @@ public final class TestPostgresConnectionPoolPlugin extends BootstrapPlugin {
     @After({})
     @Before("")
     public void register() throws ResolutionException, InvalidArgumentException, RegistrationException {
-        IOC.register(Keys.getOrAdd("PostgresConnectionPool"), new ApplyFunctionToArgumentsStrategy(args -> new IPool() {
+        IOC.register(Keys.getKeyByName("PostgresConnectionPool"), new ApplyFunctionToArgumentsStrategy(args -> new IPool() {
             @Override
             public Object take() throws PoolTakeException {
                 return null;

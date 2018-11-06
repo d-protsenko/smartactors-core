@@ -49,7 +49,7 @@ public class NullConnectionPoolPlugin implements IPlugin {
                     try {
                         IResolveDependencyStrategy poolStrategy = new ApplyFunctionToArgumentsStrategy(
                                 (args) -> new Pool(1, NullConnection::new));
-                        IKey databaseConnectionPoolKey = Keys.getOrAdd("DatabaseConnectionPool");
+                        IKey databaseConnectionPoolKey = Keys.getKeyByName("DatabaseConnectionPool");
                         IOC.register(databaseConnectionPoolKey, poolStrategy);
                     } catch (ResolutionException e) {
                         throw new ActionExecuteException("NullConnectionPool plugin can't load: can't get DatabaseConnectionPool key", e);

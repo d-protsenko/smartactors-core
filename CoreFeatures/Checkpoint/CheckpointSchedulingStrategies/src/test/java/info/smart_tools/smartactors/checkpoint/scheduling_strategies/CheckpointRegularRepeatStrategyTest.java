@@ -43,12 +43,12 @@ public class CheckpointRegularRepeatStrategyTest extends PluginsLoadingTestBase 
 
     private void makeEntry(final String stateSrc) throws Exception {
         entryMock = mock(ISchedulerEntry.class);
-        entryState = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), stateSrc.replace('\'','"'));
+        entryState = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), stateSrc.replace('\'','"'));
         when(entryMock.getState()).thenReturn(entryState);
     }
 
     private IObject makeArgs(final String src) throws Exception {
-        return IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), src.replace('\'','"'));
+        return IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), src.replace('\'','"'));
     }
 
     @Test
@@ -66,11 +66,11 @@ public class CheckpointRegularRepeatStrategyTest extends PluginsLoadingTestBase 
         verify(entryMock).save();
         verify(entryMock).scheduleNext(anyLong());
 
-        assertEquals("PT3H", entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "interval")));
-        assertEquals("PT3H", entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "postRestoreDelay")));
-        assertEquals("PT3H", entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "postCompletionDelay")));
-        assertEquals(2, entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "times")));
-        assertEquals(1, entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "remainingTimes")));
+        assertEquals("PT3H", entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "interval")));
+        assertEquals("PT3H", entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "postRestoreDelay")));
+        assertEquals("PT3H", entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "postCompletionDelay")));
+        assertEquals(2, entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "times")));
+        assertEquals(1, entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "remainingTimes")));
 
         //
         makeEntry("{}");
@@ -85,11 +85,11 @@ public class CheckpointRegularRepeatStrategyTest extends PluginsLoadingTestBase 
         verify(entryMock).save();
         verify(entryMock).scheduleNext(anyLong());
 
-        assertEquals("PT2H", entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "interval")));
-        assertEquals("PT3H", entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "postRestoreDelay")));
-        assertEquals("PT4H", entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "postCompletionDelay")));
-        assertEquals(3, entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "times")));
-        assertEquals(2, entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "remainingTimes")));
+        assertEquals("PT2H", entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "interval")));
+        assertEquals("PT3H", entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "postRestoreDelay")));
+        assertEquals("PT4H", entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "postCompletionDelay")));
+        assertEquals(3, entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "times")));
+        assertEquals(2, entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "remainingTimes")));
     }
 
     @Test
@@ -157,7 +157,7 @@ public class CheckpointRegularRepeatStrategyTest extends PluginsLoadingTestBase 
         verify(entryMock).scheduleNext(eq(13666L + Duration.parse("PT2M").toMillis()));
         verify(entryMock).save();
 
-        assertNotNull(entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "completed")));
+        assertNotNull(entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "completed")));
     }
 
     @Test
@@ -176,7 +176,7 @@ public class CheckpointRegularRepeatStrategyTest extends PluginsLoadingTestBase 
         verify(entryMock).scheduleNext(eq(13666L + Duration.parse("PT2M4S").toMillis()));
         verify(entryMock).save();
 
-        assertNull(entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "completed")));
+        assertNull(entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "completed")));
     }
 
     @Test
@@ -197,7 +197,7 @@ public class CheckpointRegularRepeatStrategyTest extends PluginsLoadingTestBase 
         verify(entryMock).scheduleNext(timeCaptor.capture());
 
         assertTrue(Math.abs(startTime + Duration.parse("PT55M3S").toMillis() - timeCaptor.getValue()) < 100);
-        assertEquals(0, entryState.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "remainingTimes")));
+        assertEquals(0, entryState.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "remainingTimes")));
     }
 
     @Test

@@ -43,7 +43,7 @@ public class MailigActorPlugin implements IPlugin {
 //                    .before("starter")
                     .process(() -> {
                         try {
-                            IKey actorKey = Keys.getOrAdd(MailingActor.class.getCanonicalName());
+                            IKey actorKey = Keys.getKeyByName(MailingActor.class.getCanonicalName());
                             IOC.register(actorKey,
                                     new ApplyFunctionToArgumentsStrategy(
                                             (args) -> {

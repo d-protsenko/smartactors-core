@@ -36,7 +36,7 @@ public class SendEnvelopeFailureAction implements IAction<IObject> {
     @Override
     public void execute(final IObject actingObject) throws ActionExecuteException, InvalidArgumentException {
         try {
-            IObject envelope = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject envelope = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
             envelope.setValue(messageFieldName, actingObject);
             MessageBus.send(envelope, targetChainName);
         } catch (ResolutionException | ChangeValueException | InvalidArgumentException | SendingMessageException e) {

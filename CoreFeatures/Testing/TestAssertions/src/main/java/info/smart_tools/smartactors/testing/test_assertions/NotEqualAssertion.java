@@ -25,7 +25,7 @@ public class NotEqualAssertion implements IAssertion {
      */
     public NotEqualAssertion()
             throws ResolutionException {
-        referenceFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "to");
+        referenceFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "to");
     }
 
     @Override

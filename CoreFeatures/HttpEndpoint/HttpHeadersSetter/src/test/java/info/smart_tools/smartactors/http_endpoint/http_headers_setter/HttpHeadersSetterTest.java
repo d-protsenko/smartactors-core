@@ -59,7 +59,7 @@ public class HttpHeadersSetterTest {
                 new ResolveByNameIocStrategy()
         );
 
-        IKey keyFieldName = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey keyFieldName = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         IOC.register(
                 keyFieldName,
                 new CreateNewInstanceStrategy(
@@ -72,7 +72,7 @@ public class HttpHeadersSetterTest {
                         }
                 )
         );
-        IKey keyIField = Keys.getOrAdd(IField.class.getCanonicalName());
+        IKey keyIField = Keys.getKeyByName(IField.class.getCanonicalName());
         IOC.register(
                 keyIField,
                 new SingletonStrategy(field)

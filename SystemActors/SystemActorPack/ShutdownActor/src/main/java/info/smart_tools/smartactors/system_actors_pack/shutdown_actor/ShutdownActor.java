@@ -12,7 +12,7 @@ import info.smart_tools.smartactors.system_actors_pack.shutdown_actor.wrapper.Sh
 public class ShutdownActor {
     private IUpCounter resolveUpCounter(final Object name)
             throws ResolutionException {
-        return IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), name));
+        return IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), name));
     }
 
     /**

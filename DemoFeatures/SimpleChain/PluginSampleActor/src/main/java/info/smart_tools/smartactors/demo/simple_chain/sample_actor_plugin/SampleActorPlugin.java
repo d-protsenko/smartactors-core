@@ -38,7 +38,7 @@ public class SampleActorPlugin implements IPlugin {
             item1
                     .process(() -> {
                 try {
-                    IOC.register(Keys.getOrAdd("SampleActor"), new ApplyFunctionToArgumentsStrategy(
+                    IOC.register(Keys.getKeyByName("SampleActor"), new ApplyFunctionToArgumentsStrategy(
                             (args) -> {
                                 try {
                                     return new SampleActor();
@@ -57,7 +57,7 @@ public class SampleActorPlugin implements IPlugin {
             item2
                     .process(() -> {
                         try {
-                            IOC.register(Keys.getOrAdd("SampleOtherActor"), new ApplyFunctionToArgumentsStrategy(
+                            IOC.register(Keys.getKeyByName("SampleOtherActor"), new ApplyFunctionToArgumentsStrategy(
                                     (args) -> {
                                         try {
                                             return new SampleOtherActor();

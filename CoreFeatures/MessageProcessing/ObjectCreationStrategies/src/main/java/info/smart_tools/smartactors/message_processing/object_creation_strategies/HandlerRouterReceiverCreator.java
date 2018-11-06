@@ -70,7 +70,7 @@ public class HandlerRouterReceiverCreator extends BasicIntermediateReceiverObjec
     public void endItems()
             throws ReceiverObjectListenerException, InvalidReceiverPipelineException {
         try {
-            IMessageReceiver resultingReceiver = IOC.resolve(Keys.getOrAdd("create handler router receiver"), handlersMap);
+            IMessageReceiver resultingReceiver = IOC.resolve(Keys.getKeyByName("create handler router receiver"), handlersMap);
 
             getListener().acceptItem(null, resultingReceiver);
             getListener().endItems();

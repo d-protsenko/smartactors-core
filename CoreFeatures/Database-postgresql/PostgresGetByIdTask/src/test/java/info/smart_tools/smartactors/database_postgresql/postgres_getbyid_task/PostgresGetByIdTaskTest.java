@@ -95,7 +95,7 @@ public class PostgresGetByIdTaskTest {
         idFieldName = new FieldName("testID");
 
         IOC.register(
-                Keys.getOrAdd(GetByIdMessage.class.getCanonicalName()),
+                Keys.getKeyByName(GetByIdMessage.class.getCanonicalName()),
                 new SingletonStrategy(message)
         );
     }

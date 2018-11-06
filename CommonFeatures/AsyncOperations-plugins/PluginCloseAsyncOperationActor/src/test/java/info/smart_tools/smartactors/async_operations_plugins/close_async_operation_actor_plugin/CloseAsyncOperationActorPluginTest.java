@@ -66,12 +66,12 @@ public class CloseAsyncOperationActorPluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey checkUserByEmailActorKey = mock(IKey.class);
-        when(Keys.getOrAdd(CloseAsyncOperationActor.class.getCanonicalName())).thenReturn(checkUserByEmailActorKey);
+        when(Keys.getKeyByName(CloseAsyncOperationActor.class.getCanonicalName())).thenReturn(checkUserByEmailActorKey);
 
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(CloseAsyncOperationActor.class.getCanonicalName());
+        Keys.getKeyByName(CloseAsyncOperationActor.class.getCanonicalName());
 
         ArgumentCaptor<CreateNewInstanceStrategy> createNewInstanceStrategyArgumentCaptor = ArgumentCaptor.forClass(CreateNewInstanceStrategy.class);
 
@@ -122,13 +122,13 @@ public class CloseAsyncOperationActorPluginTest {
 
         verify(bootstrap).add(bootstrapItem);
 
-        when(Keys.getOrAdd(CloseAsyncOperationActor.class.getCanonicalName())).thenThrow(new ResolutionException(""));
+        when(Keys.getKeyByName(CloseAsyncOperationActor.class.getCanonicalName())).thenThrow(new ResolutionException(""));
 
         try {
             actionArgumentCaptor.getValue().execute();
         } catch (ActionExecuteException e) {
             verifyStatic();
-            Keys.getOrAdd(CloseAsyncOperationActor.class.getCanonicalName());
+            Keys.getKeyByName(CloseAsyncOperationActor.class.getCanonicalName());
             return;
         }
         assertTrue("Must throw exception", false);
@@ -155,7 +155,7 @@ public class CloseAsyncOperationActorPluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey createAsyncOpKey = mock(IKey.class);
-        when(Keys.getOrAdd(CloseAsyncOperationActor.class.getCanonicalName())).thenReturn(createAsyncOpKey);
+        when(Keys.getKeyByName(CloseAsyncOperationActor.class.getCanonicalName())).thenReturn(createAsyncOpKey);
 
         ArgumentCaptor<Function<Object[], Object>> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -170,7 +170,7 @@ public class CloseAsyncOperationActorPluginTest {
         } catch (ActionExecuteException e) {
 
             verifyStatic();
-            Keys.getOrAdd(CloseAsyncOperationActor.class.getCanonicalName());
+            Keys.getKeyByName(CloseAsyncOperationActor.class.getCanonicalName());
 
             verifyNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 
@@ -210,7 +210,7 @@ public class CloseAsyncOperationActorPluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey createAsyncOpKey = mock(IKey.class);
-        when(Keys.getOrAdd(CloseAsyncOperationActor.class.getCanonicalName())).thenReturn(createAsyncOpKey);
+        when(Keys.getKeyByName(CloseAsyncOperationActor.class.getCanonicalName())).thenReturn(createAsyncOpKey);
 
         ArgumentCaptor<Function<Object[], Object>> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -222,7 +222,7 @@ public class CloseAsyncOperationActorPluginTest {
         } catch (ActionExecuteException e) {
 
             verifyStatic();
-            Keys.getOrAdd(CloseAsyncOperationActor.class.getCanonicalName());
+            Keys.getKeyByName(CloseAsyncOperationActor.class.getCanonicalName());
 
             verifyNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 
@@ -239,7 +239,7 @@ public class CloseAsyncOperationActorPluginTest {
     }
 
     @Test(expected = RuntimeException.class)
-    public void MustInCorrectResolveWhenKeysGetOrAddActorParamKey() throws Exception {
+    public void MustInCorrectResolveWhenKeysGetKeyByNameActorParamKey() throws Exception {
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("CloseAsyncOperationActorPlugin").thenReturn(bootstrapItem);
@@ -259,7 +259,7 @@ public class CloseAsyncOperationActorPluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey checkUserByEmailActorKey = mock(IKey.class);
-        when(Keys.getOrAdd(CloseAsyncOperationActor.class.getCanonicalName())).thenReturn(checkUserByEmailActorKey);
+        when(Keys.getKeyByName(CloseAsyncOperationActor.class.getCanonicalName())).thenReturn(checkUserByEmailActorKey);
 
         ArgumentCaptor<Function> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -271,14 +271,14 @@ public class CloseAsyncOperationActorPluginTest {
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(CloseAsyncOperationActor.class.getCanonicalName());
+        Keys.getKeyByName(CloseAsyncOperationActor.class.getCanonicalName());
 
         verifyStatic();
         IOC.register(checkUserByEmailActorKey, createNewInstanceStrategy);
 
         IObject arg = mock(IObject.class);
 
-        when(Keys.getOrAdd(ActorParams.class.toString())).thenThrow(new ResolutionException(""));
+        when(Keys.getKeyByName(ActorParams.class.toString())).thenThrow(new ResolutionException(""));
 
         targetFuncArgumentCaptor.getValue().apply(new Object[]{arg});
     }
@@ -304,7 +304,7 @@ public class CloseAsyncOperationActorPluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey checkUserByEmailActorKey = mock(IKey.class);
-        when(Keys.getOrAdd(CloseAsyncOperationActor.class.getCanonicalName())).thenReturn(checkUserByEmailActorKey);
+        when(Keys.getKeyByName(CloseAsyncOperationActor.class.getCanonicalName())).thenReturn(checkUserByEmailActorKey);
 
         ArgumentCaptor<Function> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -316,7 +316,7 @@ public class CloseAsyncOperationActorPluginTest {
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(CloseAsyncOperationActor.class.getCanonicalName());
+        Keys.getKeyByName(CloseAsyncOperationActor.class.getCanonicalName());
 
         verifyStatic();
         IOC.register(checkUserByEmailActorKey, createNewInstanceStrategy);
@@ -324,7 +324,7 @@ public class CloseAsyncOperationActorPluginTest {
         IObject arg = mock(IObject.class);
 
         IKey actorParamsIKey = mock(IKey.class);
-        when(Keys.getOrAdd(ActorParams.class.toString())).thenReturn(actorParamsIKey);
+        when(Keys.getKeyByName(ActorParams.class.toString())).thenReturn(actorParamsIKey);
         when(IOC.resolve(actorParamsIKey, arg)).thenThrow(new ResolutionException(""));
 
         targetFuncArgumentCaptor.getValue().apply(new Object[]{arg});
@@ -351,7 +351,7 @@ public class CloseAsyncOperationActorPluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey checkUserByEmailActorKey = mock(IKey.class);
-        when(Keys.getOrAdd(CloseAsyncOperationActor.class.getCanonicalName())).thenReturn(checkUserByEmailActorKey);
+        when(Keys.getKeyByName(CloseAsyncOperationActor.class.getCanonicalName())).thenReturn(checkUserByEmailActorKey);
 
         ArgumentCaptor<Function> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -363,7 +363,7 @@ public class CloseAsyncOperationActorPluginTest {
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(CloseAsyncOperationActor.class.getCanonicalName());
+        Keys.getKeyByName(CloseAsyncOperationActor.class.getCanonicalName());
 
         verifyStatic();
         IOC.register(checkUserByEmailActorKey, createNewInstanceStrategy);

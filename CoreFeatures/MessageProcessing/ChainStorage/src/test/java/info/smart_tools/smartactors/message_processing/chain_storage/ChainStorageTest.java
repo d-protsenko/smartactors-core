@@ -53,8 +53,8 @@ public class ChainStorageTest extends PluginsLoadingTestBase {
         receiverChainStrategyMock = mock(IResolveDependencyStrategy.class);
         chainStateStrategyMock = mock(IResolveDependencyStrategy.class);
 
-        IOC.register(Keys.getOrAdd(IReceiverChain.class.getCanonicalName()), receiverChainStrategyMock);
-        IOC.register(Keys.getOrAdd(IChainState.class.getCanonicalName()), chainStateStrategyMock);
+        IOC.register(Keys.getKeyByName(IReceiverChain.class.getCanonicalName()), receiverChainStrategyMock);
+        IOC.register(Keys.getKeyByName(IChainState.class.getCanonicalName()), chainStateStrategyMock);
 
         stateMocks = new IChainState[] {mock(IChainState.class), mock(IChainState.class), mock(IChainState.class)};
         chianMocks = new IReceiverChain[] {mock(IReceiverChain.class), mock(IReceiverChain.class), mock(IReceiverChain.class)};

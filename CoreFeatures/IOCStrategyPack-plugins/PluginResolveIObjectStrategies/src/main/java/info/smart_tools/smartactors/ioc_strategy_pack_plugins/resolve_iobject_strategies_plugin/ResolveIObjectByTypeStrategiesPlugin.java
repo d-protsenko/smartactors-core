@@ -66,8 +66,8 @@ public class ResolveIObjectByTypeStrategiesPlugin implements IPlugin {
                             return strategy;
                         };
 
-                        IKey typeStrategy = Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject" + "convert");
-                        IKey expandableTypeStrategy = Keys.getOrAdd("expandable_strategy#" + "info.smart_tools.smartactors.iobject.iobject.IObject");
+                        IKey typeStrategy = Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject" + "convert");
+                        IKey expandableTypeStrategy = Keys.getKeyByName("expandable_strategy#" + "info.smart_tools.smartactors.iobject.iobject.IObject");
                         IResolveDependencyStrategy resolveStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
                         ((IAdditionDependencyStrategy) resolveStrategy).register(Map.class, new MapToIObjectResolveDependencyStrategy());
                         ((IAdditionDependencyStrategy) resolveStrategy).register(String.class, new StringToIObjectResolveDependencyStrategy());
@@ -85,14 +85,14 @@ public class ResolveIObjectByTypeStrategiesPlugin implements IPlugin {
 
                     try {
                         keyName = "expandable_strategy#" + "info.smart_tools.smartactors.iobject.iobject.IObject";
-                        IOC.remove(Keys.getOrAdd(keyName));
+                        IOC.remove(Keys.getKeyByName(keyName));
                     } catch(DeletionException e) {
                         System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                     } catch (ResolutionException e) { }
 
                     try {
                         keyName = "info.smart_tools.smartactors.iobject.iobject.IObject" + "convert";
-                        IOC.remove(Keys.getOrAdd(keyName));
+                        IOC.remove(Keys.getKeyByName(keyName));
                     } catch(DeletionException e) {
                         System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                     } catch (ResolutionException e) { }

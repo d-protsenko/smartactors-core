@@ -43,24 +43,24 @@ public class CreateAsyncOperationActorTest {
         mockStatic(Keys.class);
 
         IKey formatterKey = mock(IKey.class);
-        when(Keys.getOrAdd("datetime_formatter")).thenReturn(formatterKey);
+        when(Keys.getKeyByName("datetime_formatter")).thenReturn(formatterKey);
         when(IOC.resolve(eq(formatterKey))).thenReturn(DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss"));
 
         collection = mock(IAsyncOperationCollection.class);
         IKey collectionKey = mock(IKey.class);
 
-        when(Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName())).thenReturn(collectionKey);
+        when(Keys.getKeyByName(IAsyncOperationCollection.class.getCanonicalName())).thenReturn(collectionKey);
         when(IOC.resolve(eq(collectionKey), any(), any())).thenReturn(collection);
 
         IField collectionNameField = mock(IField.class);
         IField databaseOptionsF = PowerMockito.mock(IField.class);
         IKey collectionNameFieldKey = mock(IKey.class);
 
-        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(collectionNameFieldKey);
+        when(Keys.getKeyByName(IField.class.getCanonicalName())).thenReturn(collectionNameFieldKey);
         when(IOC.resolve(collectionNameFieldKey, "collectionName")).thenReturn(collectionNameField);
         when(IOC.resolve(collectionNameFieldKey, "databaseOptions")).thenReturn(databaseOptionsF);
         when(databaseOptionsF.in(any())).thenReturn(databaseOptionsKey);
-        when(IOC.resolve(Keys.getOrAdd(databaseOptionsKey))).thenReturn(databaseOptions);
+        when(IOC.resolve(Keys.getKeyByName(databaseOptionsKey))).thenReturn(databaseOptions);
 
         actor = new CreateAsyncOperationActor(mock(IObject.class));
         message = mock(CreateAsyncOperationMessage.class);
@@ -72,13 +72,13 @@ public class CreateAsyncOperationActorTest {
                 CreateAsyncOperationException {
 
         String sessionId = "sessionId";
-        when(IOC.resolve(Keys.getOrAdd("db.collection.nextid"))).thenReturn("");
+        when(IOC.resolve(Keys.getKeyByName("db.collection.nextid"))).thenReturn("");
         when(message.getSessionId()).thenReturn(sessionId);
         when(message.getExpiredTime()).thenReturn(4);
 
         IObject asyncDataObj = mock(IObject.class);
         IKey dataKey = mock(IKey.class);
-        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(dataKey);
+        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(dataKey);
         when(message.getOperationData()).thenReturn(asyncDataObj);
 
         actor.create(message);
@@ -93,13 +93,13 @@ public class CreateAsyncOperationActorTest {
         CreateAsyncOperationException {
 
         String sessionId = "sessionId";
-        when(IOC.resolve(Keys.getOrAdd("db.collection.nextid"))).thenReturn("");
+        when(IOC.resolve(Keys.getKeyByName("db.collection.nextid"))).thenReturn("");
         when(message.getSessionId()).thenReturn(sessionId);
         when(message.getExpiredTime()).thenReturn(4);
 
         IObject asyncDataObj = mock(IObject.class);
         IKey dataKey = mock(IKey.class);
-        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(dataKey);
+        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(dataKey);
         when(message.getOperationData()).thenReturn(asyncDataObj);
 
         doThrow(new CreateAsyncOperationException("exception")).when(collection).createAsyncOperation(any(), any(), any());

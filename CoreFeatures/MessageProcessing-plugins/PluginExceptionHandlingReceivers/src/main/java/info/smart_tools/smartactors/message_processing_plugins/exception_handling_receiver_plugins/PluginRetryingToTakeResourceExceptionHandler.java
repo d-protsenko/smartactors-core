@@ -35,7 +35,7 @@ public class PluginRetryingToTakeResourceExceptionHandler extends BootstrapPlugi
     @BootstrapPlugin.After({"IOC", "IFieldNamePlugin"})
     public void item()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("RetryingToTakeResourceExceptionHandler"),
+        IOC.register(Keys.getKeyByName("RetryingToTakeResourceExceptionHandler"),
                 new SingletonStrategy(new RetryingToTakeResourceExceptionHandler()));
     }
 
@@ -48,7 +48,7 @@ public class PluginRetryingToTakeResourceExceptionHandler extends BootstrapPlugi
         String itemName = "PluginRetryingToTakeResourceExceptionHandler";
         String keyName = "RetryingToTakeResourceExceptionHandler";
         try {
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.getKeyByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }

@@ -47,28 +47,28 @@ public class EmbeddedSensorCreationStrategyTest extends PluginsLoadingTestBase {
 
     @Override
     protected void registerMocks() throws Exception {
-        IOC.register(Keys.getOrAdd("prepend sensor receiver"), new PrependSensorReceiverStrategy());
+        IOC.register(Keys.getKeyByName("prepend sensor receiver"), new PrependSensorReceiverStrategy());
 
         for (int i = 0; i < 10; i++) {
             receivers[i] = mock(IMessageReceiver.class);
         }
 
-        IOC.register(Keys.getOrAdd("embedded sensor receiver"), new SingletonStrategy(receivers[9]));
-        IOC.register(Keys.getOrAdd("additional sensor"), new SingletonStrategy(receivers[8]));
+        IOC.register(Keys.getKeyByName("embedded sensor receiver"), new SingletonStrategy(receivers[9]));
+        IOC.register(Keys.getKeyByName("additional sensor"), new SingletonStrategy(receivers[8]));
 
         chainStorageMock = mock(IChainStorage.class);
-        IOC.register(Keys.getOrAdd(IChainStorage.class.getCanonicalName()), new SingletonStrategy(chainStorageMock));
+        IOC.register(Keys.getKeyByName(IChainStorage.class.getCanonicalName()), new SingletonStrategy(chainStorageMock));
         when(chainStorageMock.update(eq("the_chain__0"), any())).thenAnswer(invocation -> {
             chain = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), invocation.getArgumentAt(1, IObject.class)
-                        .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "modification"))),
+                        .getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "modification"))),
                     chain,
                     invocation.getArgumentAt(1, IObject.class)
             );
             return modId;
         });
 
-        IOC.register(Keys.getOrAdd("chain_id_from_map_name_and_message"), new IResolveDependencyStrategy() {
+        IOC.register(Keys.getKeyByName("chain_id_from_map_name_and_message"), new IResolveDependencyStrategy() {
             @Override
             public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
                 return (T) String.valueOf(args[0]).concat("__0");
@@ -85,7 +85,7 @@ public class EmbeddedSensorCreationStrategyTest extends PluginsLoadingTestBase {
         when(chain.get(2)).thenReturn(receivers[2]);
 
         ISensorHandle handle = new EmbeddedSensorCreationStrategy().resolve("stat_chain", IOC.resolve(
-                Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'chain':'the_chain'," +
                         "'args':{}," +

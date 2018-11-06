@@ -46,11 +46,11 @@ public class PluginGlobalConstants implements IPlugin {
 //            constantsObjectItem.after("iobject");
             constantsObjectItem.process(() -> {
                 try {
-                    IObject obj = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
-                    IOC.register(Keys.getOrAdd("global constants"), new SingletonStrategy(obj));
+                    IObject obj = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                    IOC.register(Keys.getKeyByName("global constants"), new SingletonStrategy(obj));
 
                     IOC.register(
-                            Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+                            Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                             new CreateNewInstanceStrategy(args -> {
                                 IQueue<ITask> taskQueue = (IQueue<ITask>) args[0];
                                 IMessageProcessingSequence sequence = (IMessageProcessingSequence) args[1];
@@ -60,7 +60,7 @@ public class PluginGlobalConstants implements IPlugin {
                                     config = (IObject) args[2];
                                 } else {
                                     try {
-                                        config = IOC.resolve(Keys.getOrAdd("global constants"));;
+                                        config = IOC.resolve(Keys.getKeyByName("global constants"));;
                                     } catch (ResolutionException e) {
                                         throw new RuntimeException(e);
                                     }
@@ -86,7 +86,7 @@ public class PluginGlobalConstants implements IPlugin {
 //            constantsSectionItem.before("config_sections:done");
             constantsSectionItem.process(() -> {
                 try {
-                    IConfigurationManager configurationManager = IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
+                    IConfigurationManager configurationManager = IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
                     configurationManager.addSectionStrategy(new ConstantsSectionStrategy());
                 } catch (ResolutionException | InvalidArgumentException e) {
                     throw new ActionExecuteException(e);

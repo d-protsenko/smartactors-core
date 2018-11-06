@@ -31,7 +31,7 @@ public class PluginConstantChainChoiceStrategy extends BootstrapPlugin {
     @Before({"ChainCallReceiver"})
     public void item()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("constant chain choice strategy"), new SingletonStrategy(new ConstantChainChoiceStrategy()));
+        IOC.register(Keys.getKeyByName("constant chain choice strategy"), new SingletonStrategy(new ConstantChainChoiceStrategy()));
     }
 
     /**
@@ -42,7 +42,7 @@ public class PluginConstantChainChoiceStrategy extends BootstrapPlugin {
         String itemName = "constant_chain_choice_strategy";
         String keyName = "constant chain choice strategy";
         try {
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.getKeyByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }

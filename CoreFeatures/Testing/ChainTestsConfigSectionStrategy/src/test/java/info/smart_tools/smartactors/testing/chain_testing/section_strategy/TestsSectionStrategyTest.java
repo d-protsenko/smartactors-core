@@ -47,7 +47,7 @@ public class TestsSectionStrategyTest extends PluginsLoadingTestBase {
             throws Exception {
         testRunnerMock = mock(ITestRunner.class);
 
-        IOC.register(Keys.getOrAdd(ITestRunner.class.getCanonicalName() + "#assert"),
+        IOC.register(Keys.getKeyByName(ITestRunner.class.getCanonicalName() + "#assert"),
                 new SingletonStrategy(testRunnerMock));
 //        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
 //        IOC.register(
@@ -64,15 +64,15 @@ public class TestsSectionStrategyTest extends PluginsLoadingTestBase {
             throws Exception {
         TestsSectionStrategy strategy = new TestsSectionStrategy();
 
-        assertEquals(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "tests"), strategy.getSectionName());
+        assertEquals(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "tests"), strategy.getSectionName());
     }
 
     @Test
     public void Should_runTestWhenItPasses()
             throws Exception {
         IObject td1 = mock(IObject.class);
-        IObject config = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
-        config.setValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "tests"),
+        IObject config = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        config.setValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "tests"),
                 Collections.singletonList(td1));
         when(td1.getValue(new FieldName("entryPoint"))).thenReturn("assert");
 
@@ -105,8 +105,8 @@ public class TestsSectionStrategyTest extends PluginsLoadingTestBase {
         when(td1.getValue(new FieldName("entryPoint"))).thenReturn("assert");
         IObject td2 = mock(IObject.class);
         when(td2.getValue(new FieldName("entryPoint"))).thenReturn("assert");
-        IObject config = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
-        config.setValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "tests"),
+        IObject config = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        config.setValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "tests"),
                 Arrays.asList(td1, td2));
 
         doAnswer(invocation -> {
@@ -151,8 +151,8 @@ public class TestsSectionStrategyTest extends PluginsLoadingTestBase {
             throws Exception {
         IObject td1 = mock(IObject.class);
         IObject td2 = mock(IObject.class);
-        IObject config = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
-        config.setValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "tests"),
+        IObject config = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        config.setValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "tests"),
                 Arrays.asList(td1, td2));
 
         doThrow(TestExecutionException.class).when(testRunnerMock).runTest(same(td1), any());

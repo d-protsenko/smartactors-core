@@ -2,7 +2,6 @@ package info.smart_tools.smartactors.message_processing.receiver_chain;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
-import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.dumpable_interface.idumpable.IDumpable;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -15,11 +14,9 @@ import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.scope.iscope.IScope;
-import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import org.junit.Test;
-import sun.security.pkcs11.Secmod;
 
 import java.util.*;
 
@@ -157,7 +154,7 @@ public class ImmutableReceiverChainTest extends PluginsLoadingTestBase {
     public void Should_provideCollectionOfUniqueExceptionalChains()
             throws Exception {
         IReceiverChain exceptional1 = mock(IReceiverChain.class), exceptional2 = mock(IReceiverChain.class);
-        IFieldName chainFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
+        IFieldName chainFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
         IObject eobj1 = mock(IObject.class), eobj2 = mock(IObject.class), eobj3 = mock(IObject.class);
         when(eobj1.getValue(eq(chainFN))).thenReturn(exceptional1);
         when(eobj2.getValue(eq(chainFN))).thenReturn(exceptional2);

@@ -58,16 +58,16 @@ public class ActorReceiverCreatorPlugin  implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.getOrAdd("actor_receiver_queue"),
+                                    Keys.getKeyByName("actor_receiver_queue"),
                                     new CreateNewInstanceStrategy(args -> new ConcurrentLinkedQueue()));
 
                             IOC.register(
-                                    Keys.getOrAdd("actor_receiver_busyness_flag"),
+                                    Keys.getKeyByName("actor_receiver_busyness_flag"),
                                     new CreateNewInstanceStrategy(args -> new AtomicBoolean(false)));
 
                             ActorReceiverCreator objectCreator = new ActorReceiverCreator();
                             IOC.register(
-                                    Keys.getOrAdd(IRoutedObjectCreator.class.getCanonicalName() + "#actor"),
+                                    Keys.getKeyByName(IRoutedObjectCreator.class.getCanonicalName() + "#actor"),
                                     new SingletonStrategy(objectCreator)
                             );
                         } catch (ResolutionException e) {
@@ -86,21 +86,21 @@ public class ActorReceiverCreatorPlugin  implements IPlugin {
 
                         try {
                             keyName = IRoutedObjectCreator.class.getCanonicalName() + "#actor";
-                            IOC.remove(Keys.getOrAdd(keyName));
+                            IOC.remove(Keys.getKeyByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "actor_receiver_busyness_flag";
-                            IOC.remove(Keys.getOrAdd(keyName));
+                            IOC.remove(Keys.getKeyByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "actor_receiver_queue";
-                            IOC.remove(Keys.getOrAdd(keyName));
+                            IOC.remove(Keys.getKeyByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

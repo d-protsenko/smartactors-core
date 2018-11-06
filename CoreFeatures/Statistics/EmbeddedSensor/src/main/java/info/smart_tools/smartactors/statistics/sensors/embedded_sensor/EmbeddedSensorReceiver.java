@@ -61,14 +61,14 @@ public class EmbeddedSensorReceiver implements IMessageReceiver {
      */
     public EmbeddedSensorReceiver(final IObject args)
             throws ResolutionException, ReadValueException, InvalidArgumentException, EmbeddedSensorStrategyException {
-        periodFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "period");
-        startFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "start");
-        limitFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "limit");
-        strategyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "strategy");
-        statisticsChainFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "statisticsChain");
+        periodFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "period");
+        startFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "start");
+        limitFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "limit");
+        strategyFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "strategy");
+        statisticsChainFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "statisticsChain");
 
-        timer = IOC.resolve(Keys.getOrAdd("timer"));
-        systemTime = IOC.resolve(Keys.getOrAdd("time"));
+        timer = IOC.resolve(Keys.getKeyByName("timer"));
+        systemTime = IOC.resolve(Keys.getKeyByName("time"));
 
         observationPeriod = Duration.parse((String) args.getValue(periodFieldName)).toMillis();
 
@@ -83,7 +83,7 @@ public class EmbeddedSensorReceiver implements IMessageReceiver {
         strategy = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), args.getValue(strategyFieldName)), args);
         statisticsChainName = (String)args.getValue(statisticsChainFieldName);
 
-        currentPeriod.set(IOC.resolve(Keys.getOrAdd(IEmbeddedSensorObservationPeriod.class.getCanonicalName()),
+        currentPeriod.set(IOC.resolve(Keys.getKeyByName(IEmbeddedSensorObservationPeriod.class.getCanonicalName()),
                 observationStart, observationStart + observationPeriod, maxPeriodItems, strategy));
     }
 

@@ -38,7 +38,7 @@ public class ExceptionHandlerActorPlugin implements IPlugin {
                     .after("IOC")
                     .process(() -> {
                 try {
-                    IOC.register(Keys.getOrAdd("ExceptionHandlerActor"), new ApplyFunctionToArgumentsStrategy(
+                    IOC.register(Keys.getKeyByName("ExceptionHandlerActor"), new ApplyFunctionToArgumentsStrategy(
                             (args) -> {
                                 try {
                                     return new ExceptionHandlerActor();

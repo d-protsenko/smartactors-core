@@ -61,7 +61,7 @@ public class ResponseSenderActorTest {
                 IOC.getKeyForKeyByNameResolutionStrategy(),
                 new ResolveByNameIocStrategy()
         );
-        IKey keyFieldName = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey keyFieldName = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         IOC.register(keyFieldName,
                 new CreateNewInstanceStrategy(
                         (args) -> {
@@ -72,25 +72,25 @@ public class ResponseSenderActorTest {
                             return null;
                         }
                 ));
-        IKey keyIObject = Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
+        IKey keyIObject = Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject");
         IOC.register(keyIObject,
                 new CreateNewInstanceStrategy(
                         (args) -> new DSObject()
 
                 ));
-        IKey keyIResponse = Keys.getOrAdd(IResponse.class.getCanonicalName());
+        IKey keyIResponse = Keys.getKeyByName(IResponse.class.getCanonicalName());
         IOC.register(keyIResponse,
                 new SingletonStrategy(response));
 
-        IKey keyIResponseContentStrategy = Keys.getOrAdd(IResponseContentStrategy.class.getCanonicalName());
+        IKey keyIResponseContentStrategy = Keys.getKeyByName(IResponseContentStrategy.class.getCanonicalName());
         IOC.register(keyIResponseContentStrategy,
                 new SingletonStrategy(responseContentStrategy));
 
-        IKey keyIResponseSender = Keys.getOrAdd(IResponseSender.class.getCanonicalName());
+        IKey keyIResponseSender = Keys.getKeyByName(IResponseSender.class.getCanonicalName());
         IOC.register(keyIResponseSender,
                 new SingletonStrategy(responseSender));
 
-        IOC.register(Keys.getOrAdd("http_request_key_for_response_sender"),
+        IOC.register(Keys.getKeyByName("http_request_key_for_response_sender"),
                 new SingletonStrategy("HTTP_POST"));
 
 
