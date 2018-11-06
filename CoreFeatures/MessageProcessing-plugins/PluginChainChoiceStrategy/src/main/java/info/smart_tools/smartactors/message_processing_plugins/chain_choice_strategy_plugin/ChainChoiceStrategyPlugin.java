@@ -51,7 +51,7 @@ public class ChainChoiceStrategyPlugin implements IPlugin {
                             IFieldName messageMapIdFieldName =
                                     IOC.resolve(
                                             IOC.resolve(
-                                                    IOC.getKeyForKeyByNameResolveStrategy(),
+                                                    IOC.getKeyForKeyByNameResolutionStrategy(),
                                                     "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"
                                             ),
                                             "messageMapId"
@@ -65,7 +65,7 @@ public class ChainChoiceStrategyPlugin implements IPlugin {
                             };
 
                             IOC.register(
-                                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain choice strategy"),
+                                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "chain choice strategy"),
                                     new SingletonStrategy(strategy));
                         } catch (Exception e) {
                             throw new RuntimeException(

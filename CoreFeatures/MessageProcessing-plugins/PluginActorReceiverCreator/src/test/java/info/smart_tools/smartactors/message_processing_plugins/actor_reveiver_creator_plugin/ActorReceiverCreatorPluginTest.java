@@ -39,7 +39,7 @@ public class ActorReceiverCreatorPluginTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolveStrategy(),
+                IOC.getKeyForKeyByNameResolutionStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -50,7 +50,7 @@ public class ActorReceiverCreatorPluginTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -102,7 +102,7 @@ public class ActorReceiverCreatorPluginTest {
         item.executeProcess();
         IRoutedObjectCreator objectCreator = IOC.resolve(
                 IOC.resolve(
-                        IOC.getKeyForKeyByNameResolveStrategy(),
+                        IOC.getKeyForKeyByNameResolutionStrategy(),
                         IRoutedObjectCreator.class.getCanonicalName() + "#actor"
                 )
         );

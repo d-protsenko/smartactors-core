@@ -58,7 +58,7 @@ public class DeserializeStrategyGetTest {
         ScopeProvider.setCurrentScope(mainScope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolveStrategy(),
+                IOC.getKeyForKeyByNameResolutionStrategy(),
                 new ResolveByNameIocStrategy()
         );
 

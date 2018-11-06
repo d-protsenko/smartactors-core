@@ -33,7 +33,7 @@ public class HandlerRoutingReceiver implements IMessageReceiver {
         }
 
         this.handlerReceiversMap = handlerReceiversMap;
-        this.handlerField = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IField.class.getCanonicalName()), "handler");
+        this.handlerField = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IField.class.getCanonicalName()), "handler");
     }
 
     @Override

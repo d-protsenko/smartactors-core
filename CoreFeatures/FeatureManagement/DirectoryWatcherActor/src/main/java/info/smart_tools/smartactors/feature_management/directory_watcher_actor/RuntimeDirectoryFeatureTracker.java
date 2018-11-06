@@ -125,7 +125,7 @@ public class RuntimeDirectoryFeatureTracker {
 
         Integer stackDepth = IOC.resolve(Keys.getOrAdd("default_stack_depth"));
         IMessageProcessingSequence processingSequence = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), MESSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), MESSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME),
                 stackDepth,
                 this.executionChainName,
                 message
@@ -133,7 +133,7 @@ public class RuntimeDirectoryFeatureTracker {
 
         IQueue queue = IOC.resolve(Keys.getOrAdd(TASK_QUEUE_IOC_NAME));
         IMessageProcessor messageProcessor = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), MESSAGE_PROCESSOR_FACTORY_STRATEGY_NAME),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), MESSAGE_PROCESSOR_FACTORY_STRATEGY_NAME),
                 queue,
                 processingSequence
         );

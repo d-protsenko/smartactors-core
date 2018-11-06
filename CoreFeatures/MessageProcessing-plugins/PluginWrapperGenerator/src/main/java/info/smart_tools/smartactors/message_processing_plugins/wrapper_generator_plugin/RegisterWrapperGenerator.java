@@ -49,7 +49,7 @@ public class RegisterWrapperGenerator implements IPlugin {
                                     IWrapperGenerator rg = new WrapperGenerator();
                                     IOC.register(
                                             IOC.resolve(
-                                                    IOC.getKeyForKeyByNameResolveStrategy(),
+                                                    IOC.getKeyForKeyByNameResolutionStrategy(),
                                                     IWrapperGenerator.class.getCanonicalName()
                                             ),
                                             new SingletonStrategy(rg)

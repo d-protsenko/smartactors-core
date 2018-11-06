@@ -80,7 +80,7 @@ public class EmbeddedSensorReceiver implements IMessageReceiver {
         Number maxItems = (Number) args.getValue(limitFieldName);
         maxPeriodItems = (maxItems == null) ? -1 : maxItems.longValue();
 
-        strategy = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), args.getValue(strategyFieldName)), args);
+        strategy = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), args.getValue(strategyFieldName)), args);
         statisticsChainName = (String)args.getValue(statisticsChainFieldName);
 
         currentPeriod.set(IOC.resolve(Keys.getOrAdd(IEmbeddedSensorObservationPeriod.class.getCanonicalName()),

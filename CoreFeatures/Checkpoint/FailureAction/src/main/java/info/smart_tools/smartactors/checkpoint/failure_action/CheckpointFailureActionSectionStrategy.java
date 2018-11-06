@@ -58,7 +58,7 @@ public class CheckpointFailureActionSectionStrategy implements ISectionStrategy 
                 actionKeyName = "default configurable checkpoint failure action";
             }
 
-            IAction<IObject> action = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), actionKeyName), section);
+            IAction<IObject> action = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), actionKeyName), section);
 
             IOC.register(Keys.getOrAdd("checkpoint failure action"),
                     new SingletonStrategy(action));

@@ -315,7 +315,7 @@ public class StatisticsManagerActor {
             }
 
             ISensorHandle handle = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), args.getValue(dependencyFieldName)),
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), args.getValue(dependencyFieldName)),
                     IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName),
                     args.getValue(argsFieldName)
             );

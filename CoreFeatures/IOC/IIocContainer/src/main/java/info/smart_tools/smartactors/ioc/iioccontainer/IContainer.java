@@ -29,7 +29,7 @@ public interface IContainer {
      * Return specific instance of {@link IKey} for strategy of resolving key by name
      * @return instance of {@link IKey}
      */
-    IKey getKeyForKeyByNameResolveStrategy();
+    IKey getKeyForKeyByNameResolutionStrategy();
 
     /**
      * Resolve dependency by given given {@link IKey} instance and args

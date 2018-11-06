@@ -51,7 +51,7 @@ public class TestRunnerChainTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolveStrategy(),
+                IOC.getKeyForKeyByNameResolutionStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -62,7 +62,7 @@ public class TestRunnerChainTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ApplyFunctionToArgumentsStrategy(
                         (a) -> {
                             try {
@@ -74,17 +74,17 @@ public class TestRunnerChainTest {
                 )
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "chain_id_from_map_name_and_message"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "chain_id_from_map_name_and_message"),
                 new ApplyFunctionToArgumentsStrategy((a) -> {
                     return this.chainId;
                 })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IChainStorage.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IChainStorage.class.getCanonicalName()),
                 new SingletonStrategy(this.chainStorage)
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "test environment handler"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "test environment handler"),
                 new SingletonStrategy(testHandler)
         );
         when(this.chainStorage.resolve(this.chainId)).thenReturn(this.receiverChain);
@@ -141,7 +141,7 @@ public class TestRunnerChainTest {
         IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
         doThrow(ResolutionException.class).when(strategy).resolve(any());
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 strategy
         );
         new ChainTestRunner();

@@ -56,14 +56,14 @@ public final class IOC {
      * @return instance of {@link IKey}
      */
     @Deprecated
-    public static IKey getKeyForKeyStorage() { return container.getKeyForKeyByNameResolveStrategy(); }
+    public static IKey getKeyForKeyStorage() { return container.getKeyForKeyByNameResolutionStrategy(); }
 
     /**
      * Return specific instance of {@link IKey} for strategy of resolving key by name
      * @return instance of {@link IKey}
      */
-    public static IKey getKeyForKeyByNameResolveStrategy() {
-        return container.getKeyForKeyByNameResolveStrategy();
+    public static IKey getKeyForKeyByNameResolutionStrategy() {
+        return container.getKeyForKeyByNameResolutionStrategy();
     }
 
     /**

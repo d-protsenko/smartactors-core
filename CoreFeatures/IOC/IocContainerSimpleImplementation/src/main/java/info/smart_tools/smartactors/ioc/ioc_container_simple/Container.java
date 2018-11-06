@@ -61,7 +61,7 @@ public class Container implements IContainer {
      * @return instance of {@link IKey}
      */
     @Override
-    public IKey getKeyForKeyByNameResolveStrategy() {
+    public IKey getKeyForKeyByNameResolutionStrategy() {
         return keyForKeyByNameResolveStrategy;
     }
 

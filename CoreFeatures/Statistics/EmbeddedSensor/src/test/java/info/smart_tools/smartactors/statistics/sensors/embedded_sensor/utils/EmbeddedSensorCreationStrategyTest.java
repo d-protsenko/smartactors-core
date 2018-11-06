@@ -60,7 +60,7 @@ public class EmbeddedSensorCreationStrategyTest extends PluginsLoadingTestBase {
         IOC.register(Keys.getOrAdd(IChainStorage.class.getCanonicalName()), new SingletonStrategy(chainStorageMock));
         when(chainStorageMock.update(eq("the_chain__0"), any())).thenAnswer(invocation -> {
             chain = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), invocation.getArgumentAt(1, IObject.class)
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), invocation.getArgumentAt(1, IObject.class)
                         .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "modification"))),
                     chain,
                     invocation.getArgumentAt(1, IObject.class)

@@ -51,7 +51,7 @@ public class MainTestChainTest {
         scope.setValue(IOC.getIocKey(), this.container);
         ScopeProvider.setCurrentScope(scope);
         IOC.register(
-                IOC.getKeyForKeyByNameResolveStrategy(),
+                IOC.getKeyForKeyByNameResolutionStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -62,11 +62,11 @@ public class MainTestChainTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new ApplyFunctionToArgumentsStrategy((args) -> new DSObject())
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ApplyFunctionToArgumentsStrategy((args) -> new FieldName((String) args[0]))
         );
     }
@@ -89,7 +89,7 @@ public class MainTestChainTest {
     public void Should_constructorThrowInitializationExceptionWhenIOCNotInitialized()
             throws Exception {
         IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
-        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"), strategy);
+        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"), strategy);
         doThrow(Exception.class).when(strategy).resolve();
         assertNotNull(new MainTestChain(this.testingChainName, this.completionCallbackMock, this.successArgumentsMock));
         fail();

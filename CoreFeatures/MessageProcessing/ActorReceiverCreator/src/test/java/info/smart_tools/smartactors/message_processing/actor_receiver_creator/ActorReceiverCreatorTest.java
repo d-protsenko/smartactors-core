@@ -44,7 +44,7 @@ public class ActorReceiverCreatorTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolveStrategy(),
+                IOC.getKeyForKeyByNameResolutionStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -58,14 +58,14 @@ public class ActorReceiverCreatorTest {
         Queue queue = mock(Queue.class);
         when(queue.isEmpty()).thenReturn(true);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "actor_receiver_queue"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "actor_receiver_queue"),
                 new SingletonStrategy(queue)
         );
 
         AtomicBoolean isBusy = new AtomicBoolean();
         isBusy.set(false);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "actor_receiver_busyness_flag"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "actor_receiver_busyness_flag"),
                 new SingletonStrategy(isBusy)
         );
 
@@ -82,7 +82,7 @@ public class ActorReceiverCreatorTest {
     public void checkCreationAndExecution()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -95,7 +95,7 @@ public class ActorReceiverCreatorTest {
         );
         IField field = mock(IField.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IField.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IField.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             return field;
@@ -156,7 +156,7 @@ public class ActorReceiverCreatorTest {
     public void checkCreationExceptionOnWrongFieldNameStrategy()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -175,7 +175,7 @@ public class ActorReceiverCreatorTest {
     public void checkMethodExceptionOnWrongArgs()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {

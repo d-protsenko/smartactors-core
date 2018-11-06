@@ -56,7 +56,7 @@ public class StrategyContainerScopeTest {
         childScope = ScopeProvider.getScope(childScopeKey);
 
         ScopeProvider.setCurrentScope(parentScope);
-        IOC.register(IOC.getKeyForKeyByNameResolveStrategy(), new ResolveByNameIocStrategy(
+        IOC.register(IOC.getKeyForKeyByNameResolutionStrategy(), new ResolveByNameIocStrategy(
                 (a) -> {
                     try {
                         return new Key((String) a[0]);

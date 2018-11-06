@@ -105,7 +105,7 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
                 }
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 strategy
         );
 

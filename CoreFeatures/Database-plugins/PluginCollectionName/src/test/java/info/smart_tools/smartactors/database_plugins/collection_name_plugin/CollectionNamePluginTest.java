@@ -43,7 +43,7 @@ public class CollectionNamePluginTest {
 
         IKey keyGeneral = mock(IKey.class);
         IKey keyPlugin = mock(IKey.class);
-        when(IOC.getKeyForKeyByNameResolveStrategy()).thenReturn(keyGeneral);
+        when(IOC.getKeyForKeyByNameResolutionStrategy()).thenReturn(keyGeneral);
         when(IOC.resolve(eq(keyGeneral), eq("CollectionNamePlugin"))).thenReturn(keyPlugin);
 
         bootstrap = mock(IBootstrap.class);

@@ -42,7 +42,7 @@ public class HandlerRoutingReceiverCreatorTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolveStrategy(),
+                IOC.getKeyForKeyByNameResolutionStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -58,7 +58,7 @@ public class HandlerRoutingReceiverCreatorTest {
     public void checkCreationAndExecution()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -71,7 +71,7 @@ public class HandlerRoutingReceiverCreatorTest {
         );
         IField field = mock(IField.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), IField.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IField.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             return field;
@@ -147,7 +147,7 @@ public class HandlerRoutingReceiverCreatorTest {
     public void checkCreationExceptionOnWrongFieldNameStrategy()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -166,7 +166,7 @@ public class HandlerRoutingReceiverCreatorTest {
     public void checkMethodExceptionOnWrongArgs()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {

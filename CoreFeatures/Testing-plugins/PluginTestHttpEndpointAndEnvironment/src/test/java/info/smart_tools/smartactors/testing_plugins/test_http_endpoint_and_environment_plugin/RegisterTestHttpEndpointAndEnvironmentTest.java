@@ -45,7 +45,7 @@ public class RegisterTestHttpEndpointAndEnvironmentTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolveStrategy(),
+                IOC.getKeyForKeyByNameResolutionStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -56,7 +56,7 @@ public class RegisterTestHttpEndpointAndEnvironmentTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy((a)-> {
                     try {
                         return new FieldName((String) a[0]);
@@ -67,12 +67,12 @@ public class RegisterTestHttpEndpointAndEnvironmentTest {
         );
         IEnvironmentHandler environmentHandler = mock(IEnvironmentHandler.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "test environment handler"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "test environment handler"),
                 new SingletonStrategy(environmentHandler)
         );
         IReceiverChain testRoutingChain = mock(IReceiverChain.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "test_routing_chain"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "test_routing_chain"),
                 new SingletonStrategy(testRoutingChain)
         );
     }

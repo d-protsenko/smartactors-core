@@ -54,7 +54,7 @@ public class ChainCallReceiverPlugin implements IPlugin {
                         try {
                             IOC.register(
                                     IOC.resolve(
-                                            IOC.getKeyForKeyByNameResolveStrategy(),
+                                            IOC.getKeyForKeyByNameResolutionStrategy(),
                                             ChainCallReceiver.class.getCanonicalName()
                                     ),
                                     new ApplyFunctionToArgumentsStrategy(
@@ -62,14 +62,14 @@ public class ChainCallReceiverPlugin implements IPlugin {
                                                 try {
                                                     IFieldName fieldName = IOC.resolve(
                                                             IOC.resolve(
-                                                                    IOC.getKeyForKeyByNameResolveStrategy(),
+                                                                    IOC.getKeyForKeyByNameResolutionStrategy(),
                                                                     "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"
                                                             ),
                                                             "strategyDependency"
                                                     );
                                                     IChainChoiceStrategy strategy = IOC.resolve(
                                                             IOC.resolve(
-                                                                    IOC.getKeyForKeyByNameResolveStrategy(),
+                                                                    IOC.getKeyForKeyByNameResolutionStrategy(),
                                                                     ((IObject) args[0]).getValue(fieldName)
                                                             )
                                                     );

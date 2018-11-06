@@ -23,6 +23,6 @@ public final class Keys {
      */
     public static IKey getOrAdd(final String keyName)
             throws ResolutionException {
-        return (IKey) IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), keyName);
+        return (IKey) IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), keyName);
     }
 }

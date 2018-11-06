@@ -60,19 +60,19 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
     public OnFeatureLoadingSectionProcessingStrategy()
             throws ResolutionException {
         this.sectionNameFieldName = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "onFeatureLoading"
         );
         this.chainFieldName = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "chain"
         );
         this.revertFieldName = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "revert"
         );
         this.messagesFieldName = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "messages"
         );
     }
@@ -98,13 +98,13 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                     List<IObject> messages = (List<IObject>)task.getValue(this.messagesFieldName);
                     for (IObject message : messages) {
                         IMessageProcessingSequence processingSequence = IOC.resolve(
-                                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                                 stackDepth,
                                 chainName,
                                 message
                         );
                         IMessageProcessor messageProcessor = IOC.resolve(
-                                IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+                                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                                 queue,
                                 processingSequence
                         );
@@ -141,13 +141,13 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                         for (IObject message : messages) {
                             try {
                                 IMessageProcessingSequence processingSequence = IOC.resolve(
-                                        IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                                         stackDepth,
                                         chainName,
                                         message
                                 );
                                 IMessageProcessor messageProcessor = IOC.resolve(
-                                        IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+                                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                                         queue,
                                         processingSequence
                                 );

@@ -48,7 +48,7 @@ public class GenericDecoratorReceiverObjectCreator extends BasicIntermediateRece
 
         try {
             decorator = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), getFilterConfig().getValue(decoratorDependencyFieldName)),
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), getFilterConfig().getValue(decoratorDependencyFieldName)),
                     item,
                     getFilterConfig(),
                     getObjectConfig(),

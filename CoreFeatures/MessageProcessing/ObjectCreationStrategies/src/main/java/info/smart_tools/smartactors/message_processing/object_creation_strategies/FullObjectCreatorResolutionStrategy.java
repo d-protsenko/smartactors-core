@@ -60,7 +60,7 @@ public class FullObjectCreatorResolutionStrategy implements IResolveDependencySt
             for (IObject fDesc : filtersList) {
                 creator = IOC.resolve(
                         IOC.resolve(
-                                IOC.getKeyForKeyByNameResolveStrategy(),
+                                IOC.getKeyForKeyByNameResolutionStrategy(),
                                 fDesc.getValue(dependencyFieldName)
                         ),
                         creator,

@@ -23,7 +23,7 @@ public class ContainerTest {
         IContainer container = new Container();
         assertNotNull(container);
         IKey key1 = container.getIocKey();
-        IKey key2 = container.getKeyForKeyByNameResolveStrategy();
+        IKey key2 = container.getKeyForKeyByNameResolutionStrategy();
         assertNull(key1);
         assertNotNull(key2);
     }

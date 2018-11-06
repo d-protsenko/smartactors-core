@@ -62,9 +62,9 @@ public class DatabaseCountQueryExecutor implements IQueryExecutor {
         try {
             List<Long> res = new ArrayList<>(1);
             Object connectionOptions = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), entry.getState().getValue(connectionOptionsDependencyFieldName)));
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), entry.getState().getValue(connectionOptionsDependencyFieldName)));
             IPool connectionPool = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolveStrategy(), entry.getState().getValue(connectionPoolDependencyFieldName)),
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), entry.getState().getValue(connectionPoolDependencyFieldName)),
                     connectionOptions
             );
 

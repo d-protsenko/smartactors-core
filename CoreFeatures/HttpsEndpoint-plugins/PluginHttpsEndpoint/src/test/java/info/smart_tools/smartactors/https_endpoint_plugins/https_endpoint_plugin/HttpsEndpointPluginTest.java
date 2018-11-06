@@ -50,7 +50,7 @@ public class HttpsEndpointPluginTest {
         scope.setValue(IOC.getIocKey(), new StrategyContainer());
         ScopeProvider.setCurrentScope(scope);
         IOC.register(
-                IOC.getKeyForKeyByNameResolveStrategy(),
+                IOC.getKeyForKeyByNameResolutionStrategy(),
                 new ResolveByNameIocStrategy()
         );
         IOC.register(
