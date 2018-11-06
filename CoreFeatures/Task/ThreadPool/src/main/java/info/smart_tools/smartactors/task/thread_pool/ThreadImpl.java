@@ -1,5 +1,8 @@
 package info.smart_tools.smartactors.task.thread_pool;
 
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
+import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 
@@ -20,6 +23,13 @@ class ThreadImpl {
     private class ThreadRunnable implements Runnable {
         @Override
         public void run() {
+            ModuleManager.setCurrentModule(pool.getModule());
+            try {
+                ScopeProvider.setCurrentScope(pool.getScope());
+            } catch (ScopeProviderException e) {
+                // TODO: Handle
+                e.printStackTrace();
+            }
             while (!Thread.interrupted()) {
                 try {
                     synchronized (lock) {
