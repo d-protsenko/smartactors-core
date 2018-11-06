@@ -64,12 +64,12 @@ public class WrapperGeneratorTest {
         assertNotNull(w2);
         assertNotSame(w1, w2);
 
-        attachClassToClassLoader("IInnerWrapper.class", cl);
+        //attachClassToClassLoader("IInnerWrapper.class", cl);
         Class iInnerWrapperClass = cl.loadClass(IInnerWrapper.class.getName());
-        IInnerWrapper  iInnerWrapper = mock(IInnerWrapper.class);
+        //IInnerWrapper  iInnerWrapper = mock(IInnerWrapper.class);
         //when(iInnerWrapper.getClass()).thenReturn(IInnerWrapper.class);
 
-       // IInnerWrapper w3 = (IInnerWrapper)wg.generate(iInnerWrapper);
+       IInnerWrapper w3 = (IInnerWrapper)wg.generate(iInnerWrapperClass);
         //assertNotNull(w3);
     }
 
