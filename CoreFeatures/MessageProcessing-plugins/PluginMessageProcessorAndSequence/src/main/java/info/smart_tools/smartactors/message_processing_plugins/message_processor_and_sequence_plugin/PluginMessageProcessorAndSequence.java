@@ -54,6 +54,8 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                             IAction<IMessageProcessingSequence> continueAction = (mps) -> {
                             };
                             IAction<IMessageProcessingSequence> repeatAction = (mps) -> {
+                                // ToDo: strange code - probably must replace "currentLevel - 1" by "currentLevel"
+                                // ToDo: but then it does nothing
                                 int currentLevel = mps.getCurrentLevel();
                                 int repeatStep = mps.getStepAtLevel(currentLevel - 1);
                                 mps.goTo(currentLevel - 1, repeatStep);

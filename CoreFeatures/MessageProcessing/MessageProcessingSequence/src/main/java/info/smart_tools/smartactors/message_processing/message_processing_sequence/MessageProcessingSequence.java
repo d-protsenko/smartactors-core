@@ -187,6 +187,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         return chainStorage.resolve(chainId);
     }
 
+    /* Call it carefully since it does not change scope and module context */
     private void uncheckedGoTo(final int level, final int step) {
         this.stackIndex = level;
         this.stepStack[level] = step - 1;
@@ -251,6 +252,24 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
     public void goTo(final int level, final int step) throws InvalidArgumentException {
         if (level > stackIndex || level < 0) {
             throw new InvalidArgumentException("Invalid level value");
+        }
+
+        int lastScopeSwitchingLevel = -1;
+        for(int idx=0; idx <= level; idx++) {
+            if (scopeSwitchingStack[idx]) {
+                lastScopeSwitchingLevel = idx;
+            }
+        }
+        try {
+            if (lastScopeSwitchingLevel > -1) {
+                ModuleManager.setCurrentModule(chainStack[lastScopeSwitchingLevel].getModule());
+                ScopeProvider.setCurrentScope(chainStack[lastScopeSwitchingLevel].getScope());
+            } else {
+                ModuleManager.setCurrentModule(moduleStack[0]);
+                ScopeProvider.setCurrentScope(scopeStack[0]);
+            }
+        } catch (ScopeProviderException e) {
+            throw new RuntimeException(e);
         }
 
         uncheckedGoTo(level, step);
