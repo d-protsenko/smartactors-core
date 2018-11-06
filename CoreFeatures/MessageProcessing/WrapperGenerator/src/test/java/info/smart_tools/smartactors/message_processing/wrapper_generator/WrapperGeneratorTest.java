@@ -46,10 +46,10 @@ public class WrapperGeneratorTest {
         );
     }
 
-    private void attachClassToClassLoader(String className, ISmartactorsClassLoader cl)
+    private void attachJarToClassLoader(String jarName, ISmartactorsClassLoader cl)
             throws Exception {
-        String pathToClass = this.getClass().getClassLoader().getResource(className).getFile();
-        cl.addURL(new URL("class:file:" + pathToClass+"!/"));
+        String pathToJar = this.getClass().getClassLoader().getResource(jarName).getFile();
+        cl.addURL(new URL("jar:file:" + pathToJar+"!/"));
     }
 
     @Test
@@ -64,13 +64,13 @@ public class WrapperGeneratorTest {
         assertNotNull(w2);
         assertNotSame(w1, w2);
 
-        //attachClassToClassLoader("IInnerWrapper.class", cl);
-        Class iInnerWrapperClass = cl.loadClass(IInnerWrapper.class.getName());
+        attachJarToClassLoader("ISampleWrapper.jar", cl);
+        Class iSampleWrapperClass = cl.loadClass("info.smart_tools.smartactors.message_processing.wrapper_generator.ISampleWrapper");
         //IInnerWrapper  iInnerWrapper = mock(IInnerWrapper.class);
         //when(iInnerWrapper.getClass()).thenReturn(IInnerWrapper.class);
 
-       IInnerWrapper w3 = (IInnerWrapper)wg.generate(iInnerWrapperClass);
-        //assertNotNull(w3);
+        Object w3 = wg.generate(iSampleWrapperClass);
+        assertNotNull(w3);
     }
 
     @Test (expected = WrapperGeneratorException.class)
