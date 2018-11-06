@@ -78,55 +78,56 @@ public class MessageBusHandler implements IMessageBusHandler {
     }
 
     @Override
-    public void handle(final IObject message)
+    public void handle(final IObject message, boolean scopeSwitching)
             throws MessageBusHandlerException {
-        handle0(message, defaultChainName);
+        handle0(message, defaultChainName, scopeSwitching);
     }
 
     @Override
-    public void handle(final IObject message, final Object chainName)
+    public void handle(final IObject message, final Object chainName, boolean scopeSwitching)
             throws MessageBusHandlerException {
-        handle0(message, chainName);
+        handle0(message, chainName, scopeSwitching);
     }
 
     @Override
-    public void handleForReply(final IObject message, final Object replyToChainName)
+    public void handleForReply(final IObject message, final Object replyToChainName, boolean scopeSwitching)
             throws MessageBusHandlerException {
-        handleForReply0(message, defaultChainName, replyToChainName);
+        handleForReply0(message, defaultChainName, replyToChainName, scopeSwitching);
     }
 
     @Override
-    public void handleForReply(final IObject message, final Object chainName, final Object replyToChainName)
+    public void handleForReply(final IObject message, final Object chainName, final Object replyToChainName, boolean scopeSwitching)
             throws MessageBusHandlerException {
-        handleForReply0(message, chainName, replyToChainName);
+        handleForReply0(message, chainName, replyToChainName, scopeSwitching);
     }
 
-    private void handle0(final IObject message, final Object dstChainName)
+    private void handle0(final IObject message, final Object dstChainName, boolean scopeSwitching)
             throws MessageBusHandlerException {
         try {
-            resolveMessageProcessor(dstChainName, message)
+            resolveMessageProcessor(dstChainName, message, scopeSwitching)
                     .process(message, resolveDefaultContext());
         } catch (ResolutionException | InvalidArgumentException | ChangeValueException | MessageProcessorProcessException e) {
             throw new MessageBusHandlerException("Failed to handle message to MessageBus.", e);
         }
     }
 
-    private void handleForReply0(final IObject message, final Object dstChainName, final Object replyToChainName)
+    private void handleForReply0(final IObject message, final Object dstChainName, final Object replyToChainName, boolean scopeSwitching)
             throws MessageBusHandlerException {
         try {
-            resolveMessageProcessor(dstChainName, message)
+            resolveMessageProcessor(dstChainName, message, scopeSwitching)
                     .process(message, resolveReplyContext(replyToChainName));
         } catch (ResolutionException | ChangeValueException | InvalidArgumentException | MessageProcessorProcessException e) {
             throw new MessageBusHandlerException("Failed to handle message to MessageBus.", e);
         }
     }
 
-    private IMessageProcessor resolveMessageProcessor(final Object mpChainName, IObject message) throws ResolutionException {
+    private IMessageProcessor resolveMessageProcessor(final Object mpChainName, IObject message, Boolean scopeSwitching) throws ResolutionException {
         IMessageProcessingSequence processingSequence = IOC.resolve(
                 this.keyIMessageProcessingSequence,
                 this.stackDepth,
                 mpChainName,
-                message
+                message,
+                scopeSwitching
         );
         return IOC.resolve(
                 this.keyIMessageProcessor,
