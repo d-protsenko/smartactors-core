@@ -17,7 +17,6 @@ import org.junit.Test;
 import java.net.URL;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 /**
  * Tests for {@link WrapperGenerator}
@@ -66,8 +65,6 @@ public class WrapperGeneratorTest {
 
         attachJarToClassLoader("ISampleWrapper.jar", cl);
         Class iSampleWrapperClass = cl.loadClass("info.smart_tools.smartactors.message_processing.wrapper_generator.ISampleWrapper");
-        //IInnerWrapper  iInnerWrapper = mock(IInnerWrapper.class);
-        //when(iInnerWrapper.getClass()).thenReturn(IInnerWrapper.class);
 
         Object w3 = wg.generate(iSampleWrapperClass);
         assertNotNull(w3);

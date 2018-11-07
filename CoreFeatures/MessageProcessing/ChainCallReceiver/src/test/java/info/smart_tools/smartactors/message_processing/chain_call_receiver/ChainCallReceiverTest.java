@@ -42,13 +42,6 @@ public class ChainCallReceiverTest extends PluginsLoadingTestBase {
             throws Exception {
     }
 
-
-    @Test(expected = InvalidArgumentException.class)
-    public void Should_constructorThrowWhenChainStorageIsNull()
-            throws Exception {
-        new ChainCallReceiver(mock(IChainChoiceStrategy.class));
-    }
-
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrowWhenStrategyIsNull()
             throws Exception {
@@ -61,34 +54,36 @@ public class ChainCallReceiverTest extends PluginsLoadingTestBase {
         IChainStorage chainStorageMock = mock(IChainStorage.class);
         IChainChoiceStrategy chainChoiceStrategyMock = mock(IChainChoiceStrategy.class);
 
-        Object chainNameMock = mock(Object.class);
+        Object chainName = "test_chain";
         IReceiverChain chainMock = mock(IReceiverChain.class);
         IMessageProcessor messageProcessorMock = mock(IMessageProcessor.class);
         IMessageProcessingSequence sequenceMock = mock(IMessageProcessingSequence.class);
-        ChainChoiceException exceptionMock = mock(ChainChoiceException.class);
+        Exception exception = new InvalidArgumentException("Chain Choice Exception");
         IObject chainDescriptionMock = mock(IObject.class);
         IObject contextMock = mock(IObject.class);
 
         IMessageReceiver receiver = new ChainCallReceiver(chainChoiceStrategyMock);
 
-        when(chainChoiceStrategyMock.chooseChain(same(messageProcessorMock))).thenReturn(chainNameMock);
-        when(chainStorageMock.resolve(same(chainNameMock))).thenReturn(chainMock);
+        when(chainChoiceStrategyMock.chooseChain(same(messageProcessorMock))).thenReturn(chainName);
+        when(chainStorageMock.resolve(same(chainName))).thenReturn(chainMock);
         when(messageProcessorMock.getSequence()).thenReturn(sequenceMock);
         when(messageProcessorMock.getContext()).thenReturn(contextMock);
+        when(sequenceMock.getCurrentReceiverArguments()).thenReturn(chainDescriptionMock);
         when(chainMock.getChainDescription()).thenReturn(chainDescriptionMock);
         when(chainDescriptionMock.getValue(new FieldName("externalAccess"))).thenReturn(true);
+        when(chainDescriptionMock.getValue(new FieldName("scopeSwitching"))).thenReturn(true);
 
         receiver.receive(messageProcessorMock);
 
-        verify(sequenceMock).callChainSecurely(same(chainNameMock),same(messageProcessorMock));
+        verify(sequenceMock).callChainSecurely(same(chainName),same(messageProcessorMock));
 
-        when(chainChoiceStrategyMock.chooseChain(same(messageProcessorMock))).thenThrow(exceptionMock);
+        when(chainChoiceStrategyMock.chooseChain(same(messageProcessorMock))).thenThrow(exception);
 
         try {
             receiver.receive(messageProcessorMock);
             fail();
         } catch (MessageReceiveException e) {
-            assertSame(exceptionMock, e.getCause());
+            assertSame(exception, e.getCause());
         }
 
         receiver.dispose();
