@@ -12,7 +12,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.named_field_names_storage.Keys;
 import info.smart_tools.smartactors.message_processing.chain_call_receiver.ChainCallReceiver;
 import info.smart_tools.smartactors.message_processing.chain_call_receiver.IChainChoiceStrategy;
 

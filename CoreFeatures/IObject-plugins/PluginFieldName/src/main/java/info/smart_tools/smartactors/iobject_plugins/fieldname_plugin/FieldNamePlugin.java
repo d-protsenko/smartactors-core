@@ -13,7 +13,8 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationExce
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.named_field_names_storage.FiledNames;
+import info.smart_tools.smartactors.ioc.named_field_names_storage.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 
 /**
@@ -41,8 +42,8 @@ public class FieldNamePlugin implements IPlugin {
                     .after("IOC")
                     .process(() -> {
                         try {
-                            IKey iFieldNameKey = Keys.getOrAdd(FieldName.class.getCanonicalName());
-                            IOC.register(iFieldNameKey,
+                            IKey fieldNameKey = Keys.getOrAdd(FieldName.class.getCanonicalName());
+                            IOC.register(fieldNameKey,
                                     new ResolveByNameIocStrategy(
                                             (args) -> {
                                                 try {
@@ -86,6 +87,7 @@ public class FieldNamePlugin implements IPlugin {
                                             }
                                     )
                             );
+                            FiledNames.init();
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("FieldName plugin can't load: can't get FieldName key");
                         } catch (InvalidArgumentException e) {

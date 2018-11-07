@@ -47,7 +47,7 @@ public class PluginIOCKeys implements IPlugin {
                         String keyName = "";
 
                         try {
-                            keyName = "IOC key for key storage";
+                            keyName = "IOC key for key by name resolution strategy";
                             IOC.remove(IOC.getKeyForKeyByNameResolutionStrategy());
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");

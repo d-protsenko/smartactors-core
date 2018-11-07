@@ -18,6 +18,7 @@
         <module>IStrategyContainer</module>
         <module>StrategyContainer</module>
         <module>NamedKeysStorage</module>
+        <module>NamedFieldNamesStorage</module>
         <module>IOC</module>
         <module>IIocContainer</module>
         <module>IocContainer</module>

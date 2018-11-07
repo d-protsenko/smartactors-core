@@ -12,7 +12,7 @@ import info.smart_tools.smartactors.https_endpoint.https_request_sender_actor.Ht
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.named_field_names_storage.Keys;
 
 /**
  * Created by sevenbits on 15.10.16.

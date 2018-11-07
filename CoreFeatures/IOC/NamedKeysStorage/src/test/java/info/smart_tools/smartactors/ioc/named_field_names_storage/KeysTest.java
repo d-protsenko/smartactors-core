@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.ioc.named_keys_storage;
+package info.smart_tools.smartactors.ioc.named_field_names_storage;
 
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
