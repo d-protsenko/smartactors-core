@@ -37,8 +37,8 @@ public class CreateCachedCollectionTask implements IDatabaseTask {
     public CreateCachedCollectionTask(final IDatabaseTask createCollectionTask) throws CreateCachedCollectionTaskException {
         this.createCollectionTask = createCollectionTask;
         try {
-            this.keyNameField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "keyName");
-            this.indexesField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "indexes");
+            this.keyNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "keyName");
+            this.indexesField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "indexes");
         } catch (ResolutionException e) {
             throw new CreateCachedCollectionTaskException("Can't create CreateCachedCollectionTask.", e);
         }

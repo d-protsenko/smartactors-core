@@ -50,7 +50,7 @@ public class PluginReceiverChainsStorage implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.getKeyByName(IChainState.class.getCanonicalName()),
+                                    Keys.getOrAdd(IChainState.class.getCanonicalName()),
                                     new ApplyFunctionToArgumentsStrategy(args -> {
                                         try {
                                             return new ChainStateImpl((IReceiverChain) args[0]);
@@ -69,7 +69,7 @@ public class PluginReceiverChainsStorage implements IPlugin {
 
                         try {
                             keyName = IChainState.class.getCanonicalName();
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Unregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
@@ -86,10 +86,10 @@ public class PluginReceiverChainsStorage implements IPlugin {
                     .after("router")
                     .process(() -> {
                         try {
-                            IRouter router = IOC.resolve(Keys.getKeyByName(IRouter.class.getCanonicalName()));
+                            IRouter router = IOC.resolve(Keys.getOrAdd(IRouter.class.getCanonicalName()));
 
                             IOC.register(
-                                    Keys.getKeyByName(IChainStorage.class.getCanonicalName()),
+                                    Keys.getOrAdd(IChainStorage.class.getCanonicalName()),
                                     new SingletonStrategy(new ChainStorage(new ConcurrentHashMap<>(), router)));
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("ReceiverChainsStorage plugin can't load: can't get ReceiverChainsStorage key", e);
@@ -105,7 +105,7 @@ public class PluginReceiverChainsStorage implements IPlugin {
 
                         try {
                             keyName = IChainStorage.class.getCanonicalName();
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Unregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

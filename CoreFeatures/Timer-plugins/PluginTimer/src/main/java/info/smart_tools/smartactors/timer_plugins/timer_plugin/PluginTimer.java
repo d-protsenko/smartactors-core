@@ -41,7 +41,7 @@ public class PluginTimer implements IPlugin {
 
             item.process(() -> {
                 try {
-                    IOC.register(Keys.getKeyByName("timer"), new SingletonStrategy(
+                    IOC.register(Keys.getOrAdd("timer"), new SingletonStrategy(
                             new TimerImpl(new Timer("Smart actors system timer", true))));
                 } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
                     throw new ActionExecuteException(e);
@@ -52,7 +52,7 @@ public class PluginTimer implements IPlugin {
                 String keyName = "timer";
 
                 try {
-                    IOC.remove(Keys.getKeyByName(keyName));
+                    IOC.remove(Keys.getOrAdd(keyName));
                 } catch(DeletionException e) {
                     System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                 } catch (ResolutionException e) { }
@@ -64,7 +64,7 @@ public class PluginTimer implements IPlugin {
 
             item.process(() -> {
                 try {
-                    IOC.register(Keys.getKeyByName("time"), new SingletonStrategy(new SystemTimeImpl()));
+                    IOC.register(Keys.getOrAdd("time"), new SingletonStrategy(new SystemTimeImpl()));
                 } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
                     throw new ActionExecuteException(e);
                 }
@@ -74,7 +74,7 @@ public class PluginTimer implements IPlugin {
                 String keyName = "time";
 
                 try {
-                    IOC.remove(Keys.getKeyByName(keyName));
+                    IOC.remove(Keys.getOrAdd(keyName));
                 } catch(DeletionException e) {
                     System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                 } catch (ResolutionException e) { }

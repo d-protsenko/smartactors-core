@@ -34,7 +34,7 @@ public class SchedulerPreShutdownModeEntryFilterTest extends PluginsLoadingTestB
     @Test
     public void Should_permitEntriesWithFlagSetToTrue()
             throws Exception {
-        IObject state = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject state = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'preShutdownExec':true}".replace('\'','"'));
         ISchedulerEntry entryMock = mock(ISchedulerEntry.class);
         when(entryMock.getState()).thenReturn(state);
@@ -49,7 +49,7 @@ public class SchedulerPreShutdownModeEntryFilterTest extends PluginsLoadingTestB
     @Test
     public void Should_notPermitEntriesWithFlagSetToFalse()
             throws Exception {
-        IObject state = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject state = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'preShutdownExec':false}".replace('\'','"'));
         ISchedulerEntry entryMock = mock(ISchedulerEntry.class);
         when(entryMock.getState()).thenReturn(state);
@@ -64,7 +64,7 @@ public class SchedulerPreShutdownModeEntryFilterTest extends PluginsLoadingTestB
     @Test
     public void Should_notPermitEntriesWithFlagUnset()
             throws Exception {
-        IObject state = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject state = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{}".replace('\'','"'));
         ISchedulerEntry entryMock = mock(ISchedulerEntry.class);
         when(entryMock.getState()).thenReturn(state);
@@ -79,7 +79,7 @@ public class SchedulerPreShutdownModeEntryFilterTest extends PluginsLoadingTestB
     @Test
     public void Should_notPermitEntriesWithFlagSetToInvalidValue()
             throws Exception {
-        IObject state = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject state = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'preShutdownExec':'true'}".replace('\'','"'));
         ISchedulerEntry entryMock = mock(ISchedulerEntry.class);
         when(entryMock.getState()).thenReturn(state);

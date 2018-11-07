@@ -68,7 +68,7 @@ public class IFieldNamePluginTest {
         verify(bootstrap).add(item);
 
         IKey iFieldNameKey = mock(IKey.class);
-        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(iFieldNameKey);
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(iFieldNameKey);
 
         ArgumentCaptor<ResolveByNameIocStrategy> resolveByNameIocStrategyArgumentCaptor =
                 ArgumentCaptor.forClass(ResolveByNameIocStrategy.class);
@@ -77,7 +77,7 @@ public class IFieldNamePluginTest {
 
         verifyStatic();
 
-        Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         verifyStatic();
         IOC.register(eq(iFieldNameKey), resolveByNameIocStrategyArgumentCaptor.capture());
 
@@ -132,14 +132,14 @@ public class IFieldNamePluginTest {
 
         verify(bootstrap).add(item);
 
-        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenThrow(new ResolutionException(""));
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenThrow(new ResolutionException(""));
 
         try {
             iPoorActionArgumentCaptor.getValue().execute();
         } catch (ActionExecuteException e) {
 
             verifyStatic();
-            Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+            Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
             return;
         }
         assertTrue("Must throw exception", false);
@@ -168,7 +168,7 @@ public class IFieldNamePluginTest {
         verify(bootstrap).add(item);
 
         IKey iFieldNameKey = mock(IKey.class);
-        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(iFieldNameKey);
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(iFieldNameKey);
 
         whenNew(ResolveByNameIocStrategy.class).withArguments(any()).thenThrow(new InvalidArgumentException(""));
 
@@ -177,7 +177,7 @@ public class IFieldNamePluginTest {
         } catch (ActionExecuteException e) {
 
             verifyStatic();
-            Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+            Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
 
             verifyNew(ResolveByNameIocStrategy.class).withArguments(any());
             return;
@@ -208,7 +208,7 @@ public class IFieldNamePluginTest {
 
         IKey iFieldNameKey = mock(IKey.class);
 
-        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(iFieldNameKey);
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(iFieldNameKey);
 
         ArgumentCaptor<ResolveByNameIocStrategy> resolveByNameIocStrategyArgumentCaptor =
                 ArgumentCaptor.forClass(ResolveByNameIocStrategy.class);
@@ -220,7 +220,7 @@ public class IFieldNamePluginTest {
         } catch (ActionExecuteException e) {
 
             verifyStatic();
-            Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+            Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
 
             verifyStatic();
             IOC.register(eq(iFieldNameKey), resolveByNameIocStrategyArgumentCaptor.capture());
@@ -260,7 +260,7 @@ public class IFieldNamePluginTest {
 
         IKey iFieldNameKey = mock(IKey.class);
 
-        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(iFieldNameKey);
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(iFieldNameKey);
 
         ArgumentCaptor<Function<Object[], Object>> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -270,7 +270,7 @@ public class IFieldNamePluginTest {
         iPoorActionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
 
         verifyNew(ResolveByNameIocStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 
@@ -303,7 +303,7 @@ public class IFieldNamePluginTest {
 
         IKey iFieldNameKey = mock(IKey.class);
 
-        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(iFieldNameKey);
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(iFieldNameKey);
 
         ArgumentCaptor<Function<Object[], Object>> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -313,7 +313,7 @@ public class IFieldNamePluginTest {
         iPoorActionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
 
         verifyNew(ResolveByNameIocStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 
@@ -346,7 +346,7 @@ public class IFieldNamePluginTest {
         verify(bootstrap).add(item);
 
         IKey iFieldNameKey = mock(IKey.class);
-        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(iFieldNameKey);
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(iFieldNameKey);
 
         ResolveByNameIocStrategy createNewInstanceStrategy = mock(ResolveByNameIocStrategy.class);
 
@@ -357,7 +357,7 @@ public class IFieldNamePluginTest {
 
         verifyStatic();
 
-        Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
 
         verifyNew(ResolveByNameIocStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 

@@ -57,7 +57,7 @@ public class MessageAttributeSetters {
 
     static {
         try {
-            senderAddress_Context_F = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "senderAddress");
+            senderAddress_Context_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "senderAddress");
         } catch (Exception e) {
             throw new RuntimeException("Failed to initialize field", e);
         }

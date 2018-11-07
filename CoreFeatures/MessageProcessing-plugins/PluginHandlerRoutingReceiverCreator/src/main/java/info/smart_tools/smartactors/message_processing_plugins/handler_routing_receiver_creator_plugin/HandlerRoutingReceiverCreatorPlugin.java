@@ -54,7 +54,7 @@ public class HandlerRoutingReceiverCreatorPlugin implements IPlugin {
                                 try {
                                     HandlerRoutingReceiverCreator objectCreator = new HandlerRoutingReceiverCreator();
                                     IOC.register(
-                                            Keys.getKeyByName(IRoutedObjectCreator.class.getCanonicalName() + "#stateless_actor"),
+                                            Keys.getOrAdd(IRoutedObjectCreator.class.getCanonicalName() + "#stateless_actor"),
                                             new SingletonStrategy(objectCreator)
                                     );
                                 } catch (ResolutionException e) {
@@ -74,7 +74,7 @@ public class HandlerRoutingReceiverCreatorPlugin implements IPlugin {
 
                         try {
                             keyName = IRoutedObjectCreator.class.getCanonicalName() + "#stateless_actor";
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

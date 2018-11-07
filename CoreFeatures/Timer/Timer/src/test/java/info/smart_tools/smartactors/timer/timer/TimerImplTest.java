@@ -64,7 +64,7 @@ public class TimerImplTest {
         taskQueueMock = mock(IQueue.class);
         taskQueueKey =mock(IKey.class);
 
-        when(Keys.getKeyByName(eq("task_queue"))).thenReturn(taskQueueKey);
+        when(Keys.getOrAdd(eq("task_queue"))).thenReturn(taskQueueKey);
         when(IOC.resolve(same(taskQueueKey))).thenReturn(taskQueueMock);
     }
 

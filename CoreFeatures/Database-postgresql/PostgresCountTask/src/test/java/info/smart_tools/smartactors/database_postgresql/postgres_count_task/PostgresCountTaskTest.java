@@ -82,7 +82,7 @@ public class PostgresCountTaskTest {
         when(message.getCriteria()).thenReturn(new DSObject("{ \"filter\": { } }"));
 
         IOC.register(
-                Keys.getKeyByName(CountMessage.class.getCanonicalName()),
+                Keys.getOrAdd(CountMessage.class.getCanonicalName()),
                 new SingletonStrategy(message)
         );
     }

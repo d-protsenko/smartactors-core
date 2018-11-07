@@ -76,7 +76,7 @@ public class MessageBusSectionProcessingStrategyTest {
                 new ResolveByNameIocStrategy()
         );
 
-        IKey iFieldNameKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey iFieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
 
         IOC.register(iFieldNameKey,
                 new CreateNewInstanceStrategy(
@@ -91,26 +91,26 @@ public class MessageBusSectionProcessingStrategyTest {
                 )
         );
 
-        IKey chainIdFromMapNameKey = Keys.getKeyByName("chain_id_from_map_name_and_message");
+        IKey chainIdFromMapNameKey = Keys.getOrAdd("chain_id_from_map_name_and_message");
         IOC.register(chainIdFromMapNameKey,
                 new SingletonStrategy(mapId));
 
-        IKey taskQueueKey = Keys.getKeyByName("task_queue");
+        IKey taskQueueKey = Keys.getOrAdd("task_queue");
         IOC.register(taskQueueKey,
                 new SingletonStrategy(taskQueue));
 
-        IKey chainStorageKey = Keys.getKeyByName(IChainStorage.class.getCanonicalName());
+        IKey chainStorageKey = Keys.getOrAdd(IChainStorage.class.getCanonicalName());
         IOC.register(chainStorageKey,
                 new SingletonStrategy(chainStorage));
 
         responseAction = mock(IAction.class);
-        IOC.register(Keys.getKeyByName("send response action"), new SingletonStrategy(responseAction));
+        IOC.register(Keys.getOrAdd("send response action"), new SingletonStrategy(responseAction));
 
         nullResponseStrategy = mock(IResponseStrategy.class);
         mbResponseStrategy = mock(IResponseStrategy.class);
 
-        IOC.register(Keys.getKeyByName("null response strategy"), new SingletonStrategy(nullResponseStrategy));
-        IOC.register(Keys.getKeyByName("message bus response strategy"), new SingletonStrategy(mbResponseStrategy));
+        IOC.register(Keys.getOrAdd("null response strategy"), new SingletonStrategy(nullResponseStrategy));
+        IOC.register(Keys.getOrAdd("message bus response strategy"), new SingletonStrategy(mbResponseStrategy));
     }
 
     @Test

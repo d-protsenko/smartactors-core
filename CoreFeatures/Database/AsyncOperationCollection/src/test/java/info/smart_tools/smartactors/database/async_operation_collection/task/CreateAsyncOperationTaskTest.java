@@ -47,7 +47,7 @@ public class CreateAsyncOperationTaskTest {
         collectionNameField = mock(IField.class);
 
         Key fieldKey = mock(Key.class);
-        when(Keys.getKeyByName(IField.class.getCanonicalName())).thenReturn(fieldKey);
+        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(fieldKey);
 
         when(IOC.resolve(fieldKey, "document")).thenReturn(documentField);
         when(IOC.resolve(fieldKey, "collectionName")).thenReturn(collectionNameField);
@@ -55,7 +55,7 @@ public class CreateAsyncOperationTaskTest {
         testTask = new CreateAsyncOperationTask(connection);
 
         verifyStatic(times(2));
-        Keys.getKeyByName(IField.class.getCanonicalName());
+        Keys.getOrAdd(IField.class.getCanonicalName());
 
         verifyStatic();
         IOC.resolve(fieldKey, "document");
@@ -75,14 +75,14 @@ public class CreateAsyncOperationTaskTest {
         when(documentField.in(query)).thenReturn(document);
 
         IKey upsertTaskKey = mock(IKey.class);
-        when(Keys.getKeyByName("db.collection.upsert")).thenReturn(upsertTaskKey);
+        when(Keys.getOrAdd("db.collection.upsert")).thenReturn(upsertTaskKey);
 
         when(IOC.resolve(upsertTaskKey, connection, collectionName, document)).thenReturn(targetTask);
 
         testTask.prepare(query);
 
         verifyStatic();
-        Keys.getKeyByName("db.collection.upsert");
+        Keys.getOrAdd("db.collection.upsert");
 
         verify(collectionNameField).in(query);
         verify(documentField).in(query);
@@ -95,13 +95,13 @@ public class CreateAsyncOperationTaskTest {
     public void MustInCorrectPrepareWhenKeysgetKeyByNameThrowException() throws ResolutionException {
         IObject query = mock(IObject.class);
 
-        when(Keys.getKeyByName("db.collection.upsert")).thenThrow(new ResolutionException(""));
+        when(Keys.getOrAdd("db.collection.upsert")).thenThrow(new ResolutionException(""));
 
         try {
             testTask.prepare(query);
         } catch (TaskPrepareException e) {
             verifyStatic();
-            Keys.getKeyByName("db.collection.upsert");
+            Keys.getOrAdd("db.collection.upsert");
             return;
         }
         assertTrue(false);
@@ -114,14 +114,14 @@ public class CreateAsyncOperationTaskTest {
         when(collectionNameField.in(query)).thenThrow(new ReadValueException());
 
         IKey upsertTaskKey = mock(IKey.class);
-        when(Keys.getKeyByName("db.collection.upsert")).thenReturn(upsertTaskKey);
+        when(Keys.getOrAdd("db.collection.upsert")).thenReturn(upsertTaskKey);
 
         try {
             testTask.prepare(query);
         } catch (TaskPrepareException e) {
 
             verifyStatic();
-            Keys.getKeyByName("db.collection.upsert");
+            Keys.getOrAdd("db.collection.upsert");
 
             verify(collectionNameField).in(query);
             return;
@@ -136,14 +136,14 @@ public class CreateAsyncOperationTaskTest {
         when(collectionNameField.in(query)).thenThrow(new InvalidArgumentException(""));
 
         IKey upsertTaskKey = mock(IKey.class);
-        when(Keys.getKeyByName("db.collection.upsert")).thenReturn(upsertTaskKey);
+        when(Keys.getOrAdd("db.collection.upsert")).thenReturn(upsertTaskKey);
 
         try {
             testTask.prepare(query);
         } catch (TaskPrepareException e) {
 
             verifyStatic();
-            Keys.getKeyByName("db.collection.upsert");
+            Keys.getOrAdd("db.collection.upsert");
 
             verify(collectionNameField).in(query);
             return;
@@ -162,7 +162,7 @@ public class CreateAsyncOperationTaskTest {
         when(documentField.in(query)).thenReturn(document);
 
         IKey upsertTaskKey = mock(IKey.class);
-        when(Keys.getKeyByName("db.collection.upsert")).thenReturn(upsertTaskKey);
+        when(Keys.getOrAdd("db.collection.upsert")).thenReturn(upsertTaskKey);
 
         when(IOC.resolve(upsertTaskKey, connection, collectionName, document)).thenThrow(new ResolutionException(""));
 
@@ -170,7 +170,7 @@ public class CreateAsyncOperationTaskTest {
             testTask.prepare(query);
         } catch (TaskPrepareException e) {
             verifyStatic();
-            Keys.getKeyByName("db.collection.upsert");
+            Keys.getOrAdd("db.collection.upsert");
 
             verify(collectionNameField).in(query);
             verify(documentField).in(query);

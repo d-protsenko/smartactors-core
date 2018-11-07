@@ -62,7 +62,7 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
 
     @Override
     protected void registerMocks() throws Exception {
-        IOC.register(Keys.getKeyByName("chain_id_from_map_name_and_message"), new IResolveDependencyStrategy() {
+        IOC.register(Keys.getOrAdd("chain_id_from_map_name_and_message"), new IResolveDependencyStrategy() {
             @Override
             public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
                 return (T) args[0].toString().concat("__id");
@@ -70,7 +70,7 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
         });
 
         chainStorageMock = mock(IChainStorage.class);
-        IOC.register(Keys.getKeyByName(IChainStorage.class.getCanonicalName()), new SingletonStrategy(chainStorageMock));
+        IOC.register(Keys.getOrAdd(IChainStorage.class.getCanonicalName()), new SingletonStrategy(chainStorageMock));
         when(chainStorageMock.resolve(eq("the-chain__id"))).thenReturn(chainMock);
 
         debuggerSequenceMock = mock(IDebuggerSequence.class);
@@ -91,14 +91,14 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
         when(processorStrategyMock.resolve(same(taskQueue), same(debuggerSequenceMock)))
                 .thenReturn(messageProcessorMock)
                 .thenThrow(ResolveDependencyStrategyException.class);
-        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), sequenceStrategyMock);
-        IOC.register(Keys.getKeyByName("new debugger sequence"), debuggerSequenceStrategyMock);
-        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), processorStrategyMock);
-        IOC.register(Keys.getKeyByName("task_queue"), new SingletonStrategy(taskQueue));
-        IOC.register(Keys.getKeyByName("make dump"), sequenceDumpStrategyMock);
-        IOC.register(Keys.getKeyByName(IDebuggerBreakpointsStorage.class.getCanonicalName()), new SingletonStrategy(breakpointsStorageMock));
+        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), sequenceStrategyMock);
+        IOC.register(Keys.getOrAdd("new debugger sequence"), debuggerSequenceStrategyMock);
+        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), processorStrategyMock);
+        IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(taskQueue));
+        IOC.register(Keys.getOrAdd("make dump"), sequenceDumpStrategyMock);
+        IOC.register(Keys.getOrAdd(IDebuggerBreakpointsStorage.class.getCanonicalName()), new SingletonStrategy(breakpointsStorageMock));
 
-        IOC.register(Keys.getKeyByName("value_dependency"), new IResolveDependencyStrategy() {
+        IOC.register(Keys.getOrAdd("value_dependency"), new IResolveDependencyStrategy() {
             @Override
             public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
                 return (T) args[0].toString().concat("_value");
@@ -146,7 +146,7 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
             fail("should not start when there is no message set and no chain selected");
         } catch (CommandExecutionException ignore) {}
 
-        c("setMessage", IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        c("setMessage", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'a':'foo','b':'bar'}".replace('\'', '"')));
         c("setChain", "the-chain");
         c("setStackDepth", 12.2);
@@ -255,17 +255,17 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
 
         c("stop", null);
 
-        c("setMessageField", IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        c("setMessageField", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'name':'z','value':'x','dependency':'value_dependency'}".replace('\'', '"')));
-        c("setMessageField", IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        c("setMessageField", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'name':'zz','value':'e'}".replace('\'', '"')));
 
         IObject msg = (IObject) c("getMessage", null);
 
-        assertEquals("x_value", msg.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "z")));
-        assertEquals("e", msg.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "zz")));
-        assertEquals("foo", msg.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "a")));
-        assertEquals("bar", msg.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "b")));
+        assertEquals("x_value", msg.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "z")));
+        assertEquals("e", msg.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "zz")));
+        assertEquals("foo", msg.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "a")));
+        assertEquals("bar", msg.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "b")));
     }
 
     @Test
@@ -348,7 +348,7 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
             throws Exception {
         Should_startDebugging();
 
-        IObject arg = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject arg = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'id':'this-is-id'}".replace('\'','"'));
 
         c("modifyBreakpoint", arg);
@@ -363,7 +363,7 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
         c("pause", null);
         session.handleInterrupt(messageProcessorMock);
 
-        IObject arg = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject arg = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'level':4,'step':42}".replace('\'','"'));
 
         c("goTo", arg);

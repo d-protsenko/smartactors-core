@@ -74,8 +74,8 @@ public class ImmutableReceiverChainResolutionStrategy implements IResolveDepende
             IScope scope = (IScope) args[SCOPE_ARG_INDEX];
             IModule module = (IModule) args[MODULE_ARG_INDEX];
 
-            IKey fieldNameKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
-            IKey receiverIdKey = Keys.getKeyByName("receiver_id_from_iobject");
+            IKey fieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+            IKey receiverIdKey = Keys.getOrAdd("receiver_id_from_iobject");
 
             IFieldName stepsFieldName = IOC.resolve(fieldNameKey, "steps");
             IFieldName exceptionalChainsFieldName = IOC.resolve(fieldNameKey, "exceptional");
@@ -104,10 +104,10 @@ public class ImmutableReceiverChainResolutionStrategy implements IResolveDepende
                 Class<?> clazz = this.getClass().getClassLoader().loadClass(String.valueOf(desc.getValue(exceptionClassFieldName)));
                 Object chainName = desc.getValue(exceptionChainNameFieldName);
                 IAction<IMessageProcessingSequence> afterExceptionAction = IOC.resolve(
-                        Keys.getKeyByName("afterExceptionAction#" + desc.getValue(exceptionAfterFieldName))
+                        Keys.getOrAdd("afterExceptionAction#" + desc.getValue(exceptionAfterFieldName))
                 );
                 //Object afterExceptionAction = "afterExceptionAction#" + desc.getValue(exceptionAfterFieldName);
-                IObject chainNameAndEnv = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                IObject chainNameAndEnv = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
                 chainNameAndEnv.setValue(exceptionChainNameFieldName, chainName);
                 chainNameAndEnv.setValue(exceptionAfterFieldName, afterExceptionAction);
                 exceptionalChainNamesMap.put((Class<? extends Throwable>) clazz, chainNameAndEnv);

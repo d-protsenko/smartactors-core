@@ -21,7 +21,7 @@ public final class TestConnectionOptionsPlugin extends BootstrapPlugin {
     @After({})
     @Before("")
     public void register() throws InvalidArgumentException, ResolutionException, RegistrationException {
-        IOC.register(Keys.getKeyByName("PostgresConnectionOptions"), new ApplyFunctionToArgumentsStrategy(args -> new ConnectionOptions() {
+        IOC.register(Keys.getOrAdd("PostgresConnectionOptions"), new ApplyFunctionToArgumentsStrategy(args -> new ConnectionOptions() {
             @Override
             public String getUrl() throws ReadValueException {
                 return null;

@@ -54,7 +54,7 @@ public class HttpsEndpointPluginTest {
                 new ResolveByNameIocStrategy()
         );
         IOC.register(
-                Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
@@ -67,29 +67,29 @@ public class HttpsEndpointPluginTest {
                 )
         );
 
-        IOC.register(Keys.getKeyByName("ResolveByTypeAndNameStrategy"), new SingletonStrategy(
+        IOC.register(Keys.getOrAdd("ResolveByTypeAndNameStrategy"), new SingletonStrategy(
                         deserializationStrategyChooser
                 )
         );
-        IOC.register(Keys.getKeyByName("DeserializationStrategyChooser"), new SingletonStrategy(
+        IOC.register(Keys.getOrAdd("DeserializationStrategyChooser"), new SingletonStrategy(
                         deserializationStrategyChooser
                 )
         );
-        IOC.register(Keys.getKeyByName("ResponseSenderChooser"), new SingletonStrategy(
+        IOC.register(Keys.getOrAdd("ResponseSenderChooser"), new SingletonStrategy(
                         resolveResponseSender
                 )
         );
         bootstrap = mock(IBootstrap.class);
         plugin = new HttpsEndpointPlugin(bootstrap);
-        IOC.register(Keys.getKeyByName("CookiesSetterChooser"), new SingletonStrategy(
+        IOC.register(Keys.getOrAdd("CookiesSetterChooser"), new SingletonStrategy(
                         resolveCookies
                 )
         );
-        IOC.register(Keys.getKeyByName("HeadersExtractorChooser"), new SingletonStrategy(
+        IOC.register(Keys.getOrAdd("HeadersExtractorChooser"), new SingletonStrategy(
                         resolveHeaders
                 )
         );
-        IOC.register(Keys.getKeyByName("ResponseStatusSetter"), new SingletonStrategy(
+        IOC.register(Keys.getOrAdd("ResponseStatusSetter"), new SingletonStrategy(
                         resolveStatusSetter
                 )
         );

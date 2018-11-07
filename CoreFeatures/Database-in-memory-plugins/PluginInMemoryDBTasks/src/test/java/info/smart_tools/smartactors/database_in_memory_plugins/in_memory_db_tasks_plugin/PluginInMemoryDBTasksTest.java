@@ -45,7 +45,7 @@ public class PluginInMemoryDBTasksTest {
                 new ResolveByNameIocStrategy()
         );
 
-        IOC.register(Keys.getKeyByName(IField.class.getCanonicalName()), new CreateNewInstanceStrategy(
+        IOC.register(Keys.getOrAdd(IField.class.getCanonicalName()), new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
                                 return new Field(new FieldName((String) args[0]));

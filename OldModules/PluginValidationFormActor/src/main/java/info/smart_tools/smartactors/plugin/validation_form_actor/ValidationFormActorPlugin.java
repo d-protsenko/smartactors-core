@@ -39,7 +39,7 @@ public class ValidationFormActorPlugin implements IPlugin {
                     .before("starter")
                     .process(() -> {
                         try {
-                            IKey actorKey = Keys.getKeyByName(ValidateFormDataActor.class.getCanonicalName());
+                            IKey actorKey = Keys.getOrAdd(ValidateFormDataActor.class.getCanonicalName());
                             IOC.register(actorKey, new ApplyFunctionToArgumentsStrategy(
                                     (args) -> {
                                         try {

@@ -50,7 +50,7 @@ public abstract class EndpointHandler<TContext, TRequest> {
         this.environmentHandler = environmentHandler;
         this.name = name;
 
-        taskQueue = IOC.resolve(Keys.getKeyByName("task_queue"));
+        taskQueue = IOC.resolve(Keys.getOrAdd("task_queue"));
     }
 
     /**
@@ -105,7 +105,7 @@ public abstract class EndpointHandler<TContext, TRequest> {
 
     private void trySendExceptionalResponse(final Exception e, final TContext context, final TRequest request) {
         try {
-            sendExceptionalResponse(context, request, IOC.resolve(Keys.getKeyByName("HttpInternalException")));
+            sendExceptionalResponse(context, request, IOC.resolve(Keys.getOrAdd("HttpInternalException")));
         } catch (Exception e1) {
             e.addSuppressed(e1);
         }

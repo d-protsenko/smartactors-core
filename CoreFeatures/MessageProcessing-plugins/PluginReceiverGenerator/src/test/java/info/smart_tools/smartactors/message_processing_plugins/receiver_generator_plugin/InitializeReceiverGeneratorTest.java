@@ -92,12 +92,12 @@ public class InitializeReceiverGeneratorTest {
         assertEquals(itemList.size(), 1);
         IBootstrapItem<String> item = itemList.get(0);
         item.executeProcess();
-        IReceiverGenerator rg = IOC.resolve(Keys.getKeyByName(IReceiverGenerator.class.getCanonicalName()));
+        IReceiverGenerator rg = IOC.resolve(Keys.getOrAdd(IReceiverGenerator.class.getCanonicalName()));
         assertNotNull(rg);
 
         item.executeRevertProcess();
         try {
-            IOC.resolve(Keys.getKeyByName(IReceiverGenerator.class.getCanonicalName()));
+            IOC.resolve(Keys.getOrAdd(IReceiverGenerator.class.getCanonicalName()));
             fail();
         } catch(ResolutionException e) {}
 

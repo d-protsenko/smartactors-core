@@ -39,7 +39,7 @@ public class RepeaterActorPlugin implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.getKeyByName("RepeaterActor"),
+                                    Keys.getOrAdd("RepeaterActor"),
                                     new SingletonStrategy(new RepeaterActor()));
                         } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
                             throw new ActionExecuteException(e);

@@ -43,7 +43,7 @@ public class PluginMapRouter implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.getKeyByName(IRouter.class.getCanonicalName()),
+                                    Keys.getOrAdd(IRouter.class.getCanonicalName()),
                                     new SingletonStrategy(new MapRouter(new ConcurrentHashMap<>())));
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("MapRouter plugin can't load: can't get MapRouter key", e);
@@ -59,7 +59,7 @@ public class PluginMapRouter implements IPlugin {
 
                         try {
                             keyName = IRouter.class.getCanonicalName();
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

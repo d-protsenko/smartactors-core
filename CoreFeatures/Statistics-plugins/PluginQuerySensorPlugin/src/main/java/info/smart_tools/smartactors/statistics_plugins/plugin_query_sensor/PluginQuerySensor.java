@@ -36,7 +36,7 @@ public class PluginQuerySensor extends BootstrapPlugin {
     @After({"query_sensor_scheduler_storage", "query_sensor_scheduler_action"})
     public void registerQuerySensorStrategy()
             throws ResolutionException, RegistrationException {
-        IOC.register(Keys.getKeyByName("create query sensor"), new QuerySensorCreationStrategy());
+        IOC.register(Keys.getOrAdd("create query sensor"), new QuerySensorCreationStrategy());
     }
 
     /**
@@ -50,8 +50,8 @@ public class PluginQuerySensor extends BootstrapPlugin {
     @After({"scheduler_entry_storage"})
     public void createSchedulerStorage()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        ISchedulerEntryStorage entryStorage = IOC.resolve(Keys.getKeyByName("local only scheduler entry storage"));
-        IOC.register(Keys.getKeyByName("query sensors scheduler storage"),
+        ISchedulerEntryStorage entryStorage = IOC.resolve(Keys.getOrAdd("local only scheduler entry storage"));
+        IOC.register(Keys.getOrAdd("query sensors scheduler storage"),
                 new SingletonStrategy(entryStorage));
     }
 
@@ -65,6 +65,6 @@ public class PluginQuerySensor extends BootstrapPlugin {
     @Item("query_sensor_scheduler_action")
     public void registerSchedulerAction()
             throws RegistrationException, ResolutionException, InvalidArgumentException {
-        IOC.register(Keys.getKeyByName("query sensor scheduler action"), new SingletonStrategy(new QuerySensorSchedulerAction()));
+        IOC.register(Keys.getOrAdd("query sensor scheduler action"), new SingletonStrategy(new QuerySensorSchedulerAction()));
     }
 }

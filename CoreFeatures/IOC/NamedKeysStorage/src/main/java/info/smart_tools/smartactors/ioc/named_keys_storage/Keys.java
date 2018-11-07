@@ -21,20 +21,8 @@ public final class Keys {
      * @throws ResolutionException if dependency resolution has been failed
      * @return instance of {@link IKey}
      */
-    public static IKey getKeyByName(final String keyName)
-            throws ResolutionException {
-        return (IKey) IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), keyName);
-    }
-
-    /**
-     * Get stored or add new instance of {@link IKey} by given name
-     * @param keyName name of instance of {@link IKey}
-     * @throws ResolutionException if dependency resolution has been failed
-     * @return instance of {@link IKey}
-     */
-    @Deprecated
     public static IKey getOrAdd(final String keyName)
             throws ResolutionException {
-        return getKeyByName(keyName);
+        return (IKey) IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), keyName);
     }
 }

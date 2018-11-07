@@ -34,9 +34,9 @@ public class DeleteFromCachedCollectionTask implements IDatabaseTask {
     public DeleteFromCachedCollectionTask(final IStorageConnection connection) throws CreateCachedCollectionTaskException {
         this.connection = connection;
         try {
-            this.isActiveField = IOC.resolve(Keys.getKeyByName(NestedField.class.getCanonicalName()), "document/isActive");
-            this.collectionNameField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
-            this.documentField  = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "document");
+            this.isActiveField = IOC.resolve(Keys.getOrAdd(NestedField.class.getCanonicalName()), "document/isActive");
+            this.collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+            this.documentField  = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document");
         } catch (ResolutionException e) {
             throw new CreateCachedCollectionTaskException("Can't create GetItemFromCachedCollectionTask.", e);
         }
@@ -61,7 +61,7 @@ public class DeleteFromCachedCollectionTask implements IDatabaseTask {
         try {
             isActiveField.out(query, false);
             updateTask = IOC.resolve(
-                Keys.getKeyByName("db.collection.upsert"),
+                Keys.getOrAdd("db.collection.upsert"),
                 connection,
                 collectionNameField.in(query),
                 documentField.in(query)

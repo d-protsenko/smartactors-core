@@ -35,9 +35,9 @@ public class UpdateAsyncOperationTask implements IDatabaseTask {
         this.connection = connection;
 
         try {
-            doneFlagField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "done");
-            documentField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "document");
-            collectionNameField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
+            doneFlagField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "done");
+            documentField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document");
+            collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
         } catch (ResolutionException e) {
             throw new UpdateAsyncOperationException("Can't resolve one of fields", e);
         }
@@ -49,7 +49,7 @@ public class UpdateAsyncOperationTask implements IDatabaseTask {
         try {
             IObject document = documentField.in(query);
             doneFlagField.out(document, true);
-            upsertTask = IOC.resolve(Keys.getKeyByName("db.collection.upsert"),
+            upsertTask = IOC.resolve(Keys.getOrAdd("db.collection.upsert"),
                     connection,
                     collectionNameField.in(query),
                     document);

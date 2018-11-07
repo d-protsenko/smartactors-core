@@ -25,10 +25,10 @@ public class CloseAsyncOperationActor {
      */
     public CloseAsyncOperationActor(final IObject params) throws InvalidArgumentException {
         try {
-            IField collectionNameF = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
-            IField databaseOptionsF = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "databaseOptions");
-            Object connectionOpts =  IOC.resolve(Keys.getKeyByName(databaseOptionsF.in(params)));
-            collection = IOC.resolve(Keys.getKeyByName(IAsyncOperationCollection.class.getCanonicalName()), connectionOpts, collectionNameF.in(params));
+            IField collectionNameF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+            IField databaseOptionsF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "databaseOptions");
+            Object connectionOpts =  IOC.resolve(Keys.getOrAdd(databaseOptionsF.in(params)));
+            collection = IOC.resolve(Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName()), connectionOpts, collectionNameF.in(params));
         } catch (ReadValueException e) {
             throw new InvalidArgumentException("Can't read collection name from message", e);
         } catch (ResolutionException e) {

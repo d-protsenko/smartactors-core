@@ -38,7 +38,7 @@ public class PluginDSObject implements IPlugin {
                     .after("IOC")
                     .process(() -> {
                         try {
-                            IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                            IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                                     new CreateNewInstanceStrategy(args -> {
                                         if (args.length == 0) {
                                             return new DSObject();
@@ -62,7 +62,7 @@ public class PluginDSObject implements IPlugin {
                     })
                     .revertProcess(() -> {
                         try {
-                            IOC.remove(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                            IOC.remove(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \"info.smart_tools.smartactors.iobject.iobject.IObject\" has failed while reverting \"iobject\" plugin.");
                         } catch (ResolutionException e) { }

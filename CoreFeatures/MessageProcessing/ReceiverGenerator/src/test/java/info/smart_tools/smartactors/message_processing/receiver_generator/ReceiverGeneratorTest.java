@@ -55,8 +55,8 @@ public class ReceiverGeneratorTest {
         w.setSetterUsed(false);
         IResolveDependencyStrategy returnCustomActorStrategy = mock(IResolveDependencyStrategy.class);
         IResolveDependencyStrategy returnWrapperStrategy = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.getKeyByName("actorID"), returnCustomActorStrategy);
-        IOC.register(Keys.getKeyByName(ICustomWrapper.class.getCanonicalName()), returnWrapperStrategy);
+        IOC.register(Keys.getOrAdd("actorID"), returnCustomActorStrategy);
+        IOC.register(Keys.getOrAdd(ICustomWrapper.class.getCanonicalName()), returnWrapperStrategy);
         when(returnCustomActorStrategy.resolve()).thenReturn(a);
         when(returnWrapperStrategy.resolve()).thenReturn(w);
         IObject configs = mock(IObject.class);

@@ -32,7 +32,7 @@ public class ChainModificationStrategiesPlugin extends BootstrapPlugin {
     @After({"IFieldNamePlugin"})
     public void registerReceiverReplaceModification()
             throws ResolutionException, RegistrationException {
-        IOC.register(Keys.getKeyByName("chain modification: replace receivers"), new ReplaceReceiversChainModificationStrategy());
+        IOC.register(Keys.getOrAdd("chain modification: replace receivers"), new ReplaceReceiversChainModificationStrategy());
     }
 
     /**
@@ -44,7 +44,7 @@ public class ChainModificationStrategiesPlugin extends BootstrapPlugin {
         String keyName = "chain modification: replace receivers";
 
         try {
-            IOC.remove(Keys.getKeyByName(keyName));
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }

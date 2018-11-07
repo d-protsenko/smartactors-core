@@ -65,7 +65,7 @@ public class UnzipFeatureActorTest {
                         }
                 )
         );
-        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     if (args.length == 0) {
                         return new DSObject();

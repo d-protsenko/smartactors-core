@@ -56,7 +56,7 @@ public class GetAsyncOperationTaskTest {
         collectionNameField = mock(IField.class);
 
         Key fieldKey = mock(Key.class);
-        when(Keys.getKeyByName(IField.class.getCanonicalName())).thenReturn(fieldKey);
+        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(fieldKey);
 
         when(IOC.resolve(fieldKey, "callback")).thenReturn(callbackField);
         when(IOC.resolve(fieldKey, "$eq")).thenReturn(equalsField);
@@ -67,7 +67,7 @@ public class GetAsyncOperationTaskTest {
         testTask = new GetAsyncOperationTask(connection);
 
         verifyStatic(times(5));
-        Keys.getKeyByName(IField.class.getCanonicalName());
+        Keys.getOrAdd(IField.class.getCanonicalName());
 
         verifyStatic();
         IOC.resolve(fieldKey, "callback");
@@ -91,7 +91,7 @@ public class GetAsyncOperationTaskTest {
         IObject eqKeyObject = mock(IObject.class);
 
         IKey iObjectKey = mock(IKey.class);
-        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(iObjectKey);
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(iObjectKey);
 
         when(IOC.resolve(iObjectKey)).thenReturn(queryForNestedTask).thenReturn(filterObject).thenReturn(eqKeyObject);
 
@@ -103,14 +103,14 @@ public class GetAsyncOperationTaskTest {
         when(callbackField.in(query)).thenReturn(callback);
 
         IKey searchTaskKey = mock(IKey.class);
-        when(Keys.getKeyByName("db.collection.search")).thenReturn(searchTaskKey);
+        when(Keys.getOrAdd("db.collection.search")).thenReturn(searchTaskKey);
 
         when(IOC.resolve(searchTaskKey, connection, collectionName, queryForNestedTask, callback)).thenReturn(targetTask);
 
         testTask.prepare(query);
 
         verifyStatic(times(3));
-        Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject");
+        Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
 
         verifyStatic(times(3));
         IOC.resolve(iObjectKey);
@@ -122,7 +122,7 @@ public class GetAsyncOperationTaskTest {
         verify(filterField).out(queryForNestedTask, filterObject);
 
         verifyStatic();
-        Keys.getKeyByName("db.collection.search");
+        Keys.getOrAdd("db.collection.search");
 
         verifyStatic();
         IOC.resolve(searchTaskKey, connection, collectionName, queryForNestedTask, callback);
@@ -132,13 +132,13 @@ public class GetAsyncOperationTaskTest {
     public void MustInCorrectPrepareWhenKeysgetKeyByNameThrowException() throws ResolutionException {
         IObject query = mock(IObject.class);
 
-        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")).thenThrow(new ResolutionException(""));
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")).thenThrow(new ResolutionException(""));
 
         try {
             testTask.prepare(query);
         } catch (TaskPrepareException e) {
             verifyStatic();
-            Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject");
+            Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
             return;
         }
         assertTrue(false);
@@ -149,7 +149,7 @@ public class GetAsyncOperationTaskTest {
         IObject query = mock(IObject.class);
 
         IKey iObjectKey = mock(IKey.class);
-        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(iObjectKey);
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(iObjectKey);
 
         when(IOC.resolve(iObjectKey)).thenThrow(new ResolutionException(""));
 
@@ -157,7 +157,7 @@ public class GetAsyncOperationTaskTest {
             testTask.prepare(query);
         } catch (TaskPrepareException e) {
             verifyStatic();
-            Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject");
+            Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
             verifyStatic();
             IOC.resolve(iObjectKey);
             return;
@@ -173,7 +173,7 @@ public class GetAsyncOperationTaskTest {
         IObject filterObject = mock(IObject.class);
 
         IKey iObjectKey = mock(IKey.class);
-        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(iObjectKey);
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(iObjectKey);
 
         when(IOC.resolve(iObjectKey)).thenReturn(queryForNestedTask).thenReturn(filterObject);
 
@@ -183,7 +183,7 @@ public class GetAsyncOperationTaskTest {
             testTask.prepare(query);
         } catch (TaskPrepareException e) {
             verifyStatic(times(2));
-            Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject");
+            Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
 
             verifyStatic(times(2));
             IOC.resolve(iObjectKey);
@@ -202,7 +202,7 @@ public class GetAsyncOperationTaskTest {
         IObject filterObject = mock(IObject.class);
 
         IKey iObjectKey = mock(IKey.class);
-        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(iObjectKey);
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(iObjectKey);
 
         when(IOC.resolve(iObjectKey)).thenReturn(queryForNestedTask).thenReturn(filterObject);
 
@@ -212,7 +212,7 @@ public class GetAsyncOperationTaskTest {
             testTask.prepare(query);
         } catch (TaskPrepareException e) {
             verifyStatic(times(2));
-            Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject");
+            Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
 
             verifyStatic(times(2));
             IOC.resolve(iObjectKey);
@@ -232,7 +232,7 @@ public class GetAsyncOperationTaskTest {
         IObject eqKeyObject = mock(IObject.class);
 
         IKey iObjectKey = mock(IKey.class);
-        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(iObjectKey);
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(iObjectKey);
 
         when(IOC.resolve(iObjectKey)).thenReturn(queryForNestedTask).thenReturn(filterObject).thenReturn(eqKeyObject);
 
@@ -245,7 +245,7 @@ public class GetAsyncOperationTaskTest {
             testTask.prepare(query);
         } catch (TaskPrepareException e) {
             verifyStatic(times(3));
-            Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject");
+            Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
 
             verifyStatic(times(3));
             IOC.resolve(iObjectKey);

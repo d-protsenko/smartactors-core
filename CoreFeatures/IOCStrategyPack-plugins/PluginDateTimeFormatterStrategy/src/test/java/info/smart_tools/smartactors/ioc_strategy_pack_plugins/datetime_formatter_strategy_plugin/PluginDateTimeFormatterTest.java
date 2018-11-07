@@ -37,7 +37,7 @@ public class PluginDateTimeFormatterTest {
     public void ShouldReturnFormatter() throws Exception {
 
         LocalDateTime now = LocalDateTime.of(2016, 8, 18, 0, 0);
-        DateTimeFormatter formatter = IOC.resolve(Keys.getKeyByName("datetime_formatter"));
+        DateTimeFormatter formatter = IOC.resolve(Keys.getOrAdd("datetime_formatter"));
         assertEquals(formatter.format(now), "08-18-2016 00:00:00");
     }
 
@@ -48,7 +48,7 @@ public class PluginDateTimeFormatterTest {
 
         LocalDateTime now = LocalDateTime.of(2016, 8, 18, 0, 0);
         try {
-            IOC.resolve(Keys.getKeyByName("datetime_formatter"));
+            IOC.resolve(Keys.getOrAdd("datetime_formatter"));
             fail();
         } catch(ResolutionException e) { }
 

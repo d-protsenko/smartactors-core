@@ -44,7 +44,7 @@ public class PluginMessagingIdentifiers implements IPlugin {
                     .before("starter")
                     .process(() -> {
                         try {
-                            IFieldName targetFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "target");
+                            IFieldName targetFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "target");
 
                             // Just use strings as identifiers for chains and receivers
                             IResolveDependencyStrategy toStringStrategy = new IResolveDependencyStrategy() {
@@ -66,10 +66,10 @@ public class PluginMessagingIdentifiers implements IPlugin {
                                 }
                             };
 
-                            IOC.register(Keys.getKeyByName("route_from_object_name"), toStringStrategy);
-                            IOC.register(Keys.getKeyByName("chain_id_from_map_name_and_message"), toStringStrategy);
-                            IOC.register(Keys.getKeyByName("chain_id_from_map_name"), toStringStrategy);
-                            IOC.register(Keys.getKeyByName("receiver_id_from_iobject"), targetToStringStrategy);
+                            IOC.register(Keys.getOrAdd("route_from_object_name"), toStringStrategy);
+                            IOC.register(Keys.getOrAdd("chain_id_from_map_name_and_message"), toStringStrategy);
+                            IOC.register(Keys.getOrAdd("chain_id_from_map_name"), toStringStrategy);
+                            IOC.register(Keys.getOrAdd("receiver_id_from_iobject"), targetToStringStrategy);
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("MessagingIdentifiers plugin can't load: can't get MessagingIdentifiers key", e);
                         } catch (RegistrationException e) {
@@ -82,28 +82,28 @@ public class PluginMessagingIdentifiers implements IPlugin {
 
                         try {
                             keyName = "route_from_object_name";
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "chain_id_from_map_name";
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "chain_id_from_map_name_and_message";
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "receiver_id_from_iobject";
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

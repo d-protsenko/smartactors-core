@@ -37,7 +37,7 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
     @Item("root_upcounter")
     public void registerRootUpcounter()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getKeyByName("root upcounter"), new SingletonStrategy(new UpCounter()));
+        IOC.register(Keys.getOrAdd("root upcounter"), new SingletonStrategy(new UpCounter()));
     }
 
     /**
@@ -51,7 +51,7 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
 
         try {
             keyName = "root upcounter";
-            IOC.remove(Keys.getKeyByName(keyName));
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
@@ -71,9 +71,9 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
     })
     public void registerNewUpcounterCreationStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getKeyByName("new upcounter"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.getOrAdd("new upcounter"), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
-                IUpCounter parent = args.length > 0 ? (IUpCounter) args[0] : IOC.resolve(Keys.getKeyByName("root upcounter"));
+                IUpCounter parent = args.length > 0 ? (IUpCounter) args[0] : IOC.resolve(Keys.getOrAdd("root upcounter"));
 
                 return new UpCounter(parent);
             } catch (ResolutionException | IllegalUpCounterState e) {
@@ -93,7 +93,7 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
 
         keyName = "new upcounter";
         try {
-            IOC.remove(Keys.getKeyByName(keyName));
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
@@ -136,7 +136,7 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
     })
     public void setupDefaultShutdownCallbacks()
             throws ResolutionException, UpCounterCallbackExecutionException {
-        IUpCounter upCounter = IOC.resolve(Keys.getKeyByName("root upcounter"));
+        IUpCounter upCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
 
         upCounter.onShutdownRequest(this.toString(), mode -> {
             System.out.printf("Got shutdown request with mode=\"%s\"\n", mode);

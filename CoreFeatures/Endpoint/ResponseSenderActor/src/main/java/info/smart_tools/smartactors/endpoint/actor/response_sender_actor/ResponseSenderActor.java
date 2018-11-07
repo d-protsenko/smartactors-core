@@ -42,32 +42,32 @@ public class ResponseSenderActor {
         //Get response IObject
         IFieldName responseFieldName = null;
         try {
-            responseFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "response");
+            responseFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "response");
             IObject responseIObject = messageWrapper.getEnvironmentIObject(responseFieldName);
 
             //Create and fill full environment
-            IObject environment = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
-            IFieldName contextFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context");
-            IFieldName httpResponseIsSentFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sendResponseOnChainEnd");
-            IFieldName configFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "config");
-            IFieldName messageFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
-            IFieldName endpointName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "endpointName");
+            IObject environment = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context");
+            IFieldName httpResponseIsSentFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sendResponseOnChainEnd");
+            IFieldName configFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "config");
+            IFieldName messageFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
+            IFieldName endpointName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "endpointName");
             environment.setValue(responseFieldName, responseIObject);
             environment.setValue(configFieldName, messageWrapper.getEnvironmentIObject(configFieldName));
             environment.setValue(contextFieldName, messageWrapper.getEnvironmentIObject(contextFieldName));
             environment.setValue(messageFieldName, messageWrapper.getEnvironmentIObject(messageFieldName));
 
-            IFieldName channelFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "channel");
+            IFieldName channelFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "channel");
             IChannelHandler channelHandler = (IChannelHandler)
                     messageWrapper.getEnvironmentIObject(contextFieldName).getValue(channelFieldName);
 
-            IResponse response = IOC.resolve(Keys.getKeyByName(IResponse.class.getCanonicalName()));
+            IResponse response = IOC.resolve(Keys.getOrAdd(IResponse.class.getCanonicalName()));
             IResponseContentStrategy contentStrategy =
-                    IOC.resolve(Keys.getKeyByName(IResponseContentStrategy.class.getCanonicalName()), environment);
+                    IOC.resolve(Keys.getOrAdd(IResponseContentStrategy.class.getCanonicalName()), environment);
             contentStrategy.setContent(responseIObject, response);
 
-            IResponseSender sender = IOC.resolve(Keys.getKeyByName(IResponseSender.class.getCanonicalName()),
-                    IOC.resolve(Keys.getKeyByName("http_request_key_for_response_sender"), environment),
+            IResponseSender sender = IOC.resolve(Keys.getOrAdd(IResponseSender.class.getCanonicalName()),
+                    IOC.resolve(Keys.getOrAdd("http_request_key_for_response_sender"), environment),
                     messageWrapper.getEnvironmentIObject(contextFieldName).getValue(endpointName));
             sender.send(response, environment, channelHandler);
             messageWrapper.getEnvironmentIObject(contextFieldName).setValue(httpResponseIsSentFieldName, true);

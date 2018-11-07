@@ -100,8 +100,8 @@ public class PluginChainTestingAssertionsTest {
         assertEquals(itemList.size(), 1);
         IBootstrapItem<String> item = itemList.get(0);
         item.executeProcess();
-        assertNotNull(IOC.resolve(Keys.getKeyByName("assertion of type equal")));
-        assertNotNull(IOC.resolve(Keys.getKeyByName("assertion of type not equal")));
+        assertNotNull(IOC.resolve(Keys.getOrAdd("assertion of type equal")));
+        assertNotNull(IOC.resolve(Keys.getOrAdd("assertion of type not equal")));
     }
 
     @Test (expected = PluginException.class)

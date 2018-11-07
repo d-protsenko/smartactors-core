@@ -65,18 +65,18 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
 
         try {
             receiverMapName = mapName;
-            messageFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
-            contextFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context");
+            messageFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
+            contextFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context");
             httpResponseStatusCodeFieldName = IOC.resolve(
-                    Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                    Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                     "httpResponseStatusCode"
             );
-            responseFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "response");
-            headersFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "headers");
-            cookiesFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "cookies");
-            requestFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sendRequest");
-            messageMapIdFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "messageMapId");
-            uuidFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uuid");
+            responseFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "response");
+            headersFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "headers");
+            cookiesFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "cookies");
+            requestFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sendRequest");
+            messageMapIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "messageMapId");
+            uuidFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uuid");
             this.request = request;
             this.messageMapId = request.getValue(messageMapIdFieldName);
             this.uuid = request.getValue(uuidFieldName);
@@ -93,7 +93,7 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
         try {
             ScopeProvider.setCurrentScope(currentScope);
             ModuleManager.setCurrentModule(currentModule);
-            IOC.resolve(Keys.getKeyByName("cancelTimerOnRequest"), uuid);
+            IOC.resolve(Keys.getOrAdd("cancelTimerOnRequest"), uuid);
             isReceived = true;
             FullHttpResponse responseCopy = response.copy();
             ITask task = () -> {
@@ -101,9 +101,9 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
                     IObject environment = getEnvironment(responseCopy);
                     IObject message = (IObject) environment.getValue(messageFieldName);
                     IMessageProcessingSequence processingSequence =
-                            IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), stackDepth, receiverMapName, message);
+                            IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), stackDepth, receiverMapName, message);
                     IMessageProcessor messageProcessor =
-                            IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), taskQueue, processingSequence);
+                            IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), taskQueue, processingSequence);
                     message.setValue(messageMapIdFieldName, messageMapId);
                     IObject context = (IObject) environment.getValue(contextFieldName);
                     messageProcessor.process(message, context);
@@ -121,10 +121,10 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
 
     private IObject getEnvironment(final FullHttpResponse response) throws ResponseHandlerException {
         try {
-            IDeserializeStrategy deserializeStrategy = IOC.resolve(Keys.getKeyByName("httpResponseResolver"), response);
+            IDeserializeStrategy deserializeStrategy = IOC.resolve(Keys.getOrAdd("httpResponseResolver"), response);
             IObject message = deserializeStrategy.deserialize(response);
-            IObject environment = IOC.resolve(Keys.getKeyByName("EmptyIObject"));
-            IObject context = IOC.resolve(Keys.getKeyByName("EmptyIObject"));
+            IObject environment = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
+            IObject context = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
             context.setValue(cookiesFieldName, new ArrayList<IObject>());
             context.setValue(headersFieldName, new ArrayList<IObject>());
             context.setValue(responseFieldName, response);

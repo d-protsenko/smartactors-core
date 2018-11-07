@@ -50,9 +50,9 @@ public class DownloadFeatureActor {
      */
     public DownloadFeatureActor()
             throws ResolutionException {
-        this.repositoryIdFN = IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "repositoryId");
-        this.repositoryTypeFN = IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "type");
-        this.repositoryUrlFN = IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "url");
+        this.repositoryIdFN = IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "repositoryId");
+        this.repositoryTypeFN = IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "type");
+        this.repositoryUrlFN = IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "url");
     }
 
     /**
@@ -100,7 +100,7 @@ public class DownloadFeatureActor {
             throws Exception {
         try {
             File local = new File(DOWNLOAD_DIRECTORY);
-            List<IObject> repositories = IOC.resolve(Keys.getKeyByName(IOC_FEATURE_REPOSITORY_STORAGE_NAME));
+            List<IObject> repositories = IOC.resolve(Keys.getOrAdd(IOC_FEATURE_REPOSITORY_STORAGE_NAME));
             Collection<RemoteRepository> remotes = repositories.stream().map(
                     a -> {
                         try {

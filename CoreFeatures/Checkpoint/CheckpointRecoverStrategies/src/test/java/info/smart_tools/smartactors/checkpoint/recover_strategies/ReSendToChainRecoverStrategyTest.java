@@ -56,7 +56,7 @@ public class ReSendToChainRecoverStrategyTest extends PluginsLoadingTestBase {
     @Test
     public void Should_reSendMessageToChainChosenByIRCCS()
             throws Exception {
-        IObject state = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject state = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'responsibleCheckpointId':'rcid'," +
                         "'entryId':'eid'," +
@@ -81,19 +81,19 @@ public class ReSendToChainRecoverStrategyTest extends PluginsLoadingTestBase {
 
 
         assertNotNull(mc.getValue());
-        assertEquals(true, mc.getValue().getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "is-a-message")));
+        assertEquals(true, mc.getValue().getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "is-a-message")));
 
         IObject checkpointStatus =
-                (IObject) mc.getValue().getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpointStatus"));
+                (IObject) mc.getValue().getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpointStatus"));
 
         assertNotNull(checkpointStatus);
         assertEquals("rcid",
-                checkpointStatus.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responsibleCheckpointId")));
+                checkpointStatus.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responsibleCheckpointId")));
         assertEquals("eid",
-                checkpointStatus.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpointEntryId")));
+                checkpointStatus.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpointEntryId")));
         assertEquals("pceid",
-                checkpointStatus.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointEntryId")));
+                checkpointStatus.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointEntryId")));
         assertEquals("pcid",
-                checkpointStatus.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointId")));
+                checkpointStatus.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointId")));
     }
 }

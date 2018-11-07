@@ -45,10 +45,10 @@ public class ContinuouslyRepeatScheduleStrategyTest extends PluginsLoadingTestBa
     @Override
     protected void registerMocks() throws Exception {
         entry = mock(ISchedulerEntry.class);
-        when(entry.getState()).thenReturn(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
+        when(entry.getState()).thenReturn(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
 
-        start = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "start");
-        interval = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "interval");
+        start = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "start");
+        interval = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "interval");
     }
 
     @Test
@@ -77,7 +77,7 @@ public class ContinuouslyRepeatScheduleStrategyTest extends PluginsLoadingTestBa
         ISchedulingStrategy strategy = new ContinuouslyRepeatScheduleStrategy();
 
         strategy.init(entry,
-                IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                     "{'start':'3410-01-01T00:00:01','interval':'PT24H'}".replace('\'','"')));
 
         // Happy new year to the people of 3410'th year (if you are alive) (if you still use smartactors)
@@ -94,7 +94,7 @@ public class ContinuouslyRepeatScheduleStrategyTest extends PluginsLoadingTestBa
         ISchedulingStrategy strategy = new ContinuouslyRepeatScheduleStrategy();
 
         strategy.init(entry,
-                IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                     "{'start':'3410-01-01T00:00:01','interval':'PT24H','save':false}".replace('\'','"')));
 
         verify(entry).scheduleNext(LocalDateTime.parse("3410-01-01T00:00:01").atZone(ZoneOffset.UTC).toInstant().toEpochMilli());
@@ -107,7 +107,7 @@ public class ContinuouslyRepeatScheduleStrategyTest extends PluginsLoadingTestBa
         ISchedulingStrategy strategy = new ContinuouslyRepeatScheduleStrategy();
 
         strategy.init(entry,
-                IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                     "{'interval':'PT24H'}".replace('\'','"')));
 
         assertTrue(Duration.between(
@@ -122,7 +122,7 @@ public class ContinuouslyRepeatScheduleStrategyTest extends PluginsLoadingTestBa
             throws Exception {
         ISchedulingStrategy strategy = new ContinuouslyRepeatScheduleStrategy();
         when(entry.getState()).thenReturn(
-                IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                         "{'start':'1994-10-15T17:32:05','interval':'PT72H'}".replace('\'','"')));
 
         strategy.restore(entry);
@@ -151,7 +151,7 @@ public class ContinuouslyRepeatScheduleStrategyTest extends PluginsLoadingTestBa
         ISchedulingStrategy strategy = new ContinuouslyRepeatScheduleStrategy();
 
         strategy.init(entry,
-                IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                         "{'start':'3410-01-01T00:00:01','interval':'P2M'}".replace('\'','"')));
 
         // Happy new year to the people of 3410'th year (if you are alive) (if you still use smartactors)
@@ -166,7 +166,7 @@ public class ContinuouslyRepeatScheduleStrategyTest extends PluginsLoadingTestBa
             throws Exception {
         ISchedulingStrategy strategy = new ContinuouslyRepeatScheduleStrategy();
         when(entry.getState()).thenReturn(
-                IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                         "{'start':'1994-10-15T17:32:05','interval':'P2M'}".replace('\'','"')));
 
         strategy.restore(entry);
@@ -193,7 +193,7 @@ public class ContinuouslyRepeatScheduleStrategyTest extends PluginsLoadingTestBa
             throws Exception {
         ISchedulingStrategy strategy = new ContinuouslyRepeatScheduleStrategy();
         when(entry.getState()).thenReturn(
-                IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()),
+                IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                         "{'start':'1994-10-15T17:32:05','interval':'P2M'}".replace('\'','"')));
 
         strategy.notifyPaused(entry);

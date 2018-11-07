@@ -46,14 +46,14 @@ public class HttpClient extends NettyClient<HttpRequest> {
     public HttpClient(final URI serverUri, final IResponseHandler inboundHandler) throws RequestSenderException {
         super(serverUri, NioSocketChannel.class, inboundHandler);
         try {
-            uriFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uri");
-            methodFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "method");
-            headersFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "headers");
-            nameFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
-            valueFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "value");
-            cookiesFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "cookie");
-            messageMapIdFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "messageMapId");
-            contentFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "content");
+            uriFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uri");
+            methodFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "method");
+            headersFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "headers");
+            nameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+            valueFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "value");
+            cookiesFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "cookie");
+            messageMapIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "messageMapId");
+            contentFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "content");
         } catch (ResolutionException e) {
             throw new RequestSenderException(e);
         }
@@ -88,7 +88,7 @@ public class HttpClient extends NettyClient<HttpRequest> {
     public void sendRequest(final IObject request) throws RequestSenderException {
         try {
             messageMapId = (String) request.getValue(messageMapIdFieldName);
-            IRequestMaker<FullHttpRequest> requestMaker = IOC.resolve(Keys.getKeyByName(IRequestMaker.class.getCanonicalName()));
+            IRequestMaker<FullHttpRequest> requestMaker = IOC.resolve(Keys.getOrAdd(IRequestMaker.class.getCanonicalName()));
             FullHttpRequest httpRequest = requestMaker.make(request);
             send(httpRequest);
         } catch (RequestMakerException | ReadValueException | ResolutionException | InvalidArgumentException e) {

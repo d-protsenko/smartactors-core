@@ -109,7 +109,7 @@ public class PostgresSearchTask implements IDatabaseTask {
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-            SearchMessage message = IOC.resolve(Keys.getKeyByName(SearchMessage.class.getCanonicalName()), query);
+            SearchMessage message = IOC.resolve(Keys.getOrAdd(SearchMessage.class.getCanonicalName()), query);
             collection = message.getCollectionName();
             criteria = message.getCriteria();
             callback = message.getCallback();
@@ -132,7 +132,7 @@ public class PostgresSearchTask implements IDatabaseTask {
             List<IObject> results = new ArrayList<>();
             while (resultSet.next()) {
                 String sqlDoc = resultSet.getString(1);
-                IObject document = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), sqlDoc);
+                IObject document = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), sqlDoc);
                 results.add(document);
             }
 

@@ -56,19 +56,19 @@ public class MessageBusResponseStrategyTest extends PluginsLoadingTestBase {
 
         ScopeProvider.getCurrentScope().setValue(MessageBus.getMessageBusKey(), messageBusHandlerMock);
 
-        IOC.register(Keys.getKeyByName("null response strategy"), new SingletonStrategy(nullResponseStrategyMock));
+        IOC.register(Keys.getOrAdd("null response strategy"), new SingletonStrategy(nullResponseStrategyMock));
 
-        environment = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
-        context = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
-        response = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{\"itIsAResponse\":true}");
+        environment = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        context = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        response = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), "{\"itIsAResponse\":true}");
 
-        environment.setValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"), context);
-        environment.setValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "response"), response);
+        environment.setValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"), context);
+        environment.setValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "response"), response);
 
         strategy = new MessageBusResponseStrategy();
 
-        context.setValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responseStrategy"), strategy);
-        context.setValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "messageBusReplyTo"), replyChainId);
+        context.setValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responseStrategy"), strategy);
+        context.setValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "messageBusReplyTo"), replyChainId);
     }
 
     @Test
@@ -80,12 +80,12 @@ public class MessageBusResponseStrategyTest extends PluginsLoadingTestBase {
         verify(messageBusHandlerMock).handle(responseCaptor.capture(), same(replyChainId));
 
         assertEquals(Boolean.TRUE, responseCaptor.getValue().getValue(
-                IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "itIsAResponse")
+                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "itIsAResponse")
         ));
 
         assertSame(
                 nullResponseStrategyMock,
-                context.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responseStrategy")));
+                context.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responseStrategy")));
     }
 
     @Test(expected = ResponseException.class)

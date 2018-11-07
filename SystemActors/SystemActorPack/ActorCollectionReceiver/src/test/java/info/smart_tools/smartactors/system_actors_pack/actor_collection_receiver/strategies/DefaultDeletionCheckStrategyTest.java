@@ -33,18 +33,18 @@ public class DefaultDeletionCheckStrategyTest extends PluginsLoadingTestBase {
             throws Exception {
         IChildDeletionCheckStrategy strategy = new DefaultDeletionCheckStrategy();
 
-        IObject ctx = IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()));
-        IObject env = IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()),
+        IObject ctx = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IObject env = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                 "{'context':{'deleteChild':true}}".replace('\'','"'));
 
         assertTrue(strategy.checkDelete(ctx, env));
 
-        env = IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()),
+        env = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                 "{'context':{'deleteChild':false}}".replace('\'','"'));
 
         assertFalse(strategy.checkDelete(ctx, env));
 
-        env = IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()),
+        env = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
                 "{'context':{}}".replace('\'','"'));
 
         assertFalse(strategy.checkDelete(ctx, env));

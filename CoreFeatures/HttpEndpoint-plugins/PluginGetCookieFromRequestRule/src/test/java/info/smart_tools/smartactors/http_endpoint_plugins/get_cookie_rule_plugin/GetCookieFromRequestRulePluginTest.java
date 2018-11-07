@@ -64,7 +64,7 @@ public class GetCookieFromRequestRulePluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey strategyKey = mock(IKey.class);
-        when(Keys.getKeyByName(IResolveDependencyStrategy.class.getCanonicalName())).thenReturn(strategyKey);
+        when(Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName())).thenReturn(strategyKey);
 
         GetCookieFromRequestRule targetObject = mock(GetCookieFromRequestRule.class);
         whenNew(GetCookieFromRequestRule.class).withNoArguments().thenReturn(targetObject);
@@ -72,7 +72,7 @@ public class GetCookieFromRequestRulePluginTest {
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getKeyByName(IResolveDependencyStrategy.class.getCanonicalName());
+        Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName());
 
         verifyNew(GetCookieFromRequestRule.class).withNoArguments();
 
@@ -115,7 +115,7 @@ public class GetCookieFromRequestRulePluginTest {
 
         verify(bootstrap).add(bootstrapItem);
 
-        when(Keys.getKeyByName(IResolveDependencyStrategy.class.getCanonicalName())).thenThrow(new ResolutionException(""));
+        when(Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName())).thenThrow(new ResolutionException(""));
 
         GetCookieFromRequestRule targetObject = mock(GetCookieFromRequestRule.class);
         whenNew(GetCookieFromRequestRule.class).withNoArguments().thenReturn(targetObject);
@@ -124,7 +124,7 @@ public class GetCookieFromRequestRulePluginTest {
             actionArgumentCaptor.getValue().execute();
         } catch (ActionExecuteException e) {
             verifyStatic();
-            Keys.getKeyByName(IResolveDependencyStrategy.class.getCanonicalName());
+            Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName());
             return;
         }
         assertTrue("Must throw exception", false);
@@ -151,7 +151,7 @@ public class GetCookieFromRequestRulePluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey strategyKey = mock(IKey.class);
-        when(Keys.getKeyByName(IResolveDependencyStrategy.class.getCanonicalName())).thenReturn(strategyKey);
+        when(Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName())).thenReturn(strategyKey);
 
         GetCookieFromRequestRule targetObject = mock(GetCookieFromRequestRule.class);
         whenNew(GetCookieFromRequestRule.class).withNoArguments().thenReturn(targetObject);
@@ -162,7 +162,7 @@ public class GetCookieFromRequestRulePluginTest {
             actionArgumentCaptor.getValue().execute();
         } catch (ActionExecuteException e) {
             verifyStatic();
-            Keys.getKeyByName(IResolveDependencyStrategy.class.getCanonicalName());
+            Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName());
 
             verifyNew(GetCookieFromRequestRule.class).withNoArguments();
 

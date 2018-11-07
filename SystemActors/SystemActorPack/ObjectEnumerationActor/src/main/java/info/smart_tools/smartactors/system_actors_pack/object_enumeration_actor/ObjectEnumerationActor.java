@@ -21,7 +21,7 @@ public class ObjectEnumerationActor {
      */
     public void enumerateChains(final EnumerationResult result)
             throws ResolutionException, ChangeValueException {
-        IChainStorage storage = IOC.resolve(Keys.getKeyByName(IChainStorage.class.getCanonicalName()));
+        IChainStorage storage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
         result.setItems(storage.enumerate());
     }
 
@@ -34,7 +34,7 @@ public class ObjectEnumerationActor {
      */
     public void enumerateReceivers(final EnumerationResult result)
             throws ResolutionException, ChangeValueException {
-        IRouter router = IOC.resolve(Keys.getKeyByName(IRouter.class.getCanonicalName()));
+        IRouter router = IOC.resolve(Keys.getOrAdd(IRouter.class.getCanonicalName()));
         result.setItems(router.enumerate());
     }
 }

@@ -115,7 +115,7 @@ public class EntryStorage implements ISchedulerEntryStorage {
      */
     public EntryStorage(final IRemoteEntryStorage remoteEntryStorage, final ISchedulerEntryStorageObserver observer)
             throws ResolutionException {
-        this(remoteEntryStorage, observer, IOC.resolve(Keys.getKeyByName("timer")));
+        this(remoteEntryStorage, observer, IOC.resolve(Keys.getOrAdd("timer")));
     }
 
     @Override
@@ -251,7 +251,7 @@ public class EntryStorage implements ISchedulerEntryStorage {
 
             IObject savedEntryState = remoteEntryStorage.querySingleEntry(id);
 
-            return IOC.resolve(Keys.getKeyByName("restore scheduler entry"), savedEntryState, this);
+            return IOC.resolve(Keys.getOrAdd("restore scheduler entry"), savedEntryState, this);
         } catch (ResolutionException e) {
             throw new EntryStorageAccessException("Error occurred restoring required entry from state saved in remote storage.");
         } catch (CancelledLocalEntryRequestException e) {

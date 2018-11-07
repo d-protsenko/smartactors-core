@@ -27,7 +27,7 @@ public class ResponseSenderReceiverPlugin extends BootstrapPlugin {
     @After({"IOC", "IFieldNamePlugin"})
     public void registerResponseAction()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getKeyByName("send response action"), new SingletonStrategy(new ResponseSenderAction()));
+        IOC.register(Keys.getOrAdd("send response action"), new SingletonStrategy(new ResponseSenderAction()));
     }
 
     @ItemRevert("send_response_action")
@@ -36,7 +36,7 @@ public class ResponseSenderReceiverPlugin extends BootstrapPlugin {
         String keyName = "send response action";
 
         try {
-            IOC.remove(Keys.getKeyByName(keyName));
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
@@ -46,7 +46,7 @@ public class ResponseSenderReceiverPlugin extends BootstrapPlugin {
     @After("send_response_action")
     public void registerResponseSenderReceiver()
         throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getKeyByName("response sender receiver"), new SingletonStrategy(new ResponseSenderReceiver()));
+        IOC.register(Keys.getOrAdd("response sender receiver"), new SingletonStrategy(new ResponseSenderReceiver()));
     }
 
     @ItemRevert("response_sender_receiver")
@@ -55,7 +55,7 @@ public class ResponseSenderReceiverPlugin extends BootstrapPlugin {
         String keyName = "response sender receiver";
 
         try {
-            IOC.remove(Keys.getKeyByName(keyName));
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }

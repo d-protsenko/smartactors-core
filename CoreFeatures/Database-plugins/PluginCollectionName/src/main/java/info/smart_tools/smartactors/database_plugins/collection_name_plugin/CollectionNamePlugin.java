@@ -41,7 +41,7 @@ public class CollectionNamePlugin implements IPlugin {
 //                .before("starter")
                 .process(() -> {
                     try {
-                        IKey collectionNameKey = Keys.getKeyByName(CollectionName.class.getCanonicalName());
+                        IKey collectionNameKey = Keys.getOrAdd(CollectionName.class.getCanonicalName());
                         IOC.register(collectionNameKey, new ResolveByNameIocStrategy(
                             (args) -> {
                                 String name = String.valueOf(args[0]);

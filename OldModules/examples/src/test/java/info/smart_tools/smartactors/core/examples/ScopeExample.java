@@ -162,7 +162,7 @@ public class ScopeExample {
     @Test
     public void testSystemIOC() throws ScopeProviderException, ResolutionException, InvalidArgumentException, RegistrationException {
         assertSame(systemScope, ScopeProvider.getCurrentScope());
-        IKey key = Keys.getKeyByName("test");
+        IKey key = Keys.getOrAdd("test");
         SampleClass systemObject = new SampleClass("system");
         IOC.register(key, new SingletonStrategy(systemObject));
         assertEquals(systemObject, IOC.resolve(key));

@@ -46,19 +46,19 @@ public class ConstantsSectionStrategy implements ISectionStrategy {
      */
     public ConstantsSectionStrategy()
             throws ResolutionException {
-        sectionFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "const");
-        constantNameFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
-        constantValueFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "value");
+        sectionFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "const");
+        constantNameFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+        constantValueFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "value");
     }
 
     @Override
     public void onLoadConfig(final IObject config) throws ConfigurationProcessingException {
         try {
-            IObject constants = IOC.resolve(Keys.getKeyByName("global constants"));
+            IObject constants = IOC.resolve(Keys.getOrAdd("global constants"));
             List<IObject> section = (List<IObject>) config.getValue(sectionFieldName);
 
             for (IObject obj : section) {
-                IFieldName cFName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), obj.getValue(constantNameFN));
+                IFieldName cFName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), obj.getValue(constantNameFN));
                 Object cValue = obj.getValue(constantValueFN);
 
                 constants.setValue(cFName, cValue);
@@ -72,12 +72,12 @@ public class ConstantsSectionStrategy implements ISectionStrategy {
     public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
         ConfigurationProcessingException exception = new ConfigurationProcessingException("Error occurred reverting \"const\" configuration section.");
         try {
-            IObject constants = IOC.resolve(Keys.getKeyByName("global constants"));
+            IObject constants = IOC.resolve(Keys.getOrAdd("global constants"));
             List<IObject> section = (List<IObject>) config.getValue(sectionFieldName);
 
             for (IObject obj : section) {
                 try {
-                    IFieldName cFName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), obj.getValue(constantNameFN));
+                    IFieldName cFName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), obj.getValue(constantNameFN));
                     constants.deleteField(cFName);
                 } catch (DeleteValueException | ResolutionException e) {
                     exception.addSuppressed(e);

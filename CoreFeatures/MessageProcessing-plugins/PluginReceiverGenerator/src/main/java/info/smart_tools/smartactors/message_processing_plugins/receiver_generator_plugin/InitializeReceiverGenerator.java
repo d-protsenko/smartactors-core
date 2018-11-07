@@ -48,7 +48,7 @@ public class InitializeReceiverGenerator implements IPlugin {
                                 try {
                                     IReceiverGenerator rg = new ReceiverGenerator();
                                     IOC.register(
-                                            Keys.getKeyByName(IReceiverGenerator.class.getCanonicalName()),
+                                            Keys.getOrAdd(IReceiverGenerator.class.getCanonicalName()),
                                             new SingletonStrategy(rg)
                                     );
                                 } catch (ResolutionException e) {
@@ -67,7 +67,7 @@ public class InitializeReceiverGenerator implements IPlugin {
 
                                 try {
                                     keyName = IReceiverGenerator.class.getCanonicalName();
-                                    IOC.remove(Keys.getKeyByName(keyName));
+                                    IOC.remove(Keys.getOrAdd(keyName));
                                 } catch(DeletionException e) {
                                     System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                                 } catch (ResolutionException e) { }

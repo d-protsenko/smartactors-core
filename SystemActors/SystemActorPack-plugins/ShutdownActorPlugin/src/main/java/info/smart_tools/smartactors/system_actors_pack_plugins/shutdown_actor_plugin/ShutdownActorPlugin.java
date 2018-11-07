@@ -23,6 +23,6 @@ public class ShutdownActorPlugin extends BootstrapPlugin {
 
     @Item("shutdown_actor")
     public void registerActor() throws ResolutionException, InvalidArgumentException, RegistrationException {
-        IOC.register(Keys.getKeyByName("shutdown actor"), new SingletonStrategy(new ShutdownActor()));
+        IOC.register(Keys.getOrAdd("shutdown actor"), new SingletonStrategy(new ShutdownActor()));
     }
 }

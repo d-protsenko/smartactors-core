@@ -47,7 +47,7 @@ public class SetAddressFromObjectNameReceiverCreatorTest extends PluginsLoadingT
         underlyingCreatorMock = mock(IReceiverObjectCreator.class);
         listenerMock = mock(IReceiverObjectListener.class);
 
-        when(configMock.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name"))).thenReturn("the_object_name");
+        when(configMock.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name"))).thenReturn("the_object_name");
 
         doAnswer(invocation -> {
             invocation.getArgumentAt(0, IReceiverObjectListener.class).acceptItem("old_object_name", object);

@@ -77,7 +77,7 @@ public class HttpResponseHandlerTest {
                 IOC.getKeyForKeyByNameResolutionStrategy(),
                 new ResolveByNameIocStrategy()
         );
-        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
@@ -88,34 +88,34 @@ public class HttpResponseHandlerTest {
                         }
                 )
         );
-        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                 new SingletonStrategy(
                         messageProcessingSequence
                 )
         );
-        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                 new SingletonStrategy(
                         messageProcessor
                 )
         );
-        IOC.register(Keys.getKeyByName("httpResponseResolver"), new SingletonStrategy(
+        IOC.register(Keys.getOrAdd("httpResponseResolver"), new SingletonStrategy(
                         strategy
                 )
         );
-        IOC.register(Keys.getKeyByName("EmptyIObject"), new CreateNewInstanceStrategy(
+        IOC.register(Keys.getOrAdd("EmptyIObject"), new CreateNewInstanceStrategy(
                         (args) -> new DSObject()
 
                 )
         );
         Object obj = mock(Object.class);
-        IOC.register(Keys.getKeyByName("cancelTimerOnRequest"),
+        IOC.register(Keys.getOrAdd("cancelTimerOnRequest"),
                 new SingletonStrategy(obj));
 
-        IOC.register(Keys.getKeyByName("chain_id_from_map_name_and_message"), new SingletonStrategy(
+        IOC.register(Keys.getOrAdd("chain_id_from_map_name_and_message"), new SingletonStrategy(
                         mapId
                 )
         );
-        IOC.register(Keys.getKeyByName(IChainStorage.class.getCanonicalName()), new SingletonStrategy(
+        IOC.register(Keys.getOrAdd(IChainStorage.class.getCanonicalName()), new SingletonStrategy(
                         chainStorage
                 )
         );

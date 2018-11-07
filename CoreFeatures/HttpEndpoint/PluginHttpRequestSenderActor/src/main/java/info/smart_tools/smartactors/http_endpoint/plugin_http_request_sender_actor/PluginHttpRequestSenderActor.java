@@ -42,7 +42,7 @@ public class PluginHttpRequestSenderActor implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.getKeyByName("HttpRequestSenderActor"),
+                                    Keys.getOrAdd("HttpRequestSenderActor"),
                                     // Response sender is stateless so it's safe to use singleton strategy.
                                     new SingletonStrategy(new HttpRequestSenderActor()));
                         } catch (ResolutionException e) {
@@ -58,7 +58,7 @@ public class PluginHttpRequestSenderActor implements IPlugin {
                         String keyName = "HttpRequestSenderActor";
 
                         try {
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

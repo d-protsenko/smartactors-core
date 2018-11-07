@@ -111,17 +111,17 @@ public class ActorReceiverCreatorPluginTest {
         item.executeRevertProcess();
 
         try {
-            IOC.resolve(Keys.getKeyByName(IRoutedObjectCreator.class.getCanonicalName() + "#actor"));
+            IOC.resolve(Keys.getOrAdd(IRoutedObjectCreator.class.getCanonicalName() + "#actor"));
             fail();
         } catch (ResolutionException e) {}
 
         try {
-            IOC.resolve(Keys.getKeyByName("actor_receiver_queue"));
+            IOC.resolve(Keys.getOrAdd("actor_receiver_queue"));
             fail();
         } catch (ResolutionException e) {}
 
         try {
-            IOC.resolve(Keys.getKeyByName("actor_receiver_busyness_flag"));
+            IOC.resolve(Keys.getOrAdd("actor_receiver_busyness_flag"));
             fail();
         } catch (ResolutionException e) {}
 

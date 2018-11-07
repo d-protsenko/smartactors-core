@@ -68,10 +68,10 @@ public class PostgresUpsertTask implements IDatabaseTask {
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-            UpsertMessage message = IOC.resolve(Keys.getKeyByName(UpsertMessage.class.getCanonicalName()), query);
+            UpsertMessage message = IOC.resolve(Keys.getOrAdd(UpsertMessage.class.getCanonicalName()), query);
             collection = message.getCollectionName();
             idField = IOC.resolve(
-                    Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                    Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                     String.format(PostgresSchema.ID_FIELD_PATTERN, collection.toString()));
             document = message.getDocument();
 
@@ -116,7 +116,7 @@ public class PostgresUpsertTask implements IDatabaseTask {
      * @return the new ID for the document
      */
     private Object nextId() throws ResolutionException {
-        return IOC.resolve(Keys.getKeyByName("db.collection.nextid"));
+        return IOC.resolve(Keys.getOrAdd("db.collection.nextid"));
     }
 
     /**

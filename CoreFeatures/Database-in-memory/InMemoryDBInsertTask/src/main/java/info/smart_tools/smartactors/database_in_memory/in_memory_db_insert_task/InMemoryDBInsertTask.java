@@ -30,8 +30,8 @@ public class InMemoryDBInsertTask implements IDatabaseTask {
      */
     public InMemoryDBInsertTask() throws TaskPrepareException {
         try {
-            collectionNameFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collectionName");
-            documentFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "document");
+            collectionNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collectionName");
+            documentFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "document");
         } catch (ResolutionException e) {
             throw new TaskPrepareException("Failed to resolve \"IFieldName\"", e);
         }
@@ -50,7 +50,7 @@ public class InMemoryDBInsertTask implements IDatabaseTask {
     @Override
     public void execute() throws TaskExecutionException {
         try {
-            IDatabase dataBase = IOC.resolve(Keys.getKeyByName(InMemoryDatabase.class.getCanonicalName()));
+            IDatabase dataBase = IOC.resolve(Keys.getOrAdd(InMemoryDatabase.class.getCanonicalName()));
             dataBase.insert(document, collectionName);
         } catch (ResolutionException e) {
             throw new TaskExecutionException("Failed to resolve InMemoryDatabase", e);

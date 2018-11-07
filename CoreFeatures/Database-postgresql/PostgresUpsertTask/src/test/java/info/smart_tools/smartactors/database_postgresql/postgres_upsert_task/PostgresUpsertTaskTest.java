@@ -70,7 +70,7 @@ public class PostgresUpsertTaskTest {
         bootstrap.start();
 
         IOC.register(
-                Keys.getKeyByName("db.collection.nextid"),
+                Keys.getOrAdd("db.collection.nextid"),
                 new UuidNextIdStrategy()
         );
     }
@@ -101,7 +101,7 @@ public class PostgresUpsertTaskTest {
         idFieldName = new FieldName("testID");
 
         IOC.register(
-                Keys.getKeyByName(UpsertMessage.class.getCanonicalName()),
+                Keys.getOrAdd(UpsertMessage.class.getCanonicalName()),
                 new SingletonStrategy(message)
         );
     }

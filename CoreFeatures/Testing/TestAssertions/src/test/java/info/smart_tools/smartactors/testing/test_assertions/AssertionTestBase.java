@@ -31,6 +31,6 @@ public class AssertionTestBase extends PluginsLoadingTestBase {
 
     protected void apply(Class<? extends IAssertion> clz, String desc, Object value)
             throws Exception {
-        apply(clz, IOC.<IObject>resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), desc), value);
+        apply(clz, IOC.<IObject>resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), desc), value);
     }
 }

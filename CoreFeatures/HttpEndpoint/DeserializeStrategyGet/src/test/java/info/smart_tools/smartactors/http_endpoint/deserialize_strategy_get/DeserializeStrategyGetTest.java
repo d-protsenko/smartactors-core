@@ -63,7 +63,7 @@ public class DeserializeStrategyGetTest {
         );
 
 
-        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), new CreateNewInstanceStrategy(
+        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), new CreateNewInstanceStrategy(
                 args -> {
                     try {
                         return new FieldName((String) args[0]);
@@ -74,17 +74,17 @@ public class DeserializeStrategyGetTest {
         ));
 
         decoder = mock(QueryStringDecoder.class);
-        IOC.register(Keys.getKeyByName(QueryStringDecoder.class.getCanonicalName()), new SingletonStrategy(
+        IOC.register(Keys.getOrAdd(QueryStringDecoder.class.getCanonicalName()), new SingletonStrategy(
                         decoder
                 )
         );
 
         parseTree = mock(IParseTree.class);
-        IOC.register(Keys.getKeyByName(IParseTree.class.getCanonicalName()), new SingletonStrategy(
+        IOC.register(Keys.getOrAdd(IParseTree.class.getCanonicalName()), new SingletonStrategy(
                         parseTree
                 )
         );
-        IOC.register(Keys.getKeyByName("EmptyIObject"), new CreateNewInstanceStrategy(
+        IOC.register(Keys.getOrAdd("EmptyIObject"), new CreateNewInstanceStrategy(
                         args -> new DSObject()
                 )
         );
@@ -93,7 +93,7 @@ public class DeserializeStrategyGetTest {
 
     @Test
     public void testUriWithEmptyArgs() throws DeserializationException, ResolutionException, InvalidArgumentException, RegistrationException, ChangeValueException, AddRequestParametersToIObjectException {
-        IOC.register(Keys.getKeyByName("EmptyIObject"), new SingletonStrategy(
+        IOC.register(Keys.getOrAdd("EmptyIObject"), new SingletonStrategy(
                         emptyIObject
                 )
         );
@@ -142,7 +142,7 @@ public class DeserializeStrategyGetTest {
 
     @Test
     public void testUriWithoutArgs() throws DeserializationException, InvalidArgumentException, ReadValueException, ResolutionException, RegistrationException, AddRequestParametersToIObjectException {
-        IOC.register(Keys.getKeyByName("EmptyIObject"), new SingletonStrategy(
+        IOC.register(Keys.getOrAdd("EmptyIObject"), new SingletonStrategy(
                         emptyIObject
                 )
         );

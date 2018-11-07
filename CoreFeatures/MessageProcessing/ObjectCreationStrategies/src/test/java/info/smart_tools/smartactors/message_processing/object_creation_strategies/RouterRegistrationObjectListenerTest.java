@@ -44,7 +44,7 @@ public class RouterRegistrationObjectListenerTest extends PluginsLoadingTestBase
 
         when(routerStrategy.resolve()).thenReturn(routerMock);
 
-        IOC.register(Keys.getKeyByName(IRouter.class.getCanonicalName()), routerStrategy);
+        IOC.register(Keys.getOrAdd(IRouter.class.getCanonicalName()), routerStrategy);
 
         receiverMocks = new IMessageReceiver[] {
             mock(IMessageReceiver.class),

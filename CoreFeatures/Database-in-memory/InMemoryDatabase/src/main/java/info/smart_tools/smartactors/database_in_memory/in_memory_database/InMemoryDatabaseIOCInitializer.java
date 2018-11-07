@@ -49,11 +49,11 @@ public final class InMemoryDatabaseIOCInitializer {
     }
 
     private static void registerNextIdStrategy() throws ResolutionException, RegistrationException {
-        IOC.register(Keys.getKeyByName("db.collection.nextid"), new UuidNextIdStrategy());
+        IOC.register(Keys.getOrAdd("db.collection.nextid"), new UuidNextIdStrategy());
     }
 
     private static void registerCompareSimpleObjects() throws RegistrationException, ResolutionException, InvalidArgumentException {
-        IOC.register(Keys.getKeyByName("CompareSimpleObjects"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.getOrAdd("CompareSimpleObjects"), new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             Object entry = args[0];
                             Object reference = args[1];
@@ -85,7 +85,7 @@ public final class InMemoryDatabaseIOCInitializer {
     }
 
     private static void registerNestedFieldName() throws RegistrationException, ResolutionException, InvalidArgumentException {
-        IOC.register(Keys.getKeyByName("NestedFieldName"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.getOrAdd("NestedFieldName"), new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             IFieldName fieldName = (IFieldName) args[0];
                             IObject iObject = (IObject) args[1];
@@ -99,7 +99,7 @@ public final class InMemoryDatabaseIOCInitializer {
                                     }
                                     IFieldName bufFieldName =
                                             IOC.resolve(
-                                                    Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                                                    Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                                                     fieldString
                                             );
                                     bufObject = ((IObject) bufObject).getValue(bufFieldName);
@@ -135,7 +135,7 @@ public final class InMemoryDatabaseIOCInitializer {
                     while (mainIterator.hasNext()) {
                         Map.Entry<IFieldName, Object> entry = mainIterator.next();
                         try {
-                            IObject iObject = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                            IObject iObject = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
                             iObject.setValue(entry.getKey(), entry.getValue());
                             and.add(iObject);
                         } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
@@ -145,8 +145,8 @@ public final class InMemoryDatabaseIOCInitializer {
                     if (and.size() > 1) {
                         IFieldName andFieldName;
                         try {
-                            newCondition = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
-                            andFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "$and");
+                            newCondition = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                            andFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "$and");
                             newCondition.setValue(andFieldName, and);
                         } catch (ResolutionException | InvalidArgumentException | ChangeValueException e) {
                         }
@@ -175,7 +175,7 @@ public final class InMemoryDatabaseIOCInitializer {
         verifierMap.put("$eq", (condition, document) -> {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
-                        Object entry = IOC.resolve(Keys.getKeyByName("NestedFieldName"), fieldName, document);
+                        Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
                         Object reference = ((IObject) condition.getValue(fieldName))
                                 .getValue(new FieldName("$eq"));
                         return reference.equals(entry);
@@ -187,7 +187,7 @@ public final class InMemoryDatabaseIOCInitializer {
         verifierMap.put("$neq", (condition, document) -> {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
-                        Object entry = IOC.resolve(Keys.getKeyByName("NestedFieldName"), fieldName, document);
+                        Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
                         Object reference = ((IObject) condition.getValue(fieldName))
                                 .getValue(new FieldName("$neq"));
                         return !reference.equals(entry);
@@ -202,11 +202,11 @@ public final class InMemoryDatabaseIOCInitializer {
         verifierMap.put("$gt", (condition, document) -> {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
-                        Object entry = IOC.resolve(Keys.getKeyByName("NestedFieldName"), fieldName, document);
+                        Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
                         Object reference = ((IObject) condition.getValue(fieldName))
                                 .getValue(new FieldName("$gt"));
                         return ((Integer) IOC.resolve(
-                                Keys.getKeyByName("CompareSimpleObjects"), entry, reference)
+                                Keys.getOrAdd("CompareSimpleObjects"), entry, reference)
                         ) > 0;
                     } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
                     }
@@ -216,11 +216,11 @@ public final class InMemoryDatabaseIOCInitializer {
         verifierMap.put("$lt", (condition, document) -> {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
-                        Object entry = IOC.resolve(Keys.getKeyByName("NestedFieldName"), fieldName, document);
+                        Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
                         Object reference = ((IObject) condition.getValue(fieldName))
                                 .getValue(new FieldName("$lt"));
                         return (Integer) IOC.resolve(
-                                Keys.getKeyByName("CompareSimpleObjects"), entry, reference
+                                Keys.getOrAdd("CompareSimpleObjects"), entry, reference
                         ) < 0;
                     } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
                     }
@@ -230,11 +230,11 @@ public final class InMemoryDatabaseIOCInitializer {
         verifierMap.put("$gte", (condition, document) -> {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
-                        Object entry = IOC.resolve(Keys.getKeyByName("NestedFieldName"), fieldName, document);
+                        Object entry = IOC.resolve(Keys.getOrAdd("NestedFieldName"), fieldName, document);
                         Object reference = ((IObject) condition.getValue(fieldName))
                                 .getValue(new FieldName("$gte"));
                         return (Integer) IOC.resolve(
-                                Keys.getKeyByName("CompareSimpleObjects"), entry, reference
+                                Keys.getOrAdd("CompareSimpleObjects"), entry, reference
                         ) >= 0;
                     } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
                     }
@@ -245,14 +245,14 @@ public final class InMemoryDatabaseIOCInitializer {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
                         Object entry = IOC.resolve(
-                                Keys.getKeyByName("NestedFieldName"),
+                                Keys.getOrAdd("NestedFieldName"),
                                 fieldName,
                                 document
                         );
                         Object reference = ((IObject) condition.getValue(fieldName))
                                 .getValue(new FieldName("$lte"));
                         return (Integer) IOC.resolve(
-                                Keys.getKeyByName("CompareSimpleObjects"), entry, reference
+                                Keys.getOrAdd("CompareSimpleObjects"), entry, reference
                         ) <= 0;
                     } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
                     }
@@ -297,7 +297,7 @@ public final class InMemoryDatabaseIOCInitializer {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
                         Object entry = IOC.resolve(
-                                Keys.getKeyByName("NestedFieldName"),
+                                Keys.getOrAdd("NestedFieldName"),
                                 fieldName,
                                 document
                         );
@@ -321,7 +321,7 @@ public final class InMemoryDatabaseIOCInitializer {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
                         Object entry = IOC.resolve(
-                                Keys.getKeyByName("NestedFieldName"),
+                                Keys.getOrAdd("NestedFieldName"),
                                 fieldName,
                                 document
                         );
@@ -341,7 +341,7 @@ public final class InMemoryDatabaseIOCInitializer {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
                         Object entry = IOC.resolve(
-                                Keys.getKeyByName("NestedFieldName"),
+                                Keys.getOrAdd("NestedFieldName"),
                                 fieldName,
                                 document
                         );
@@ -361,7 +361,7 @@ public final class InMemoryDatabaseIOCInitializer {
                         }
 
                         IFieldName tagFieldName = IOC.resolve(
-                                Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                                Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                                 reference
                         );
                         return null != ((IObject) entry).getValue(tagFieldName);
@@ -377,7 +377,7 @@ public final class InMemoryDatabaseIOCInitializer {
                     IFieldName fieldName = condition.iterator().next().getKey();
                     try {
                         Object entry = IOC.resolve(
-                                Keys.getKeyByName("NestedFieldName"),
+                                Keys.getOrAdd("NestedFieldName"),
                                 fieldName,
                                 document
                         );
@@ -446,7 +446,7 @@ public final class InMemoryDatabaseIOCInitializer {
     private static void registerVerifierMapCalls(final Map<String, IConditionVerifier> verifierMap)
             throws RegistrationException, ResolutionException, InvalidArgumentException {
         IOC.register(
-                Keys.getKeyByName("ResolveDataBaseCondition"),
+                Keys.getOrAdd("ResolveDataBaseCondition"),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) ->
                                 verifierMap.get(args[0])
@@ -454,7 +454,7 @@ public final class InMemoryDatabaseIOCInitializer {
                 )
         );
 
-        IOC.register(Keys.getKeyByName("ContainsResolveDataBaseCondition"),
+        IOC.register(Keys.getOrAdd("ContainsResolveDataBaseCondition"),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) ->
                                 verifierMap.containsKey(args[0])
@@ -463,22 +463,22 @@ public final class InMemoryDatabaseIOCInitializer {
     }
 
     private static void registerPagingForDatabaseCollection() throws RegistrationException, ResolutionException, InvalidArgumentException {
-        IOC.register(Keys.getKeyByName("PagingForDatabaseCollection"),
+        IOC.register(Keys.getOrAdd("PagingForDatabaseCollection"),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             Integer pageNumber = 1;
                             Integer pageSize = DEFAULT_PAGE_SIZE;
                             try {
                                 IFieldName pageFieldName = IOC.resolve(
-                                        Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                                        Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                                         "page"
                                 );
                                 IFieldName pageNumberFieldName = IOC.resolve(
-                                        Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                                        Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                                         "number"
                                 );
                                 IFieldName pageSizeFieldName = IOC.resolve(
-                                        Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                                        Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                                         "size"
                                 );
                                 IObject page = (IObject) ((IObject) args[0]).getValue(pageFieldName);
@@ -502,14 +502,14 @@ public final class InMemoryDatabaseIOCInitializer {
     }
 
     private static void registerSortIObjects() throws RegistrationException, ResolutionException, InvalidArgumentException {
-        IOC.register(Keys.getKeyByName("SortIObjects"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.getOrAdd("SortIObjects"), new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             List<IObject> sortRules = null;
                             List<IObject> documents = (List<IObject>) args[1];
 
                             try {
                                 IObject condition = (IObject) args[0];
-                                IFieldName sortFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sort");
+                                IFieldName sortFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sort");
                                 sortRules = (List<IObject>) condition.getValue(sortFieldName);
                             } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
                                 // ignoring absence of sort rule
@@ -529,9 +529,9 @@ public final class InMemoryDatabaseIOCInitializer {
                                 try {
                                     Integer compare = 0;
                                     for (int i = 0; i < sortingFields.size(); i++) {
-                                        Object object1 = IOC.resolve(Keys.getKeyByName("NestedFieldName"), sortingFields.get(i), o1);
-                                        Object object2 = IOC.resolve(Keys.getKeyByName("NestedFieldName"), sortingFields.get(i), o2);
-                                        compare = IOC.resolve(Keys.getKeyByName("CompareSimpleObjects"), object1, object2);
+                                        Object object1 = IOC.resolve(Keys.getOrAdd("NestedFieldName"), sortingFields.get(i), o1);
+                                        Object object2 = IOC.resolve(Keys.getOrAdd("NestedFieldName"), sortingFields.get(i), o2);
+                                        compare = IOC.resolve(Keys.getOrAdd("CompareSimpleObjects"), object1, object2);
                                         if (compare != 0) {
                                             return compare * sortingType.get(i);
                                         }
@@ -549,7 +549,7 @@ public final class InMemoryDatabaseIOCInitializer {
     }
 
     private static void registerDataBaseItem() throws RegistrationException, ResolutionException, InvalidArgumentException {
-        IOC.register(Keys.getKeyByName(DataBaseItem.class.getCanonicalName()), new CreateNewInstanceStrategy(
+        IOC.register(Keys.getOrAdd(DataBaseItem.class.getCanonicalName()), new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
                                 return new DataBaseItem((IObject) args[0], (String) args[1]);
@@ -565,7 +565,7 @@ public final class InMemoryDatabaseIOCInitializer {
             throws IDatabaseException, RegistrationException, ResolutionException, InvalidArgumentException {
         InMemoryDatabase database = new InMemoryDatabase();
         IOC.register(
-                Keys.getKeyByName(InMemoryDatabase.class.getCanonicalName()),
+                Keys.getOrAdd(InMemoryDatabase.class.getCanonicalName()),
                 new SingletonStrategy(database)
         );
     }

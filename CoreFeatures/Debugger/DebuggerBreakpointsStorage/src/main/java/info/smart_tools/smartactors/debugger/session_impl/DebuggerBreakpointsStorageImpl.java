@@ -35,7 +35,7 @@ public class DebuggerBreakpointsStorageImpl implements IDebuggerBreakpointsStora
                 throws ResolutionException, ChangeValueException, InvalidArgumentException {
             this.enabled = enabled;
 
-            this.asIObject = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            this.asIObject = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
             this.asIObject.setValue(chainFN, chainName);
             this.asIObject.setValue(stepFN, stepId);
             this.asIObject.setValue(enabledFN, true);
@@ -80,11 +80,11 @@ public class DebuggerBreakpointsStorageImpl implements IDebuggerBreakpointsStora
      */
     public DebuggerBreakpointsStorageImpl()
             throws ResolutionException {
-        chainFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
-        stepFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "step");
-        enabledFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "enabled");
-        idFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id");
-        argsFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "args");
+        chainFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
+        stepFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "step");
+        enabledFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "enabled");
+        idFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id");
+        argsFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "args");
     }
 
     @Override
@@ -93,10 +93,10 @@ public class DebuggerBreakpointsStorageImpl implements IDebuggerBreakpointsStora
             int stepId = ((Number) desc.getValue(stepFN)).intValue();
             Object chainName = (String) desc.getValue(chainFN);
             Object chainId = IOC.resolve(
-                    Keys.getKeyByName("chain_id_from_map_name"),
+                    Keys.getOrAdd("chain_id_from_map_name"),
                     chainName
             );
-            IChainStorage chainStorage = IOC.resolve(Keys.getKeyByName(IChainStorage.class.getCanonicalName()));
+            IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
             IReceiverChain chain = chainStorage.resolve(chainId);
 
             IObject stepArgs = chain.getArguments(stepId);

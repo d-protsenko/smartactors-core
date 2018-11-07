@@ -25,11 +25,11 @@ import java.util.Map;
  */
 public class HttpClientInitializer {
     public static void init() throws InvalidArgumentException, ResolutionException, RegistrationException {
-        IFieldName uuidFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uuid");
-        IFieldName timeFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "timeout");
+        IFieldName uuidFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uuid");
+        IFieldName timeFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "timeout");
 
         Map<Object, ITimerTask> timerTasks = new HashMap<>();
-        IOC.register(Keys.getKeyByName("createTimerOnRequest"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.getOrAdd("createTimerOnRequest"), new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             ITimer timer =
                                     null;
@@ -47,7 +47,7 @@ public class HttpClientInitializer {
                                         throw new RuntimeException(e);
                                     }
                                 };
-                                timer = IOC.resolve(Keys.getKeyByName("timer"));
+                                timer = IOC.resolve(Keys.getOrAdd("timer"));
                                 ITimerTask timerTask =
                                         timer.schedule(task,
                                                 System.currentTimeMillis() + Long.valueOf(
@@ -65,7 +65,7 @@ public class HttpClientInitializer {
                 )
         );
 
-        IOC.register(Keys.getKeyByName("cancelTimerOnRequest"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.getOrAdd("cancelTimerOnRequest"), new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             Object uuid = args[0];
                             ITimerTask timerTask = timerTasks.get(uuid);

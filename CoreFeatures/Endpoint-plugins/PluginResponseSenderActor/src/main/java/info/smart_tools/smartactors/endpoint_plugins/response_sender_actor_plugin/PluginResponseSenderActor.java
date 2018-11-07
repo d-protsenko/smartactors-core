@@ -41,7 +41,7 @@ public class PluginResponseSenderActor implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.getKeyByName("ResponseSenderActor"),
+                                    Keys.getOrAdd("ResponseSenderActor"),
                                     // Response sender prints deprecation message on creation so create it every time it is resolved.
                                     new ApplyFunctionToArgumentsStrategy(a -> new ResponseSenderActor()));
                         } catch (ResolutionException e) {
@@ -57,7 +57,7 @@ public class PluginResponseSenderActor implements IPlugin {
                         String keyName = "ResponseSenderActor";
 
                         try {
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

@@ -34,10 +34,10 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
     @After({"IOC", "IFieldNamePlugin"})
     public void registerMapStrategies()
             throws RegistrationException, ResolutionException, InvalidArgumentException {
-        IOC.register(Keys.getKeyByName("wrapper creator receiver decorator non thread safe map"),
+        IOC.register(Keys.getOrAdd("wrapper creator receiver decorator non thread safe map"),
                 new ApplyFunctionToArgumentsStrategy(args -> new WeakHashMap()));
 
-        IOC.register(Keys.getKeyByName("wrapper creator receiver decorator thread safe map"),
+        IOC.register(Keys.getOrAdd("wrapper creator receiver decorator thread safe map"),
                 // TODO:: Use some concurrent map with weak keys; ConcurrentHashMap will cause memory leak when chain containing non-actor \
                 // receiver with wrapper configuration is deleted
                 new ApplyFunctionToArgumentsStrategy(args -> new ConcurrentHashMap()));
@@ -46,13 +46,13 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
     @ItemRevert("wrapper_creator_receiver_decorator_map_strategies")
     public void unregisterMapStrategies() {
         try {
-            IOC.remove(Keys.getKeyByName("wrapper creator receiver decorator non thread safe map"));
+            IOC.remove(Keys.getOrAdd("wrapper creator receiver decorator non thread safe map"));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \"wrapper creator receiver decorator non thread safe map\" has failed while reverting \"wrapper_creator_receiver_decorator_map_strategies\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
-            IOC.remove(Keys.getKeyByName("wrapper creator receiver decorator thread safe map"));
+            IOC.remove(Keys.getOrAdd("wrapper creator receiver decorator thread safe map"));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \"wrapper creator receiver decorator thread safe map\" has failed while reverting \"wrapper_creator_receiver_decorator_map_strategies\" plugin.");
         } catch (ResolutionException e) { }
@@ -65,17 +65,17 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
     public void registerWrapperCreationStrategies()
             throws RegistrationException, ResolutionException, InvalidArgumentException {
         IOC.register(
-                Keys.getKeyByName("thread safe environment wrapper creation strategy"),
+                Keys.getOrAdd("thread safe environment wrapper creation strategy"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     try {
                         IObject config = (IObject) args[0];
 
-                        Object conf = IOC.resolve(Keys.getKeyByName("thread safe wrapper configuration"), config);
+                        Object conf = IOC.resolve(Keys.getOrAdd("thread safe wrapper configuration"), config);
 
                         return new ApplyFunctionToArgumentsStrategy(args2 -> {
                             try {
                                 IObjectWrapper wrapper = IOC.resolve(
-                                        Keys.getKeyByName("info.smart_tools.smartactors.iobject_extension.wds_object.WDSObject"),
+                                        Keys.getOrAdd("info.smart_tools.smartactors.iobject_extension.wds_object.WDSObject"),
                                         conf
                                 );
 
@@ -93,15 +93,15 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
         );
 
         IOC.register(
-                Keys.getKeyByName("non thread safe environment wrapper creation strategy"),
+                Keys.getOrAdd("non thread safe environment wrapper creation strategy"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     try {
                         IObject config = (IObject) args[0];
 
-                        Object conf = IOC.resolve(Keys.getKeyByName("non thread safe wrapper configuration"), config);
+                        Object conf = IOC.resolve(Keys.getOrAdd("non thread safe wrapper configuration"), config);
 
                         IObjectWrapper wrapper = IOC.resolve(
-                                Keys.getKeyByName("info.smart_tools.smartactors.iobject_extension.wds_object.WDSObject"),
+                                Keys.getOrAdd("info.smart_tools.smartactors.iobject_extension.wds_object.WDSObject"),
                                 conf
                         );
 
@@ -123,14 +123,14 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
 
         keyName = "thread safe environment wrapper creation strategy";
         try {
-            IOC.remove(Keys.getKeyByName(keyName));
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         keyName = "non thread safe environment wrapper creation strategy";
         try {
-            IOC.remove(Keys.getKeyByName(keyName));
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
@@ -144,14 +144,14 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
     public void registerDecoratorCreationStrategy()
             throws RegistrationException, ResolutionException, InvalidArgumentException {
         IOC.register(
-                Keys.getKeyByName("thread safe wrapper creator receiver decorator"),
+                Keys.getOrAdd("thread safe wrapper creator receiver decorator"),
                 wrapperCreatorDecoratorStrategy(
                         "wrapper creator receiver decorator thread safe map",
                         "thread safe environment wrapper creation strategy"
                 ));
 
         IOC.register(
-                Keys.getKeyByName("non thread safe wrapper creator receiver decorator"),
+                Keys.getOrAdd("non thread safe wrapper creator receiver decorator"),
                 wrapperCreatorDecoratorStrategy(
                         "wrapper creator receiver decorator non thread safe map",
                         "non thread safe environment wrapper creation strategy"
@@ -165,14 +165,14 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
 
         keyName = "thread safe wrapper creator receiver decorator";
         try {
-            IOC.remove(Keys.getKeyByName(keyName));
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         keyName = "non thread safe wrapper creator receiver decorator";
         try {
-            IOC.remove(Keys.getKeyByName(keyName));
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
@@ -185,7 +185,7 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
             try {
                 IMessageReceiver underlying = (IMessageReceiver) args[0];
 
-                Map<Object, IResolveDependencyStrategy> strategyMap = IOC.resolve(Keys.getKeyByName(mapDependency));
+                Map<Object, IResolveDependencyStrategy> strategyMap = IOC.resolve(Keys.getOrAdd(mapDependency));
 
                 return new WrapperCreatorReceiverDecorator(underlying, strategyMap, wrapperStrategyDependency);
             } catch (ClassCastException | ResolutionException e) {

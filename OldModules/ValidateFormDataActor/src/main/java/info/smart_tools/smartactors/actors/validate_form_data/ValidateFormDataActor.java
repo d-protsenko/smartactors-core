@@ -29,8 +29,8 @@ public class ValidateFormDataActor {
      */
     public ValidateFormDataActor(final IObject params) throws InvalidArgumentException {
         try {
-            validationRulesF = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "validationRules");
-            ruleF = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "rule");
+            validationRulesF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "validationRules");
+            ruleF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "rule");
 
         } catch (Exception e) {
             throw new InvalidArgumentException(e);
@@ -47,7 +47,7 @@ public class ValidateFormDataActor {
             IObject formFields = message.getForm();
             IObject clientData = message.getFormFromRequest();
 
-            IObject resultObject = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject resultObject = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             Iterator<Map.Entry<IFieldName, Object>> fieldsIterator = formFields.iterator();
             Map.Entry<IFieldName, Object> entry = fieldsIterator.next();

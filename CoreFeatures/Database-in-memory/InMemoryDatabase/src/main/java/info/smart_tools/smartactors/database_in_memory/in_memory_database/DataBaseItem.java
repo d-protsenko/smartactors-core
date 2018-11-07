@@ -20,7 +20,7 @@ public class DataBaseItem {
             throws ResolutionException, ReadValueException, InvalidArgumentException {
         this.document = document;
         this.collectionName = collectionName;
-        idFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), collectionName + "ID");
+        idFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), collectionName + "ID");
         this.id = document.getValue(idFieldName);
     }
 

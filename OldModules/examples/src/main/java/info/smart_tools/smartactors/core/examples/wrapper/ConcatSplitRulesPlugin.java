@@ -56,7 +56,7 @@ public class ConcatSplitRulesPlugin implements IPlugin {
 
     private void registerConcatRule() throws ResolutionException, RegistrationException {
         //call IOC.resolve for put "concat_strategy" into cache of ResolveByNameDependency strategy
-        IKey key = Keys.getKeyByName(IResolveDependencyStrategy.class.getCanonicalName());
+        IKey key = Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName());
         String name = "concat_strategy";
         IResolveDependencyStrategy strategy = new IResolveDependencyStrategy() {
             @Override
@@ -70,7 +70,7 @@ public class ConcatSplitRulesPlugin implements IPlugin {
 
     private void registerSplitRule() throws ResolutionException, RegistrationException {
         //call IOC.resolve for put "concat_strategy" into cache of ResolveByNameDependency strategy
-        IKey key = Keys.getKeyByName(IResolveDependencyStrategy.class.getCanonicalName());
+        IKey key = Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName());
         String name = "split_strategy";
         IResolveDependencyStrategy strategy = new IResolveDependencyStrategy() {
             @Override

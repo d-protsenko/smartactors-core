@@ -64,12 +64,12 @@ public class PasswordEncoderPluginTest {
     public void ShouldCorrectLoadPluginAndResolveHex() throws Exception {
 
         IKey hexEncoderKey = mock(IKey.class);
-        when(Keys.getKeyByName("HexEncoder")).thenReturn(hexEncoderKey);
+        when(Keys.getOrAdd("HexEncoder")).thenReturn(hexEncoderKey);
 
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getKeyByName("HexEncoder");
+        Keys.getOrAdd("HexEncoder");
 
         ArgumentCaptor<ApplyFunctionToArgumentsStrategy> argumentCaptor = ArgumentCaptor.forClass(ApplyFunctionToArgumentsStrategy.class);
 
@@ -86,12 +86,12 @@ public class PasswordEncoderPluginTest {
     public void ShouldCorrectLoadPluginAndResolveBase64() throws Exception {
 
         IKey base64EncoderKey = mock(IKey.class);
-        when(Keys.getKeyByName("Base64Encoder")).thenReturn(base64EncoderKey);
+        when(Keys.getOrAdd("Base64Encoder")).thenReturn(base64EncoderKey);
 
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getKeyByName("Base64Encoder");
+        Keys.getOrAdd("Base64Encoder");
 
         ArgumentCaptor<ApplyFunctionToArgumentsStrategy> argumentCaptor = ArgumentCaptor.forClass(ApplyFunctionToArgumentsStrategy.class);
 
@@ -108,12 +108,12 @@ public class PasswordEncoderPluginTest {
     public void ShouldCorrectLoadPluginAndResolveCharset() throws Exception {
 
         IKey charsetKey = mock(IKey.class);
-        when(Keys.getKeyByName("CharSequenceCodec")).thenReturn(charsetKey);
+        when(Keys.getOrAdd("CharSequenceCodec")).thenReturn(charsetKey);
 
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getKeyByName("CharSequenceCodec");
+        Keys.getOrAdd("CharSequenceCodec");
 
         ArgumentCaptor<ApplyFunctionToArgumentsStrategy> argumentCaptor = ArgumentCaptor.forClass(ApplyFunctionToArgumentsStrategy.class);
 
@@ -131,12 +131,12 @@ public class PasswordEncoderPluginTest {
     public void ShouldCorrectLoadPluginAndResolvePasswordEncoder() throws Exception {
 
         IKey passwordEncoderKey = mock(IKey.class);
-        when(Keys.getKeyByName("PasswordEncoder")).thenReturn(passwordEncoderKey);
+        when(Keys.getOrAdd("PasswordEncoder")).thenReturn(passwordEncoderKey);
 
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getKeyByName("PasswordEncoder");
+        Keys.getOrAdd("PasswordEncoder");
 
         ArgumentCaptor<ApplyFunctionToArgumentsStrategy> argumentCaptor = ArgumentCaptor.forClass(ApplyFunctionToArgumentsStrategy.class);
 
@@ -148,12 +148,12 @@ public class PasswordEncoderPluginTest {
         String charset = "UTF-8";
 
         IKey charsetKey = mock(IKey.class);
-        when(Keys.getKeyByName("CharSequenceCodec")).thenReturn(charsetKey);
+        when(Keys.getOrAdd("CharSequenceCodec")).thenReturn(charsetKey);
         ICharSequenceCodec charsetCodec = mock(ICharSequenceCodec.class);
         when(IOC.resolve(charsetKey, charset)).thenReturn(charsetCodec);
 
         IKey encoderKey = mock(IKey.class);
-        when(Keys.getKeyByName(encoder)).thenReturn(encoderKey);
+        when(Keys.getOrAdd(encoder)).thenReturn(encoderKey);
         ICodec codec = mock(ICodec.class);
         when(IOC.resolve(encoderKey)).thenReturn(codec);
 

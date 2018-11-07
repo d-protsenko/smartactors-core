@@ -35,7 +35,7 @@ public class PluginDebuggerSequence extends BootstrapPlugin {
     @Item("debugger:sequence")
     public void registerSequence()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getKeyByName("new debugger sequence"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.getOrAdd("new debugger sequence"), new ApplyFunctionToArgumentsStrategy(args -> {
             IMessageProcessingSequence innerSeq = (IMessageProcessingSequence) args[0];
             Object debuggerAddress = args[1];
 

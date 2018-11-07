@@ -154,7 +154,7 @@ public class ImmutableReceiverChainTest extends PluginsLoadingTestBase {
     public void Should_provideCollectionOfUniqueExceptionalChains()
             throws Exception {
         IReceiverChain exceptional1 = mock(IReceiverChain.class), exceptional2 = mock(IReceiverChain.class);
-        IFieldName chainFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
+        IFieldName chainFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
         IObject eobj1 = mock(IObject.class), eobj2 = mock(IObject.class), eobj3 = mock(IObject.class);
         when(eobj1.getValue(eq(chainFN))).thenReturn(exceptional1);
         when(eobj2.getValue(eq(chainFN))).thenReturn(exceptional2);

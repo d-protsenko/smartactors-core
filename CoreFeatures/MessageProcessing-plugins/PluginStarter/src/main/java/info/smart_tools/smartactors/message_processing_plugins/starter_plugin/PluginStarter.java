@@ -39,7 +39,7 @@ public class PluginStarter implements IPlugin {
                     .process(() -> {
 //                        try {
 //                            IConfigurationManager configurationManager = IOC.resolve(
-//                                    Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
+//                                    Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
 //
 //                            configurationManager.configure();
 //                        } catch (ResolutionException | InvalidStateException | ConfigurationProcessingException e) {

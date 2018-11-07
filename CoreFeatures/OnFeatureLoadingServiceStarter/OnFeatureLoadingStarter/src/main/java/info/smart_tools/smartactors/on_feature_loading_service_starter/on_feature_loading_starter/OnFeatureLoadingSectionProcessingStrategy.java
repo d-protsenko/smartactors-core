@@ -82,11 +82,11 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
             throws ConfigurationProcessingException {
         try {
             List<IObject> onFeatureLoadingConfig = (List<IObject>) config.getValue(this.sectionNameFieldName);
-            IQueue<ITask> queue = IOC.resolve(Keys.getKeyByName("task_queue"));
+            IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
 
             Integer stackDepth;
             try {
-                stackDepth = IOC.resolve(Keys.getKeyByName("default_stack_depth"));
+                stackDepth = IOC.resolve(Keys.getOrAdd("default_stack_depth"));
             } catch (ResolutionException e) {
                 stackDepth = 5;
             }
@@ -108,7 +108,7 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                                 queue,
                                 processingSequence
                         );
-                        messageProcessor.process(message, (IObject) IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
+                        messageProcessor.process(message, (IObject) IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
                     }
                 }
             }
@@ -123,11 +123,11 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
         ConfigurationProcessingException exception = new ConfigurationProcessingException("Error occurred reverting \"onFeatureLoading\" configuration section.");
         try {
             List<IObject> onFeatureLoadingConfig = (List<IObject>) config.getValue(this.sectionNameFieldName);
-            IQueue<ITask> queue = IOC.resolve(Keys.getKeyByName("task_queue"));
+            IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
 
             Integer stackDepth;
             try {
-                stackDepth = IOC.resolve(Keys.getKeyByName("default_stack_depth"));
+                stackDepth = IOC.resolve(Keys.getOrAdd("default_stack_depth"));
             } catch (ResolutionException e) {
                 stackDepth = 5;
             }
@@ -151,7 +151,7 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                                         queue,
                                         processingSequence
                                 );
-                                messageProcessor.process(message, (IObject) IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
+                                messageProcessor.process(message, (IObject) IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
                             } catch (InvalidArgumentException | ResolutionException | MessageProcessorProcessException | RuntimeException e) {
                                 exception.addSuppressed(e);
                             }

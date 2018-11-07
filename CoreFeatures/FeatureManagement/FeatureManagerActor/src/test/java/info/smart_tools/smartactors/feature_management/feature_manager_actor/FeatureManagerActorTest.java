@@ -89,7 +89,7 @@ public class FeatureManagerActorTest {
                         }
                 )
         );
-        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     if (args.length == 0) {
                         return new DSObject();
@@ -104,21 +104,21 @@ public class FeatureManagerActorTest {
                     }
                 }));
         IOC.register(
-                Keys.getKeyByName("task_queue"), new SingletonStrategy(this.queue)
+                Keys.getOrAdd("task_queue"), new SingletonStrategy(this.queue)
         );
         IOC.register(
-                Keys.getKeyByName("chain_id_from_map_name_and_message"), getChainIDByNameStrategy
+                Keys.getOrAdd("chain_id_from_map_name_and_message"), getChainIDByNameStrategy
         );
         IOC.register(
-                Keys.getKeyByName(IChainStorage.class.getCanonicalName()), new SingletonStrategy(this.storage)
+                Keys.getOrAdd(IChainStorage.class.getCanonicalName()), new SingletonStrategy(this.storage)
         );
         IOC.register(
-                Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), this.getSequence
+                Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), this.getSequence
         );
         IOC.register(
-                Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), this.getProcessor
+                Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), this.getProcessor
         );
-        IOC.register(Keys.getKeyByName(IQueue.class.getCanonicalName()), this.afterFeaturesCallbackStrategy);
+        IOC.register(Keys.getOrAdd(IQueue.class.getCanonicalName()), this.afterFeaturesCallbackStrategy);
     }
 
     @Test
@@ -152,9 +152,9 @@ public class FeatureManagerActorTest {
                 .thenReturn(features).thenReturn(features)
                 .thenReturn(features2).thenReturn(features2);
         when(wrapper.getMessageProcessor()).thenReturn(mp1).thenReturn(mp2).thenReturn(mp3);
-        IObject ctx1 = IOC.resolve(Keys.getKeyByName(IObject.class.getName()));
-        IObject ctx2 = IOC.resolve(Keys.getKeyByName(IObject.class.getName()));
-        IObject ctx3 = IOC.resolve(Keys.getKeyByName(IObject.class.getName()));
+        IObject ctx1 = IOC.resolve(Keys.getOrAdd(IObject.class.getName()));
+        IObject ctx2 = IOC.resolve(Keys.getOrAdd(IObject.class.getName()));
+        IObject ctx3 = IOC.resolve(Keys.getOrAdd(IObject.class.getName()));
         when(mp1.getContext()).thenReturn(ctx1);
         when(mp2.getContext()).thenReturn(ctx2);
         when(mp3.getContext()).thenReturn(ctx3);

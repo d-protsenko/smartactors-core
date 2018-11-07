@@ -62,7 +62,7 @@ public class WDSObjectField implements IField {
                 strategies.put(
                         name,
                         null == this.strategyExecutors.get(name) ?
-                                IOC.resolve(Keys.getKeyByName(IResolveDependencyStrategy.class.getCanonicalName()), name) :
+                                IOC.resolve(Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()), name) :
                                 null
                 );
             }
@@ -135,10 +135,10 @@ public class WDSObjectField implements IField {
         try {
             String[] separated = location.split(SPLITTER);
             if (separated.length == 1) {
-                return source.getValue(IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), separated[0]));
+                return source.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), separated[0]));
             }
             return getNestedIObject(source, separated).getValue(
-                    IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), separated[separated.length - 1])
+                    IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), separated[separated.length - 1])
             );
         } catch (Throwable e) {
             throw new ReadValueException("Could not read " + location + " from IObject", e);
@@ -149,11 +149,11 @@ public class WDSObjectField implements IField {
             throws Exception {
         try {
             IObject nestedObject = (IObject) source.getValue(
-                    IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), separatedPath[0])
+                    IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), separatedPath[0])
             );
             for (int i = 1; i < separatedPath.length - 1; ++i) {
                 nestedObject = (IObject) nestedObject.getValue(
-                        IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), separatedPath[i])
+                        IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), separatedPath[i])
                 );
             }
 
@@ -177,7 +177,7 @@ public class WDSObjectField implements IField {
                             String fieldName = split[split.length - 1];
                             String path = source.substring(0, source.lastIndexOf(SLASH));
                             ((IObject) getValueFromNestedIObject(o.getEnv(), path)).setValue(
-                                    IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), fieldName), value
+                                    IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), fieldName), value
                             );
 
                             return null;

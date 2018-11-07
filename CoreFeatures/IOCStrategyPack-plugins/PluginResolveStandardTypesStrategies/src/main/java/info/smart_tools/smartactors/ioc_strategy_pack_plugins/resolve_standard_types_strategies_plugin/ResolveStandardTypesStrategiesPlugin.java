@@ -77,8 +77,8 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             };
 
                             // to String strategies
-                            IKey stringKey = Keys.getKeyByName(String.class.getCanonicalName() + "convert");
-                            IKey expandableStrategyStringKey = Keys.getKeyByName("expandable_strategy#" + String.class.getCanonicalName());
+                            IKey stringKey = Keys.getOrAdd(String.class.getCanonicalName() + "convert");
+                            IKey expandableStrategyStringKey = Keys.getOrAdd("expandable_strategy#" + String.class.getCanonicalName());
                             IResolveDependencyStrategy stringStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
                             ((IAdditionDependencyStrategy)stringStrategy).register(
                                     String.class,
@@ -124,8 +124,8 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             IOC.register(expandableStrategyStringKey, new SingletonStrategy(stringStrategy));
 
                             // to Character strategies
-                            IKey characterKey = Keys.getKeyByName(Character.class.getCanonicalName() + "convert");
-                            IKey expandableStrategyCharacterKey = Keys.getKeyByName("expandable_strategy#" + Character.class.getCanonicalName());
+                            IKey characterKey = Keys.getOrAdd(Character.class.getCanonicalName() + "convert");
+                            IKey expandableStrategyCharacterKey = Keys.getOrAdd("expandable_strategy#" + Character.class.getCanonicalName());
                             IResolveDependencyStrategy characterStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
                             ((IAdditionDependencyStrategy) characterStrategy).register(
                                     Character.class,
@@ -139,8 +139,8 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             IOC.register(expandableStrategyCharacterKey, new SingletonStrategy(characterStrategy));
 
                             // to boolean strategies
-                            IKey booleanKey = Keys.getKeyByName(boolean.class.getCanonicalName() + "convert");
-                            IKey expandableStrategyBooleanKey = Keys.getKeyByName("expandable_strategy#" + boolean.class.getCanonicalName());
+                            IKey booleanKey = Keys.getOrAdd(boolean.class.getCanonicalName() + "convert");
+                            IKey expandableStrategyBooleanKey = Keys.getOrAdd("expandable_strategy#" + boolean.class.getCanonicalName());
                             IResolveDependencyStrategy booleanStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
                             ((IAdditionDependencyStrategy) booleanStrategy).register(
                                     boolean.class,
@@ -154,8 +154,8 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             IOC.register(expandableStrategyBooleanKey, new SingletonStrategy(booleanStrategy));
 
                             // to Integer strategies
-                            IKey integerKey = Keys.getKeyByName(Integer.class.getCanonicalName() + "convert");
-                            IKey expandableStrategyIntegerKey = Keys.getKeyByName("expandable_strategy#" + Integer.class.getCanonicalName());
+                            IKey integerKey = Keys.getOrAdd(Integer.class.getCanonicalName() + "convert");
+                            IKey expandableStrategyIntegerKey = Keys.getOrAdd("expandable_strategy#" + Integer.class.getCanonicalName());
                             IResolveDependencyStrategy integerStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
                             ((IAdditionDependencyStrategy) integerStrategy).register(
                                     Integer.class,
@@ -173,8 +173,8 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             IOC.register(expandableStrategyIntegerKey, new SingletonStrategy(integerStrategy));
 
                             // to BigDecimal strategies
-                            IKey bigDecimalKey = Keys.getKeyByName(BigDecimal.class.getCanonicalName() + "convert");
-                            IKey expandableStrategyBigDecimalKey = Keys.getKeyByName("expandable_strategy#" + BigDecimal.class.getCanonicalName());
+                            IKey bigDecimalKey = Keys.getOrAdd(BigDecimal.class.getCanonicalName() + "convert");
+                            IKey expandableStrategyBigDecimalKey = Keys.getOrAdd("expandable_strategy#" + BigDecimal.class.getCanonicalName());
                             IResolveDependencyStrategy bigDecimalStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
                             ((IAdditionDependencyStrategy) bigDecimalStrategy).register(
                                     BigDecimal.class,
@@ -200,8 +200,8 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             IOC.register(expandableStrategyBigDecimalKey, new SingletonStrategy(bigDecimalStrategy));
 
                             // to LocalDateTime strategies
-                            IKey localDateTimeKey = Keys.getKeyByName(LocalDateTime.class.getCanonicalName() + "convert");
-                            IKey expandableStrategyLocalDateTimeKey = Keys.getKeyByName("expandable_strategy#" + LocalDateTime.class.getCanonicalName());
+                            IKey localDateTimeKey = Keys.getOrAdd(LocalDateTime.class.getCanonicalName() + "convert");
+                            IKey expandableStrategyLocalDateTimeKey = Keys.getOrAdd("expandable_strategy#" + LocalDateTime.class.getCanonicalName());
                             IResolveDependencyStrategy localDateTimeStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
                             ((IAdditionDependencyStrategy) localDateTimeStrategy).register(
                                     LocalDateTime.class,
@@ -215,8 +215,8 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             IOC.register(expandableStrategyLocalDateTimeKey, new SingletonStrategy(localDateTimeStrategy));
 
                             // to list strategies
-                            IKey listKey = Keys.getKeyByName(List.class.getCanonicalName() + "convert");
-                            IKey expandableStrategyListKey = Keys.getKeyByName("expandable_strategy#" + List.class.getCanonicalName());
+                            IKey listKey = Keys.getOrAdd(List.class.getCanonicalName() + "convert");
+                            IKey expandableStrategyListKey = Keys.getOrAdd("expandable_strategy#" + List.class.getCanonicalName());
                             IResolveDependencyStrategy listStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
                             ((IAdditionDependencyStrategy) listStrategy).register(boolean[].class, new BooleanArrayToListResolveDependencyStrategy());
                             ((IAdditionDependencyStrategy) listStrategy).register(byte[].class, new ByteArrayToListResolveDependencyStrategy());
@@ -231,8 +231,8 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             IOC.register(expandableStrategyListKey, new SingletonStrategy(listStrategy));
 
                             //to int strategies
-                            IKey intKey = Keys.getKeyByName(int.class.getCanonicalName() + "convert");
-                            IKey expandableStrategyIntKey = Keys.getKeyByName("expandable_strategy#" + int.class.getCanonicalName());
+                            IKey intKey = Keys.getOrAdd(int.class.getCanonicalName() + "convert");
+                            IKey expandableStrategyIntKey = Keys.getOrAdd("expandable_strategy#" + int.class.getCanonicalName());
                             IResolveDependencyStrategy intStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
                             ((IAdditionDependencyStrategy) intStrategy).register(
                                     String.class,
@@ -256,112 +256,112 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
 
                         try {
                             keyName = "expandable_strategy#" + int.class.getCanonicalName();
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = int.class.getCanonicalName() + "convert";
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "expandable_strategy#" + List.class.getCanonicalName();
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = List.class.getCanonicalName() + "convert";
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "expandable_strategy#" + LocalDateTime.class.getCanonicalName();
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = LocalDateTime.class.getCanonicalName() + "convert";
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "expandable_strategy#" + BigDecimal.class.getCanonicalName();
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = BigDecimal.class.getCanonicalName() + "convert";
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "expandable_strategy#" + Integer.class.getCanonicalName();
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = Integer.class.getCanonicalName() + "convert";
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "expandable_strategy#" + boolean.class.getCanonicalName();
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = boolean.class.getCanonicalName() + "convert";
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "expandable_strategy#" + Character.class.getCanonicalName();
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = Character.class.getCanonicalName() + "convert";
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "expandable_strategy#" + String.class.getCanonicalName();
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = String.class.getCanonicalName() + "convert";
-                            IOC.remove(Keys.getKeyByName(keyName));
+                            IOC.remove(Keys.getOrAdd(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

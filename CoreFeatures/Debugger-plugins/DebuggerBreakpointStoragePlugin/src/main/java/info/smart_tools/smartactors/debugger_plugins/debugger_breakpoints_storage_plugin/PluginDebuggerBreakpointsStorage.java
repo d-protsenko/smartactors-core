@@ -35,7 +35,7 @@ public class PluginDebuggerBreakpointsStorage extends BootstrapPlugin {
     @Item("debugger:breakpoint_storage")
     public void registerBreakppointStorage()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getKeyByName(IDebuggerBreakpointsStorage.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.getOrAdd(IDebuggerBreakpointsStorage.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
                 return new DebuggerBreakpointsStorageImpl();
             } catch (ResolutionException e) {

@@ -34,7 +34,7 @@ public class SingleChainRecoverStrategyTest extends PluginsLoadingTestBase {
 
     @Override
     protected void registerMocks() throws Exception {
-        IOC.register(Keys.getKeyByName("chain_id_from_map_name_and_message"), new IResolveDependencyStrategy() {
+        IOC.register(Keys.getOrAdd("chain_id_from_map_name_and_message"), new IResolveDependencyStrategy() {
             @Override
             public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
                 return (T) args[0].toString().concat("__0");
@@ -47,8 +47,8 @@ public class SingleChainRecoverStrategyTest extends PluginsLoadingTestBase {
             throws Exception {
         IRecoveryChainChoiceStrategy strategy = new SingleChainRecoverStrategy();
 
-        IObject state = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
-        IObject args = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject state = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'chain':'theChain'}".replace('\'','"'));
 
         strategy.init(state, args);
@@ -63,8 +63,8 @@ public class SingleChainRecoverStrategyTest extends PluginsLoadingTestBase {
             throws Exception {
         IRecoveryChainChoiceStrategy strategy = new SingleChainRecoverStrategy();
 
-        IObject state = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
-        IObject args = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject state = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
         strategy.init(state, args);
     }

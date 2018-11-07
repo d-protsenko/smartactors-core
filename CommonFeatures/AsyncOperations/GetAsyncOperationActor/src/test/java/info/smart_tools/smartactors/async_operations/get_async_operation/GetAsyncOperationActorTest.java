@@ -42,7 +42,7 @@ public class GetAsyncOperationActorTest {
         String databaseOptionsKey = "key";
         Object databaseOptions = mock(Object.class);
 
-        when(Keys.getKeyByName(IAsyncOperationCollection.class.getCanonicalName())).thenReturn(collectionKey);
+        when(Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName())).thenReturn(collectionKey);
         when(IOC.resolve(eq(collectionKey), any(), any())).thenReturn(collection);
 
         IField collectionNameField = Mockito.mock(IField.class);
@@ -52,11 +52,11 @@ public class GetAsyncOperationActorTest {
         when(IOC.resolve(collectionNameFieldKey, "collectionName")).thenReturn(collectionNameField);
         when(IOC.resolve(collectionNameFieldKey, "databaseOptions")).thenReturn(databaseOptionsF);
 
-        when(Keys.getKeyByName(IField.class.getCanonicalName())).thenReturn(collectionNameFieldKey);
+        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(collectionNameFieldKey);
         when(IOC.resolve(collectionNameFieldKey, "collectionName")).thenReturn(collectionNameField);
 
         when(databaseOptionsF.in(any())).thenReturn(databaseOptionsKey);
-        when(IOC.resolve(Keys.getKeyByName(databaseOptionsKey))).thenReturn(databaseOptions);
+        when(IOC.resolve(Keys.getOrAdd(databaseOptionsKey))).thenReturn(databaseOptions);
 
         message = mock(GetAsyncOperationMessage.class);
         actor = new GetAsyncOperationActor(mock(IObject.class));

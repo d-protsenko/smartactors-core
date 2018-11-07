@@ -87,12 +87,12 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
                 .thenThrow(ResolveDependencyStrategyException.class);
         when(actionStrategy.resolve()).thenReturn(activationAction);
 
-        IOC.register(Keys.getKeyByName("the connection options dependency"), new SingletonStrategy(connectionOptions));
-        IOC.register(Keys.getKeyByName("the connection pool dependency"), poolStrategy);
-        IOC.register(Keys.getKeyByName("new scheduler service"), serviceStrategy);
-        IOC.register(Keys.getKeyByName("scheduler service activation action for scheduler actor"), actionStrategy);
+        IOC.register(Keys.getOrAdd("the connection options dependency"), new SingletonStrategy(connectionOptions));
+        IOC.register(Keys.getOrAdd("the connection pool dependency"), poolStrategy);
+        IOC.register(Keys.getOrAdd("new scheduler service"), serviceStrategy);
+        IOC.register(Keys.getOrAdd("scheduler service activation action for scheduler actor"), actionStrategy);
 
-        args = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'connectionOptionsDependency':'the connection options dependency'," +
                         "'connectionPoolDependency':'the connection pool dependency'," +
@@ -119,16 +119,16 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
 
         newEntryStrategy = mock(IResolveDependencyStrategy.class);
         when(newEntryStrategy.resolve(any(), any())).thenReturn(entryMock);
-        IOC.register(Keys.getKeyByName("new scheduler entry"), newEntryStrategy);
+        IOC.register(Keys.getOrAdd("new scheduler entry"), newEntryStrategy);
 
         taskQueueMock = mock(IQueue.class);
-        IOC.register(Keys.getKeyByName("task_queue"), new SingletonStrategy(taskQueueMock));
+        IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(taskQueueMock));
 
         upCounterMock = mock(IUpCounter.class);
-        IOC.register(Keys.getKeyByName("root upcounter"), new SingletonStrategy(upCounterMock));
+        IOC.register(Keys.getOrAdd("root upcounter"), new SingletonStrategy(upCounterMock));
 
         preShutdownModeEntryFilterMock = mock(ISchedulerEntryFilter.class);
-        IOC.register(Keys.getKeyByName("pre shutdown mode entry filter"), new SingletonStrategy(preShutdownModeEntryFilterMock));
+        IOC.register(Keys.getOrAdd("pre shutdown mode entry filter"), new SingletonStrategy(preShutdownModeEntryFilterMock));
     }
 
     @Test

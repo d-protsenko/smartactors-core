@@ -33,7 +33,7 @@ public class GetFirstNotNullRulePlugin implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.resolve(
-                                    Keys.getKeyByName(IResolveDependencyStrategy.class.getCanonicalName()),
+                                    Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
                                     "getFirstNotNullRule",
                                     new GetFirstNotNullRule()
                             );

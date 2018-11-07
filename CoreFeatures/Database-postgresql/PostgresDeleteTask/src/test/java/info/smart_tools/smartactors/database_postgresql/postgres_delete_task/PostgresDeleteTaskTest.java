@@ -90,7 +90,7 @@ public class PostgresDeleteTaskTest {
         idFieldName = new FieldName("testID");
 
         IOC.register(
-                Keys.getKeyByName(DeleteMessage.class.getCanonicalName()),
+                Keys.getOrAdd(DeleteMessage.class.getCanonicalName()),
                 new SingletonStrategy(message)
         );
     }

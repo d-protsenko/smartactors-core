@@ -43,8 +43,8 @@ public class DeleteFromCachedCollectionTaskTest {
         documentField = mock(IField.class);
         IKey keyField = mock(IKey.class);
         IKey nestedKeyField = mock(IKey.class);
-        when(Keys.getKeyByName(IField.class.getCanonicalName())).thenReturn(keyField);
-        when(Keys.getKeyByName(NestedField.class.getCanonicalName())).thenReturn(nestedKeyField);
+        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(keyField);
+        when(Keys.getOrAdd(NestedField.class.getCanonicalName())).thenReturn(nestedKeyField);
         when(IOC.resolve(nestedKeyField, "document/isActive")).thenReturn(isActiveField);
         when(IOC.resolve(keyField, "document")).thenReturn(documentField);
         when(IOC.resolve(keyField, "collectionName")).thenReturn(collectionNameField);
@@ -65,7 +65,7 @@ public class DeleteFromCachedCollectionTaskTest {
         verify(isActiveField).out(query, false);
         verifyStatic();
         IOC.resolve(
-            Keys.getKeyByName("db.collection.upsert"),
+            Keys.getOrAdd("db.collection.upsert"),
             connection,
             "collectionName",
             doc

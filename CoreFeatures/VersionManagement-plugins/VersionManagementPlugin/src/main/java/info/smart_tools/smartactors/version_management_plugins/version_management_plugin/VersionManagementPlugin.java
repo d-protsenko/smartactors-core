@@ -40,9 +40,9 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
 
         ChainIdFromMapNameStrategy strategy = new ChainIdFromMapNameStrategy();
 
-        IOC.register(Keys.getKeyByName("chain_id_from_map_name_and_message"), strategy.getResolveByMessageStrategy());
-        IOC.register(Keys.getKeyByName("chain_id_from_map_name"), strategy.getResolveByModuleDependenciesStrategy());
-        IOC.register(Keys.getKeyByName("register_message_version_strategy"), strategy.getRegisterMessageVersionStrategy());
+        IOC.register(Keys.getOrAdd("chain_id_from_map_name_and_message"), strategy.getResolveByMessageStrategy());
+        IOC.register(Keys.getOrAdd("chain_id_from_map_name"), strategy.getResolveByModuleDependenciesStrategy());
+        IOC.register(Keys.getOrAdd("register_message_version_strategy"), strategy.getRegisterMessageVersionStrategy());
     }
 
     @Item("versioned_router")
@@ -52,15 +52,15 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
             throws ResolutionException, RegistrationException, InvalidArgumentException {
 
         // alternative 1: realization using decorator pattern
-        IRouter router = IOC.resolve(Keys.getKeyByName(IRouter.class.getCanonicalName()));
+        IRouter router = IOC.resolve(Keys.getOrAdd(IRouter.class.getCanonicalName()));
         IOC.register(
-                Keys.getKeyByName(IRouter.class.getCanonicalName()),
+                Keys.getOrAdd(IRouter.class.getCanonicalName()),
                 new SingletonStrategy(new VersionedRouterDecorator(new ConcurrentHashMap<>(), router))
         );
         /*
         // alternative 2: more fast realization
         IOC.register(
-                Keys.getKeyByName(IRouter.class.getCanonicalName()),
+                Keys.getOrAdd(IRouter.class.getCanonicalName()),
                 new SingletonStrategy(new VersionedMapRouter(new ConcurrentHashMap<>()))
         );
         */
@@ -108,21 +108,21 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
 
         keyName = "register_message_version_strategy";
         try {
-            IOC.remove(Keys.getKeyByName(keyName));
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         keyName = "chain_id_from_map_name";
         try {
-            IOC.remove(Keys.getKeyByName(keyName));
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         keyName = "chain_id_from_map_name_and_message";
         try {
-            IOC.remove(Keys.getKeyByName(keyName));
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
@@ -138,7 +138,7 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
 
         keyName = IRouter.class.getCanonicalName();
         try {
-            IOC.remove(Keys.getKeyByName(keyName));
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }

@@ -41,13 +41,13 @@ public class PluginWDSObject extends BootstrapPlugin {
     public void registerFieldSetDependencies()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
-                Keys.getKeyByName("WDSObject field set thread safe map"),
+                Keys.getOrAdd("WDSObject field set thread safe map"),
                 // TODO:: Use some lock-free hash map
                 new ApplyFunctionToArgumentsStrategy(args -> new ConcurrentSkipListMap())
         );
 
         IOC.register(
-                Keys.getKeyByName("WDSObject field set non thread safe map"),
+                Keys.getOrAdd("WDSObject field set non thread safe map"),
                 new ApplyFunctionToArgumentsStrategy(args -> new HashMap())
         );
     }
@@ -59,14 +59,14 @@ public class PluginWDSObject extends BootstrapPlugin {
 
         keyName = "WDSObject field set thread safe map";
         try {
-            IOC.remove(Keys.getKeyByName(keyName));
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         keyName = "WDSObject field set non thread safe map";
         try {
-            IOC.remove(Keys.getKeyByName(keyName));
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
@@ -76,7 +76,7 @@ public class PluginWDSObject extends BootstrapPlugin {
     public void registerRulesStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
-                Keys.getKeyByName(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> a[1]
                 )
@@ -90,7 +90,7 @@ public class PluginWDSObject extends BootstrapPlugin {
 
         try {
             keyName = IResolveDependencyStrategy.class.getCanonicalName();
-            IOC.remove(Keys.getKeyByName(keyName));
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
@@ -103,11 +103,11 @@ public class PluginWDSObject extends BootstrapPlugin {
     public void registerFieldSetCreationStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
-                Keys.getKeyByName("thread safe wrapper configuration"),
+                Keys.getOrAdd("thread safe wrapper configuration"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     try {
-                        Map<IFieldName, IField> inMap = IOC.resolve(Keys.getKeyByName("WDSObject field set thread safe map"));
-                        Map<IFieldName, IField[]> outMap = IOC.resolve(Keys.getKeyByName("WDSObject field set thread safe map"));
+                        Map<IFieldName, IField> inMap = IOC.resolve(Keys.getOrAdd("WDSObject field set thread safe map"));
+                        Map<IFieldName, IField[]> outMap = IOC.resolve(Keys.getOrAdd("WDSObject field set thread safe map"));
                         return new WDSObjectFieldSet((IObject) args[0], inMap, outMap);
                     } catch (Exception e) {
                         throw new FunctionExecutionException(e);
@@ -116,11 +116,11 @@ public class PluginWDSObject extends BootstrapPlugin {
         );
 
         IOC.register(
-                Keys.getKeyByName("non thread safe wrapper configuration"),
+                Keys.getOrAdd("non thread safe wrapper configuration"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     try {
-                        Map<IFieldName, IField> inMap = IOC.resolve(Keys.getKeyByName("WDSObject field set non thread safe map"));
-                        Map<IFieldName, IField[]> outMap = IOC.resolve(Keys.getKeyByName("WDSObject field set non thread safe map"));
+                        Map<IFieldName, IField> inMap = IOC.resolve(Keys.getOrAdd("WDSObject field set non thread safe map"));
+                        Map<IFieldName, IField[]> outMap = IOC.resolve(Keys.getOrAdd("WDSObject field set non thread safe map"));
                         return new WDSObjectFieldSet((IObject) args[0], inMap, outMap);
                     } catch (Exception e) {
                         throw new FunctionExecutionException(e);
@@ -136,14 +136,14 @@ public class PluginWDSObject extends BootstrapPlugin {
 
         keyName = "thread safe wrapper configuration";
         try {
-            IOC.remove(Keys.getKeyByName(keyName));
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         keyName = "non thread safe wrapper configuration";
         try {
-            IOC.remove(Keys.getKeyByName(keyName));
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
@@ -158,7 +158,7 @@ public class PluginWDSObject extends BootstrapPlugin {
     public void registerWDSObjectCreationStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
-                Keys.getKeyByName(WDSObject.class.getCanonicalName()),
+                Keys.getOrAdd(WDSObject.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     try {
                         if (args[0] instanceof IObject) {
@@ -183,14 +183,14 @@ public class PluginWDSObject extends BootstrapPlugin {
 
         try {
             keyName = WDSObject.class.getCanonicalName();
-            IOC.remove(Keys.getKeyByName(keyName));
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         keyName = "non thread safe wrapper configuration";
         try {
-            IOC.remove(Keys.getKeyByName(keyName));
+            IOC.remove(Keys.getOrAdd(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }

@@ -39,7 +39,7 @@ public class ValidateFormDataActorTest {
         mockStatic(Keys.class);
 
         IKey fieldKey = mock(IKey.class);
-        when(Keys.getKeyByName(IField.class.getCanonicalName())).thenReturn(fieldKey);
+        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(fieldKey);
         when(IOC.resolve(eq(fieldKey), any())).thenReturn(rulesF);
 
         actor = new ValidateFormDataActor(mock(IObject.class));
@@ -75,7 +75,7 @@ public class ValidateFormDataActorTest {
 
         IObject resultObject = mock(IObject.class);
         IKey iobjectKey = mock(IKey.class);
-        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(iobjectKey);
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(iobjectKey);
         when(IOC.resolve(iobjectKey)).thenReturn(resultObject);
 
         actor.validate(message);
@@ -108,7 +108,7 @@ public class ValidateFormDataActorTest {
 
         IObject resultObject = mock(IObject.class);
         IKey iobjectKey = mock(IKey.class);
-        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(iobjectKey);
+        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(iobjectKey);
         when(IOC.resolve(iobjectKey)).thenReturn(resultObject);
 
         actor.validate(message);

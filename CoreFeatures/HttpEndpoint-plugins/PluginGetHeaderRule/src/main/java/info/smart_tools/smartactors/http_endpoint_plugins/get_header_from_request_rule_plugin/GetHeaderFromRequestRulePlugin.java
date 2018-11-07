@@ -40,7 +40,7 @@ public class GetHeaderFromRequestRulePlugin implements IPlugin {
                         try {
                             //call IOC.resolve for put GetHeaderFromRequestRule into cache of ResolveByNameDependency strategy
                             IOC.resolve(
-                                Keys.getKeyByName(IResolveDependencyStrategy.class.getCanonicalName()),
+                                Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
                                 "getHeaderFromRequestRule",
                                 new GetHeaderFromRequestRule()
                             );

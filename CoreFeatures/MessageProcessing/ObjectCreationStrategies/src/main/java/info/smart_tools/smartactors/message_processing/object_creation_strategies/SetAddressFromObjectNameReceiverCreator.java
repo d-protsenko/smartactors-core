@@ -36,7 +36,7 @@ public class SetAddressFromObjectNameReceiverCreator extends BasicIntermediateRe
             throws ResolutionException {
         super(underlyingObjectCreator, filterConfig, objectConfig);
 
-        objectNameFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+        objectNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
     }
 
 

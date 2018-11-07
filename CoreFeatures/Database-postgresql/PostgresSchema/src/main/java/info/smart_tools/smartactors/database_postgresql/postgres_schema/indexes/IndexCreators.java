@@ -62,7 +62,7 @@ public class IndexCreators {
 
     private static void writeCreateIndex(final String indexType, final Writer body, final CollectionName collection, IObject options)
             throws Exception {
-        IKey fieldNameKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey fieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         Object indexFields = null;
         try {
             IFieldName indexDefinitionField = IOC.resolve(fieldNameKey, indexType);

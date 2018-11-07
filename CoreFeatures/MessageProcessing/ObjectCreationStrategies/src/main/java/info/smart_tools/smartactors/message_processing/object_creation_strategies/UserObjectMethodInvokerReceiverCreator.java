@@ -55,7 +55,7 @@ public class UserObjectMethodInvokerReceiverCreator extends BasicIntermediateRec
                 }
 
                 IMessageReceiver methodInvoker = IOC.resolve(
-                        Keys.getKeyByName("method invoker receiver"),
+                        Keys.getOrAdd("method invoker receiver"),
                         item,
                         method,
                         getFilterConfig()

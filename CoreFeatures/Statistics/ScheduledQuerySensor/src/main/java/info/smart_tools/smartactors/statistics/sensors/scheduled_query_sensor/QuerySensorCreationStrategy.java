@@ -30,8 +30,8 @@ public class QuerySensorCreationStrategy implements IResolveDependencyStrategy {
      */
     public QuerySensorCreationStrategy()
             throws ResolutionException {
-        actionFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "action");
-        statisticsChainFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "statisticsChain");
+        actionFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "action");
+        statisticsChainFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "statisticsChain");
     }
 
     @Override
@@ -44,9 +44,9 @@ public class QuerySensorCreationStrategy implements IResolveDependencyStrategy {
             conf.setValue(actionFieldName, ACTION_DEPENDENCY);
 
             ISchedulerEntry entry = IOC.resolve(
-                    Keys.getKeyByName("new scheduler entry"),
+                    Keys.getOrAdd("new scheduler entry"),
                     conf,
-                    IOC.resolve(Keys.getKeyByName("query sensors scheduler storage"))
+                    IOC.resolve(Keys.getOrAdd("query sensors scheduler storage"))
             );
 
             return (T) new QuerySensorHandle(entry);

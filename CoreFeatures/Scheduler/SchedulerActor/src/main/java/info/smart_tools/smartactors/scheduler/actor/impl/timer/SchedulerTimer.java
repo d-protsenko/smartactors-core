@@ -80,7 +80,7 @@ public class SchedulerTimer implements IDelayedSynchronousService, ITimer {
         this.myStartTime = Long.MAX_VALUE;
         this.myStopTime = Long.MAX_VALUE;
 
-        this.sysTime = IOC.resolve(Keys.getKeyByName("time"));
+        this.sysTime = IOC.resolve(Keys.getOrAdd("time"));
         this.underlyingTimer = underlyingTimer;
     }
 

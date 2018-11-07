@@ -69,7 +69,7 @@ public class ResolveIObjectByTypeStrategiesPluginTest {
         Mockito.verify(bootstrap).add(item);
 
         IKey strategyKey = PowerMockito.mock(IKey.class);
-        PowerMockito.when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject" + "convert")).thenReturn(strategyKey);
+        PowerMockito.when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject" + "convert")).thenReturn(strategyKey);
 
         StrategyStorageWithCacheStrategy strategy = PowerMockito.mock(StrategyStorageWithCacheStrategy.class);
         PowerMockito.whenNew(StrategyStorageWithCacheStrategy.class).withArguments(any(IFunction.class), any(IBiFunction.class)).thenReturn(strategy);
@@ -77,7 +77,7 @@ public class ResolveIObjectByTypeStrategiesPluginTest {
         iPoorActionArgumentCaptor.getValue().execute();
 
         PowerMockito.verifyStatic();
-        Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject" + "convert");
+        Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject" + "convert");
 
         PowerMockito.verifyStatic();
         IOC.register(eq(strategyKey), eq(strategy));
@@ -142,7 +142,7 @@ public class ResolveIObjectByTypeStrategiesPluginTest {
 
         Mockito.verify(bootstrap).add(item);
 
-        PowerMockito.doThrow(new ResolutionException("")).when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject" + "convert"));
+        PowerMockito.doThrow(new ResolutionException("")).when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject" + "convert"));
         iPoorActionArgumentCaptor.getValue().execute();
         fail();
     }

@@ -24,7 +24,7 @@ public class PluginDatabaseConfigSection extends BootstrapPlugin {
     public void registerCanonizationStrategies()
             throws ResolutionException, InvalidArgumentException {
         IConfigurationManager configurationManager =
-                IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
+                IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
         configurationManager.addSectionStrategy(new DatabaseSectionStrategy());
     }
 }

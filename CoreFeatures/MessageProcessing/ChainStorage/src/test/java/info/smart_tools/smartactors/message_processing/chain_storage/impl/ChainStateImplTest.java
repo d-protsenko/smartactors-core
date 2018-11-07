@@ -54,8 +54,8 @@ public class ChainStateImplTest extends PluginsLoadingTestBase {
             modArgMocks[i] = mock(IObject.class);
 
             String mk = MessageFormat.format("mod-{0}", i);
-            IOC.register(Keys.getKeyByName(mk), modStrategyMocks[i]);
-            when(modArgMocks[i].getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "modification")))
+            IOC.register(Keys.getOrAdd(mk), modStrategyMocks[i]);
+            when(modArgMocks[i].getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "modification")))
                     .thenReturn(mk);
         }
 

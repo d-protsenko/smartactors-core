@@ -56,7 +56,7 @@ public class PerReceiverActorSynchronizationReceiverCreatorTest extends PluginsL
         };
 
         actorReceiverResolutionStrategy = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.getKeyByName("create actor synchronization receiver"), actorReceiverResolutionStrategy);
+        IOC.register(Keys.getOrAdd("create actor synchronization receiver"), actorReceiverResolutionStrategy);
 
         when(actorReceiverResolutionStrategy.resolve(same(receiverMocks[0]))).thenReturn(receiverMocks[1]);
         when(actorReceiverResolutionStrategy.resolve(same(receiverMocks[2]))).thenReturn(receiverMocks[3]);

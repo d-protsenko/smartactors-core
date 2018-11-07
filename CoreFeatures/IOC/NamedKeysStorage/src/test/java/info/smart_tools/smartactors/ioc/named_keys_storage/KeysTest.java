@@ -39,7 +39,7 @@ public class KeysTest {
         ScopeProvider.setCurrentScope(scope);
         when(strategyContainer.resolve(any())).thenReturn(strategy);
         when(strategy.resolve("test")).thenReturn(key);
-        IKey result = Keys.getKeyByName("test");
+        IKey result = Keys.getOrAdd("test");
         assertNotNull(result);
         assertEquals(result, key);
     }

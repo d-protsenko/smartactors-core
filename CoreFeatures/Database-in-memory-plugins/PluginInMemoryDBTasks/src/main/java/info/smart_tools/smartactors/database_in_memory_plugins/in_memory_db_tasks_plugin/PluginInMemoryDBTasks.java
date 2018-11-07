@@ -75,11 +75,11 @@ public class PluginInMemoryDBTasks implements IPlugin {
 
     private void registerUpsertTask() throws ResolutionException, InvalidArgumentException, RegistrationException {
         IField collectionNameField = IOC.resolve(
-                Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
+                Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
         IField documentField = IOC.resolve(
-                Keys.getKeyByName(IField.class.getCanonicalName()), "document");
+                Keys.getOrAdd(IField.class.getCanonicalName()), "document");
         IOC.register(
-                Keys.getKeyByName("db.collection.upsert"),
+                Keys.getOrAdd("db.collection.upsert"),
                 //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
@@ -88,7 +88,7 @@ public class PluginInMemoryDBTasks implements IPlugin {
                                 IObject document = (IObject) args[2];
                                 IDatabaseTask task = new InMemoryDBUpsertTask();
 
-                                IObject query = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                                IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName);
                                 documentField.out(query, document);
@@ -105,9 +105,9 @@ public class PluginInMemoryDBTasks implements IPlugin {
 
     private void registerCreateCollectionTask() throws ResolutionException, InvalidArgumentException, RegistrationException {
         IField collectionNameField = IOC.resolve(
-                Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
+                Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
         IOC.register(
-                Keys.getKeyByName("db.collection.create"),
+                Keys.getOrAdd("db.collection.create"),
                 //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
@@ -115,7 +115,7 @@ public class PluginInMemoryDBTasks implements IPlugin {
                                 String collectionName = String.valueOf(args[1]);
                                 IDatabaseTask task = new InMemoryDBCreateCollectionTask();
 
-                                IObject query = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                                IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName);
 
@@ -131,13 +131,13 @@ public class PluginInMemoryDBTasks implements IPlugin {
 
     private void registerGetByIdTask() throws ResolutionException, InvalidArgumentException, RegistrationException {
         IField collectionNameField = IOC.resolve(
-                Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
+                Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
         IField idField = IOC.resolve(
-                Keys.getKeyByName(IField.class.getCanonicalName()), "id");
+                Keys.getOrAdd(IField.class.getCanonicalName()), "id");
         IField callbackField = IOC.resolve(
-                Keys.getKeyByName(IField.class.getCanonicalName()), "callback");
+                Keys.getOrAdd(IField.class.getCanonicalName()), "callback");
         IOC.register(
-                Keys.getKeyByName("db.collection.getbyid"),
+                Keys.getOrAdd("db.collection.getbyid"),
                 //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
@@ -147,7 +147,7 @@ public class PluginInMemoryDBTasks implements IPlugin {
                                 IAction<IObject> callback = (IAction<IObject>) args[3];
                                 IDatabaseTask task = new InMemoryGetByIdTask();
 
-                                IObject query = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                                IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName.toString());
                                 idField.out(query, id);
@@ -165,13 +165,13 @@ public class PluginInMemoryDBTasks implements IPlugin {
 
     private void registerSearchTask() throws ResolutionException, InvalidArgumentException, RegistrationException {
         IField collectionNameField = IOC.resolve(
-                Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
+                Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
         IField criteriaField = IOC.resolve(
-                Keys.getKeyByName(IField.class.getCanonicalName()), "criteria");
+                Keys.getOrAdd(IField.class.getCanonicalName()), "criteria");
         IField callbackField = IOC.resolve(
-                Keys.getKeyByName(IField.class.getCanonicalName()), "callback");
+                Keys.getOrAdd(IField.class.getCanonicalName()), "callback");
         IOC.register(
-                Keys.getKeyByName("db.collection.search"),
+                Keys.getOrAdd("db.collection.search"),
                 //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
@@ -181,7 +181,7 @@ public class PluginInMemoryDBTasks implements IPlugin {
                                 IAction<IObject[]> callback = (IAction<IObject[]>) args[3];
                                 IDatabaseTask task = new InMemoryDBSelectTask();
 
-                                IObject query = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                                IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName.toString());
                                 criteriaField.out(query, criteria);
@@ -199,11 +199,11 @@ public class PluginInMemoryDBTasks implements IPlugin {
 
     private void registerDeleteTask() throws ResolutionException, InvalidArgumentException, RegistrationException {
         IField collectionNameField = IOC.resolve(
-                Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
+                Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
         IField documentField = IOC.resolve(
-                Keys.getKeyByName(IField.class.getCanonicalName()), "document");
+                Keys.getOrAdd(IField.class.getCanonicalName()), "document");
         IOC.register(
-                Keys.getKeyByName("db.collection.delete"),
+                Keys.getOrAdd("db.collection.delete"),
                 //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
@@ -212,7 +212,7 @@ public class PluginInMemoryDBTasks implements IPlugin {
                                 IObject document = (IObject) args[2];
                                 IDatabaseTask task = new InMemoryDBDeleteTask();
 
-                                IObject query = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                                IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName);
                                 documentField.out(query, document);
@@ -229,13 +229,13 @@ public class PluginInMemoryDBTasks implements IPlugin {
 
     private void registerCountTask() throws ResolutionException, InvalidArgumentException, RegistrationException {
         IField collectionNameField = IOC.resolve(
-                Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
+                Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
         IField criteriaField = IOC.resolve(
-                Keys.getKeyByName(IField.class.getCanonicalName()), "criteria");
+                Keys.getOrAdd(IField.class.getCanonicalName()), "criteria");
         IField callbackField = IOC.resolve(
-                Keys.getKeyByName(IField.class.getCanonicalName()), "callback");
+                Keys.getOrAdd(IField.class.getCanonicalName()), "callback");
         IOC.register(
-                Keys.getKeyByName("db.collection.count"),
+                Keys.getOrAdd("db.collection.count"),
                 //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
@@ -245,7 +245,7 @@ public class PluginInMemoryDBTasks implements IPlugin {
                                 IAction<Long> callback = (IAction<Long>) args[3];
                                 IDatabaseTask task = new InMemoryDBCountTask();
 
-                                IObject query = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                                IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName.toString());
                                 criteriaField.out(query, criteria);
@@ -263,11 +263,11 @@ public class PluginInMemoryDBTasks implements IPlugin {
 
     private void registerInsertTask() throws ResolutionException, InvalidArgumentException, RegistrationException {
         IField collectionNameField = IOC.resolve(
-                Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
+                Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
         IField documentField = IOC.resolve(
-                Keys.getKeyByName(IField.class.getCanonicalName()), "document");
+                Keys.getOrAdd(IField.class.getCanonicalName()), "document");
         IOC.register(
-                Keys.getKeyByName("db.collection.insert"),
+                Keys.getOrAdd("db.collection.insert"),
                 //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
@@ -276,7 +276,7 @@ public class PluginInMemoryDBTasks implements IPlugin {
                                 IObject document = (IObject) args[2];
                                 IDatabaseTask task = new InMemoryDBInsertTask();
 
-                                IObject query = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                                IObject query = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName);
                                 documentField.out(query, document);

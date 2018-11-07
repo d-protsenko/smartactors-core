@@ -39,7 +39,7 @@ public class SchedulerTimerTest extends PluginsLoadingTestBase {
     @Override
     protected void registerMocks() throws Exception {
         timeMock = mock(ITime.class);
-        IOC.register(Keys.getKeyByName("time"), new SingletonStrategy(timeMock));
+        IOC.register(Keys.getOrAdd("time"), new SingletonStrategy(timeMock));
 
         timerMock = mock(ITimer.class);
 

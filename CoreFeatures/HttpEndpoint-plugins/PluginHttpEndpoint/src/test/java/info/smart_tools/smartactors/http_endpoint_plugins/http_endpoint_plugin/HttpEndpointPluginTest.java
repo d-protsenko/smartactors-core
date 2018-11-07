@@ -61,7 +61,7 @@ public class HttpEndpointPluginTest {
         bootstrap.start();
 
         IOC.register(
-                Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
@@ -74,25 +74,25 @@ public class HttpEndpointPluginTest {
                 )
         );
 
-        IOC.register(Keys.getKeyByName("DeserializationStrategyChooser"), new SingletonStrategy(
+        IOC.register(Keys.getOrAdd("DeserializationStrategyChooser"), new SingletonStrategy(
                         deserializationStrategyChooser
                 )
         );
 
 
-        IOC.register(Keys.getKeyByName("ResponseSenderChooser"), new SingletonStrategy(
+        IOC.register(Keys.getOrAdd("ResponseSenderChooser"), new SingletonStrategy(
                         resolveByTypeAndNameStrategy
                 )
         );
-        IOC.register(Keys.getKeyByName("CookiesSetterChooser"), new SingletonStrategy(
+        IOC.register(Keys.getOrAdd("CookiesSetterChooser"), new SingletonStrategy(
                         resolveCookies
                 )
         );
-        IOC.register(Keys.getKeyByName("HeadersExtractorChooser"), new SingletonStrategy(
+        IOC.register(Keys.getOrAdd("HeadersExtractorChooser"), new SingletonStrategy(
                         resolveHeaders
                 )
         );
-        IOC.register(Keys.getKeyByName("ResponseStatusSetter"), new SingletonStrategy(
+        IOC.register(Keys.getOrAdd("ResponseStatusSetter"), new SingletonStrategy(
                         resolveStatusSetter
                 )
         );

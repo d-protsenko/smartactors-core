@@ -35,8 +35,8 @@ public class RawObjectCreator implements IRoutedObjectCreator {
      */
     public RawObjectCreator()
             throws ResolutionException {
-        dependencyFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
-        nameFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+        dependencyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
+        nameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
     }
 
     @Override
@@ -51,8 +51,8 @@ public class RawObjectCreator implements IRoutedObjectCreator {
         }
 
         try {
-            Object address = IOC.resolve(Keys.getKeyByName("route_from_object_name"), description.getValue(nameFieldName));
-            Object receiver = IOC.resolve(Keys.getKeyByName(String.valueOf(description.getValue(dependencyFieldName))), description);
+            Object address = IOC.resolve(Keys.getOrAdd("route_from_object_name"), description.getValue(nameFieldName));
+            Object receiver = IOC.resolve(Keys.getOrAdd(String.valueOf(description.getValue(dependencyFieldName))), description);
 
             if (!(receiver instanceof IMessageReceiver)) {
                 throw new ObjectCreationException("Resolved dependency does not implement receiver interface.");
