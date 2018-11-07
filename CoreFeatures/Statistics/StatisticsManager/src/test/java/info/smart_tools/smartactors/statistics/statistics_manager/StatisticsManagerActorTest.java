@@ -53,21 +53,21 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
     @Override
     protected void registerMocks() throws Exception {
         configurationManagerMock = mock(IConfigurationManager.class);
-        IOC.register(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()), new SingletonStrategy(configurationManagerMock));
+        IOC.register(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()), new SingletonStrategy(configurationManagerMock));
 
         for (int i = 0; i < srs.length; i++) {
             srs[i] = mock(IResolveDependencyStrategy.class);
             shs[i] = mock(ISensorHandle.class);
-            IOC.register(Keys.getOrAdd(MessageFormat.format("sensor type {0}", i)), srs[i]);
+            IOC.register(Keys.resolveByName(MessageFormat.format("sensor type {0}", i)), srs[i]);
             when(srs[i].resolve(any(), any())).thenReturn(shs[i]);
         }
 
-        IOC.register(Keys.getOrAdd("configuration object"), new IResolveDependencyStrategy() {
+        IOC.register(Keys.resolveByName("configuration object"), new IResolveDependencyStrategy() {
             @Override
             public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
                 try {
-                    IObject obj = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), args);
-                    obj.setValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "__is_config"), "1");
+                    IObject obj = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"), args);
+                    obj.setValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "__is_config"), "1");
                     return (T) obj;
                 } catch (ResolutionException | InvalidArgumentException | ChangeValueException e) {
                     throw new ResolveDependencyStrategyException(e);
@@ -75,7 +75,7 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
             }
         });
 
-        IOC.register(Keys.getOrAdd("chain_id_from_map_name_and_message"), new IResolveDependencyStrategy() {
+        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), new IResolveDependencyStrategy() {
             @Override
             public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
                 return (T) String.valueOf(args[0]).concat("__0");
@@ -84,7 +84,7 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
 
         doAnswer(invocation -> {
             assertEquals("1", invocation.getArgumentAt(0, IObject.class)
-                    .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "__is_config")));
+                    .getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "__is_config")));
 
             return null;
         }).when(configurationManagerMock).applyConfig(any());
@@ -125,7 +125,7 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
             throws Exception {
         actor = new StatisticsManagerActor();
 
-        assertEquals("OK", c("createSensor", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        assertEquals("OK", c("createSensor", IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'theSensor'," +
                         "'args':{'a':'b'}," +
@@ -145,14 +145,14 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
             throws Exception {
         actor = new StatisticsManagerActor();
 
-        assertEquals("OK", c("createSensor", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        assertEquals("OK", c("createSensor", IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'theSensor'," +
                         "'args':{'a':'b'}," +
                         "'dependency':'sensor type 0'" +
                         "}").replace('\'','"'))));
 
-        c("createSensor", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        c("createSensor", IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'theSensor'," +
                         "'args':{'c':'d'}," +
@@ -173,7 +173,7 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
             throws Exception {
         actor = new StatisticsManagerActor();
 
-        IObject creationArgs = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject creationArgs = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'theSensor'," +
                         "'args':{'a':'b'}," +
@@ -185,11 +185,11 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
         List<IObject> list = (List) c("enumSensors", null);
 
         assertEquals(1, list.size());
-        assertEquals("theSensor", list.get(0).getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id")));
-        assertEquals("sensor type 0", list.get(0).getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency")));
+        assertEquals("theSensor", list.get(0).getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id")));
+        assertEquals("sensor type 0", list.get(0).getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency")));
         assertSame(
-                creationArgs.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "args")),
-                list.get(0).getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "args"))
+                creationArgs.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "args")),
+                list.get(0).getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "args"))
         );
     }
 
@@ -198,7 +198,7 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
             throws Exception {
         actor = new StatisticsManagerActor();
 
-        assertEquals("OK", c("createCollector", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        assertEquals("OK", c("createCollector", IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'theCollector'," +
                         "'args':{" +
@@ -216,33 +216,33 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
         verify(configurationManagerMock).applyConfig(configCaptor.capture());
 
         List<IObject> objectsSection = (List) configCaptor.getValue()
-                .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "objects"));
+                .getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "objects"));
         assertEquals(1, objectsSection.size());
         IObject obj = objectsSection.get(0);
 
-        assertEquals("the collector actor", obj.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency")));
-        assertEquals("actor", obj.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "kind")));
-        assertEquals("b", obj.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "a")));
+        assertEquals("the collector actor", obj.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency")));
+        assertEquals("actor", obj.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "kind")));
+        assertEquals("b", obj.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "a")));
 
-        String objectId = String.valueOf(obj.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name")));
+        String objectId = String.valueOf(obj.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name")));
 
         assertTrue(objectId.startsWith("data-collector/theCollector-"));
 
         List<IObject> mapsSection = (List) configCaptor.getValue()
-                .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maps"));
+                .getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maps"));
         assertEquals(1, mapsSection.size());
         IObject map = mapsSection.get(0);
 
         assertEquals(
                 c("getCollectorQueryChain", "theCollector"),
-                map.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id"))
+                map.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id"))
         );
 
-        List<IObject> steps = (List<IObject>) map.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "steps"));
+        List<IObject> steps = (List<IObject>) map.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "steps"));
 
         assertEquals(2, steps.size());
-        assertEquals("d", steps.get(0).getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "c")));
-        assertEquals(objectId, steps.get(0).getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "target")));
+        assertEquals("d", steps.get(0).getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "c")));
+        assertEquals(objectId, steps.get(0).getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "target")));
     }
 
     @Test(expected = CommandExecutionException.class)
@@ -250,7 +250,7 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
             throws Exception {
         actor = new StatisticsManagerActor();
 
-        assertEquals("OK", c("createCollector", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        assertEquals("OK", c("createCollector", IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'theCollector'," +
                         "'args':{" +
@@ -261,7 +261,7 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
                         ",'queryStepConfig':{}" +
                         "}").replace('\'','"'))));
 
-        c("createCollector", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        c("createCollector", IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'theCollector'," +
                         "'args':{" +
@@ -277,7 +277,7 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
             throws Exception {
         actor = new StatisticsManagerActor();
 
-        IObject creationArgs = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject creationArgs = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'theCollector'," +
                         "'args':{" +
@@ -297,10 +297,10 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
         IObject view = list.get(0);
 
         assertEquals(
-                creationArgs.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "args")),
-                view.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "args"))
+                creationArgs.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "args")),
+                view.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "args"))
         );
-        assertEquals("theCollector", view.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id")));
+        assertEquals("theCollector", view.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id")));
     }
 
     @Test
@@ -308,14 +308,14 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
             throws Exception {
         actor = new StatisticsManagerActor();
 
-        assertEquals("OK", c("createSensor", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        assertEquals("OK", c("createSensor", IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'theSensor'," +
                         "'args':{'a':'b'}," +
                         "'dependency':'sensor type 0'" +
                         "}").replace('\'','"'))));
 
-        assertEquals("OK", c("createCollector", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        assertEquals("OK", c("createCollector", IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'theCollector'," +
                         "'args':{" +
@@ -328,7 +328,7 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
 
         reset(configurationManagerMock);
 
-        IObject linkArgs = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject linkArgs = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'sensor':'theSensor'," +
                         "'collector':'theCollector'," +
@@ -344,14 +344,14 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
         verify(configurationManagerMock).applyConfig(configCaptor.capture());
 
         List<IObject> mapsSection = (List) configCaptor.getValue()
-                .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maps"));
+                .getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maps"));
         assertEquals(1, mapsSection.size());
 
         List<IObject> steps = (List) mapsSection.get(0)
-                .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "steps"));
+                .getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "steps"));
         assertEquals(1, steps.size());
 
-        assertTrue(String.valueOf(steps.get(0).getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "target")))
+        assertTrue(String.valueOf(steps.get(0).getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "target")))
                 .startsWith("data-collector/theCollector-"));
     }
 
@@ -360,14 +360,14 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
             throws Exception {
         actor = new StatisticsManagerActor();
 
-        assertEquals("OK", c("createSensor", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        assertEquals("OK", c("createSensor", IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'theSensor'," +
                         "'args':{'a':'b'}," +
                         "'dependency':'sensor type 0'" +
                         "}").replace('\'','"'))));
 
-        assertEquals("OK", c("createCollector", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        assertEquals("OK", c("createCollector", IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'theCollector'," +
                         "'args':{" +
@@ -378,7 +378,7 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
                         ",'queryStepConfig':{}" +
                         "}").replace('\'','"'))));
 
-        IObject linkArgs = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject linkArgs = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'sensor':'theSensor'," +
                         "'collector':'theCollector'," +
@@ -398,11 +398,11 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
         verify(configurationManagerMock).applyConfig(configCaptor.capture());
 
         List<IObject> mapsSection = (List) configCaptor.getValue()
-                .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maps"));
+                .getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maps"));
         assertEquals(1, mapsSection.size());
 
         List<IObject> steps = (List) mapsSection.get(0)
-                .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "steps"));
+                .getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "steps"));
         assertEquals(0, steps.size());
     }
 
@@ -411,14 +411,14 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
             throws Exception {
         actor = new StatisticsManagerActor();
 
-        assertEquals("OK", c("createSensor", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        assertEquals("OK", c("createSensor", IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'theSensor'," +
                         "'args':{'a':'b'}," +
                         "'dependency':'sensor type 0'" +
                         "}").replace('\'','"'))));
 
-        assertEquals("OK", c("createCollector", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        assertEquals("OK", c("createCollector", IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'theCollector'," +
                         "'args':{" +
@@ -431,7 +431,7 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
 
         reset(configurationManagerMock);
 
-        IObject linkArgs = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject linkArgs = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'sensor':'notTheSensor'," +
                         "'collector':'theCollector'," +
@@ -448,14 +448,14 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
             throws Exception {
         actor = new StatisticsManagerActor();
 
-        assertEquals("OK", c("createSensor", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        assertEquals("OK", c("createSensor", IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'theSensor'," +
                         "'args':{'a':'b'}," +
                         "'dependency':'sensor type 0'" +
                         "}").replace('\'','"'))));
 
-        assertEquals("OK", c("createCollector", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        assertEquals("OK", c("createCollector", IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'theCollector'," +
                         "'args':{" +
@@ -468,7 +468,7 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
 
         reset(configurationManagerMock);
 
-        IObject linkArgs = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject linkArgs = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'sensor':'theSensor'," +
                         "'collector':'notTheCollector'," +
@@ -485,14 +485,14 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
             throws Exception {
         actor = new StatisticsManagerActor();
 
-        assertEquals("OK", c("createSensor", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        assertEquals("OK", c("createSensor", IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'theSensor'," +
                         "'args':{'a':'b'}," +
                         "'dependency':'sensor type 0'" +
                         "}").replace('\'','"'))));
 
-        assertEquals("OK", c("createCollector", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        assertEquals("OK", c("createCollector", IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'theCollector'," +
                         "'args':{" +
@@ -505,7 +505,7 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
 
         reset(configurationManagerMock);
 
-        IObject unlinkArgs = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject unlinkArgs = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'sensor':'notTheSensor'," +
                         "'collector':'theCollector'" +
@@ -519,14 +519,14 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
             throws Exception {
         actor = new StatisticsManagerActor();
 
-        assertEquals("OK", c("createSensor", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        assertEquals("OK", c("createSensor", IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'theSensor'," +
                         "'args':{'a':'b'}," +
                         "'dependency':'sensor type 0'" +
                         "}").replace('\'','"'))));
 
-        assertEquals("OK", c("createCollector", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        assertEquals("OK", c("createCollector", IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'theCollector'," +
                         "'args':{" +
@@ -539,7 +539,7 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
 
         reset(configurationManagerMock);
 
-        IObject unlinkArgs = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject unlinkArgs = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'sensor':'theSensor'," +
                         "'collector':'notYourCollector'" +
@@ -553,14 +553,14 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
             throws Exception {
         actor = new StatisticsManagerActor();
 
-        assertEquals("OK", c("createSensor", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        assertEquals("OK", c("createSensor", IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'theSensor'," +
                         "'args':{'a':'b'}," +
                         "'dependency':'sensor type 0'" +
                         "}").replace('\'','"'))));
 
-        assertEquals("OK", c("createCollector", IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        assertEquals("OK", c("createCollector", IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'theCollector'," +
                         "'args':{" +
@@ -573,7 +573,7 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
 
         reset(configurationManagerMock);
 
-        IObject unlinkArgs = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject unlinkArgs = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'sensor':'theSensor'," +
                         "'collector':'theCollector'" +

@@ -37,13 +37,13 @@ public class ShutdownTaskProcessingStrategiesPlugin extends BootstrapPlugin {
     @After({"IOC"})
     public void registerStrategies()
             throws ResolutionException, InvalidArgumentException, RegistrationException {
-        IOC.register(Keys.getOrAdd("ignore task processing strategy"),
+        IOC.register(Keys.resolveByName("ignore task processing strategy"),
                 new SingletonStrategy(new IgnoreTaskStrategy()));
-        IOC.register(Keys.getOrAdd("execute task processing strategy"),
+        IOC.register(Keys.resolveByName("execute task processing strategy"),
                 new SingletonStrategy(new ExecuteTaskStrategy()));
-        IOC.register(Keys.getOrAdd("notify task processing strategy"),
+        IOC.register(Keys.resolveByName("notify task processing strategy"),
                 new SingletonStrategy(new NotifyTaskStrategy()));
-        IOC.register(Keys.getOrAdd("limit trials task processing strategy"),
+        IOC.register(Keys.resolveByName("limit trials task processing strategy"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     int maxTrials = (int) args[0];
                     int silentTrials = maxTrials;
@@ -72,15 +72,15 @@ public class ShutdownTaskProcessingStrategiesPlugin extends BootstrapPlugin {
                 }
         );
 
-        IOC.register(Keys.getOrAdd("shutdown mode task processing strategy by task class"),
+        IOC.register(Keys.resolveByName("shutdown mode task processing strategy by task class"),
                 strategyStorage);
-        IOC.register(Keys.getOrAdd("expandable_strategy#shutdown mode task processing strategy by task class"),
+        IOC.register(Keys.resolveByName("expandable_strategy#shutdown mode task processing strategy by task class"),
                 new SingletonStrategy(strategyStorage));
 
-        IOC.register(Keys.getOrAdd("task processing strategy for shutdown mode"),
+        IOC.register(Keys.resolveByName("task processing strategy for shutdown mode"),
                 new SingletonStrategy(new CompositeStrategy(
-                        Keys.getOrAdd("shutdown mode task processing strategy by task class"),
-                        IOC.resolve(Keys.getOrAdd("execute task processing strategy")))));
+                        Keys.resolveByName("shutdown mode task processing strategy by task class"),
+                        IOC.resolve(Keys.resolveByName("execute task processing strategy")))));
     }
 
     @ItemRevert("shutdown_task_process_strategies")
@@ -90,49 +90,49 @@ public class ShutdownTaskProcessingStrategiesPlugin extends BootstrapPlugin {
 
         try {
             keyName = "task processing strategy for shutdown mode";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "expandable_strategy#shutdown mode task processing strategy by task class";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "shutdown mode task processing strategy by task class";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "limit trials task processing strategy";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "notify task processing strategy";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "execute task processing strategy";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "ignore task processing strategy";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
@@ -145,12 +145,12 @@ public class ShutdownTaskProcessingStrategiesPlugin extends BootstrapPlugin {
     })
     public void registerUpcounterCallbackForTaskDispatcherShutdown()
             throws ResolutionException, UpCounterCallbackExecutionException {
-        IUpCounter upCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
+        IUpCounter upCounter = IOC.resolve(Keys.resolveByName("root upcounter"));
 
         upCounter.onShutdownRequest(this.toString(), mode -> {
             try {
-                ITaskDispatcher taskDispatcher = IOC.resolve(Keys.getOrAdd("task_dispatcher"));
-                ITaskProcessStrategy taskProcessStrategy = IOC.resolve(Keys.getOrAdd("task processing strategy for shutdown mode"));
+                ITaskDispatcher taskDispatcher = IOC.resolve(Keys.resolveByName("task_dispatcher"));
+                ITaskProcessStrategy taskProcessStrategy = IOC.resolve(Keys.resolveByName("task processing strategy for shutdown mode"));
                 taskDispatcher.setProcessStrategy(taskProcessStrategy);
             } catch (ResolutionException e) {
                 throw new ActionExecuteException(e);

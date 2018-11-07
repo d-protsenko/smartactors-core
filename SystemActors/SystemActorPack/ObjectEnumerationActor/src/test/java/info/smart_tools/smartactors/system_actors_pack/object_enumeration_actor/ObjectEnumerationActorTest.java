@@ -41,8 +41,8 @@ public class ObjectEnumerationActorTest {
         routerMock = mock(IRouter.class);
 
         mockStatic(IOC.class, Keys.class);
-        when(Keys.getOrAdd(eq(IChainStorage.class.getCanonicalName()))).thenReturn(chainStorageKey);
-        when(Keys.getOrAdd(eq(IRouter.class.getCanonicalName()))).thenReturn(routerKey);
+        when(Keys.resolveByName(eq(IChainStorage.class.getCanonicalName()))).thenReturn(chainStorageKey);
+        when(Keys.resolveByName(eq(IRouter.class.getCanonicalName()))).thenReturn(routerKey);
 
         when(IOC.resolve(same(chainStorageKey))).thenReturn(chainStorageMock);
         when(IOC.resolve(same(routerKey))).thenReturn(routerMock);

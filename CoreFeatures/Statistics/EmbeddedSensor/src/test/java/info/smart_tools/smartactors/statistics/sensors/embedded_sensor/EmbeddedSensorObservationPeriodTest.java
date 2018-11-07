@@ -112,9 +112,9 @@ public class EmbeddedSensorObservationPeriodTest extends PluginsLoadingTestBase 
 
         IObject msg = esop.createMessage();
 
-        assertEquals(100L, ((Long) msg.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "periodStart"))).longValue());
-        assertEquals(200L, ((Long) msg.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "periodEnd"))).longValue());
-        assertSame(res, msg.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "data")));
+        assertEquals(100L, ((Long) msg.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "periodStart"))).longValue());
+        assertEquals(200L, ((Long) msg.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "periodEnd"))).longValue());
+        assertSame(res, msg.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "data")));
     }
 
     @Test

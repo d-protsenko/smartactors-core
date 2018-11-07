@@ -25,8 +25,8 @@ public class DefaultDeletionCheckStrategy implements IChildDeletionCheckStrategy
      */
     public DefaultDeletionCheckStrategy()
             throws ResolutionException {
-        contextFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "context");
-        deleteFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "deleteChild");
+        contextFN = IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "context");
+        deleteFN = IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "deleteChild");
     }
 
     @Override

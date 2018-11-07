@@ -118,19 +118,19 @@ public class EntryStorageRefresher implements ISchedulerStorageRefresher {
         this.minPageSize = minPageSize;
         this.maxLocalEntries = maxLocalEntries;
 
-        this.taskQueue = IOC.resolve(Keys.getOrAdd("task_queue"));
+        this.taskQueue = IOC.resolve(Keys.resolveByName("task_queue"));
 
-        this.entryIdFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "entryId");
+        this.entryIdFN = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "entryId");
 
-        timer = IOC.resolve(Keys.getOrAdd("timer"));
-        time = IOC.resolve(Keys.getOrAdd("time"));
+        timer = IOC.resolve(Keys.resolveByName("timer"));
+        time = IOC.resolve(Keys.resolveByName("time"));
 
-        maxPageSizeFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "maxPageSize");
-        minPageSizeFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "minPageSize");
-        maxLocalEntriesFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "maxLocalEntries");
-        refreshAwakeIntervalFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "refreshAwakeInterval");
-        refreshRepeatIntervalFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "refreshRepeatInterval");
-        refreshSuspendIntervalFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "refreshSuspendInterval");
+        maxPageSizeFN = IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "maxPageSize");
+        minPageSizeFN = IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "minPageSize");
+        maxLocalEntriesFN = IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "maxLocalEntries");
+        refreshAwakeIntervalFN = IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "refreshAwakeInterval");
+        refreshRepeatIntervalFN = IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "refreshRepeatInterval");
+        refreshSuspendIntervalFN = IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "refreshSuspendInterval");
     }
 
     private void verifyParameters(final long refreshRepeatIntervalParam,
@@ -294,7 +294,7 @@ public class EntryStorageRefresher implements ISchedulerStorageRefresher {
 
                         if (null == localEntry) {
                             if (entryStorage.getFilter().testRestore(entryState)) {
-                                ISchedulerEntry newEntry = IOC.resolve(Keys.getOrAdd("restore scheduler entry"), entryState, entryStorage);
+                                ISchedulerEntry newEntry = IOC.resolve(Keys.resolveByName("restore scheduler entry"), entryState, entryStorage);
                                 remoteEntryStorage.weakSaveEntry(newEntry);
                             }
                         } else {

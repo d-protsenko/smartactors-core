@@ -43,9 +43,9 @@ public class WrapperCreatorReceiverDecorator implements IMessageReceiver {
         this.underlyingReceiver = underlyingReceiver;
         this.wrapperStrategies = wrapperStrategiesMap;
 
-        this.strategyDependencyKey = Keys.getOrAdd(strategyDependencyName);
+        this.strategyDependencyKey = Keys.resolveByName(strategyDependencyName);
 
-        wrapperFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "wrapper");
+        wrapperFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "wrapper");
     }
 
     @Override

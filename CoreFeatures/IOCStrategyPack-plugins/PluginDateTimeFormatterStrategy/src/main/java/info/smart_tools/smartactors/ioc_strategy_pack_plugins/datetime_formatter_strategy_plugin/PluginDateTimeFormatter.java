@@ -42,7 +42,7 @@ public class PluginDateTimeFormatter implements IPlugin {
                 .after("IOC")
                 .process(() -> {
                     try {
-                        IOC.register(Keys.getOrAdd("datetime_formatter"),
+                        IOC.register(Keys.resolveByName("datetime_formatter"),
                             new ApplyFunctionToArgumentsStrategy(args -> DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss"))
                         );
                     } catch (ResolutionException e) {
@@ -59,7 +59,7 @@ public class PluginDateTimeFormatter implements IPlugin {
 
                     try {
                         keyName = "datetime_formatter";
-                        IOC.remove(Keys.getOrAdd(keyName));
+                        IOC.remove(Keys.resolveByName(keyName));
                     } catch(DeletionException e) {
                         System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                     } catch (ResolutionException e) { }

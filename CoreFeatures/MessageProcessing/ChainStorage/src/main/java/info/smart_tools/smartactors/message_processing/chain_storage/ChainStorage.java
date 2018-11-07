@@ -67,7 +67,7 @@ public class ChainStorage implements IChainStorage {
             throws ChainCreationException {
         try {
             IReceiverChain newChain = IOC.resolve(
-                    Keys.getOrAdd(IReceiverChain.class.getCanonicalName()),
+                    Keys.resolveByName(IReceiverChain.class.getCanonicalName()),
                     chainId,
                     description,
                     router,
@@ -77,7 +77,7 @@ public class ChainStorage implements IChainStorage {
 
             IChainState oldState;
 
-            IChainState state = IOC.resolve(Keys.getOrAdd(IChainState.class.getCanonicalName()), newChain);
+            IChainState state = IOC.resolve(Keys.resolveByName(IChainState.class.getCanonicalName()), newChain);
 
             synchronized (modificationLock) {
                 oldState = chainStates.put(chainId, state);

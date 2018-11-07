@@ -86,10 +86,10 @@ public class HttpEndpointTest {
                 IOC.getKeyForKeyByNameResolutionStrategy(),
                 new ResolveByNameIocStrategy()
         );
-        IKey keyMessageProcessingSequence = Keys.getOrAdd(MessageProcessingSequence.class.getCanonicalName());
-        IKey keyIObject = Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
-        IKey keyChannelHandler = Keys.getOrAdd("info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty");
-        IKey keyIFieldName = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey keyMessageProcessingSequence = Keys.resolveByName(MessageProcessingSequence.class.getCanonicalName());
+        IKey keyIObject = Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject");
+        IKey keyChannelHandler = Keys.resolveByName("info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty");
+        IKey keyIFieldName = Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         IOC.register(
                 keyMessageProcessingSequence,
                 new CreateNewInstanceStrategy(
@@ -137,11 +137,11 @@ public class HttpEndpointTest {
                         }
                 )
         );
-        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
+        IOC.register(Keys.resolveByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
                 new CreateNewInstanceStrategy(
                         (args) -> new DeserializeStrategyPostJson(mapperStub)
                 ));
-        IOC.register(Keys.getOrAdd("EmptyIObject"), new CreateNewInstanceStrategy(
+        IOC.register(Keys.resolveByName("EmptyIObject"), new CreateNewInstanceStrategy(
                         (args) -> new DSObject()
                 )
         );
@@ -165,7 +165,7 @@ public class HttpEndpointTest {
     /* @Test
      public void whenEndpointHandlerReceivesRequest_ItShouldHandleEnvironmentHandler()
              throws ResolutionException, InvalidArgumentException, EnvironmentHandleException, RequestHandlerInternalException {
-         IObject stubMessage = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), "{\"hello\": \"world\"}");
+         IObject stubMessage = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{\"hello\": \"world\"}");
          when(mapperStub.deserialize(any(byte[].class))).thenReturn(stubMessage);
          HttpRequest request = createTestRequest();
          sendRequest(request);

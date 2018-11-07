@@ -45,7 +45,7 @@ public class PluginNonBlockingQueue implements IPlugin {
                     .after("IFieldNamePlugin")
                     .process(() -> {
                         try {
-                            IOC.register(Keys.getOrAdd(IQueue.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(args -> {
+                            IOC.register(Keys.resolveByName(IQueue.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(args -> {
                                 try {
                                     return new TaskQueueDecorator(new NonBlockingQueue<>(new ConcurrentLinkedQueue<>()));
                                 } catch (Exception e) {
@@ -62,7 +62,7 @@ public class PluginNonBlockingQueue implements IPlugin {
 
                         try {
                             keyName = IQueue.class.getCanonicalName();
-                            IOC.remove(Keys.getOrAdd(keyName));
+                            IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

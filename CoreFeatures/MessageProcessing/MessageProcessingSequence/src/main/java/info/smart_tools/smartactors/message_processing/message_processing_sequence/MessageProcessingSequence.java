@@ -68,7 +68,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
     private final IFieldName accessForbiddenFieldName;
 
     {
-        IKey iFieldNameStrategyKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey iFieldNameStrategyKey = Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
 
         causeLevelFieldName = IOC.resolve(iFieldNameStrategyKey, "causeLevel");
         causeStepFieldName = IOC.resolve(iFieldNameStrategyKey, "causeStep");
@@ -86,8 +86,8 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         fromExternalFieldName = IOC.resolve(iFieldNameStrategyKey, "fromExternal");
         accessForbiddenFieldName = IOC.resolve(iFieldNameStrategyKey, "accessToChainForbiddenError");
 
-        chainIdStrategyKey = Keys.getOrAdd("chain_id_from_map_name_and_message");
-        chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
+        chainIdStrategyKey = Keys.resolveByName("chain_id_from_map_name_and_message");
+        chainStorage = IOC.resolve(Keys.resolveByName(IChainStorage.class.getCanonicalName()));
         scopeSwitchingChainName = null;
         stackIndex = -1;
         isException = false;
@@ -439,7 +439,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
     @Override
     public IObject dump(final IObject options) throws DumpException {
         try {
-            IObject dump = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject dump = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             dump.setValue(maxDepthFieldName, chainStack.length);
             dump.setValue(stepsStackFieldName,

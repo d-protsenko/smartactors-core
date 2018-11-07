@@ -55,7 +55,7 @@ public class DebuggerActorTest extends PluginsLoadingTestBase {
     @Override
     protected void registerMocks() throws Exception {
         sessionStrategyMock = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.getOrAdd("debugger session"), sessionStrategyMock);
+        IOC.register(Keys.resolveByName("debugger session"), sessionStrategyMock);
 
         session = new IDebuggerSession[] {
             mock(IDebuggerSession.class), mock(IDebuggerSession.class)

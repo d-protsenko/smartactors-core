@@ -52,7 +52,7 @@ public class WDSObjectTest {
                         })
         );
         IOC.register(
-                Keys.getOrAdd(IFieldName.class.getCanonicalName()),
+                Keys.resolveByName(IFieldName.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -63,7 +63,7 @@ public class WDSObjectTest {
                         })
         );
         IOC.register(
-                Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> a[1]
                 )
@@ -188,7 +188,7 @@ public class WDSObjectTest {
             throws Exception {
         IResolveDependencyStrategy strategy1 = mock(IResolveDependencyStrategy.class);
         IOC.resolve(
-                Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName()),
                 "TransformToInt",
                 strategy1
         );

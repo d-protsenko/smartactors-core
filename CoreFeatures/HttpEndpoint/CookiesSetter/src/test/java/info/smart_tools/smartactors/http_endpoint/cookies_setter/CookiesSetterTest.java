@@ -55,7 +55,7 @@ public class CookiesSetterTest {
                 new ResolveByNameIocStrategy()
         );
 
-        IKey keyFieldName = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey keyFieldName = Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         IOC.register(
                 keyFieldName,
                 new CreateNewInstanceStrategy(
@@ -68,7 +68,7 @@ public class CookiesSetterTest {
                         }
                 )
         );
-        IKey keyIField = Keys.getOrAdd(IField.class.getCanonicalName());
+        IKey keyIField = Keys.resolveByName(IField.class.getCanonicalName());
         IOC.register(
                 keyIField,
                 new SingletonStrategy(field)

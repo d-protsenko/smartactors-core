@@ -37,7 +37,7 @@ public class PluginFilesystemFacade implements IPlugin {
                     .after("IOC")
                     .process(() -> {
                         try {
-                            IOC.register(Keys.getOrAdd("filesystem facade"), new SingletonStrategy(new FilesystemFacadeImpl()));
+                            IOC.register(Keys.resolveByName("filesystem facade"), new SingletonStrategy(new FilesystemFacadeImpl()));
                         } catch (ResolutionException | InvalidArgumentException | RegistrationException e) {
                             throw new ActionExecuteException(e);
                         }

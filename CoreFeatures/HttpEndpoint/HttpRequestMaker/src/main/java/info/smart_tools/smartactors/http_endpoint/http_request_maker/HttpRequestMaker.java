@@ -30,13 +30,13 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
     private IFieldName contentFieldName;
 
     public HttpRequestMaker() throws ResolutionException {
-        uriFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uri");
-        methodFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "method");
-        headersFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "headers");
-        nameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
-        valueFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "value");
-        cookiesFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "cookie");
-        contentFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "content");
+        uriFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uri");
+        methodFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "method");
+        headersFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "headers");
+        nameFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+        valueFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "value");
+        cookiesFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "cookie");
+        contentFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "content");
     }
 
     @Override
@@ -48,7 +48,7 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
             if (request.getValue(contentFieldName) == null) {
                 httpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, method, uri.getRawPath());
             } else {
-                IMessageMapper<byte[]> messageMapper = IOC.resolve(Keys.getOrAdd(MessageToBytesMapper.class.getCanonicalName()));
+                IMessageMapper<byte[]> messageMapper = IOC.resolve(Keys.resolveByName(MessageToBytesMapper.class.getCanonicalName()));
                 byte[] content = messageMapper.serialize((IObject) request.getValue(contentFieldName));
                 httpRequest = new DefaultFullHttpRequest(
                         HttpVersion.HTTP_1_1, method, uri.getRawPath(), Unpooled.copiedBuffer(content)

@@ -41,7 +41,7 @@ public class PluginHttpsRequestSenderActor implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.getOrAdd("HttpsRequestSenderActor"),
+                                    Keys.resolveByName("HttpsRequestSenderActor"),
                                     // Response sender is stateless so it's safe to use singleton strategy.
                                     new SingletonStrategy(new HttpsRequestSenderActor()));
                         } catch (ResolutionException e) {

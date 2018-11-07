@@ -51,7 +51,7 @@ public class InMemoryDBInsertTaskTest {
                 IOC.getKeyForKeyByNameResolutionStrategy(),
                 new ResolveByNameIocStrategy()
         );
-        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+        IOC.register(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
@@ -63,7 +63,7 @@ public class InMemoryDBInsertTaskTest {
                 )
         );
 
-        IOC.register(Keys.getOrAdd(InMemoryDatabase.class.getCanonicalName()), new SingletonStrategy(
+        IOC.register(Keys.resolveByName(InMemoryDatabase.class.getCanonicalName()), new SingletonStrategy(
                         inMemoryDatabase
                 )
         );

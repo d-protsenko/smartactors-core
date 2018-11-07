@@ -49,12 +49,12 @@ public class QuerySensorSchedulerActionTest extends PluginsLoadingTestBase {
     @Override
     protected void registerMocks() throws Exception {
         queryExecutorMock = mock(IQueryExecutor.class);
-        IOC.register(Keys.getOrAdd("that query executor"), new SingletonStrategy(queryExecutorMock));
+        IOC.register(Keys.resolveByName("that query executor"), new SingletonStrategy(queryExecutorMock));
 
         schedulerEntryMock = mock(ISchedulerEntry.class);
-        when(schedulerEntryMock.getState()).thenReturn(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
+        when(schedulerEntryMock.getState()).thenReturn(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
 
-        IOC.register(Keys.getOrAdd("chain_id_from_map_name_and_message"), new IResolveDependencyStrategy() {
+        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), new IResolveDependencyStrategy() {
             @Override
             public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
                 return (T) String.valueOf(args[0]).concat("__0");
@@ -68,7 +68,7 @@ public class QuerySensorSchedulerActionTest extends PluginsLoadingTestBase {
     @Test
     public void Should_initializeEntryState()
             throws Exception {
-        IObject args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject args = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                     "'queryExecutor':'that query executor'," +
                     "'statisticsChain':'the_statistics_chain'" +
@@ -77,9 +77,9 @@ public class QuerySensorSchedulerActionTest extends PluginsLoadingTestBase {
 
         verify(queryExecutorMock).init(same(schedulerEntryMock), same(args));
         assertEquals("that query executor", schedulerEntryMock.getState()
-                .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "queryExecutor")));
+                .getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "queryExecutor")));
         assertEquals("the_statistics_chain", schedulerEntryMock.getState()
-                .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "statisticsChain")));
+                .getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "statisticsChain")));
     }
 
     @Test
@@ -88,7 +88,7 @@ public class QuerySensorSchedulerActionTest extends PluginsLoadingTestBase {
         Collection dataMock = mock(Collection.class);
         when(queryExecutorMock.execute(same(schedulerEntryMock))).thenReturn(dataMock).thenThrow(QueryExecutionException.class);
 
-        IObject state = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject state = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'queryExecutor':'that query executor'," +
                         "'statisticsChain':'the_statistics_chain'" +
@@ -101,10 +101,10 @@ public class QuerySensorSchedulerActionTest extends PluginsLoadingTestBase {
         ArgumentCaptor<IObject> messageCaptor = ArgumentCaptor.forClass(IObject.class);
         verify(messageBusHandlerMock).handle(messageCaptor.capture(), eq("the_statistics_chain__0"));
 
-        assertSame(dataMock, messageCaptor.getValue().getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "data")));
-        assertEquals(100600L, messageCaptor.getValue().getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+        assertSame(dataMock, messageCaptor.getValue().getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "data")));
+        assertEquals(100600L, messageCaptor.getValue().getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "periodStart")));
-        assertEquals(100600L, messageCaptor.getValue().getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+        assertEquals(100600L, messageCaptor.getValue().getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "periodEnd")));
     }
 }

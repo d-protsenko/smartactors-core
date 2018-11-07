@@ -35,7 +35,7 @@ public class DebuggerActor {
             String id = UUID.randomUUID().toString();
 
             try {
-                IDebuggerSession session = IOC.resolve(Keys.getOrAdd("debugger session"), id, debuggerAddress, arg);
+                IDebuggerSession session = IOC.resolve(Keys.resolveByName("debugger session"), id, debuggerAddress, arg);
 
                 sessions.put(id, session);
             } catch (ResolutionException e) {

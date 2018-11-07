@@ -72,7 +72,7 @@ public class HttpRequestHandlerTest {
                 new ResolveByNameIocStrategy()
         );
 
-        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), new CreateNewInstanceStrategy(
+        IOC.register(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
                                 return new FieldName((String) args[0]);
@@ -83,12 +83,12 @@ public class HttpRequestHandlerTest {
                 )
         );
 
-        IOC.register(Keys.getOrAdd("EmptyIObject"), new CreateNewInstanceStrategy(
+        IOC.register(Keys.resolveByName("EmptyIObject"), new CreateNewInstanceStrategy(
                         args -> new DSObject()
                 )
         );
 
-        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.resolveByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"), new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             if (args[0].equals(mockedKey)) {
                                 return deserializeStrategy;
@@ -100,14 +100,14 @@ public class HttpRequestHandlerTest {
         );
 
 
-        IOC.register(Keys.getOrAdd("http_request_key_for_deserialize"), new SingletonStrategy(mockedKey));
+        IOC.register(Keys.resolveByName("http_request_key_for_deserialize"), new SingletonStrategy(mockedKey));
 
 //        IOC.register(
-//                Keys.getOrAdd("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
+//                Keys.resolveByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
 //                new SingletonStrategy(requestParametersToIObject)
 //        );
 
-        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty"), new CreateNewInstanceStrategy(
+        IOC.register(Keys.resolveByName("info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty"), new CreateNewInstanceStrategy(
                         (args) -> {
                             IChannelHandler channelHandler = new ChannelHandlerNetty();
                             channelHandler.init(args[0]);
@@ -116,11 +116,11 @@ public class HttpRequestHandlerTest {
                 )
         );
 
-        IOC.register(Keys.getOrAdd("endpoint response strategy"), new SingletonStrategy(new Object()));
+        IOC.register(Keys.resolveByName("endpoint response strategy"), new SingletonStrategy(new Object()));
 
         taskQueueMock = mock(IQueue.class);
 
-        IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(taskQueueMock));
+        IOC.register(Keys.resolveByName("task_queue"), new SingletonStrategy(taskQueueMock));
     }
 
     @Test
@@ -143,7 +143,7 @@ public class HttpRequestHandlerTest {
         when(deserializeStrategy.deserialize(request)).thenThrow(DeserializationException.class);
         when(request.method()).thenReturn(HttpMethod.POST);
         HttpRequestHandler requestHandler = new HttpRequestHandler(ScopeProvider.getCurrentScope(), null, null, null, null, mock(IUpCounter.class));
-        IOC.register(Keys.getOrAdd("HttpPostParametersToIObjectException"), new SingletonStrategy(
+        IOC.register(Keys.resolveByName("HttpPostParametersToIObjectException"), new SingletonStrategy(
                         new DSObject("{\"statusCode\": 200}")
                 )
         );
@@ -159,7 +159,7 @@ public class HttpRequestHandlerTest {
         when(request.method()).thenReturn(HttpMethod.GET);
         doThrow(new AddRequestParametersToIObjectException("exception")).when(requestParametersToIObject).extract(any(), any());
         HttpRequestHandler requestHandler = new HttpRequestHandler(ScopeProvider.getCurrentScope(), null, null, null, null, mock(IUpCounter.class));
-        IOC.register(Keys.getOrAdd("HttpRequestParametersToIObjectException"), new SingletonStrategy(
+        IOC.register(Keys.resolveByName("HttpRequestParametersToIObjectException"), new SingletonStrategy(
                         new DSObject("{\"statusCode\": 200}")
                 )
         );

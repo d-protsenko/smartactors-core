@@ -53,12 +53,12 @@ public class MessagePartCreators {
 
     static {
         try {
-            partType_Part_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "type");
-            partText_TextPart_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "text");
-            partMime_Part_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "mime");
-            sourcePath_FilePart_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "sourceFile");
-            attachmentName_FilePart_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "attachmentName");
-            sourceF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "source");
+            partType_Part_F = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "type");
+            partText_TextPart_F = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "text");
+            partMime_Part_F = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "mime");
+            sourcePath_FilePart_F = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "sourceFile");
+            attachmentName_FilePart_F = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "attachmentName");
+            sourceF = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "source");
         } catch (ResolutionException e) {
             throw new RuntimeException("Failed to initialize fields", e);
         }

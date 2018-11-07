@@ -40,7 +40,7 @@ public class PluginResponseJsonContentStrategy implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.getOrAdd(IResponseContentStrategy.class.getCanonicalName()),
+                                    Keys.resolveByName(IResponseContentStrategy.class.getCanonicalName()),
                                     new SingletonStrategy(new ResponseContentJsonStrategy()));
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("ResponseJsonContentStrategy plugin can't load: can't get ResponseJsonContentStrategy key", e);
@@ -55,7 +55,7 @@ public class PluginResponseJsonContentStrategy implements IPlugin {
                         String keyName = IResponseContentStrategy.class.getCanonicalName();
 
                         try {
-                            IOC.remove(Keys.getOrAdd(keyName));
+                            IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

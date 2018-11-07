@@ -72,7 +72,7 @@ public class HttpsClientPlugin implements IPlugin {
                             () -> {
                                 try {
                                     registerFieldNames();
-                                    IOC.register(Keys.getOrAdd(URI.class.getCanonicalName()), new CreateNewInstanceStrategy(
+                                    IOC.register(Keys.resolveByName(URI.class.getCanonicalName()), new CreateNewInstanceStrategy(
                                                     (args) -> {
                                                         try {
                                                             return new URI((String) args[0]);
@@ -86,19 +86,19 @@ public class HttpsClientPlugin implements IPlugin {
 
                                     IDeserializeStrategy deserializeStrategy = new HttpResponseDeserializationStrategy(messageMapper);
 
-                                    IOC.register(Keys.getOrAdd("httpResponseResolver"), new SingletonStrategy(
+                                    IOC.register(Keys.resolveByName("httpResponseResolver"), new SingletonStrategy(
                                                     deserializeStrategy
                                             )
                                     );
 
-                                    IOC.register(Keys.getOrAdd("EmptyIObject"), new CreateNewInstanceStrategy(
+                                    IOC.register(Keys.resolveByName("EmptyIObject"), new CreateNewInstanceStrategy(
                                                     (args) -> new DSObject()
                                             )
                                     );
-                                    IOC.register(Keys.getOrAdd(IResponseHandler.class.getCanonicalName()), new CreateNewInstanceStrategy(
+                                    IOC.register(Keys.resolveByName(IResponseHandler.class.getCanonicalName()), new CreateNewInstanceStrategy(
                                                     (args) -> {
                                                         try {
-                                                            IObject configuration = IOC.resolve(Keys.getOrAdd("responseHandlerConfiguration"));
+                                                            IObject configuration = IOC.resolve(Keys.resolveByName("responseHandlerConfiguration"));
                                                             IObject request = (IObject) args[0];
                                                             IResponseHandler responseHandler = new HttpResponseHandler(
                                                                     (IQueue<ITask>) configuration.getValue(queueFieldName),
@@ -118,24 +118,24 @@ public class HttpsClientPlugin implements IPlugin {
                                             )
                                     );
                                     IRequestMaker<FullHttpRequest> requestMaker = new HttpRequestMaker();
-                                    IOC.register(Keys.getOrAdd(IRequestMaker.class.getCanonicalName()), new SingletonStrategy(
+                                    IOC.register(Keys.resolveByName(IRequestMaker.class.getCanonicalName()), new SingletonStrategy(
                                                     requestMaker
                                             )
                                     );
-                                    IOC.register(Keys.getOrAdd(MessageToBytesMapper.class.getCanonicalName()),
+                                    IOC.register(Keys.resolveByName(MessageToBytesMapper.class.getCanonicalName()),
                                             new SingletonStrategy(
                                                     messageMapper
                                             )
                                     );
 
-                                    IOC.register(Keys.getOrAdd("sendHttpsRequest"), new ApplyFunctionToArgumentsStrategy(
+                                    IOC.register(Keys.resolveByName("sendHttpsRequest"), new ApplyFunctionToArgumentsStrategy(
                                                     (args) -> {
                                                         try {
                                                             HttpsClient client = (HttpsClient) args[0];
                                                             IObject request = (IObject) args[1];
                                                             client.sendRequest(request);
                                                             IOC.resolve(
-                                                                    Keys.getOrAdd("createTimerOnRequest"),
+                                                                    Keys.resolveByName("createTimerOnRequest"),
                                                                     request,
                                                                     request.getValue(exceptionalMessageMapId)
                                                             );
@@ -147,12 +147,12 @@ public class HttpsClientPlugin implements IPlugin {
                                             )
                                     );
 
-                                    IOC.register(Keys.getOrAdd("getHttpsClient"), new ApplyFunctionToArgumentsStrategy(
+                                    IOC.register(Keys.resolveByName("getHttpsClient"), new ApplyFunctionToArgumentsStrategy(
                                                     (args) -> {
                                                         IObject request = (IObject) args[0];
                                                         try {
                                                             IResponseHandler responseHandler = IOC.resolve(
-                                                                    Keys.getOrAdd(IResponseHandler.class.getCanonicalName()),
+                                                                    Keys.resolveByName(IResponseHandler.class.getCanonicalName()),
                                                                     request
                                                             );
                                                             HttpsClient client =
@@ -183,10 +183,10 @@ public class HttpsClientPlugin implements IPlugin {
     }
 
     private void registerFieldNames() throws ResolutionException {
-        this.uriFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uri");
-        this.startChainNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "startChain");
-        this.queueFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "queue");
-        this.stackDepthFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "stackDepth");
-        this.exceptionalMessageMapId = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "exceptionalMessageMapId");
+        this.uriFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uri");
+        this.startChainNameFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "startChain");
+        this.queueFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "queue");
+        this.stackDepthFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "stackDepth");
+        this.exceptionalMessageMapId = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "exceptionalMessageMapId");
     }
 }

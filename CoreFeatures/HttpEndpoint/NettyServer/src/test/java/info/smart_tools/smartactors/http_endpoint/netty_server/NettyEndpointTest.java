@@ -70,13 +70,13 @@ public abstract class NettyEndpointTest<TRequest, TResponse> {
 /*
     @Test
     public void whenEndpointReceivesRequest_ItShouldPlaceExchangeObjectIntoMessage_WhichCanBeUsedToSendResponse() throws Exception {
-        IMessage stubMessage = IOC.resolve(Keys.getOrAdd(IMessage.class.toString()));
+        IMessage stubMessage = IOC.resolve(Keys.resolveByName(IMessage.class.toString()));
         when(mapperStub.deserialize(any(byte[].class))).thenReturn(stubMessage);
         when(mapperStub.serialize(any(IMessage.class))).thenReturn("response".getBytes());
         stubClient((ctx, msg) -> {
             try {
                 String actualResponse = getResponseContent(msg);
-                stubMessage.setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.toString())), actualResponse);
+                stubMessage.setValue(IOC.resolve(Keys.resolveByName(IFieldName.class.toString())), actualResponse);
             } catch (ChangeValueException e) {
                 fail("Failed to change value in IObject", e);
             } catch (InvalidArgumentException | ResolutionException e) {
@@ -117,7 +117,7 @@ public abstract class NettyEndpointTest<TRequest, TResponse> {
             retries--;
             T result = null;
             try {
-                result = (T) obj.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), key));
+                result = (T) obj.getValue(IOC.resolve(Keys.resolveByName(IFieldName.class.toString()), key));
             } catch (ReadValueException e) {
                 throw new AssertionError("Failed to read value from IObject");
             } catch (InvalidArgumentException e) {

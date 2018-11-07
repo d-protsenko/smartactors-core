@@ -35,7 +35,7 @@ public class CreateCollectionActorPluginTest {
 
     @Test
     public void testCreateTaskInitializedWithoutOptions() throws ResolutionException, CreateCollectionActorException {
-        Object actor = IOC.resolve(Keys.getOrAdd("CreateCollectionIfNotExistsActor"));
+        Object actor = IOC.resolve(Keys.resolveByName("CreateCollectionIfNotExistsActor"));
         assertTrue(actor instanceof CreateCollectionActor);
     }
 }

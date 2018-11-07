@@ -57,7 +57,7 @@ public class HttpClientPluginTest {
         bootstrap.start();
 
         IOC.register(
-                Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
@@ -141,12 +141,12 @@ public class HttpClientPluginTest {
         item.executeProcess();
 
         IResponseHandler responseHandler = mock(IResponseHandler.class);
-        IOC.register(Keys.getOrAdd(IResponseHandler.class.getCanonicalName()), new SingletonStrategy(responseHandler));
+        IOC.register(Keys.resolveByName(IResponseHandler.class.getCanonicalName()), new SingletonStrategy(responseHandler));
         HttpClient client = mock(HttpClient.class);
-        IOC.register(Keys.getOrAdd("createTimerOnRequest"), new SingletonStrategy(client));
+        IOC.register(Keys.resolveByName("createTimerOnRequest"), new SingletonStrategy(client));
         IObject request =
                 new DSObject("{\"messageMapId\": \"messageMapId\", \"message\": {}, \"method\": \"POST\", \"uri\": \"https://foo.bar\"}");
-        IOC.resolve(Keys.getOrAdd("sendHttpRequest"), client, request);
+        IOC.resolve(Keys.resolveByName("sendHttpRequest"), client, request);
         verify(client, times(1)).sendRequest(any());
         assertNotNull(client);
     }

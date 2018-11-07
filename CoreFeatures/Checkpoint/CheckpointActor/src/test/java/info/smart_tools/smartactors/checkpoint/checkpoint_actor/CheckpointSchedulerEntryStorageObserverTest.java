@@ -31,7 +31,7 @@ public class CheckpointSchedulerEntryStorageObserverTest extends PluginsLoadingT
     }
 
     private ISchedulerEntry em(final String id) throws Exception {
-        IObject state = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject state = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 String.format("{'prevCheckpointEntryId':'%s'}", id).replace('\'','"'));
 
         ISchedulerEntry entry = mock(ISchedulerEntry.class);

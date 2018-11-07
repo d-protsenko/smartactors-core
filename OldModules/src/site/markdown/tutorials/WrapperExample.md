@@ -215,7 +215,7 @@ You can define it as an anonymous class.
 Then you need to register it in IOC.
 Because in this case IOC should resolve the strategy, the key is constructed from the interface canonical name.
 
-    IKey key = Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName());
+    IKey key = Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName());
     
 And you need the unique name for your strategy.
     
@@ -242,7 +242,7 @@ After this you can mention you strategy name in the wrapper configuration.
 A special implementation of IObject, [ConfigurationObject](../apidocs/info/smart_tools/smartactors/core/configuration_object/ConfigurationObject.html), is used to parse config file and wrapper definitions in it.
 This implementation expands short definitions in the wrapper into long definitions with lists of strategies.
 
-    IKey configObjectKey = Keys.getOrAdd("configuration object");
+    IKey configObjectKey = Keys.resolveByName("configuration object");
     ConfigurationObject config = IOC.resolve(configObjectKey,
             "{" +
             "\"in_getName\": \"message/personName\"," +
@@ -262,7 +262,7 @@ The strategies to use ConfigurationObject are registered in IOC by [InitializeCo
             "\"in_getName\": \"message/personName\"," +
             "\"out_setGreeting\": \"response/greeting\"" +
             "}");
-    IKey wdsObjectKey = Keys.getOrAdd(WDSObject.class.getCanonicalName());
+    IKey wdsObjectKey = Keys.resolveByName(WDSObject.class.getCanonicalName());
     WDSObject wdsObject = IOC.resolve(wdsObjectKey, config);
     
 It's created for each "wrapper" section in the config.
@@ -289,7 +289,7 @@ The strategies to use WDSObject are registered by [PluginWDSObject](../apidocs/i
 
 [WrapperGenerator](../apidocs/info/smart_tools/smartactors/core/wrapper_generator/WrapperGenerator.html) generates a class in runtime which implements IObject, IObjectWrapper and the wrapper interface — interface of the parameter of the actor's handler.
 
-    IKey iWrapperGeneratorKey = Keys.getOrAdd(IWrapperGenerator.class.getCanonicalName());
+    IKey iWrapperGeneratorKey = Keys.resolveByName(IWrapperGenerator.class.getCanonicalName());
     IWrapperGenerator generator = IOC.resolve(iWrapperGeneratorKey);
     GreetingMessage message = generator.generate(GreetingMessage.class);
 

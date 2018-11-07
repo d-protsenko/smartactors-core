@@ -70,7 +70,7 @@ public class PostgresInsertTaskTest {
         bootstrap.start();
 
         IOC.register(
-                Keys.getOrAdd("db.collection.nextid"),
+                Keys.resolveByName("db.collection.nextid"),
                 new UuidNextIdStrategy()
         );
     }
@@ -101,7 +101,7 @@ public class PostgresInsertTaskTest {
         idFieldName = new FieldName("testID");
 
         IOC.register(
-                Keys.getOrAdd(InsertMessage.class.getCanonicalName()),
+                Keys.resolveByName(InsertMessage.class.getCanonicalName()),
                 new SingletonStrategy(message)
         );
     }

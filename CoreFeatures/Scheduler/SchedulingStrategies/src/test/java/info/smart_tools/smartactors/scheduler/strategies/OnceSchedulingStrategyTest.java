@@ -45,11 +45,11 @@ public class OnceSchedulingStrategyTest extends PluginsLoadingTestBase {
     @Override
     protected void registerMocks() throws Exception {
         entry = mock(ISchedulerEntry.class);
-        when(entry.getState()).thenReturn(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
+        when(entry.getState()).thenReturn(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
 
-        time = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "time");
-        save = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "save");
-        ntl = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "neverTooLate");
+        time = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "time");
+        save = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "save");
+        ntl = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "neverTooLate");
     }
 
     @Test
@@ -77,7 +77,7 @@ public class OnceSchedulingStrategyTest extends PluginsLoadingTestBase {
             throws Exception {
         ISchedulingStrategy strategy = new OnceSchedulingStrategy();
 
-        strategy.init(entry, IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        strategy.init(entry, IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'time':'1989-09-11T00:00:05','save':true,'neverTooLate':true}".replace('\'','"')));
 
         verify(entry).save();
@@ -93,7 +93,7 @@ public class OnceSchedulingStrategyTest extends PluginsLoadingTestBase {
             throws Exception {
         ISchedulingStrategy strategy = new OnceSchedulingStrategy();
 
-        strategy.init(entry, IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        strategy.init(entry, IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'time':'1989-09-11T00:00:05','save':false}".replace('\'','"')));
 
         verify(entry, times(0)).save();
@@ -107,7 +107,7 @@ public class OnceSchedulingStrategyTest extends PluginsLoadingTestBase {
     @Test
     public void Should_restoreEntryAndCancelItWhenItIsTooLateWhenItMayBeTooLate()
             throws Exception {
-        when(entry.getState()).thenReturn(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        when(entry.getState()).thenReturn(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'time':'2000-10-10T00:50:15','neverTooLate':false}".replace('\'','"')));
 
         ISchedulingStrategy strategy = new OnceSchedulingStrategy();
@@ -120,7 +120,7 @@ public class OnceSchedulingStrategyTest extends PluginsLoadingTestBase {
     @Test
     public void Should_restoreEntryAndScheduleItWhenItIsTooLateButItIsNeverTooLate()
             throws Exception {
-        when(entry.getState()).thenReturn(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        when(entry.getState()).thenReturn(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'time':'2000-10-10T00:50:15','neverTooLate':true}".replace('\'','"')));
 
         ISchedulingStrategy strategy = new OnceSchedulingStrategy();
@@ -135,7 +135,7 @@ public class OnceSchedulingStrategyTest extends PluginsLoadingTestBase {
             throws Exception {
         ISchedulingStrategy strategy = new OnceSchedulingStrategy();
 
-        when(entry.getState()).thenReturn(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        when(entry.getState()).thenReturn(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'time':'3410-01-01T00:00:01','neverTooLate':true}".replace('\'','"')));
 
         strategy.restore(entry);
@@ -144,7 +144,7 @@ public class OnceSchedulingStrategyTest extends PluginsLoadingTestBase {
 
         reset(entry);
 
-        when(entry.getState()).thenReturn(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        when(entry.getState()).thenReturn(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'time':'3410-01-01T00:00:01','neverTooLate':false}".replace('\'','"')));
 
         strategy.restore(entry);
@@ -157,7 +157,7 @@ public class OnceSchedulingStrategyTest extends PluginsLoadingTestBase {
             throws Exception {
         ISchedulingStrategy strategy = new OnceSchedulingStrategy();
 
-        when(entry.getState()).thenReturn(IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        when(entry.getState()).thenReturn(IOC.resolve(Keys.resolveByName(IObject.class.getCanonicalName()),
                 "{'time':'3410-01-01T00:00:01','neverTooLate':false}".replace('\'','"')));
 
         strategy.notifyPaused(entry);
@@ -172,7 +172,7 @@ public class OnceSchedulingStrategyTest extends PluginsLoadingTestBase {
             throws Exception {
         ISchedulingStrategy strategy = new OnceSchedulingStrategy();
 
-        when(entry.getState()).thenReturn(IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        when(entry.getState()).thenReturn(IOC.resolve(Keys.resolveByName(IObject.class.getCanonicalName()),
                 "{'time':'3410-01-01T00:00:01','neverTooLate':true}".replace('\'','"')));
 
         strategy.notifyPaused(entry);

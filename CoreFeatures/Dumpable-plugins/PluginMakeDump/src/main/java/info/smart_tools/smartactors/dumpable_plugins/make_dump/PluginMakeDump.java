@@ -35,7 +35,7 @@ public class PluginMakeDump extends BootstrapPlugin {
     @Item("dump_creation_strategy")
     public void registerDumpCreationStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("make dump"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.resolveByName("make dump"), new ApplyFunctionToArgumentsStrategy(args -> {
             IDumpable dumpable = (IDumpable) args[0];
             IObject options = (IObject) args[1];
 

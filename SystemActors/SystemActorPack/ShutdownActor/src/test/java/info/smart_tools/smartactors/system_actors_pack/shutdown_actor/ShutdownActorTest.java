@@ -35,7 +35,7 @@ public class ShutdownActorTest extends PluginsLoadingTestBase {
     protected void registerMocks() throws Exception {
         upCounterMock = mock(IUpCounter.class);
 
-        IOC.register(Keys.getOrAdd("a upcounter"), new SingletonStrategy(upCounterMock));
+        IOC.register(Keys.resolveByName("a upcounter"), new SingletonStrategy(upCounterMock));
     }
 
     @Test

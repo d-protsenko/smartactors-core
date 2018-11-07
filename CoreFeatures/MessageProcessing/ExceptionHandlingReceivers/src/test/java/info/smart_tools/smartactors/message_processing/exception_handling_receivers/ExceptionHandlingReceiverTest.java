@@ -40,7 +40,7 @@ public class ExceptionHandlingReceiverTest {
     @Before
     public void setUp() throws Exception {
         mockStatic(IOC.class);
-        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(keyForFieldName);
+        when(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(keyForFieldName);
 
         when(IOC.resolve(same(keyForFieldName), eq("causeLevel"))).thenReturn(causeLevelFieldName);
         when(IOC.resolve(same(keyForFieldName), eq("causeStep"))).thenReturn(causeStepFieldName);

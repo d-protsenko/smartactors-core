@@ -44,11 +44,11 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
      */
     public ExecutorSectionProcessingStrategy()
             throws ResolutionException {
-        this.name = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "executor");
-        this.threadCountFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "threadCount");
-        this.maxRunningThreadsFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maxRunningThreads");
-        this.maxExecutionDelayFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maxExecutionDelay");
-        this.defaultStackDepthFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "defaultStackDepth");
+        this.name = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "executor");
+        this.threadCountFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "threadCount");
+        this.maxRunningThreadsFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maxRunningThreads");
+        this.maxExecutionDelayFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maxExecutionDelay");
+        this.defaultStackDepthFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "defaultStackDepth");
     }
 
     @Override
@@ -61,17 +61,17 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
             int maxExecutionDelay = Integer.valueOf(String.valueOf(section.getValue(maxExecutionDelayFieldName)));
             Integer defaultStackDepth = (Integer) section.getValue(this.defaultStackDepthFieldName);
 
-            IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd(IQueue.class.getCanonicalName()), section);
+            IQueue<ITask> queue = IOC.resolve(Keys.resolveByName(IQueue.class.getCanonicalName()), section);
 
             IThreadPool threadPool = new ThreadPool(threadsCount);
 
             ITaskDispatcher taskDispatcher = new TaskDispatcher(queue, threadPool, maxExecutionDelay, maxRunningThreads);
 
-            IOC.register(Keys.getOrAdd("task_dispatcher"), new SingletonStrategy(taskDispatcher));
-            IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(queue));
-            IOC.register(Keys.getOrAdd("thread_pool"), new SingletonStrategy(threadPool));
+            IOC.register(Keys.resolveByName("task_dispatcher"), new SingletonStrategy(taskDispatcher));
+            IOC.register(Keys.resolveByName("task_queue"), new SingletonStrategy(queue));
+            IOC.register(Keys.resolveByName("thread_pool"), new SingletonStrategy(threadPool));
             IOC.register(
-                    Keys.getOrAdd("default_stack_depth"),
+                    Keys.resolveByName("default_stack_depth"),
                     new SingletonStrategy(
                         null != defaultStackDepth ? defaultStackDepth : DEFAULT_STACK_DEPTH
                     )
@@ -79,7 +79,7 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
 
             taskDispatcher.start();
 
-            IUpCounter rootUpCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
+            IUpCounter rootUpCounter = IOC.resolve(Keys.resolveByName("root upcounter"));
 
             rootUpCounter.onShutdownComplete(taskDispatcher.toString(), () -> {
                 taskDispatcher.stop();
@@ -96,37 +96,37 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
             throws ConfigurationProcessingException {
         ConfigurationProcessingException exception = new ConfigurationProcessingException("Error occurred reverting \"Executor\" configuration section.");
         try {
-            ITaskDispatcher taskDispatcher = IOC.resolve(Keys.getOrAdd("task_dispatcher"));
+            ITaskDispatcher taskDispatcher = IOC.resolve(Keys.resolveByName("task_dispatcher"));
             taskDispatcher.stop();
-            IUpCounter rootUpCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
+            IUpCounter rootUpCounter = IOC.resolve(Keys.resolveByName("root upcounter"));
             IPoorAction taskDispatcherShutdown = rootUpCounter.removeFromShutdownComplete(taskDispatcher.toString());
             taskDispatcherShutdown.execute();
         } catch (ResolutionException | ActionExecuteException e) {
             exception.addSuppressed(e);
         }
         try {
-            IThreadPool threadPool = IOC.resolve(Keys.getOrAdd("thread_pool"));
+            IThreadPool threadPool = IOC.resolve(Keys.resolveByName("thread_pool"));
             threadPool.terminate();
         } catch (ResolutionException e) {
             exception.addSuppressed(e);
         }
         try {
-            IOC.remove(Keys.getOrAdd("default_stack_depth"));
+            IOC.remove(Keys.resolveByName("default_stack_depth"));
         } catch(ResolutionException | DeletionException e) {
             exception.addSuppressed(e);
         }
         try {
-            IOC.remove(Keys.getOrAdd("thread_pool"));
+            IOC.remove(Keys.resolveByName("thread_pool"));
         } catch(ResolutionException | DeletionException e) {
             exception.addSuppressed(e);
         }
         try {
-            IOC.remove(Keys.getOrAdd("task_queue"));
+            IOC.remove(Keys.resolveByName("task_queue"));
         } catch(ResolutionException | DeletionException e) {
             exception.addSuppressed(e);
         }
         try {
-            IOC.remove(Keys.getOrAdd("task_dispatcher"));
+            IOC.remove(Keys.resolveByName("task_dispatcher"));
         } catch(ResolutionException | DeletionException e) {
             exception.addSuppressed(e);
         }

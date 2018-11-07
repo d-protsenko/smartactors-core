@@ -48,16 +48,16 @@ public class PostgresDBCollectionServer implements IServer {
                     "test_" + Long.toHexString(Double.doubleToLongBits(Math.random())));
 
             IFieldName idField = IOC.resolve(
-                    Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), collection + "ID");
+                    Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), collection + "ID");
 
-            IObject document = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
-            IFieldName textField = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "text");
-            IFieldName intField = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "int");
+            IObject document = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IFieldName textField = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "text");
+            IFieldName intField = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "int");
             document.setValue(textField, "initial value");
             document.setValue(intField, 1);
 
             ConnectionOptions connectionOptions = new TestConnectionOptions();
-            IPool pool = IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool"), connectionOptions);
+            IPool pool = IOC.resolve(Keys.resolveByName("DatabaseConnectionPool"), connectionOptions);
 
             CollectionOperations.createCollection(pool, collection);
 

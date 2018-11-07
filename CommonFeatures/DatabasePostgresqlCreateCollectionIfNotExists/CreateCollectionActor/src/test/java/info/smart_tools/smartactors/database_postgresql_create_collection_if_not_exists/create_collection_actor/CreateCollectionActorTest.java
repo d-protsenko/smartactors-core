@@ -57,7 +57,7 @@ public class CreateCollectionActorTest {
                         }
                 )
         );
-        IOC.register(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IOC.register(Keys.resolveByName(IObject.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     if (args.length == 0) {
                         return new DSObject();
@@ -72,10 +72,10 @@ public class CreateCollectionActorTest {
                     }
                 })
         );
-        IOC.register(Keys.getOrAdd("connectionOptions"),
+        IOC.register(Keys.resolveByName("connectionOptions"),
                 new ApplyFunctionToArgumentsStrategy(args -> mock(ConnectionOptions.class))
         );
-        IOC.register(Keys.getOrAdd("PostgresConnectionPool"),
+        IOC.register(Keys.resolveByName("PostgresConnectionPool"),
                 new ApplyFunctionToArgumentsStrategy(args -> mock(IPool.class))
         );
     }
@@ -88,7 +88,7 @@ public class CreateCollectionActorTest {
         when(wrapper.getOptions()).thenReturn(null);
 
         ITask task = mock(ITask.class);
-        IOC.register(Keys.getOrAdd("db.collection.create-if-not-exists"),
+        IOC.register(Keys.resolveByName("db.collection.create-if-not-exists"),
                 new ApplyFunctionToArgumentsStrategy(args -> task)
         );
         actor.createTable(wrapper);

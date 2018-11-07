@@ -26,5 +26,5 @@ You should define the configuration in the feature that use this configuration o
 For Postgresql database field "type" should have value "PostgresConnectionOptionsStrategy". User can define several 
 configurations and resolve them using IOC, for example:
 
-    Object connectionOptions = IOC.resolve(Keys.getOrAdd("PostgresConnectionOptions"));
+    Object connectionOptions = IOC.resolve(Keys.resolveByName("PostgresConnectionOptions"));
  

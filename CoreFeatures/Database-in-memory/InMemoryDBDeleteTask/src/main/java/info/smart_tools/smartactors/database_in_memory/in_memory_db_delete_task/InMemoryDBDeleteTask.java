@@ -30,8 +30,8 @@ public class InMemoryDBDeleteTask implements IDatabaseTask {
      */
     public InMemoryDBDeleteTask() throws TaskPrepareException {
         try {
-            collectionNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collectionName");
-            documentFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "document");
+            collectionNameFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collectionName");
+            documentFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "document");
         } catch (ResolutionException e) {
             throw new TaskPrepareException("Failed to resolve \"IFieldName\"", e);
         }
@@ -50,7 +50,7 @@ public class InMemoryDBDeleteTask implements IDatabaseTask {
     @Override
     public void execute() throws TaskExecutionException {
         try {
-            IDatabase dataBase = IOC.resolve(Keys.getOrAdd(InMemoryDatabase.class.getCanonicalName()));
+            IDatabase dataBase = IOC.resolve(Keys.resolveByName(InMemoryDatabase.class.getCanonicalName()));
             dataBase.delete(document, collectionName);
         } catch (ResolutionException e) {
             throw new TaskExecutionException("Failed to resolve InMemoryDatabase", e);

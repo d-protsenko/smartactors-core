@@ -33,7 +33,7 @@ public class RemoteManagementPlugin extends BootstrapPlugin {
     public void register()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
 
-        IOC.register(Keys.getOrAdd("FeatureLoadStarterActor"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.resolveByName("FeatureLoadStarterActor"), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
                 return new FeatureLoadStarterActor();
             } catch (Exception e) {
@@ -49,7 +49,7 @@ public class RemoteManagementPlugin extends BootstrapPlugin {
 
         try {
             keyName = "FeatureLoadStarterActor";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }

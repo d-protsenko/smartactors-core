@@ -43,12 +43,12 @@ public class CookiesSetter implements ICookiesSetter {
         IFieldName maxAgeFieldName;
         IFieldName cookiePath;
         try {
-            contextField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "context");
-            cookiesField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "cookies");
-            cookieName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
-            cookieValue = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "value");
-            cookiePath = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "path");
-            maxAgeFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maxAge");
+            contextField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "context");
+            cookiesField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "cookies");
+            cookieName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+            cookieValue = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "value");
+            cookiePath = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "path");
+            maxAgeFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maxAge");
         } catch (ResolutionException e) {
             throw new CookieSettingException("Failed to resolve fieldName", e);
         }

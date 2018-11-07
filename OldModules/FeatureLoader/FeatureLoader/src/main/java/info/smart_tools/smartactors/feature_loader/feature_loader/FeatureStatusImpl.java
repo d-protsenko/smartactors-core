@@ -115,7 +115,7 @@ public class FeatureStatusImpl implements IFeatureStatus {
         }
 
         try {
-            IQueue<ITask> taskQueue = IOC.resolve(Keys.getOrAdd("task_queue"));
+            IQueue<ITask> taskQueue = IOC.resolve(Keys.resolveByName("task_queue"));
 
             taskQueue.put(() -> {
                 try {

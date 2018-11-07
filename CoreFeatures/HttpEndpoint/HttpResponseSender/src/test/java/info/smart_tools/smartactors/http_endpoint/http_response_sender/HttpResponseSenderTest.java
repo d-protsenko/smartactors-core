@@ -70,12 +70,12 @@ public class HttpResponseSenderTest {
                 IOC.getKeyForKeyByNameResolutionStrategy(),
                 new ResolveByNameIocStrategy()
         );
-        IKey keyFieldName = Keys.getOrAdd(IFieldName.class.getCanonicalName());
-        IKey keyIObject = Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
-        IKey keyCookiesExtractor = Keys.getOrAdd(ICookiesSetter.class.getCanonicalName());
-        IKey keyHeadersExtractor = Keys.getOrAdd(IHeadersExtractor.class.getCanonicalName());
-        IKey keyResponseStatusExtractor = Keys.getOrAdd(IResponseStatusExtractor.class.getCanonicalName());
-        IKey keyFullHttpResponse = Keys.getOrAdd(DefaultFullHttpResponse.class.getCanonicalName());
+        IKey keyFieldName = Keys.resolveByName(IFieldName.class.getCanonicalName());
+        IKey keyIObject = Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject");
+        IKey keyCookiesExtractor = Keys.resolveByName(ICookiesSetter.class.getCanonicalName());
+        IKey keyHeadersExtractor = Keys.resolveByName(IHeadersExtractor.class.getCanonicalName());
+        IKey keyResponseStatusExtractor = Keys.resolveByName(IResponseStatusExtractor.class.getCanonicalName());
+        IKey keyFullHttpResponse = Keys.resolveByName(DefaultFullHttpResponse.class.getCanonicalName());
 
         IOC.register(
                 keyCookiesExtractor,
@@ -130,9 +130,9 @@ public class HttpResponseSenderTest {
                 )
         );
 
-        IOC.register(Keys.getOrAdd("key_for_response_status_setter"), new SingletonStrategy(key));
-        IOC.register(Keys.getOrAdd("key_for_headers_extractor"), new SingletonStrategy(key));
-        IOC.register(Keys.getOrAdd("key_for_cookies_extractor"), new SingletonStrategy(key));
+        IOC.register(Keys.resolveByName("key_for_response_status_setter"), new SingletonStrategy(key));
+        IOC.register(Keys.resolveByName("key_for_headers_extractor"), new SingletonStrategy(key));
+        IOC.register(Keys.resolveByName("key_for_cookies_extractor"), new SingletonStrategy(key));
 
     }
 
@@ -140,7 +140,7 @@ public class HttpResponseSenderTest {
     public void writeShouldCallSendMethod() throws
             ResponseSendingException, ResolutionException, CookieSettingException, HeadersSetterException {
         HttpResponseSender sender = new HttpResponseSender("123");
-        IObject environment = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), "{\"foo\":\"bar\"}");
+        IObject environment = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{\"foo\":\"bar\"}");
         when(responseStatusExtractor.extract(any(IObject.class))).thenReturn(200);
         when(response.getContent()).thenReturn("{\"foo\":\"bar\"}".getBytes());
         sender.send(response, environment, ctx);

@@ -54,7 +54,7 @@ public class HttpsEndpointPluginTest {
                 new ResolveByNameIocStrategy()
         );
         IOC.register(
-                Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
@@ -67,29 +67,29 @@ public class HttpsEndpointPluginTest {
                 )
         );
 
-        IOC.register(Keys.getOrAdd("ResolveByTypeAndNameStrategy"), new SingletonStrategy(
+        IOC.register(Keys.resolveByName("ResolveByTypeAndNameStrategy"), new SingletonStrategy(
                         deserializationStrategyChooser
                 )
         );
-        IOC.register(Keys.getOrAdd("DeserializationStrategyChooser"), new SingletonStrategy(
+        IOC.register(Keys.resolveByName("DeserializationStrategyChooser"), new SingletonStrategy(
                         deserializationStrategyChooser
                 )
         );
-        IOC.register(Keys.getOrAdd("ResponseSenderChooser"), new SingletonStrategy(
+        IOC.register(Keys.resolveByName("ResponseSenderChooser"), new SingletonStrategy(
                         resolveResponseSender
                 )
         );
         bootstrap = mock(IBootstrap.class);
         plugin = new HttpsEndpointPlugin(bootstrap);
-        IOC.register(Keys.getOrAdd("CookiesSetterChooser"), new SingletonStrategy(
+        IOC.register(Keys.resolveByName("CookiesSetterChooser"), new SingletonStrategy(
                         resolveCookies
                 )
         );
-        IOC.register(Keys.getOrAdd("HeadersExtractorChooser"), new SingletonStrategy(
+        IOC.register(Keys.resolveByName("HeadersExtractorChooser"), new SingletonStrategy(
                         resolveHeaders
                 )
         );
-        IOC.register(Keys.getOrAdd("ResponseStatusSetter"), new SingletonStrategy(
+        IOC.register(Keys.resolveByName("ResponseStatusSetter"), new SingletonStrategy(
                         resolveStatusSetter
                 )
         );

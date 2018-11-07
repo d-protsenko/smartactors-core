@@ -54,7 +54,7 @@ public class InMemoryDBSectionProcessingStrategyTest {
                 IOC.getKeyForKeyByNameResolutionStrategy(),
                 new ResolveByNameIocStrategy()
         );
-        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), new CreateNewInstanceStrategy(
+        IOC.register(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
                                 return new FieldName((String) args[0]);
@@ -65,8 +65,8 @@ public class InMemoryDBSectionProcessingStrategyTest {
                 )
         );
 
-        IOC.register(Keys.getOrAdd("IObjectByString"), new SingletonStrategy(mockObject));
-        IOC.register(Keys.getOrAdd(InMemoryDatabase.class.getCanonicalName()), new SingletonStrategy(inMemoryDatabase));
+        IOC.register(Keys.resolveByName("IObjectByString"), new SingletonStrategy(mockObject));
+        IOC.register(Keys.resolveByName(InMemoryDatabase.class.getCanonicalName()), new SingletonStrategy(inMemoryDatabase));
 
     }
 

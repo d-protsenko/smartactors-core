@@ -31,7 +31,7 @@ public class SingleChainRecoverStrategy implements IRecoveryChainChoiceStrategy 
      */
     public SingleChainRecoverStrategy()
             throws ResolutionException {
-        chainNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
+        chainNameFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
     }
 
     @Override
@@ -52,7 +52,7 @@ public class SingleChainRecoverStrategy implements IRecoveryChainChoiceStrategy 
     @Override
     public Object chooseRecoveryChain(final IObject state) throws RecoverStrategyExecutionException {
         try {
-            // return IOC.resolve(Keys.getOrAdd("chain_id_from_map_name_and_message"), state.getValue(chainFieldName));
+            // return IOC.resolve(Keys.resolveByName("chain_id_from_map_name_and_message"), state.getValue(chainFieldName));
             return state.getValue(chainNameFieldName);
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new RecoverStrategyExecutionException("Error occurred resolving chain identifier.", e);

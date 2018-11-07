@@ -39,7 +39,7 @@ public class IObjectSimpleImplPlugin implements IPlugin {
                 .after("IOC")
                 .process(() -> {
                     try {
-                        IKey fieldKey = Keys.getOrAdd(IObjectImpl.class.getCanonicalName());
+                        IKey fieldKey = Keys.resolveByName(IObjectImpl.class.getCanonicalName());
                         IOC.register(fieldKey, new CreateNewInstanceStrategy(
                                 (args) -> new IObjectImpl()
                         ));
@@ -57,7 +57,7 @@ public class IObjectSimpleImplPlugin implements IPlugin {
 
                     try {
                         keyName = IObjectImpl.class.getCanonicalName();
-                        IOC.remove(Keys.getOrAdd(keyName));
+                        IOC.remove(Keys.resolveByName(keyName));
                     } catch(DeletionException e) {
                         System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                     } catch (ResolutionException e) { }

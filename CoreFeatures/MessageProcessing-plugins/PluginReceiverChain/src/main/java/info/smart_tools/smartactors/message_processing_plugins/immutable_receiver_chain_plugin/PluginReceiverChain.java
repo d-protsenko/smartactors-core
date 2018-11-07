@@ -40,7 +40,7 @@ public class PluginReceiverChain implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.getOrAdd(IReceiverChain.class.getCanonicalName()),
+                                    Keys.resolveByName(IReceiverChain.class.getCanonicalName()),
                                     new ImmutableReceiverChainResolutionStrategy());
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("ReceiverChain plugin can't load: can't get ReceiverChain key", e);
@@ -54,7 +54,7 @@ public class PluginReceiverChain implements IPlugin {
 
                         try {
                             keyName = IReceiverChain.class.getCanonicalName();
-                            IOC.remove(Keys.getOrAdd(keyName));
+                            IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

@@ -27,7 +27,7 @@ public class CreateCollectionActorPlugin extends BootstrapPlugin {
     @Before("")
     public void registerActor() throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
-                Keys.getOrAdd("CreateCollectionIfNotExistsActor"),
+                Keys.resolveByName("CreateCollectionIfNotExistsActor"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     try {
                         return new CreateCollectionActor();

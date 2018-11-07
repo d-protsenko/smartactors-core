@@ -24,11 +24,11 @@ public class MessageToBytesMapper implements IMessageMapper<byte[]> {
     @Override
     public IObject deserialize(final byte[] serializedInput) throws ResolutionException {
         if (serializedInput.length == 0) {
-            return IOC.resolve(Keys.getOrAdd("EmptyIObject"));
+            return IOC.resolve(Keys.resolveByName("EmptyIObject"));
         }
         String string = new String(serializedInput);
         string = string.substring(string.indexOf('{'), string.lastIndexOf('}') + 1);
-        return IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), string);
+        return IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"), string);
     }
 
     @Override

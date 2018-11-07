@@ -33,8 +33,8 @@ public class SignalsPlugin extends BootstrapPlugin {
     })
     public void registerSystemSignals()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("shutdown signal"), new SingletonStrategy(new ShutdownSignal()));
-        IOC.register(Keys.getOrAdd("abort signal"), new SingletonStrategy(new AbortSignal()));
+        IOC.register(Keys.resolveByName("shutdown signal"), new SingletonStrategy(new ShutdownSignal()));
+        IOC.register(Keys.resolveByName("abort signal"), new SingletonStrategy(new AbortSignal()));
     }
 
     @ItemRevert("system_signal_classes")
@@ -44,14 +44,14 @@ public class SignalsPlugin extends BootstrapPlugin {
 
         try {
             keyName = "shutdown signal";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "abort signal";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }

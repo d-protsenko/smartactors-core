@@ -26,7 +26,7 @@ public class NullResponseStrategyPlugin extends BootstrapPlugin {
     @After({"IOC", "IFieldNamePlugin"})
     public void registerNullResponseStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("null response strategy"), new SingletonStrategy(NullResponseStrategy.INSTANCE));
+        IOC.register(Keys.resolveByName("null response strategy"), new SingletonStrategy(NullResponseStrategy.INSTANCE));
     }
 
     @ItemRevert("null_response_strategy")
@@ -35,7 +35,7 @@ public class NullResponseStrategyPlugin extends BootstrapPlugin {
         String keyName = "null response strategy";
 
         try {
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }

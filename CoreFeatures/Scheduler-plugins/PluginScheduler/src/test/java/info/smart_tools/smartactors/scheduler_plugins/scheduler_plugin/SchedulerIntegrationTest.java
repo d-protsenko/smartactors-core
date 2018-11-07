@@ -152,7 +152,7 @@ public class SchedulerIntegrationTest extends PluginsLoadingTestBase {
         Object marker = UUID.randomUUID().toString();
         LocalDateTime time = LocalDateTime.now(ZoneOffset.UTC).plus(delay, ChronoUnit.MILLIS);
 
-        IObject entryArgs = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject entryArgs = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 String.format("{" +
                         "   'strategy':'do once scheduling strategy'," +
                         "   'action': 'count scheduler action'," +
@@ -163,7 +163,7 @@ public class SchedulerIntegrationTest extends PluginsLoadingTestBase {
                         "}", marker, time.toString())
                         .replace('\'','"'));
 
-        IOC.resolve(Keys.getOrAdd("new scheduler entry"), entryArgs, storage);
+        IOC.resolve(Keys.resolveByName("new scheduler entry"), entryArgs, storage);
 
         sMap.put(marker, time.toInstant(ZoneOffset.UTC).toEpochMilli());
     }
@@ -192,16 +192,16 @@ public class SchedulerIntegrationTest extends PluginsLoadingTestBase {
 
         taskDispatcher.start();
 
-        IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(taskQueue));
+        IOC.register(Keys.resolveByName("task_queue"), new SingletonStrategy(taskQueue));
 
         nExecuted = new AtomicLong(0);
         nScheduled = new AtomicLong(0);
         isCompleted = false;
         sMap = new ConcurrentHashMap<>();
 
-        IOC.register(Keys.getOrAdd("count scheduler action"), new SingletonStrategy(new CountSchedulerAction()));
+        IOC.register(Keys.resolveByName("count scheduler action"), new SingletonStrategy(new CountSchedulerAction()));
 
-        markerFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "_marker");
+        markerFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "_marker");
         duplicateMarkers = new CopyOnWriteArrayList<>();
     }
 
@@ -243,10 +243,10 @@ public class SchedulerIntegrationTest extends PluginsLoadingTestBase {
             public void setMaxConnections(Integer maxConnections) throws ChangeValueException {}
         };
 
-        Object connectionPool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptions);
+        Object connectionPool = IOC.resolve(Keys.resolveByName("PostgresConnectionPool"), connectionOptions);
 
         service = IOC.resolve(
-                Keys.getOrAdd("new scheduler service"),
+                Keys.resolveByName("new scheduler service"),
                 connectionPool,
                 "schedulerCollection"
         );

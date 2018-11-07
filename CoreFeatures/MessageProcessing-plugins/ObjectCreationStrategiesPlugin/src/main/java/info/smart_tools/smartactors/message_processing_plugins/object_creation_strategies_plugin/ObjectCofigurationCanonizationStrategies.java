@@ -43,13 +43,13 @@ public class ObjectCofigurationCanonizationStrategies extends BootstrapPlugin {
     })
     public void registerCanonizationStrategies()
             throws ResolutionException, RegistrationException, InvalidArgumentException, AdditionDependencyStrategyException {
-        IOC.register(Keys.getOrAdd("canonize objects configuration section item filters list"),
+        IOC.register(Keys.resolveByName("canonize objects configuration section item filters list"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     try {
                         IObject value = (IObject) args[0];
 
-                        IFieldName filtersFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "filters");
-                        IFieldName kindFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "kind");
+                        IFieldName filtersFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "filters");
+                        IFieldName kindFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "kind");
 
                         List filtersList = (List) value.getValue(filtersFieldName);
                         String kindName = (String) value.getValue(kindFieldName);
@@ -61,7 +61,7 @@ public class ObjectCofigurationCanonizationStrategies extends BootstrapPlugin {
                         }
 
                         if (null != kindName) {
-                            filtersList.addAll(0, IOC.resolve(Keys.getOrAdd("object kind filter sequence#" + kindName)));
+                            filtersList.addAll(0, IOC.resolve(Keys.resolveByName("object kind filter sequence#" + kindName)));
                         }
 
                         ListIterator iterator = filtersList.listIterator();
@@ -70,7 +70,7 @@ public class ObjectCofigurationCanonizationStrategies extends BootstrapPlugin {
                             Object filterItem = iterator.next();
 
                             if (filterItem instanceof String) {
-                                filterItem = IOC.resolve(Keys.getOrAdd("named filter config#" + filterItem));
+                                filterItem = IOC.resolve(Keys.resolveByName("named filter config#" + filterItem));
                                 iterator.set(filterItem);
                             }
                         }
@@ -83,7 +83,7 @@ public class ObjectCofigurationCanonizationStrategies extends BootstrapPlugin {
                     }
         }));
 
-        IAdditionDependencyStrategy strategy = IOC.resolve(Keys.getOrAdd("expandable_strategy#resolve key for configuration object"));
+        IAdditionDependencyStrategy strategy = IOC.resolve(Keys.resolveByName("expandable_strategy#resolve key for configuration object"));
 
         strategy.register("objects", new ApplyFunctionToArgumentsStrategy(args -> {
             try {
@@ -98,7 +98,7 @@ public class ObjectCofigurationCanonizationStrategies extends BootstrapPlugin {
                 while (iterator.hasNext()) {
                     IObject objConf = iterator.next();
 
-                    IObject updConf = IOC.resolve(Keys.getOrAdd("canonize objects configuration section item filters list"), objConf);
+                    IObject updConf = IOC.resolve(Keys.resolveByName("canonize objects configuration section item filters list"), objConf);
 
                     iterator.set(updConf);
                 }
@@ -116,7 +116,7 @@ public class ObjectCofigurationCanonizationStrategies extends BootstrapPlugin {
         String keyName = "canonize objects configuration section item filters list";
 
         try {
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }

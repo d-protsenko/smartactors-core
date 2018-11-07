@@ -47,8 +47,8 @@ public class PluginChainTestingAssertions implements IPlugin {
 //                    .before("configure")
                     .process(() -> {
                         try {
-                            IOC.register(Keys.getOrAdd("assertion of type equal"), new SingletonStrategy(new EqualAssertion()));
-                            IOC.register(Keys.getOrAdd("assertion of type not equal"), new SingletonStrategy(new NotEqualAssertion()));
+                            IOC.register(Keys.resolveByName("assertion of type equal"), new SingletonStrategy(new EqualAssertion()));
+                            IOC.register(Keys.resolveByName("assertion of type not equal"), new SingletonStrategy(new NotEqualAssertion()));
                         } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
                             throw new ActionExecuteException(e);
                         }

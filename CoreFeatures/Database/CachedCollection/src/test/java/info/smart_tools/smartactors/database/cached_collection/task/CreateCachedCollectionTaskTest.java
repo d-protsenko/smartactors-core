@@ -50,7 +50,7 @@ public class CreateCachedCollectionTaskTest {
         keyNameField = PowerMockito.mock(IField.class);
         indexesField = PowerMockito.mock(IField.class);
         IKey keyField = PowerMockito.mock(IKey.class);
-        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(keyField);
+        when(Keys.resolveByName(IField.class.getCanonicalName())).thenReturn(keyField);
         when(IOC.resolve(keyField, "keyName")).thenReturn(keyNameField);
         when(IOC.resolve(keyField, "indexes")).thenReturn(indexesField);
 
@@ -59,7 +59,7 @@ public class CreateCachedCollectionTaskTest {
         testTask = new CreateCachedCollectionTask(task);
 
         keyForGetKeyByName = mock(Key.class);
-        when(Keys.getOrAdd(CreateCachedCollectionQuery.class.toString())).thenReturn(keyForGetKeyByName);
+        when(Keys.resolveByName(CreateCachedCollectionQuery.class.toString())).thenReturn(keyForGetKeyByName);
     }
 
     @Test

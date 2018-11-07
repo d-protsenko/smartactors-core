@@ -34,11 +34,11 @@ public class DeserializeStrategyPostFormUrlencoded implements IDeserializeStrate
             }
             String string = new String(bytes);
             QueryStringDecoder decoder = new QueryStringDecoder(string, false);
-            IObject message = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject message = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
             decoder.parameters().forEach(
                     (k, v) -> {
                         try {
-                            IFieldName fieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), k);
+                            IFieldName fieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), k);
                             message.setValue(fieldName, v.get(0));
                         } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
                             throw new RuntimeException(e);

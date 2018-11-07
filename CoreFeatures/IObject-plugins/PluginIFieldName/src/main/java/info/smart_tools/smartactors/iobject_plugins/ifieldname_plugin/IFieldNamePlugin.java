@@ -41,7 +41,7 @@ public class IFieldNamePlugin implements IPlugin {
                     .after("IOC")
                     .process(() -> {
                         try {
-                            IKey iFieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+                            IKey iFieldNameKey = Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
                             IOC.register(iFieldNameKey,
                                     new ResolveByNameIocStrategy(
                                             (args) -> {
@@ -80,7 +80,7 @@ public class IFieldNamePlugin implements IPlugin {
 
                         try {
                             keyName = "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
-                            IOC.remove(Keys.getOrAdd(keyName));
+                            IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

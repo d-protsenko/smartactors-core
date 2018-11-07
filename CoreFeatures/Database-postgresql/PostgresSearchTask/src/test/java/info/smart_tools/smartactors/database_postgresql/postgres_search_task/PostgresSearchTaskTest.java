@@ -85,7 +85,7 @@ public class PostgresSearchTaskTest {
         when(message.getCriteria()).thenReturn(new DSObject("{ \"filter\": { } }"));
 
         IOC.register(
-                Keys.getOrAdd(SearchMessage.class.getCanonicalName()),
+                Keys.resolveByName(SearchMessage.class.getCanonicalName()),
                 new SingletonStrategy(message)
         );
     }

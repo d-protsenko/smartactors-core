@@ -48,7 +48,7 @@ public class UpdateAsyncOperationTaskTest {
         collectionNameField = mock(IField.class);
 
         Key fieldKey = mock(Key.class);
-        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(fieldKey);
+        when(Keys.resolveByName(IField.class.getCanonicalName())).thenReturn(fieldKey);
 
         when(IOC.resolve(fieldKey, "done")).thenReturn(doneFlagField);
         when(IOC.resolve(fieldKey, "document")).thenReturn(documentField);
@@ -60,7 +60,7 @@ public class UpdateAsyncOperationTaskTest {
         testTask = new UpdateAsyncOperationTask(connection);
 
         verifyStatic(times(3));
-        Keys.getOrAdd(IField.class.getCanonicalName());
+        Keys.resolveByName(IField.class.getCanonicalName());
 
         verifyStatic();
         IOC.resolve(fieldKey, "done");
@@ -82,7 +82,7 @@ public class UpdateAsyncOperationTaskTest {
         String collectionName = "example";
 
         IKey upsertTaskKey = mock(IKey.class);
-        when(Keys.getOrAdd("db.collection.upsert")).thenReturn(upsertTaskKey);
+        when(Keys.resolveByName("db.collection.upsert")).thenReturn(upsertTaskKey);
         when(collectionNameField.in(query)).thenReturn(collectionName);
 
         when(IOC.resolve(upsertTaskKey, connection, collectionName, document)).thenReturn(targetTask);
@@ -93,7 +93,7 @@ public class UpdateAsyncOperationTaskTest {
         verify(doneFlagField).out(document, true);
 
         verifyStatic();
-        Keys.getOrAdd("db.collection.upsert");
+        Keys.resolveByName("db.collection.upsert");
 
         verifyStatic();
         IOC.resolve(upsertTaskKey, connection, collectionName, document);
@@ -155,7 +155,7 @@ public class UpdateAsyncOperationTaskTest {
         IObject document = mock(IObject.class);
         when(documentField.in(query)).thenReturn(document);
 
-        when(Keys.getOrAdd("db.collection.upsert")).thenThrow(new ResolutionException(""));
+        when(Keys.resolveByName("db.collection.upsert")).thenThrow(new ResolutionException(""));
 
         try {
             testTask.prepare(query);
@@ -164,7 +164,7 @@ public class UpdateAsyncOperationTaskTest {
             verify(doneFlagField).out(document, true);
 
             verifyStatic();
-            Keys.getOrAdd("db.collection.upsert");
+            Keys.resolveByName("db.collection.upsert");
             return;
         }
         assertTrue(false);
@@ -180,7 +180,7 @@ public class UpdateAsyncOperationTaskTest {
         String collectionName = "example";
 
         IKey upsertTaskKey = mock(IKey.class);
-        when(Keys.getOrAdd("db.collection.upsert")).thenReturn(upsertTaskKey);
+        when(Keys.resolveByName("db.collection.upsert")).thenReturn(upsertTaskKey);
         when(collectionNameField.in(query)).thenReturn(collectionName);
 
         when(IOC.resolve(upsertTaskKey, connection, collectionName, document)).thenThrow(new ResolutionException(""));
@@ -192,7 +192,7 @@ public class UpdateAsyncOperationTaskTest {
             verify(doneFlagField).out(document, true);
 
             verifyStatic();
-            Keys.getOrAdd("db.collection.upsert");
+            Keys.resolveByName("db.collection.upsert");
 
             verifyStatic();
             IOC.resolve(upsertTaskKey, connection, collectionName, document);

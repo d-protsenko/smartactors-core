@@ -45,7 +45,7 @@ public class PluginEmbeddedSensor extends BootstrapPlugin {
     @After({"prepend_sensor_receiver_strategy", "embedded_sensor_receiver_strategy"})
     public void registerCreationStrategy()
             throws ResolutionException, RegistrationException {
-        IOC.register(Keys.getOrAdd("create embedded sensor"), new EmbeddedSensorCreationStrategy());
+        IOC.register(Keys.resolveByName("create embedded sensor"), new EmbeddedSensorCreationStrategy());
     }
 
     /**
@@ -59,7 +59,7 @@ public class PluginEmbeddedSensor extends BootstrapPlugin {
     @After({"embedded_sensor_observation_period_creation_strategy"})
     public void registerEmbeddedSensorReceiverCreationStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("embedded sensor receiver"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.resolveByName("embedded sensor receiver"), new ApplyFunctionToArgumentsStrategy(args -> {
             IObject arg = (IObject) args[0];
 
             try {
@@ -86,7 +86,7 @@ public class PluginEmbeddedSensor extends BootstrapPlugin {
     public void registerEmbeddedSensorObservationPeriodCreationStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
 
-        IOC.register(Keys.getOrAdd(IEmbeddedSensorObservationPeriod.class.getCanonicalName()),
+        IOC.register(Keys.resolveByName(IEmbeddedSensorObservationPeriod.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy(args -> {
             long start = ((Number) args[ESOP_START_ARG_INDEX]).longValue();
             long end = ((Number) args[ESOP_END_ARG_INDEX]).longValue();
@@ -110,7 +110,7 @@ public class PluginEmbeddedSensor extends BootstrapPlugin {
     @Item("prepend_sensor_receiver_strategy")
     public void registerSensorPrependStrategy()
             throws ResolutionException, RegistrationException {
-        IOC.register(Keys.getOrAdd("prepend sensor receiver"), new PrependSensorReceiverStrategy());
+        IOC.register(Keys.resolveByName("prepend sensor receiver"), new PrependSensorReceiverStrategy());
     }
 
     /**
@@ -130,12 +130,12 @@ public class PluginEmbeddedSensor extends BootstrapPlugin {
     @Item("save_timestamp_receiver_creation_strategy")
     public void registerTimesatampSaverCreationStrategy()
             throws RegistrationException, ResolutionException, InvalidArgumentException {
-        IFieldName timeFieldNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "timeFieldName");
+        IFieldName timeFieldNameFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "timeFieldName");
 
-        IOC.register(Keys.getOrAdd("save timestamp receiver"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.resolveByName("save timestamp receiver"), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
                 IObject arg = (IObject) args[0];
-                IFieldName timeFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IFieldName timeFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         arg.getValue(timeFieldNameFieldName));
 
                 return new SaveTimestampReceiver(timeFieldName);

@@ -38,7 +38,7 @@ public class SaveTimestampReceiverTest extends PluginsLoadingTestBase {
     @Override
     protected void registerMocks() throws Exception {
         timeMock = mock(ITime.class);
-        IOC.register(Keys.getOrAdd("time"), new SingletonStrategy(timeMock));
+        IOC.register(Keys.resolveByName("time"), new SingletonStrategy(timeMock));
         when(timeMock.currentTimeMillis()).thenReturn(System.currentTimeMillis());
 
         timeFieldMock = mock(IFieldName.class);

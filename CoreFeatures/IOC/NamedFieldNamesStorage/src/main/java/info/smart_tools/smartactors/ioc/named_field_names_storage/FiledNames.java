@@ -10,15 +10,7 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
  */
 public final class FiledNames {
 
-    static IKey fieldNameKey = null;
-
-    public static void init() {
-        try {
-            fieldNameKey = Keys.getOrAdd(IFieldName.class.getCanonicalName());
-        } catch(ResolutionException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    static IKey iFieldNameKey = null;
 
     /**
      * Default private constructor
@@ -28,12 +20,15 @@ public final class FiledNames {
 
     /**
      * Resolve instance of {@link IFieldName} by given name
-     * @param fieldName name of instance of {@link IFieldName}
+     * @param name name of instance of {@link IFieldName}
      * @throws ResolutionException if dependency resolution has been failed
      * @return instance of {@link IFieldName}
      */
-    public static IFieldName resolveByName(final String fieldName)
+    public static IFieldName resolveByName(final String name)
             throws ResolutionException {
-        return (IFieldName) IOC.resolve(fieldNameKey, fieldName);
+        if (iFieldNameKey == null) {
+            iFieldNameKey = Keys.resolveByName(IFieldName.class.getCanonicalName());
+        }
+        return (IFieldName) IOC.resolve(iFieldNameKey, name);
     }
 }

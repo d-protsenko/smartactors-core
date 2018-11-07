@@ -91,16 +91,16 @@ public class FeatureLoaderTest {
         pluginLoaderMock = mock(IPluginLoader.class);
 
         mockStatic(IOC.class, Keys.class);
-        when(Keys.getOrAdd(eq("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"))).thenReturn(fieldNameKey);
-        when(Keys.getOrAdd(eq("plugin creator"))).thenReturn(pluginCreatorKey);
-        when(Keys.getOrAdd(eq("plugin loader visitor"))).thenReturn(pluginLoaderVisitorKey);
-        when(Keys.getOrAdd(eq(IConfigurationManager.class.getCanonicalName()))).thenReturn(configurationManagerKey);
-        when(Keys.getOrAdd(eq("filesystem facade"))).thenReturn(filesystemFacadeKey);
-        when(Keys.getOrAdd(eq("info.smart_tools.smartactors.iobject.iobject.IObject"))).thenReturn(iobjectKey);
-        when(Keys.getOrAdd(eq(FeatureStatusImpl.class.getCanonicalName()))).thenReturn(featureStatusKey);
-        when(Keys.getOrAdd(eq("configuration object"))).thenReturn(configurationObjectKey);
-        when(Keys.getOrAdd(eq("plugin loader"))).thenReturn(pluginLoaderKey);
-        when(Keys.getOrAdd(eq("feature group load completion task queue"))).thenReturn(queueKey);
+        when(Keys.resolveByName(eq("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"))).thenReturn(fieldNameKey);
+        when(Keys.resolveByName(eq("plugin creator"))).thenReturn(pluginCreatorKey);
+        when(Keys.resolveByName(eq("plugin loader visitor"))).thenReturn(pluginLoaderVisitorKey);
+        when(Keys.resolveByName(eq(IConfigurationManager.class.getCanonicalName()))).thenReturn(configurationManagerKey);
+        when(Keys.resolveByName(eq("filesystem facade"))).thenReturn(filesystemFacadeKey);
+        when(Keys.resolveByName(eq("info.smart_tools.smartactors.iobject.iobject.IObject"))).thenReturn(iobjectKey);
+        when(Keys.resolveByName(eq(FeatureStatusImpl.class.getCanonicalName()))).thenReturn(featureStatusKey);
+        when(Keys.resolveByName(eq("configuration object"))).thenReturn(configurationObjectKey);
+        when(Keys.resolveByName(eq("plugin loader"))).thenReturn(pluginLoaderKey);
+        when(Keys.resolveByName(eq("feature group load completion task queue"))).thenReturn(queueKey);
 
         when(IOC.resolve(same(fieldNameKey), eq("featureName"))).thenReturn(featureNameFN);
         when(IOC.resolve(same(fieldNameKey), eq("afterFeatures"))).thenReturn(afterFeaturesFN);

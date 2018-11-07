@@ -40,37 +40,37 @@ public class PostgresConnectionPoolPluginTest {
 
     @Test
     public void testPoolResolve() throws Exception {
-        IPool pool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), connectionOptions);
+        IPool pool = IOC.resolve(Keys.resolveByName("PostgresConnectionPool"), connectionOptions);
         assertThat(pool, is(instanceOf(Pool.class)));
     }
 
     @Test
     public void testPoolResolveDatabaseConnection() throws Exception {
-        IPool pool = IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool"), connectionOptions);
+        IPool pool = IOC.resolve(Keys.resolveByName("DatabaseConnectionPool"), connectionOptions);
         assertThat(pool, is(instanceOf(Pool.class)));
     }
 
     @Test
     @Ignore("Requires actual DB connection, need to mock JDBC :(")
     public void testPoolReturnConnection() throws Exception {
-        IPool pool = IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool"), connectionOptions);
+        IPool pool = IOC.resolve(Keys.resolveByName("DatabaseConnectionPool"), connectionOptions);
         Object connection = pool.take();
         assertThat(connection, is(instanceOf(PostgresConnection.class)));
     }
 
     @Test
     public void testResolveSamePool() throws ResolutionException {
-        IPool pool1 = IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool"), connectionOptions);
-        IPool pool2 = IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool"), connectionOptions);
+        IPool pool1 = IOC.resolve(Keys.resolveByName("DatabaseConnectionPool"), connectionOptions);
+        IPool pool2 = IOC.resolve(Keys.resolveByName("DatabaseConnectionPool"), connectionOptions);
         assertSame(pool1, pool2);
     }
 
     @Test
     public void testResolveOtherPool() throws ResolutionException, ReadValueException {
-        IPool pool1 = IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool"), connectionOptions);
+        IPool pool1 = IOC.resolve(Keys.resolveByName("DatabaseConnectionPool"), connectionOptions);
         ConnectionOptions connectionOptions2 = mock(ConnectionOptions.class);
         when(connectionOptions2.getMaxConnections()).thenReturn(42);
-        IPool pool2 = IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool"), connectionOptions2);
+        IPool pool2 = IOC.resolve(Keys.resolveByName("DatabaseConnectionPool"), connectionOptions2);
         assertNotSame(pool1, pool2);
     }
 

@@ -36,12 +36,12 @@ public class CreateCollectionPlugin extends BootstrapPlugin {
     @Before("")
     public void registerCreateIfNotExistsTask() throws ResolutionException, RegistrationException, InvalidArgumentException {
         IField collectionNameField = IOC.resolve(
-                Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+                Keys.resolveByName(IField.class.getCanonicalName()), "collectionName");
         IField optionsField = IOC.resolve(
-                Keys.getOrAdd(IField.class.getCanonicalName()), "options");
+                Keys.resolveByName(IField.class.getCanonicalName()), "options");
 
         IOC.register(
-                Keys.getOrAdd(CreateIfNotExistsCollectionMessage.class.getCanonicalName()),
+                Keys.resolveByName(CreateIfNotExistsCollectionMessage.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             IObject message = (IObject) args[0];
@@ -67,7 +67,7 @@ public class CreateCollectionPlugin extends BootstrapPlugin {
                 )
         );
         IOC.register(
-                Keys.getOrAdd("db.collection.create-if-not-exists"),
+                Keys.resolveByName("db.collection.create-if-not-exists"),
                 //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
@@ -80,7 +80,7 @@ public class CreateCollectionPlugin extends BootstrapPlugin {
                                 }
                                 IDatabaseTask task = new PostgresCreateIfNotExistsTask(connection);
 
-                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                IObject query = IOC.resolve(Keys.resolveByName(IObject.class.getCanonicalName()));
 
                                 collectionNameField.out(query, collectionName);
                                 optionsField.out(query, options);

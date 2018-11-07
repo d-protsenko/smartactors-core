@@ -52,7 +52,7 @@ public class IObjectSimpleImplPluginTest {
     public void ShouldCorrectLoadPlugin() throws Exception {
 
         IKey IObjectKey = mock(IKey.class);
-        when(Keys.getOrAdd(IObjectImpl.class.getCanonicalName())).thenReturn(IObjectKey);
+        when(Keys.resolveByName(IObjectImpl.class.getCanonicalName())).thenReturn(IObjectKey);
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("IObjectSimpleImplPlugin").thenReturn(bootstrapItem);
@@ -95,7 +95,7 @@ public class IObjectSimpleImplPluginTest {
     @Test
     public void ShouldThrowRuntimeException_When_processThrowsException() throws Exception {
 
-        when(Keys.getOrAdd(IObjectImpl.class.getCanonicalName())).thenThrow(new ResolutionException(""));
+        when(Keys.resolveByName(IObjectImpl.class.getCanonicalName())).thenThrow(new ResolutionException(""));
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("IObjectSimpleImplPlugin").thenReturn(bootstrapItem);

@@ -39,7 +39,7 @@ public class PluginResponse implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.getOrAdd(IResponse.class.getCanonicalName()),
+                                    Keys.resolveByName(IResponse.class.getCanonicalName()),
                                     new CreateNewInstanceStrategy(args -> new Response()));
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("Response plugin can't load: can't get Response key", e);
@@ -54,7 +54,7 @@ public class PluginResponse implements IPlugin {
                         String keyName = IResponse.class.getCanonicalName();
 
                         try {
-                            IOC.remove(Keys.getOrAdd(keyName));
+                            IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

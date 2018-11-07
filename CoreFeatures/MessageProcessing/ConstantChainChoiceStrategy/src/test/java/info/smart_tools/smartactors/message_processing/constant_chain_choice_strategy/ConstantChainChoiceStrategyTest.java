@@ -48,13 +48,13 @@ public class ConstantChainChoiceStrategyTest extends PluginsLoadingTestBase {
         chainIdStrategy = mock(IResolveDependencyStrategy.class);
         messageProcessorMock = mock(IMessageProcessor.class);
         IMessageProcessingSequence messageProcessingSequenceMock = mock(IMessageProcessingSequence.class);
-        IObject args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'chain':'chain_to_call_name'}".replace('\'', '"'));
+        IObject args = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'chain':'chain_to_call_name'}".replace('\'', '"'));
 
         when(messageProcessorMock.getSequence()).thenReturn(messageProcessingSequenceMock);
         when(messageProcessingSequenceMock.getCurrentReceiverArguments()).thenReturn(args);
         when(chainIdStrategy.resolve(eq("chain_to_call_name"))).thenReturn(id);
 
-        IOC.register(Keys.getOrAdd("chain_id_from_map_name_and_message"), chainIdStrategy);
+        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), chainIdStrategy);
     }
 
     @Test

@@ -82,8 +82,8 @@ public class MessageBusHandlerTest {
         nullResponseStrategy = mock(IResponseStrategy.class);
         mbResponseStrategy = mock(IResponseStrategy.class);
 
-        IOC.register(Keys.getOrAdd("null response strategy"), new SingletonStrategy(nullResponseStrategy));
-        IOC.register(Keys.getOrAdd("message bus response strategy"), new SingletonStrategy(mbResponseStrategy));
+        IOC.register(Keys.resolveByName("null response strategy"), new SingletonStrategy(nullResponseStrategy));
+        IOC.register(Keys.resolveByName("message bus response strategy"), new SingletonStrategy(mbResponseStrategy));
     }
 
     @Test

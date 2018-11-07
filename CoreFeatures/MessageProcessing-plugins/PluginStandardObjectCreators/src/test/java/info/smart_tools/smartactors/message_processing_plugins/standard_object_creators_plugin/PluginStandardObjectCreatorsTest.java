@@ -100,14 +100,14 @@ public class PluginStandardObjectCreatorsTest {
         IBootstrapItem<String> item = itemList.get(0);
         item.executeProcess();
         IRoutedObjectCreator objectCreator = IOC.resolve(
-                Keys.getOrAdd(IRoutedObjectCreator.class.getCanonicalName() + "#raw")
+                Keys.resolveByName(IRoutedObjectCreator.class.getCanonicalName() + "#raw")
         );
         assertNotNull(objectCreator);
 
         item.executeRevertProcess();
 
         try {
-            IOC.resolve(Keys.getOrAdd(IRoutedObjectCreator.class.getCanonicalName() + "#raw"));
+            IOC.resolve(Keys.resolveByName(IRoutedObjectCreator.class.getCanonicalName() + "#raw"));
             fail();
         } catch (ResolutionException e) {}
 

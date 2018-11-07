@@ -72,7 +72,7 @@ public class ActorReceiverCreatorTest {
         // register wrapper generator
         IResolveDependencyStrategy wgs = mock(IResolveDependencyStrategy.class);
         IWrapperGenerator wg = mock(IWrapperGenerator.class);
-        IOC.register(Keys.getOrAdd(IWrapperGenerator.class.getCanonicalName()), wgs);
+        IOC.register(Keys.resolveByName(IWrapperGenerator.class.getCanonicalName()), wgs);
         when(wgs.resolve()).thenReturn(wg);
         MethodWrapper mw = new MethodWrapper();
         when(wg.generate(IMethodWrapper.class)).thenReturn(mw);
@@ -105,7 +105,7 @@ public class ActorReceiverCreatorTest {
         // register receiver generator
         IResolveDependencyStrategy rgs = mock(IResolveDependencyStrategy.class);
         IReceiverGenerator rg = mock(IReceiverGenerator.class);
-        IOC.register(Keys.getOrAdd(IReceiverGenerator.class.getCanonicalName()), rgs);
+        IOC.register(Keys.resolveByName(IReceiverGenerator.class.getCanonicalName()), rgs);
         when(rgs.resolve()).thenReturn(rg);
         IMessageReceiver mr = mock(IMessageReceiver.class);
         when(rg.generate(any(CustomActor.class), any(IResolveDependencyStrategy.class), any(String.class))).thenReturn(mr);
@@ -114,7 +114,7 @@ public class ActorReceiverCreatorTest {
         when(objectSection.getValue(new FieldName("name"))).thenReturn("actorID");
         when(objectSection.getValue(new FieldName("dependency"))).thenReturn("createSampleActorStrategy");
         IResolveDependencyStrategy createSampleActorStrategy = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.getOrAdd("createSampleActorStrategy"), createSampleActorStrategy);
+        IOC.register(Keys.resolveByName("createSampleActorStrategy"), createSampleActorStrategy);
         ConstructorWrapperImpl wrapperImpl = new ConstructorWrapperImpl();
         CustomActor a = new CustomActor(wrapperImpl);
         when(createSampleActorStrategy.resolve(objectSection))

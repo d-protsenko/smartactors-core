@@ -22,9 +22,9 @@ public class ConditionChainChoiceStrategy implements IChainChoiceStrategy {
      * @throws ResolutionException sometimes
      */
     public ConditionChainChoiceStrategy() throws ResolutionException {
-        chainConditionFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainCondition");
-        trueChainFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "trueChain");
-        falseChainFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "falseChain");
+        chainConditionFN = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainCondition");
+        trueChainFN = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "trueChain");
+        falseChainFN = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "falseChain");
     }
 
     @Override

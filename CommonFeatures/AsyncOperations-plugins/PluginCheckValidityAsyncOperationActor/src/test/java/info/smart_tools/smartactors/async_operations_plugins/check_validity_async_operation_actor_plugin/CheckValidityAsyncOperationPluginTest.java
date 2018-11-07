@@ -37,7 +37,7 @@ public class CheckValidityAsyncOperationPluginTest {
         IKey key = Mockito.mock(IKey.class);
         operationKey = Mockito.mock(IKey.class);
         when(IOC.getKeyForKeyByNameResolveStrategy()).thenReturn(key);
-        PowerMockito.when(Keys.getOrAdd(CheckValidityAsyncOperationActor.class.getCanonicalName())).thenReturn(operationKey);
+        PowerMockito.when(Keys.resolveByName(CheckValidityAsyncOperationActor.class.getCanonicalName())).thenReturn(operationKey);
 
         bootstrap = Mockito.mock(IBootstrap.class);
         plugin = new CheckValidityAsyncOperationPlugin(bootstrap);

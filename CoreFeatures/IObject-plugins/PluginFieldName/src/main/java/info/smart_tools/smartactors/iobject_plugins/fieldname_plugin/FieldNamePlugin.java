@@ -13,7 +13,6 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationExce
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_field_names_storage.FiledNames;
 import info.smart_tools.smartactors.ioc.named_field_names_storage.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 
@@ -42,7 +41,7 @@ public class FieldNamePlugin implements IPlugin {
                     .after("IOC")
                     .process(() -> {
                         try {
-                            IKey fieldNameKey = Keys.getOrAdd(FieldName.class.getCanonicalName());
+                            IKey fieldNameKey = Keys.resolveByName(FieldName.class.getCanonicalName());
                             IOC.register(fieldNameKey,
                                     new ResolveByNameIocStrategy(
                                             (args) -> {
@@ -65,7 +64,7 @@ public class FieldNamePlugin implements IPlugin {
                                             }
                                     )
                             );
-                            IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                            IOC.register(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                                     new ResolveByNameIocStrategy(
                                             (args) -> {
                                                 try {
@@ -87,7 +86,6 @@ public class FieldNamePlugin implements IPlugin {
                                             }
                                     )
                             );
-                            FiledNames.init();
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("FieldName plugin can't load: can't get FieldName key");
                         } catch (InvalidArgumentException e) {
@@ -102,14 +100,14 @@ public class FieldNamePlugin implements IPlugin {
 
                         try {
                             keyName = FieldName.class.getCanonicalName();
-                            IOC.remove(Keys.getOrAdd(keyName));
+                            IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         keyName = "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
                         try {
-                            IOC.remove(Keys.getOrAdd(keyName));
+                            IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

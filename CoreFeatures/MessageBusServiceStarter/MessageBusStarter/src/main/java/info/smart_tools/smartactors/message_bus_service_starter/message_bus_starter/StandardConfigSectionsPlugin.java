@@ -43,7 +43,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =
-                                    IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
+                                    IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
 
                             configurationManager.addSectionStrategy(new MessageBusSectionProcessingStrategy());
                         } catch (ResolutionException | InvalidArgumentException e) {

@@ -41,7 +41,7 @@ public class PluginConfigurationManager implements IPlugin {
                     .after("IOC")
                     .process(() -> {
                         try {
-                            IOC.register(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()),
+                            IOC.register(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()),
                                     new SingletonStrategy(new ConfigurationManager()));
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("ConfigurationManager plugin can't load: can't get ConfigurationManager key", e);
@@ -57,7 +57,7 @@ public class PluginConfigurationManager implements IPlugin {
 
                         try {
                             keyName = IConfigurationManager.class.getCanonicalName();
-                            IOC.remove(Keys.getOrAdd(keyName));
+                            IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

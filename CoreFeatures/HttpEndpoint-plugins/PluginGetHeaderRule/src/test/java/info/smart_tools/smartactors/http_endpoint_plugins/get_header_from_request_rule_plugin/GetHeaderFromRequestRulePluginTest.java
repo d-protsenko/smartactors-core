@@ -64,7 +64,7 @@ public class GetHeaderFromRequestRulePluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey strategyKey = mock(IKey.class);
-        when(Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName())).thenReturn(strategyKey);
+        when(Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName())).thenReturn(strategyKey);
 
         GetHeaderFromRequestRule targetObject = mock(GetHeaderFromRequestRule.class);
         whenNew(GetHeaderFromRequestRule.class).withNoArguments().thenReturn(targetObject);
@@ -73,19 +73,19 @@ public class GetHeaderFromRequestRulePluginTest {
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName());
+        Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName());
 
         verifyNew(GetHeaderFromRequestRule.class).withNoArguments();
 
         verifyStatic();
         IOC.resolve(strategyKey, "getHeaderFromRequestRule", targetObject);
         /*IKey ruleKey = mock(IKey.class);
-        when(Keys.getOrAdd(GetHeaderFromRequestRule.class.getCanonicalName())).thenReturn(ruleKey);
+        when(Keys.resolveByName(GetHeaderFromRequestRule.class.getCanonicalName())).thenReturn(ruleKey);
 
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(GetHeaderFromRequestRule.class.getCanonicalName());
+        Keys.resolveByName(GetHeaderFromRequestRule.class.getCanonicalName());
 
         ArgumentCaptor<CreateNewInstanceStrategy> createNewInstanceStrategyArgumentCaptor = ArgumentCaptor.forClass(CreateNewInstanceStrategy.class);
 
@@ -137,7 +137,7 @@ public class GetHeaderFromRequestRulePluginTest {
 
         verify(bootstrap).add(bootstrapItem);
 
-        when(Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName())).thenThrow(new ResolutionException(""));
+        when(Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName())).thenThrow(new ResolutionException(""));
 
         GetHeaderFromRequestRule targetObject = mock(GetHeaderFromRequestRule.class);
         whenNew(GetHeaderFromRequestRule.class).withNoArguments().thenReturn(targetObject);
@@ -146,7 +146,7 @@ public class GetHeaderFromRequestRulePluginTest {
             actionArgumentCaptor.getValue().execute();
         } catch (ActionExecuteException e) {
             verifyStatic();
-            Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName());
+            Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName());
             return;
         }
         assertTrue("Must throw exception", false);
@@ -173,7 +173,7 @@ public class GetHeaderFromRequestRulePluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey strategyKey = mock(IKey.class);
-        when(Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName())).thenReturn(strategyKey);
+        when(Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName())).thenReturn(strategyKey);
 
         GetHeaderFromRequestRule targetObject = mock(GetHeaderFromRequestRule.class);
         whenNew(GetHeaderFromRequestRule.class).withNoArguments().thenReturn(targetObject);
@@ -184,7 +184,7 @@ public class GetHeaderFromRequestRulePluginTest {
             actionArgumentCaptor.getValue().execute();
         } catch (ActionExecuteException e) {
             verifyStatic();
-            Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName());
+            Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName());
 
             verifyNew(GetHeaderFromRequestRule.class).withNoArguments();
 

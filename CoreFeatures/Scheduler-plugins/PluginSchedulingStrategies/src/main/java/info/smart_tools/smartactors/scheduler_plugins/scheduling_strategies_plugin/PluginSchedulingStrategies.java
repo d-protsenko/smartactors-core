@@ -37,11 +37,11 @@ public class PluginSchedulingStrategies extends BootstrapPlugin {
     public void registerSchedulingStrategies()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
-                Keys.getOrAdd("repeat continuously scheduling strategy"),
+                Keys.resolveByName("repeat continuously scheduling strategy"),
                 new SingletonStrategy(new ContinuouslyRepeatScheduleStrategy()));
 
         IOC.register(
-                Keys.getOrAdd("do once scheduling strategy"),
+                Keys.resolveByName("do once scheduling strategy"),
                 new SingletonStrategy(new OnceSchedulingStrategy()));
     }
 }

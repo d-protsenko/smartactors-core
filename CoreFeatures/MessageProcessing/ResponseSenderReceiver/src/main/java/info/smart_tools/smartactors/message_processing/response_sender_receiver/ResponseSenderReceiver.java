@@ -24,7 +24,7 @@ public class ResponseSenderReceiver implements IMessageReceiver {
      * @throws ResolutionException if error occurs resolving any dependency
      */
     public ResponseSenderReceiver() throws ResolutionException {
-        action = IOC.resolve(Keys.getOrAdd("send response action"));
+        action = IOC.resolve(Keys.resolveByName("send response action"));
     }
 
     @Override

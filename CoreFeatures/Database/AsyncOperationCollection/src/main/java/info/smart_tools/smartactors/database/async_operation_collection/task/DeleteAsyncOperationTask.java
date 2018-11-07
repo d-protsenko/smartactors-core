@@ -29,8 +29,8 @@ public class DeleteAsyncOperationTask implements IDatabaseTask {
     public DeleteAsyncOperationTask(final IStorageConnection connection) throws Exception {
         this.connection = connection;
         try {
-            collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
-            documentField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document");
+            collectionNameField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "collectionName");
+            documentField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "document");
         } catch (Exception e) {
             throw new DeleteAsyncOperationException("Failed to create task", e);
         }
@@ -40,7 +40,7 @@ public class DeleteAsyncOperationTask implements IDatabaseTask {
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
             deleteTask = IOC.resolve(
-                    Keys.getOrAdd("db.collection.delete"),
+                    Keys.resolveByName("db.collection.delete"),
                     connection,
                     collectionNameField.in(query),
                     documentField.in(query)
