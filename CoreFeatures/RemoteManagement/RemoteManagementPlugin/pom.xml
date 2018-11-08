@@ -42,7 +42,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>ioc.named-keys-storage</artifactId>
+            <artifactId>ioc.key-tools</artifactId>
             <version>0.4.0</version>
             <scope>compile</scope>
         </dependency>

@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.DeleteValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_field_names_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.system_actors_pack.actor_collection_receiver_interfaces.IChildDeletionCheckStrategy;
 import info.smart_tools.smartactors.system_actors_pack.actor_collection_receiver_interfaces.exceptions.DeletionCheckException;
 

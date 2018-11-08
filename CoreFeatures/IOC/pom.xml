@@ -17,8 +17,8 @@
         <module>RecursiveStrategyContainer</module>
         <module>IStrategyContainer</module>
         <module>StrategyContainer</module>
-        <module>NamedKeysStorage</module>
-        <module>NamedFieldNamesStorage</module>
+        <module>KeyTools</module>
+        <module>FieldNameTools</module>
         <module>IOC</module>
         <module>IIocContainer</module>
         <module>IocContainer</module>

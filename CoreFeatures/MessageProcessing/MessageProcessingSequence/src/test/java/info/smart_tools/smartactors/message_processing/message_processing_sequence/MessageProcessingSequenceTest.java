@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExec
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -13,7 +14,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_field_names_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing.chain_storage.ChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
@@ -25,6 +26,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainChoiceException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NoExceptionHandleChainException;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import org.junit.Test;
@@ -97,6 +99,8 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), chainIdStrategy);
         when(chainStorage.resolve(mainChainName)).thenReturn(mainChainMock);
         when(mainChainMock.getName()).thenReturn(mainChainName);
+        when(mainChainMock.getScope()).thenReturn(ScopeProvider.getCurrentScope());
+        when(mainChainMock.getModule()).thenReturn(ModuleManager.getCurrentModule());
     }
 
     @Test(expected = InvalidArgumentException.class)
@@ -489,6 +493,13 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         when(chain2.get(0)).thenReturn(messageReceiverMocks[0]);
         when(chain2.get(1)).thenReturn(messageReceiverMocks[1]);
 
+        when(chain1.getScope()).thenReturn(ScopeProvider.getCurrentScope());
+        when(chain1.getModule()).thenReturn(ModuleManager.getCurrentModule());
+        when(chain2.getScope()).thenReturn(ScopeProvider.getCurrentScope());
+        when(chain2.getModule()).thenReturn(ModuleManager.getCurrentModule());
+        when(chain3.getScope()).thenReturn(ScopeProvider.getCurrentScope());
+        when(chain3.getModule()).thenReturn(ModuleManager.getCurrentModule());
+
         MessageProcessingSequence sequence = new MessageProcessingSequence(10, chain1nm, null, true);
 
         sequence.next();
@@ -519,10 +530,10 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         assertNotNull(cs);
         assertEquals(Arrays.asList("chain1", "chain2"), cs);
 
-        Collection srs = (Collection) dump.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "scopeRestorationsStack"));
+        Collection srs = (Collection) dump.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "scopeSwitchingStack"));
 
         assertNotNull(srs);
-        assertEquals(Arrays.asList(new Boolean(false), new Boolean(false)), srs);
+        assertEquals(Arrays.asList(new Boolean(true), new Boolean(false)), srs);
 
         assertEquals(10, dump.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maxDepth")));
 

@@ -1854,7 +1854,7 @@
   "rawName" : "StrategyContainer",
   "version" : "0.4.0"
 }, {
-  "artifactId" : "ioc.named-keys-storage",
+  "artifactId" : "ioc.key-tools",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"

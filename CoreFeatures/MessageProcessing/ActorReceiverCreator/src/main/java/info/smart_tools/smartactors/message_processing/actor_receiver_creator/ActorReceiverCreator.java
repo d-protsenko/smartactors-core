@@ -6,7 +6,7 @@ import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonSt
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_field_names_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing.actor_receiver.ActorReceiver;
 import info.smart_tools.smartactors.message_processing.handler_routing_receiver.HandlerRoutingReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.ireceiver_generator.IReceiverGenerator;

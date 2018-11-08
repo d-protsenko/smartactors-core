@@ -15,7 +15,7 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionExceptio
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_field_names_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing.message_processing_sequence.MessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing.message_processing_sequence.dump_recovery.MessageProcessingSequenceRecoveryStrategy;
 import info.smart_tools.smartactors.message_processing.message_processor.FinalTask;

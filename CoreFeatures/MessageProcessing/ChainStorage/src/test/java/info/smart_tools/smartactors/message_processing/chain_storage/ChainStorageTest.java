@@ -2,18 +2,20 @@ package info.smart_tools.smartactors.message_processing.chain_storage;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_field_names_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing.chain_storage.interfaces.IChainState;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import org.junit.Test;
@@ -48,6 +50,9 @@ public class ChainStorageTest extends PluginsLoadingTestBase {
 
     @Override
     protected void registerMocks() throws Exception {
+        ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
+        //ScopeProvider.setCurrentScope(ScopeProvider.getScope(ScopeProvider.createScope(null)));
+
         routerMock = mock(IRouter.class);
 
         receiverChainStrategyMock = mock(IResolveDependencyStrategy.class);
@@ -89,7 +94,8 @@ public class ChainStorageTest extends PluginsLoadingTestBase {
             throws Exception {
         IChainStorage storage = new ChainStorage(new HashMap<>(), routerMock);
 
-        when(receiverChainStrategyMock.resolve("the_chain", descs[0], storage, routerMock)).thenReturn(chianMocks[0]);
+        when(receiverChainStrategyMock.resolve("the_chain", descs[0], routerMock,
+                ScopeProvider.getCurrentScope(), ModuleManager.getCurrentModule())).thenReturn(chianMocks[0]);
         when(chainStateStrategyMock.resolve(chianMocks[0])).thenReturn(stateMocks[0]);
 
         storage.register("the_chain", descs[0]);
@@ -98,7 +104,8 @@ public class ChainStorageTest extends PluginsLoadingTestBase {
 
         assertSame(chianMocks[0], storage.resolve("the_chain"));
 
-        when(receiverChainStrategyMock.resolve("the_chain", descs[1], storage, routerMock)).thenReturn(chianMocks[1]);
+        when(receiverChainStrategyMock.resolve("the_chain", descs[1], routerMock,
+                ScopeProvider.getCurrentScope(), ModuleManager.getCurrentModule())).thenReturn(chianMocks[1]);
         when(chainStateStrategyMock.resolve(chianMocks[1])).thenReturn(stateMocks[1]);
 
         storage.register("the_chain", descs[1]);
@@ -106,6 +113,13 @@ public class ChainStorageTest extends PluginsLoadingTestBase {
         when(stateMocks[1].getCurrent()).thenReturn(chianMocks[1]);
 
         assertSame(chianMocks[1], storage.resolve("the_chain"));
+
+        storage.unregister("the_chain");
+        try {
+            storage.resolve("the_chain");
+            fail();
+        } catch(ChainNotFoundException e) {}
+
     }
 
     @Test
@@ -133,7 +147,8 @@ public class ChainStorageTest extends PluginsLoadingTestBase {
             throws Exception {
         IChainStorage storage = new ChainStorage(new HashMap<>(), routerMock);
 
-        when(receiverChainStrategyMock.resolve("the_chain", descs[0], storage, routerMock)).thenReturn(chianMocks[0]);
+        when(receiverChainStrategyMock.resolve("the_chain", descs[0], routerMock,
+                ScopeProvider.getCurrentScope(), ModuleManager.getCurrentModule())).thenReturn(chianMocks[0]);
         when(chainStateStrategyMock.resolve(chianMocks[0])).thenReturn(stateMocks[0]);
 
         storage.register("the_chain", descs[0]);

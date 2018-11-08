@@ -45,7 +45,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>ioc.named-keys-storage</artifactId>
+            <artifactId>ioc.key-tools</artifactId>
             <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
@@ -59,6 +59,12 @@
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.resolve-by-name-ioc-with-lambda-strategy</artifactId>
             <version>[0.0.1, 1.0.0)</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>ioc.key-tools</artifactId>
+            <version>0.4.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

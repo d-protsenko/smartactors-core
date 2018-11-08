@@ -10,7 +10,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_field_names_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.statistics.sensors.interfaces.ISensorHandle;
 import info.smart_tools.smartactors.statistics.sensors.interfaces.exceptions.SensorShutdownException;
 import info.smart_tools.smartactors.statistics.statistics_manager.exceptions.CommandExecutionException;

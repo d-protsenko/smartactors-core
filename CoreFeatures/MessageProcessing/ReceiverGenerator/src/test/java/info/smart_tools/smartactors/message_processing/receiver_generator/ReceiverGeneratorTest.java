@@ -2,10 +2,12 @@ package info.smart_tools.smartactors.message_processing.receiver_generator;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_field_names_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
@@ -17,6 +19,8 @@ import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.net.URL;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -44,12 +48,23 @@ public class ReceiverGeneratorTest {
                             }
                         })
         );
+        ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
+    }
+
+    private void attachJarToClassLoader(String jarName, ISmartactorsClassLoader cl)
+            throws Exception {
+        String pathToJar = this.getClass().getClassLoader().getResource(jarName).getFile();
+        cl.addURL(new URL("jar:file:" + pathToJar+"!/"));
     }
 
     @Test
     public void checkCreation()
             throws Exception {
-        CustomActor a = new CustomActor();
+        ISmartactorsClassLoader cl = ModuleManager.getCurrentClassLoader();
+        attachJarToClassLoader("CustomActorR.jar", cl);
+        Class clazz = cl.loadClass("info.smart_tools.smartactors.message_processing.receiver_generator.CustomActorR");
+        Object a = clazz.newInstance();
+        //CustomActor a = new CustomActor();
         CustomWrapper w = new CustomWrapper();
         w.setGetterUsed(false);
         w.setSetterUsed(false);
