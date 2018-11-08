@@ -64,28 +64,6 @@ public class FieldNamePlugin implements IPlugin {
                                             }
                                     )
                             );
-                            IOC.register(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
-                                    new ResolveByNameIocStrategy(
-                                            (args) -> {
-                                                try {
-                                                    String nameOfFieldName = (String) args[0];
-                                                    return new FieldName(nameOfFieldName);
-                                                } catch (ClassCastException e) {
-                                                    throw new RuntimeException("Can't cast object to String: " + args[0],
-                                                            e);
-                                                } catch (ArrayIndexOutOfBoundsException e) {
-                                                    throw new RuntimeException(
-                                                            "Can't get args: args must contain one or more elements " +
-                                                                    "and first element must be String",
-                                                            e);
-                                                } catch (InvalidArgumentException e) {
-                                                    throw new RuntimeException(
-                                                            "Can't create new field name with this name: " + args[0],
-                                                            e);
-                                                }
-                                            }
-                                    )
-                            );
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("FieldName plugin can't load: can't get FieldName key");
                         } catch (InvalidArgumentException e) {

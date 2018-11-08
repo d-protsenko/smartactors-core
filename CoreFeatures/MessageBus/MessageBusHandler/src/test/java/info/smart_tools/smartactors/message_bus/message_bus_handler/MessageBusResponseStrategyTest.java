@@ -77,7 +77,7 @@ public class MessageBusResponseStrategyTest extends PluginsLoadingTestBase {
         strategy.sendResponse(environment);
 
         ArgumentCaptor<IObject> responseCaptor = ArgumentCaptor.forClass(IObject.class);
-        verify(messageBusHandlerMock).handle(responseCaptor.capture(), same(replyChainId));
+        verify(messageBusHandlerMock).handle(responseCaptor.capture(), same(replyChainId), eq(true));
 
         assertEquals(Boolean.TRUE, responseCaptor.getValue().getValue(
                 IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "itIsAResponse")
@@ -91,7 +91,7 @@ public class MessageBusResponseStrategyTest extends PluginsLoadingTestBase {
     @Test(expected = ResponseException.class)
     public void Should_wrapExceptions()
             throws Exception {
-        doThrow(SendingMessageException.class).when(messageBusHandlerMock).handle(any(), any());
+        doThrow(SendingMessageException.class).when(messageBusHandlerMock).handle(any(), any(), eq(true));
 
         strategy.sendResponse(environment);
     }

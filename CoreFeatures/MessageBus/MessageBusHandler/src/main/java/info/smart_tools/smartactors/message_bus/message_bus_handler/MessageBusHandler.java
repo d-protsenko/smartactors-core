@@ -32,7 +32,7 @@ public class MessageBusHandler implements IMessageBusHandler {
 
     private final IQueue<ITask> taskQueue;
     private final int stackDepth;
-    private final String defaultChainName;
+    private final Object defaultChainName;
     private final IAction<IObject> replyAction;
 
     private final IResponseStrategy messageBusResponseStrategy;
@@ -47,7 +47,7 @@ public class MessageBusHandler implements IMessageBusHandler {
      * @param finalAction the final action for
      * @throws InvalidArgumentException if there is invalid arguments
      */
-    public MessageBusHandler(final IQueue<ITask> taskQueue, final int stackDepth, final String receiverChainName, final IAction<IObject> finalAction)
+    public MessageBusHandler(final IQueue<ITask> taskQueue, final int stackDepth, final Object receiverChainName, final IAction<IObject> finalAction)
             throws InvalidArgumentException, ResolutionException {
         if (null == taskQueue) {
             throw new InvalidArgumentException("Task queue should not be null.");

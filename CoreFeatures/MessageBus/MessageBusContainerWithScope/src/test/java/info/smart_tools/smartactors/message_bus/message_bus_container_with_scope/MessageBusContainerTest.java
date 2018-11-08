@@ -60,17 +60,17 @@ public class MessageBusContainerTest {
         IMessageBusContainer messageBusContainer = new MessageBusContainer();
         ScopeProvider.getCurrentScope().setValue(messageBusContainer.getMessageBusKey(), handler);
         IObject message = mock(IObject.class);
-        doNothing().when(handler).handle(message);
+        doNothing().when(handler).handle(message, true);
 
-        messageBusContainer.send(message);
-        verify(handler, times(1)).handle(message);
+        messageBusContainer.send(message, true);
+        verify(handler, times(1)).handle(message, true);
     }
 
     @Test (expected = SendingMessageException.class)
     public void checkSendingMessageException()
             throws Exception {
         IMessageBusContainer messageBusContainer = new MessageBusContainer();
-        messageBusContainer.send(null);
+        messageBusContainer.send(null, true);
         fail();
     }
 
@@ -82,17 +82,17 @@ public class MessageBusContainerTest {
         IMessageBusContainer messageBusContainer = new MessageBusContainer();
         ScopeProvider.getCurrentScope().setValue(messageBusContainer.getMessageBusKey(), handler);
         IObject message = mock(IObject.class);
-        doNothing().when(handler).handle(message, chainName);
+        doNothing().when(handler).handle(message, chainName, true);
 
-        messageBusContainer.send(message, chainName);
-        verify(handler, times(1)).handle(message, chainName);
+        messageBusContainer.send(message, chainName, true);
+        verify(handler, times(1)).handle(message, chainName, true);
     }
 
     @Test (expected = SendingMessageException.class)
     public void checkSendingMessageExceptionOnSendWithSpecificChain()
             throws Exception {
         IMessageBusContainer messageBusContainer = new MessageBusContainer();
-        messageBusContainer.send(null, null);
+        messageBusContainer.send(null, null, true);
         fail();
     }
 
@@ -104,17 +104,17 @@ public class MessageBusContainerTest {
         ScopeProvider.getCurrentScope().setValue(messageBusContainer.getMessageBusKey(), handler);
         IObject message = mock(IObject.class);
         Object chainNameForReply = mock(Object.class);
-        doNothing().when(handler).handleForReply(message, chainNameForReply);
+        doNothing().when(handler).handleForReply(message, chainNameForReply, true);
 
-        messageBusContainer.sendAndReply(message, chainNameForReply);
-        verify(handler, times(1)).handleForReply(message, chainNameForReply);
+        messageBusContainer.sendAndReply(message, chainNameForReply, true);
+        verify(handler, times(1)).handleForReply(message, chainNameForReply, true);
     }
 
     @Test (expected = SendingMessageException.class)
     public void checkSendingMessageExceptionOnSendingWithReply()
             throws Exception {
         IMessageBusContainer messageBusContainer = new MessageBusContainer();
-        messageBusContainer.sendAndReply(null, null);
+        messageBusContainer.sendAndReply(null, null, true);
         fail();
     }
 
@@ -127,17 +127,17 @@ public class MessageBusContainerTest {
         IObject message = mock(IObject.class);
         Object chainName = mock(Object.class);
         Object chainNameForReply = mock(Object.class);
-        doNothing().when(handler).handleForReply(message, chainName, chainNameForReply);
+        doNothing().when(handler).handleForReply(message, chainName, chainNameForReply, true);
 
-        messageBusContainer.sendAndReply(message, chainName, chainNameForReply);
-        verify(handler, times(1)).handleForReply(message, chainName, chainNameForReply);
+        messageBusContainer.sendAndReply(message, chainName, chainNameForReply, true);
+        verify(handler, times(1)).handleForReply(message, chainName, chainNameForReply, true);
     }
 
     @Test (expected = SendingMessageException.class)
     public void checkSendingMessageExceptionOnSendingWithSpecificChainAndReply()
             throws Exception {
         IMessageBusContainer messageBusContainer = new MessageBusContainer();
-        messageBusContainer.sendAndReply(null, null, null);
+        messageBusContainer.sendAndReply(null, null, null, true);
         fail();
     }
 }

@@ -42,7 +42,8 @@ public class MessageBusHandlerTest {
 
     private IStrategyContainer container = new StrategyContainer();
     private IQueue queue = mock(IQueue.class);
-    private IReceiverChain chain = mock(IReceiverChain.class);
+//    private IReceiverChain chain = mock(IReceiverChain.class);
+    private Object chain = "chainName";
     private IResponseStrategy nullResponseStrategy;
     private IResponseStrategy mbResponseStrategy;
 
@@ -144,7 +145,7 @@ public class MessageBusHandlerTest {
         IObject message = mock(IObject.class);
 
         IMessageBusHandler handler = new MessageBusHandler(this.queue, 1, this.chain, mock(IAction.class));
-        handler.handle(message);
+        handler.handle(message, true);
         verify(context, times(1)).setValue(eq(new FieldName("responseStrategy")), same(nullResponseStrategy));
         verify(sequenceStrategy, times(1)).resolve(1, this.chain);
         verify(messageProcessorStrategy, times(1)).resolve(this.queue, sequence);
@@ -156,7 +157,7 @@ public class MessageBusHandlerTest {
     public void checkMessageBusHandlerExceptionOnErrorInHandle()
             throws Exception {
         IMessageBusHandler handler = new MessageBusHandler(this.queue, 1, this.chain, mock(IAction.class));
-        handler.handle(null);
+        handler.handle(null, true);
         fail();
     }
 
@@ -204,7 +205,7 @@ public class MessageBusHandlerTest {
         IObject message = mock(IObject.class);
 
         IMessageBusHandler handler = new MessageBusHandler(this.queue, 1, this.chain, mock(IAction.class));
-        handler.handle(message, chainName);
+        handler.handle(message, chainName, true);
         verify(sequenceStrategy, times(1)).resolve(1, chain);
         verify(messageProcessorStrategy, times(1)).resolve(this.queue, sequence);
         verify(iobjectStrategy, times(1)).resolve();
@@ -218,7 +219,7 @@ public class MessageBusHandlerTest {
     public void checkMessageBusHandlerExceptionOnErrorInHandleWithSpecificChain()
             throws Exception {
         IMessageBusHandler handler = new MessageBusHandler(this.queue, 1, this.chain, mock(IAction.class));
-        handler.handle(null, null);
+        handler.handle(null, null, true);
         fail();
     }
 
@@ -268,7 +269,7 @@ public class MessageBusHandlerTest {
         when(storage.resolve(replyToChainId)).thenReturn(replyToChain);
 
         IMessageBusHandler handler = new MessageBusHandler(this.queue, 1, this.chain, finalAction);
-        handler.handleForReply(message, replyToChainName);
+        handler.handleForReply(message, replyToChainName, true);
         verify(sequenceStrategy, times(1)).resolve(1, this.chain);
         verify(messageProcessorStrategy, times(1)).resolve(this.queue, sequence);
         verify(iobjectStrategy, times(1)).resolve();
@@ -282,7 +283,7 @@ public class MessageBusHandlerTest {
     public void checkMessageBusHandlerExceptionOnErrorInHandleForReply()
             throws Exception {
         IMessageBusHandler handler = new MessageBusHandler(this.queue, 1, this.chain, mock(IAction.class));
-        handler.handleForReply(null, null);
+        handler.handleForReply(null, null, true);
         fail();
     }
 
@@ -338,7 +339,7 @@ public class MessageBusHandlerTest {
         when(storage.resolve(chainId)).thenReturn(chain);
 
         IMessageBusHandler handler = new MessageBusHandler(this.queue, 1, this.chain, finalAction);
-        handler.handleForReply(message, chainName, replyToChainName);
+        handler.handleForReply(message, chainName, replyToChainName, true);
         verify(sequenceStrategy, times(1)).resolve(1, chain);
         verify(messageProcessorStrategy, times(1)).resolve(this.queue, sequence);
         verify(iobjectStrategy, times(1)).resolve();
@@ -351,7 +352,7 @@ public class MessageBusHandlerTest {
     public void checkMessageBusHandlerExceptionOnErrorInHandleForReplyWithSpecificChain()
             throws Exception {
         IMessageBusHandler handler = new MessageBusHandler(this.queue, 1, this.chain, mock(IAction.class));
-        handler.handleForReply(null, null, null);
+        handler.handleForReply(null, null, null, true);
         fail();
     }
 }

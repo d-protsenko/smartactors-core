@@ -41,15 +41,12 @@ public class IFieldNamePlugin implements IPlugin {
                     .after("IOC")
                     .process(() -> {
                         try {
-                            IKey iFieldNameKey = Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
-                            IOC.register(iFieldNameKey,
+                            IOC.register(Keys.resolveByName(IFieldName.class.getCanonicalName()),
                                     new ResolveByNameIocStrategy(
                                             (args) -> {
                                                 try {
                                                     String nameOfFieldName = (String) args[0];
-                                                    IFieldName result = new FieldName(nameOfFieldName);
-
-                                                    return result;
+                                                    return new FieldName(nameOfFieldName);
                                                 } catch (ClassCastException e) {
                                                     throw new RuntimeException("Can't cast object to String: " + args[0],
                                                             e);

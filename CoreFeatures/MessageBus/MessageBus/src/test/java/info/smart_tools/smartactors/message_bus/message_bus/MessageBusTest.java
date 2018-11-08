@@ -37,13 +37,14 @@ public class MessageBusTest {
             throws SendingMessageException {
         IObject message = mock(IObject.class);
         MessageBus.send(message);
-        verify(this.container, times(1)).send(message);
+        MessageBus.send(message, true);
+        verify(this.container, times(2)).send(message, true);
     }
 
     @Test (expected = SendingMessageException.class)
     public void checkExceptionOnSendingMessage()
             throws SendingMessageException {
-        doThrow(new SendingMessageException("")).when(this.container).send(null);
+        doThrow(new SendingMessageException("")).when(this.container).send(null, true);
         MessageBus.send(null);
         fail();
     }
@@ -54,13 +55,14 @@ public class MessageBusTest {
         IObject message = mock(IObject.class);
         Object chainName = mock(Object.class);
         MessageBus.send(message, chainName);
-        verify(this.container, times(1)).send(message, chainName);
+        MessageBus.send(message, chainName, true);
+        verify(this.container, times(2)).send(message, chainName, true);
     }
 
     @Test (expected = SendingMessageException.class)
     public void checkExceptionOnSendingMessageWithSpecificChain()
             throws SendingMessageException {
-        doThrow(new SendingMessageException("")).when(this.container).send(null, null);
+        doThrow(new SendingMessageException("")).when(this.container).send(null, null, true);
         MessageBus.send(null, null);
         fail();
     }
@@ -71,13 +73,14 @@ public class MessageBusTest {
         IObject message = mock(IObject.class);
         Object chainNameForReply = mock(Object.class);
         MessageBus.sendAndReply(message, chainNameForReply);
-        verify(this.container, times(1)).sendAndReply(message, chainNameForReply);
+        MessageBus.sendAndReply(message, chainNameForReply, true);
+        verify(this.container, times(2)).sendAndReply(message, chainNameForReply, true);
     }
 
     @Test (expected = SendingMessageException.class)
     public void checkExceptionOnSendingMessageWithReply()
             throws SendingMessageException {
-        doThrow(new SendingMessageException("")).when(this.container).sendAndReply(null, null);
+        doThrow(new SendingMessageException("")).when(this.container).sendAndReply(null, null, true);
         MessageBus.sendAndReply(null, null);
         fail();
     }
@@ -89,13 +92,14 @@ public class MessageBusTest {
         Object chainName = mock(Object.class);
         Object chainNameForReply = mock(Object.class);
         MessageBus.sendAndReply(message, chainName, chainNameForReply);
-        verify(this.container, times(1)).sendAndReply(message, chainName, chainNameForReply);
+        MessageBus.sendAndReply(message, chainName, chainNameForReply, true);
+        verify(this.container, times(2)).sendAndReply(message, chainName, chainNameForReply, true);
     }
 
     @Test (expected = SendingMessageException.class)
     public void checkExceptionOnSendingMessageWithSpecificChainAndReply()
             throws SendingMessageException {
-        doThrow(new SendingMessageException("")).when(this.container).sendAndReply(null, null, null);
+        doThrow(new SendingMessageException("")).when(this.container).sendAndReply(null, null, null, true);
         MessageBus.sendAndReply(null, null, null);
         fail();
     }
