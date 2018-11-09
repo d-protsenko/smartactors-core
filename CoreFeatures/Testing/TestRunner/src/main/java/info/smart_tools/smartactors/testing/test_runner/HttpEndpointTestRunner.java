@@ -96,10 +96,8 @@ import info.smart_tools.smartactors.testing.interfaces.itest_runner.exception.Te
 public class HttpEndpointTestRunner implements ITestRunner {
 
     private final IFieldName contentFieldName;
-    private final IFieldName chainFieldName;
-    private final IFieldName messageFieldName;
+    private final IFieldName chainNameFieldName;
     private final IFieldName callbackFieldName;
-    private final IFieldName environmentFieldName;
 
     /**
      * Default constructor.
@@ -111,17 +109,11 @@ public class HttpEndpointTestRunner implements ITestRunner {
             this.contentFieldName = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "content"
             );
-            this.messageFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message"
-            );
-            this.chainFieldName = IOC.resolve(
+            this.chainNameFieldName = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainName"
             );
             this.callbackFieldName = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "callback"
-            );
-            environmentFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "environment"
             );
         } catch (ResolutionException e) {
             throw new InitializationException("Could not create new instance of HttpEndpointTestRunner.", e);
@@ -151,28 +143,16 @@ public class HttpEndpointTestRunner implements ITestRunner {
             IObject sourceObject = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject")
             );
-            String chainName = (String)description.getValue(this.chainFieldName);
-            // ToDo: message obtaining was copied from TestEnvironmentHandler.handle - need to check correctness
-            IObject environment = (IObject) description.getValue(this.environmentFieldName);
-            IObject message = (IObject)environment.getValue(this.messageFieldName);
-            Object chainId = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "chain_id_from_map_name_and_message"),
-                    chainName,
-                    message
-            );
-            IChainStorage chainStorage = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IChainStorage.class.getCanonicalName())
-            );
-            IReceiverChain testedChain = chainStorage.resolve(chainId);
+            Object chainName = description.getValue(this.chainNameFieldName);
 
             sourceObject.setValue(this.contentFieldName, description);
             sourceObject.setValue(this.callbackFieldName, callback);
-            sourceObject.setValue(this.chainFieldName, testedChain);
+            sourceObject.setValue(this.chainNameFieldName, chainName);
             ISource<IObject, IObject> source = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "test_data_source")
             );
             source.setSource(sourceObject);
-        } catch (ChainNotFoundException | ReadValueException | ChangeValueException | ResolutionException | SourceExtractionException e) {
+        } catch (ReadValueException | ChangeValueException | ResolutionException | SourceExtractionException e) {
             throw new TestExecutionException(e);
         }
     }

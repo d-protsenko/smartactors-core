@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -44,12 +45,14 @@ public class MainTestChainTest {
             throws Exception {
         this.completionCallbackMock = mock(IAction.class);
         this.successArgumentsMock = mock(IObject.class);
-        this.testingChainName = mock(String.class);
+        this.testingChainName = mock(Object.class);
 
         Object keyOfMainScope = ScopeProvider.createScope(null);
         IScope scope = ScopeProvider.getScope(keyOfMainScope);
         scope.setValue(IOC.getIocKey(), this.container);
         ScopeProvider.setCurrentScope(scope);
+
+        ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
         IOC.register(
                 IOC.getKeyForKeyByNameResolutionStrategy(),
                 new ResolveByNameIocStrategy(
@@ -74,14 +77,22 @@ public class MainTestChainTest {
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrowWhenCallbackIsNull()
             throws Exception {
-        assertNotNull(new MainTestChain(this.testingChainName, null, this.successArgumentsMock));
+        assertNotNull(new MainTestChain(
+                this.testingChainName,
+                null,
+                this.successArgumentsMock,
+                ScopeProvider.getCurrentScope(),
+                ModuleManager.getCurrentModule()
+        ));
         fail();
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrowWhenChainIsNull()
             throws Exception {
-        assertNotNull(new MainTestChain(null, this.completionCallbackMock, this.successArgumentsMock));
+        assertNotNull(new MainTestChain(null, this.completionCallbackMock, this.successArgumentsMock,
+                ScopeProvider.getCurrentScope(),
+                ModuleManager.getCurrentModule()));
         fail();
     }
 
@@ -91,28 +102,36 @@ public class MainTestChainTest {
         IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
         IOC.register(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"), strategy);
         doThrow(Exception.class).when(strategy).resolve();
-        assertNotNull(new MainTestChain(this.testingChainName, this.completionCallbackMock, this.successArgumentsMock));
+        assertNotNull(new MainTestChain(this.testingChainName, this.completionCallbackMock, this.successArgumentsMock,
+                ScopeProvider.getCurrentScope(),
+                ModuleManager.getCurrentModule()));
         fail();
     }
 
     @Test
     public void Should_initSuccessReceiverArgs()
             throws Exception {
-        IReceiverChain chain = new MainTestChain(this.testingChainName, this.completionCallbackMock, null);
+        IReceiverChain chain = new MainTestChain(this.testingChainName, this.completionCallbackMock, null,
+                ScopeProvider.getCurrentScope(),
+                ModuleManager.getCurrentModule());
         assertNotNull(chain.get(1));
     }
 
     @Test
     public void Should_haveName()
             throws Exception {
-        IReceiverChain chain = new MainTestChain(this.testingChainName, this.completionCallbackMock, this.successArgumentsMock);
+        IReceiverChain chain = new MainTestChain(this.testingChainName, this.completionCallbackMock, this.successArgumentsMock,
+                ScopeProvider.getCurrentScope(),
+                ModuleManager.getCurrentModule());
         assertNotNull(chain.getId());
     }
 
     @Test
     public void Should_returnSuccessReceiverArgumentsForFirstReceiverInChain()
             throws Exception {
-        IReceiverChain chain = new MainTestChain(this.testingChainName, this.completionCallbackMock, this.successArgumentsMock);
+        IReceiverChain chain = new MainTestChain(this.testingChainName, this.completionCallbackMock, this.successArgumentsMock,
+                ScopeProvider.getCurrentScope(),
+                ModuleManager.getCurrentModule());
         assertSame(this.successArgumentsMock, chain.getArguments(1));
         assertNotNull(chain.getArguments(0));
     }
@@ -120,7 +139,9 @@ public class MainTestChainTest {
     @Test
     public void Should_returnSuccessReceiverForFirstAndSecondReceiverInChain()
             throws Exception {
-        IReceiverChain chain = new MainTestChain(this.testingChainName, this.completionCallbackMock, this.successArgumentsMock);
+        IReceiverChain chain = new MainTestChain(this.testingChainName, this.completionCallbackMock, this.successArgumentsMock,
+                ScopeProvider.getCurrentScope(),
+                ModuleManager.getCurrentModule());
         assertNotNull(chain.get(0));
         assertNotNull(chain.get(1));
         assertNull(chain.get(2));
@@ -131,7 +152,9 @@ public class MainTestChainTest {
             throws Exception {
         Throwable exceptionMock = mock(Throwable.class);
 
-        IReceiverChain chain = new MainTestChain(this.testingChainName, this.completionCallbackMock, this.successArgumentsMock);
+        IReceiverChain chain = new MainTestChain(this.testingChainName, this.completionCallbackMock, this.successArgumentsMock,
+                ScopeProvider.getCurrentScope(),
+                ModuleManager.getCurrentModule());
 
         chain.getExceptionalChainNamesAndEnvironments(exceptionMock);
         chain.getExceptionalChainNamesAndEnvironments(exceptionMock);
@@ -142,7 +165,9 @@ public class MainTestChainTest {
     @Test
     public void Should_callCallbackWhenChainCompletedSuccessful()
             throws Exception {
-        IReceiverChain chain = new MainTestChain(this.testingChainName, this.completionCallbackMock, this.successArgumentsMock);
+        IReceiverChain chain = new MainTestChain(this.testingChainName, this.completionCallbackMock, this.successArgumentsMock,
+                ScopeProvider.getCurrentScope(),
+                ModuleManager.getCurrentModule());
 
         IMessageProcessor mpMock = mock(IMessageProcessor.class);
         IMessageProcessingSequence mpsMock = mock(IMessageProcessingSequence.class);
@@ -157,7 +182,9 @@ public class MainTestChainTest {
     @Test(expected = MessageReceiveException.class)
     public void Should_successReceiverWrapExceptionThrownByCallback()
             throws Exception {
-        IReceiverChain chain = new MainTestChain(this.testingChainName, this.completionCallbackMock, this.successArgumentsMock);
+        IReceiverChain chain = new MainTestChain(this.testingChainName, this.completionCallbackMock, this.successArgumentsMock,
+                ScopeProvider.getCurrentScope(),
+                ModuleManager.getCurrentModule());
         IMessageProcessor mpMock = mock(IMessageProcessor.class);
 
         doThrow(ActionExecuteException.class).when(this.completionCallbackMock).execute(null);
@@ -168,7 +195,9 @@ public class MainTestChainTest {
     @Test
     public void Should_returnExceptionalTestChainWhenExceptionInCallback()
             throws Exception {
-        IReceiverChain chain = new MainTestChain(this.testingChainName, this.completionCallbackMock, this.successArgumentsMock);
+        IReceiverChain chain = new MainTestChain(this.testingChainName, this.completionCallbackMock, this.successArgumentsMock,
+                ScopeProvider.getCurrentScope(),
+                ModuleManager.getCurrentModule());
         doThrow(InvalidArgumentException.class).when(this.completionCallbackMock).execute(any(Exception.class));
         IObject exceptionalChainAndEnv = chain.getExceptionalChainNamesAndEnvironments(new Exception());
         IReceiverChain exceptionalChain = (IReceiverChain) exceptionalChainAndEnv.getValue(new FieldName("chain"));
@@ -178,7 +207,9 @@ public class MainTestChainTest {
     @Test (expected = MessageReceiveException.class)
     public void Should_throwMessageReceiverExceptionOnFirstReceiverFail()
             throws Exception {
-        IReceiverChain chain = new MainTestChain(this.testingChainName, this.completionCallbackMock, this.successArgumentsMock);
+        IReceiverChain chain = new MainTestChain(this.testingChainName, this.completionCallbackMock, this.successArgumentsMock,
+                ScopeProvider.getCurrentScope(),
+                ModuleManager.getCurrentModule());
 
         IMessageProcessor mpMock = mock(IMessageProcessor.class);
         doThrow(NestedChainStackOverflowException.class).when(mpMock).getSequence();

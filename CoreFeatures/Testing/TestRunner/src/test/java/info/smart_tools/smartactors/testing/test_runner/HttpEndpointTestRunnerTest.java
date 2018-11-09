@@ -37,10 +37,10 @@ import static org.mockito.Mockito.*;
 public class HttpEndpointTestRunnerTest {
 
     private IStrategyContainer container = new StrategyContainer();
-    private Object chainId = mock(Object.class);
-    private IChainStorage chainStorage = mock(IChainStorage.class);
-    private IReceiverChain receiverChain = mock(IReceiverChain.class);
+    private Object chainName = mock(Object.class);
     private IObject sourceObject = mock(IObject.class);
+    private IObject message = mock(IObject.class);
+    private IObject environment = mock(IObject.class);
     private ISource source = mock(ISource.class);
 
     @Before
@@ -87,20 +87,9 @@ public class HttpEndpointTestRunnerTest {
                 )
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "chain_id_from_map_name_and_message"),
-                new ApplyFunctionToArgumentsStrategy((a) -> {
-                    return this.chainId;
-                })
-        );
-        IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IChainStorage.class.getCanonicalName()),
-                new SingletonStrategy(this.chainStorage)
-        );
-        IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "test_data_source"),
                 new SingletonStrategy(this.source)
         );
-        when(this.chainStorage.resolve(this.chainId)).thenReturn(this.receiverChain);
     }
 
     @Test
@@ -121,12 +110,12 @@ public class HttpEndpointTestRunnerTest {
                     throws ActionExecuteException, InvalidArgumentException {
             }
         };
-        when(desc.getValue(new FieldName("chainName"))).thenReturn("chain");
+        when(desc.getValue(new FieldName("chainName"))).thenReturn(this.chainName);
         runner.runTest(desc, callback);
         verify(this.source, times(1)).setSource(this.sourceObject);
         verify(this.sourceObject, times(1)).setValue(new FieldName("content"), desc);
         verify(this.sourceObject, times(1)).setValue(new FieldName("callback"), callback);
-        verify(this.sourceObject, times(1)).setValue(new FieldName("chainName"), this.receiverChain);
+        verify(this.sourceObject, times(1)).setValue(new FieldName("chainName"), this.chainName);
     }
 
     @Test (expected = InvalidArgumentException.class)
@@ -175,7 +164,9 @@ public class HttpEndpointTestRunnerTest {
                     throws ActionExecuteException, InvalidArgumentException {
             }
         };
-        when(desc.getValue(new FieldName("chainName"))).thenReturn("chain");
+        when(desc.getValue(new FieldName("chainName"))).thenReturn(chainName);
+        when(desc.getValue(new FieldName("environment"))).thenReturn(environment);
+        when(environment.getValue(new FieldName("message"))).thenReturn(message);
         doThrow(SourceExtractionException.class).when(this.source).setSource(this.sourceObject);
         runner.runTest(desc, callback);
         fail();

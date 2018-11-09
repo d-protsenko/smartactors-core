@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.exception.EnvironmentHandleException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -16,6 +17,7 @@ import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
@@ -41,6 +43,7 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
     private IMessageProcessor messageProcessorMock;
     private IQueue<ITask> taskQueueMock;
     private IReceiverChain testedChainMock;
+    private Object chainNameMock;
     private MainTestChain mainTestChainMock;
     private IMessageProcessingSequence sequenceMock;
     private IAction<Throwable> callbackMock;
@@ -80,6 +83,7 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
         createInterceptCheckerStrategyMock = mock(IResolveDependencyStrategy.class);
         assertChecker = mock(IResultChecker.class);
         interceptChecker = mock(IResultChecker.class);
+        chainNameMock = mock(Object.class);
 
         when(messageProcessorMock.getSequence()).thenReturn(sequenceMock);
 
@@ -89,7 +93,8 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
 
         when(mpStrategyMock.resolve(same(taskQueueMock), same(sequenceMock))).thenReturn(messageProcessorMock);
         when(sequenceStrategyMock.resolve(any(), same(mainTestChainMock))).thenReturn(sequenceMock);
-        when(mainTestChainStrategyMock.resolve(any(IReceiverChain.class), any(IAction.class), any(IObject.class))).thenReturn(mainTestChainMock);
+        when(mainTestChainStrategyMock.resolve(any(Object.class), any(IAction.class), any(IObject.class),
+                any(), any())).thenReturn(mainTestChainMock);
         when(createAssertCheckerStrategyMock.resolve(any(ArrayList.class))).thenReturn(assertChecker);
         when(createInterceptCheckerStrategyMock.resolve(any(IObject.class))).thenReturn(interceptChecker);
 
@@ -138,7 +143,7 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
             }
         }).when(this.messageProcessorMock).process(any(), any());
 
-        new TestEnvironmentHandler().handle(desc, testedChainMock, callbackMock);
+        new TestEnvironmentHandler().handle(desc, chainNameMock, callbackMock);
 
         verify(callbackMock).execute(null);
     }
@@ -162,7 +167,7 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
             }
         }).when(this.messageProcessorMock).process(any(), any());
 
-        new TestEnvironmentHandler().handle(desc, testedChainMock, callbackMock);
+        new TestEnvironmentHandler().handle(desc, chainNameMock, callbackMock);
 
         verify(callbackMock).execute(null);
     }
@@ -187,7 +192,7 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
             }
         }).when(this.messageProcessorMock).process(any(), any());
 
-        new TestEnvironmentHandler().handle(desc, testedChainMock, callbackMock);
+        new TestEnvironmentHandler().handle(desc, chainNameMock, callbackMock);
 
         verify(callbackMock).execute(any());
     }
@@ -204,7 +209,7 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
 
         desc.setValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "environment"), env);
 
-        new TestEnvironmentHandler().handle(desc, testedChainMock, callbackMock);
+        new TestEnvironmentHandler().handle(desc, chainNameMock, callbackMock);
         fail();
     }
 
@@ -220,7 +225,7 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
 
         desc.setValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "environment"), env);
 
-        new TestEnvironmentHandler().handle(desc, testedChainMock, callbackMock);
+        new TestEnvironmentHandler().handle(desc, chainNameMock, callbackMock);
         fail();
     }
 
@@ -230,7 +235,7 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
         IObject desc = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'name': 'The test', 'chainName': 'chainToTest', 'assert': [], 'environment': []}".replace('\'','"'));
 
-        new TestEnvironmentHandler().handle(desc, testedChainMock, callbackMock);
+        new TestEnvironmentHandler().handle(desc, chainNameMock, callbackMock);
         fail();
     }
 
@@ -240,7 +245,7 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
         IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
         IOC.register(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), strategy);
         doThrow(Exception.class).when(strategy).resolve(any());
-        new TestEnvironmentHandler().handle(mock(IObject.class), testedChainMock, callbackMock);
+        new TestEnvironmentHandler().handle(mock(IObject.class), chainNameMock, callbackMock);
         fail();
     }
 }

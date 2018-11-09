@@ -37,10 +37,8 @@ import static org.mockito.Mockito.*;
 public class TestRunnerChainTest {
 
     private IStrategyContainer container = new StrategyContainer();
-    private Object chainId = mock(Object.class);
-    private IChainStorage chainStorage = mock(IChainStorage.class);
     private IEnvironmentHandler testHandler = mock(IEnvironmentHandler.class);
-    private IReceiverChain receiverChain = mock(IReceiverChain.class);
+    private Object chainName = mock(Object.class);
 
     @Before
     public void init()
@@ -74,20 +72,9 @@ public class TestRunnerChainTest {
                 )
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "chain_id_from_map_name_and_message"),
-                new ApplyFunctionToArgumentsStrategy((a) -> {
-                    return this.chainId;
-                })
-        );
-        IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IChainStorage.class.getCanonicalName()),
-                new SingletonStrategy(this.chainStorage)
-        );
-        IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "test environment handler"),
                 new SingletonStrategy(testHandler)
         );
-        when(this.chainStorage.resolve(this.chainId)).thenReturn(this.receiverChain);
     }
 
     @Test
@@ -108,9 +95,9 @@ public class TestRunnerChainTest {
                     throws ActionExecuteException, InvalidArgumentException {
             }
         };
-        when(desc.getValue(new FieldName("chainName"))).thenReturn("chain");
+        when(desc.getValue(new FieldName("chainName"))).thenReturn(this.chainName);
         runner.runTest(desc, callback);
-        verify(this.testHandler, times(1)).handle(desc, this.receiverChain, callback);
+        verify(this.testHandler, times(1)).handle(desc, this.chainName, callback);
     }
 
     @Test (expected = InvalidArgumentException.class)
@@ -159,9 +146,9 @@ public class TestRunnerChainTest {
                     throws ActionExecuteException, InvalidArgumentException {
             }
         };
-        when(desc.getValue(new FieldName("chainName"))).thenReturn("chain");
+        when(desc.getValue(new FieldName("chainName"))).thenReturn(this.chainName);
         doThrow(EnvironmentHandleException.class).when(this.testHandler).handle(
-                desc, this.receiverChain, callback
+                desc, this.chainName, callback
         );
         runner.runTest(desc, callback);
         fail();

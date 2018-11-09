@@ -36,7 +36,7 @@ import static org.mockito.Mockito.*;
  */
 public class HttpResponseHandlerTest {
     IQueue<ITask> taskQueue;
-    String receiverChain;
+    Object receiverChain;
     HttpResponseHandler responseHandler;
     IMessageProcessingSequence messageProcessingSequence;
     IMessageProcessor messageProcessor;
@@ -52,7 +52,7 @@ public class HttpResponseHandlerTest {
         this.mapId = mock(Object.class);
         this.chainStorage = mock(IChainStorage.class);
         this.taskQueue = mock(IQueue.class);
-        this.receiverChain = mock(String.class);
+        this.receiverChain = mock(Object.class);
         this.messageProcessingSequence = mock(IMessageProcessingSequence.class);
         this.messageProcessor = mock(IMessageProcessor.class);
         this.response = mock(FullHttpResponse.class);
@@ -136,7 +136,8 @@ public class HttpResponseHandlerTest {
     }
 
     @Test
-    public void testNewTaskAddedToQueue() throws InvalidArgumentException, DeserializationException, InterruptedException, ResponseHandlerException {
+    public void testNewTaskAddedToQueue()
+            throws InvalidArgumentException, DeserializationException, InterruptedException, ResponseHandlerException {
         String chainName = "chainName";
         when(response.headers()).thenReturn(headers);
         when(headers.get("messageMapId")).thenReturn("messageMap");
