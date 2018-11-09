@@ -137,17 +137,17 @@ public class MessageBusHandlerTest {
                 iobjectStrategy
         );
         IMessageProcessingSequence sequence = mock(IMessageProcessingSequence.class);
-        when(sequenceStrategy.resolve(1, this.chain)).thenReturn(sequence);
         IMessageProcessor processor = mock(IMessageProcessor.class);
         when(messageProcessorStrategy.resolve(this.queue, sequence)).thenReturn(processor);
         IObject context = mock(IObject.class);
         when(iobjectStrategy.resolve()).thenReturn(context);
         IObject message = mock(IObject.class);
+        when(sequenceStrategy.resolve(1, this.chain, message, true)).thenReturn(sequence);
 
         IMessageBusHandler handler = new MessageBusHandler(this.queue, 1, this.chain, mock(IAction.class));
         handler.handle(message, true);
         verify(context, times(1)).setValue(eq(new FieldName("responseStrategy")), same(nullResponseStrategy));
-        verify(sequenceStrategy, times(1)).resolve(1, this.chain);
+        verify(sequenceStrategy, times(1)).resolve(1, this.chain, message, true);
         verify(messageProcessorStrategy, times(1)).resolve(this.queue, sequence);
         verify(iobjectStrategy, times(1)).resolve();
         verify(processor, times(1)).process(message, context);
@@ -189,30 +189,21 @@ public class MessageBusHandlerTest {
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IChainStorage.class.getCanonicalName()),
                 chainStorageStrategy
         );
-        Object chainId = mock(Object.class);
         Object chainName = mock(Object.class);
-        IChainStorage storage = mock(IChainStorage.class);
-        IReceiverChain chain = mock(IReceiverChain.class);
-        when(chainIdStrategy.resolve(chainName)).thenReturn(chainId);
-        when(chainStorageStrategy.resolve()).thenReturn(storage);
-        when(storage.resolve(chainId)).thenReturn(chain);
         IMessageProcessingSequence sequence = mock(IMessageProcessingSequence.class);
-        when(sequenceStrategy.resolve(1, chain)).thenReturn(sequence);
         IMessageProcessor processor = mock(IMessageProcessor.class);
         when(messageProcessorStrategy.resolve(this.queue, sequence)).thenReturn(processor);
         IObject context = mock(IObject.class);
         when(iobjectStrategy.resolve()).thenReturn(context);
         IObject message = mock(IObject.class);
+        when(sequenceStrategy.resolve(1, chainName, message, true)).thenReturn(sequence);
 
         IMessageBusHandler handler = new MessageBusHandler(this.queue, 1, this.chain, mock(IAction.class));
         handler.handle(message, chainName, true);
-        verify(sequenceStrategy, times(1)).resolve(1, chain);
+        verify(sequenceStrategy, times(1)).resolve(1, chainName, message, true);
         verify(messageProcessorStrategy, times(1)).resolve(this.queue, sequence);
         verify(iobjectStrategy, times(1)).resolve();
         verify(processor, times(1)).process(message, context);
-        verify(chainIdStrategy, times(1)).resolve(chainName);
-        verify(chainStorageStrategy, times(1)).resolve();
-        verify(storage, times(1)).resolve(chainId);
     }
 
     @Test (expected = MessageBusHandlerException.class)
@@ -252,12 +243,12 @@ public class MessageBusHandlerTest {
                 chainStorageStrategy
         );
         IMessageProcessingSequence sequence = mock(IMessageProcessingSequence.class);
-        when(sequenceStrategy.resolve(1, this.chain)).thenReturn(sequence);
         IMessageProcessor processor = mock(IMessageProcessor.class);
         when(messageProcessorStrategy.resolve(this.queue, sequence)).thenReturn(processor);
         IObject context = mock(IObject.class);
         when(iobjectStrategy.resolve()).thenReturn(context);
         IObject message = mock(IObject.class);
+        when(sequenceStrategy.resolve(1, this.chain, message, true)).thenReturn(sequence);
         IAction finalAction = mock(IAction.class);
         Object replyToChainName = mock(Object.class);
 
@@ -270,7 +261,7 @@ public class MessageBusHandlerTest {
 
         IMessageBusHandler handler = new MessageBusHandler(this.queue, 1, this.chain, finalAction);
         handler.handleForReply(message, replyToChainName, true);
-        verify(sequenceStrategy, times(1)).resolve(1, this.chain);
+        verify(sequenceStrategy, times(1)).resolve(1, this.chain, message, true);
         verify(messageProcessorStrategy, times(1)).resolve(this.queue, sequence);
         verify(iobjectStrategy, times(1)).resolve();
         verify(processor, times(1)).process(message, context);
@@ -317,7 +308,6 @@ public class MessageBusHandlerTest {
         );
         IReceiverChain chain = mock(IReceiverChain.class);
         IMessageProcessingSequence sequence = mock(IMessageProcessingSequence.class);
-        when(sequenceStrategy.resolve(1, chain)).thenReturn(sequence);
         IMessageProcessor processor = mock(IMessageProcessor.class);
         when(messageProcessorStrategy.resolve(this.queue, sequence)).thenReturn(processor);
         IObject context = mock(IObject.class);
@@ -326,6 +316,7 @@ public class MessageBusHandlerTest {
         IAction finalAction = mock(IAction.class);
         Object replyToChainName = mock(Object.class);
         Object chainName = mock(Object.class);
+        when(sequenceStrategy.resolve(1, chainName, message, true)).thenReturn(sequence);
 
         Object replyToChainId = mock(Object.class);
         Object chainId = mock(Object.class);
@@ -340,7 +331,7 @@ public class MessageBusHandlerTest {
 
         IMessageBusHandler handler = new MessageBusHandler(this.queue, 1, this.chain, finalAction);
         handler.handleForReply(message, chainName, replyToChainName, true);
-        verify(sequenceStrategy, times(1)).resolve(1, chain);
+        verify(sequenceStrategy, times(1)).resolve(1, chainName, message, true);
         verify(messageProcessorStrategy, times(1)).resolve(this.queue, sequence);
         verify(iobjectStrategy, times(1)).resolve();
         verify(processor, times(1)).process(message, context);
