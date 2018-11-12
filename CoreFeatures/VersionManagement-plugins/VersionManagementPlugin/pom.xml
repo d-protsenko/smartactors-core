@@ -60,12 +60,6 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>version-management.versioned-task-queue-decorator</artifactId>
-            <version>0.4.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>version-management.chain-version-manager</artifactId>
             <version>0.4.0</version>
             <scope>compile</scope>
