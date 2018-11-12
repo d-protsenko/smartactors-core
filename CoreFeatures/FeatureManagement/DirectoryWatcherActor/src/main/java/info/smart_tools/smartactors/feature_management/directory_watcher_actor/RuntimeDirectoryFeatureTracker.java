@@ -24,10 +24,14 @@ import info.smart_tools.smartactors.scope.iscope_provider_container.exception.Sc
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.WatchService;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Actor that listens creation new files in the specific directory and puts location of new file to the message
@@ -44,6 +48,20 @@ public class RuntimeDirectoryFeatureTracker {
     private Thread watchingThread;
     private WatchService watchingService;
     private IScope scope;
+
+    private final static String EXTENSION_SEPARATOR = ".";
+    private final static String TASK_QUEUE_IOC_NAME = "task_queue";
+    private final static String CHAIN_ID_STORAGE_STRATEGY_NAME = "chain_id_from_map_name";
+    private final static String IOBJECT_FACTORY_STRATEGY_NAME = "info.smart_tools.smartactors.iobject.iobject.IObject";
+    private final static String FIELD_NAME_FACTORY_STARTEGY_NAME =
+            "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
+    private final static String MESSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME =
+            "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence";
+    private final static String MESSAGE_PROCESSOR_FACTORY_STRATEGY_NAME =
+            "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor";
+
+    //TODO: this parameters would be took out into the config.json as actor arguments
+    private final static List<String> FILE_TYPE_LIST = Arrays.asList("zip", "jar", "json");
 
     /**
      * Default constructor
@@ -78,12 +96,10 @@ public class RuntimeDirectoryFeatureTracker {
             this.scope = ScopeProvider.getCurrentScope();
             this.watchingDir = new info.smart_tools.smartactors.base.path.Path(wrapper.getObservedDirectory());
             this.fileNameFieldName = IOC.resolve(
-                    Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
-                    wrapper.getFileNameFieldName()
+                    Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), wrapper.getFileNameFieldName()
             );
             this.observedDirectoryFieldName = IOC.resolve(
-                    Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
-                    wrapper.getObservedDirectoryFieldName()
+                    Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), wrapper.getObservedDirectoryFieldName()
             );
             resolveChainByChainName(wrapper.getExecutionChain());
             startWatchingService(this.watchingDir);
@@ -94,7 +110,7 @@ public class RuntimeDirectoryFeatureTracker {
 
     private void resolveChainByChainName(final String chainName) throws ResolutionException, ChainNotFoundException {
         Object chainId = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "chain_id_from_map_name"), chainName
+                IOC.resolve(IOC.getKeyForKeyStorage(), CHAIN_ID_STORAGE_STRATEGY_NAME), chainName
         );
         IChainStorage chainStorage = IOC.resolve(
                 IOC.resolve(IOC.getKeyForKeyStorage(), IChainStorage.class.getCanonicalName())
@@ -103,25 +119,27 @@ public class RuntimeDirectoryFeatureTracker {
     }
 
     private void startExecutionChain(final IPath newFilePath)
-            throws ResolutionException, ChangeValueException, InvalidArgumentException, ScopeProviderException, MessageProcessorProcessException {
-        if (!newFilePath.getPath().endsWith(".zip") && !newFilePath.getPath().endsWith(".json")) {
+            throws ResolutionException, ChangeValueException, InvalidArgumentException,
+            ScopeProviderException, MessageProcessorProcessException {
+        if (!FILE_TYPE_LIST.contains(getExtension(new File(newFilePath.getPath())))) {
             return;
         }
         ScopeProvider.setCurrentScope(this.scope);
-        IQueue queue = IOC.resolve(Keys.getOrAdd("task_queue"));
+        IQueue queue = IOC.resolve(Keys.getOrAdd(TASK_QUEUE_IOC_NAME));
         Integer stackDepth = IOC.resolve(Keys.getOrAdd("default_stack_depth"));
 
         IMessageProcessingSequence processingSequence = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                IOC.resolve(IOC.getKeyForKeyStorage(), MESSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME),
                 stackDepth,
                 this.executionChain
         );
         IMessageProcessor messageProcessor = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+                IOC.resolve(IOC.getKeyForKeyStorage(), MESSAGE_PROCESSOR_FACTORY_STRATEGY_NAME),
                 queue,
-                processingSequence);
-        IObject context = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
-        IObject message = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                processingSequence
+        );
+        IObject context = IOC.resolve(Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME));
+        IObject message = IOC.resolve(Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME));
         message.setValue(this.fileNameFieldName, newFilePath);
         message.setValue(this.observedDirectoryFieldName, this.watchingDir);
         messageProcessor.process(message, context);
@@ -145,5 +163,9 @@ public class RuntimeDirectoryFeatureTracker {
         } catch (IOException | InitializationException e) {
             throw new WatchingServiceException(e);
         }
+    }
+
+    private String getExtension(final File f) {
+        return f.getName().substring(f.getName().lastIndexOf(EXTENSION_SEPARATOR) + 1);
     }
 }

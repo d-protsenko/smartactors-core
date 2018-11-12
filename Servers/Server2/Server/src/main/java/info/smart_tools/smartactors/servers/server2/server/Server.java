@@ -28,6 +28,9 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -68,6 +71,8 @@ public class Server implements IServer {
     private void loadCore()
             throws ServerExecutionException {
         try {
+            LocalTime start = LocalTime.now();
+            DateTimeFormatter df = DateTimeFormatter.ISO_LOCAL_TIME;
             File coreDir = new File("core");
             List<IPath> jars = new ArrayList<>();
             for (File file : coreDir.listFiles()) {
@@ -78,7 +83,12 @@ public class Server implements IServer {
                 }
             }
             loadPlugins(jars);
-            System.out.println("\n\n[OK] Stage 1: server core has been loaded successful.\n\n");
+            Duration elapsedTime = Duration.between(start, LocalTime.now());
+            LocalTime elapsedTimeToLocalTime = LocalTime.ofNanoOfDay(elapsedTime.toNanos());
+            System.out.println("\n\n");
+            System.out.println("[OK] Stage 1: server core has been loaded successful.");
+            System.out.println("[OK] Stage 1: elapsed time - " + elapsedTimeToLocalTime.format(df) + ".");
+            System.out.println("\n\n");
         } catch (IOException | InvalidArgumentException | PluginLoaderException | ProcessExecutionException e) {
             throw new ServerExecutionException(e);
         }

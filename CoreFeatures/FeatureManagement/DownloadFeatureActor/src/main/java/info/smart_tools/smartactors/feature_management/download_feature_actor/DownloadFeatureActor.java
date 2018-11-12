@@ -18,6 +18,9 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,15 +34,26 @@ public class DownloadFeatureActor {
     private final IFieldName repositoryTypeFN;
     private final IFieldName repositoryUrlFN;
 
+    private final static String DOWNLOAD_DIRECTORY = "downloads";
+    private final static String IOC_FEATURE_REPOSITORY_STORAGE_NAME = "feature-repositories";
+    private final static String MAVEN_ARTIFACT_SCOPE = "runtime";
+    private final static String ARCHIVE_POSTFIX = "archive";
+
+    //TODO: this parameters would be took out into the config.json as actor arguments
+    private static final String DEF_PACKAGE_TYPE = "jar";
+    private final static String FIELD_NAME_FACTORY_STARTEGY_NAME =
+            "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
+    private final static List<String> FILE_TYPE_LIST = Arrays.asList("zip", "jar");
+
     /**
      * Default constructor
      * @throws ResolutionException if any errors occurred on IOC resolution
      */
     public DownloadFeatureActor()
             throws ResolutionException {
-        this.repositoryIdFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "repositoryId");
-        this.repositoryTypeFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "type");
-        this.repositoryUrlFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "url");
+        this.repositoryIdFN = IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "repositoryId");
+        this.repositoryTypeFN = IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "type");
+        this.repositoryUrlFN = IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "url");
     }
 
     /**
@@ -52,11 +66,24 @@ public class DownloadFeatureActor {
         IFeature feature;
         try {
             feature = wrapper.getFeature();
-            if (
-                    (new File(feature.getFeatureLocation() + File.separator + feature.getName() + "-" + feature.getVersion() + ".zip")).exists() ||
-                    (new File(feature.getFeatureLocation() + File.separator + feature.getName() + "-" + feature.getVersion() + "-archive.zip")).exists()
-            ) {
-                return;
+            //TODO: need refactoring
+            for(String type : FILE_TYPE_LIST) {
+                if (
+                        Paths.get(
+                                feature.getFeatureLocation().getPath(),
+                                feature.getName() + "-" + feature.getVersion() + "." + type
+                        ).toFile().exists()
+                ) {
+                   return;
+                }
+                if (
+                        Paths.get(
+                                feature.getFeatureLocation().getPath(),
+                                feature.getName() + "-" + feature.getVersion() + "-" + ARCHIVE_POSTFIX + "." + type
+                        ).toFile().exists()
+                        ) {
+                    return;
+                }
             }
         } catch (ReadValueException e) {
             throw new DownloadFeatureException("Feature should not be null.");
@@ -77,11 +104,8 @@ public class DownloadFeatureActor {
     private void download0(final IFeature feature)
             throws Exception {
         try {
-            File local = new File("downloads/");
-            //Collection<RemoteRepository> repositories = new ArrayList<>();
-
-            List<IObject> repositories = IOC.resolve(Keys.getOrAdd("feature-repositories"));
-
+            File local = new File(DOWNLOAD_DIRECTORY);
+            List<IObject> repositories = IOC.resolve(Keys.getOrAdd(IOC_FEATURE_REPOSITORY_STORAGE_NAME));
             Collection<RemoteRepository> remotes = repositories.stream().map(
                     a -> {
                         try {
@@ -100,14 +124,14 @@ public class DownloadFeatureActor {
                             feature.getGroupId(),
                             feature.getName(),
                             "",
-                            "zip",
+                            feature.getPackageType() != null ? feature.getPackageType() : DEF_PACKAGE_TYPE,
                             feature.getVersion()
                     ),
-                    "runtime"
+                    MAVEN_ARTIFACT_SCOPE
             );
             File artifact = artifacts.get(0).getFile();
             String fileName = artifact.getName();
-            File location = new File(feature.getFeatureLocation() + File.separator + fileName);
+            File location = Paths.get(feature.getFeatureLocation().getPath(), fileName).toFile();
             Files.copy(artifact.toPath(), location.toPath());
             feature.setFeatureLocation(new Path(location));
         } catch (Throwable e) {
