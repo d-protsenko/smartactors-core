@@ -49,16 +49,4 @@ public final class Keys {
             throw exception;
         }
     }
-
-    /**
-     * Resolve instance of {@link IKey} by given name
-     * @param keyName name of instance of {@link IKey}
-     * @throws ResolutionException if dependency resolution has failed
-     * @return instance of {@link IKey}
-     */
-    @Deprecated
-    public static IKey getOrAdd(final String keyName)
-            throws ResolutionException {
-        return (IKey) IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), keyName);
-    }
 }

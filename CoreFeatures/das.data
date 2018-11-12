@@ -1854,13 +1854,29 @@
   "rawName" : "StrategyContainer",
   "version" : "0.4.0"
 }, {
-  "artifactId" : "ioc.key-tools",
+  "artifactId" : "ioc.named-key-storage",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "NamedKeysStorage",
   "version" : "0.4.0"
+}, {
+   "artifactId" : "ioc.key-tools",
+   "uploadRepositories" : [ {
+   "uploadRepositoryId" : "archiva.smartactors-modules",
+   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+   "rawName" : "KeyTools",
+   "version" : "0.4.0"
+}, {
+    "artifactId" : "ioc.field-name-tools",
+    "uploadRepositories" : [ {
+    "uploadRepositoryId" : "archiva.smartactors-modules",
+    "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+    "rawName" : "FieldNameTools",
+    "version" : "0.4.0"
 }, {
   "artifactId" : "ioc.ioc",
   "uploadRepositories" : [ {
@@ -1908,22 +1924,6 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "StringIocKey",
-  "version" : "0.4.0"
-}, {
-  "artifactId" : "ioc.versioned-strategy-container",
-  "uploadRepositories" : [ {
-  "uploadRepositoryId" : "archiva.smartactors-modules",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
-} ],
-  "rawName" : "VersionedStrategyContainer",
-  "version" : "0.4.0"
-}, {
-  "artifactId" : "ioc.versioned-recursive-strategy-container",
-  "uploadRepositories" : [ {
-  "uploadRepositoryId" : "archiva.smartactors-modules",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
-} ],
-  "rawName" : "VersionedRecursiveStrategyContainer",
   "version" : "0.4.0"
 } ],
   "uploadRepositories" : [ {
@@ -2677,6 +2677,38 @@
 } ],
   "rawName" : "ChainModuleManager",
   "version" : "0.4.0"
+}, {
+   "artifactId" : "version-management.versioned-map-router",
+   "uploadRepositories" : [ {
+   "uploadRepositoryId" : "archiva.smartactors-modules",
+   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+   "rawName" : "VersionedMapRouter",
+   "version" : "0.4.0"
+}, {
+    "artifactId" : "version-management.versioned-router-decorator",
+    "uploadRepositories" : [ {
+    "uploadRepositoryId" : "archiva.smartactors-modules",
+    "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+    "rawName" : "VersionedRouterDecorator",
+    "version" : "0.4.0"
+}, {
+    "artifactId" : "version-management.versioned-strategy-container",
+    "uploadRepositories" : [ {
+    "uploadRepositoryId" : "archiva.smartactors-modules",
+    "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+    "rawName" : "VersionedStrategyContainer",
+    "version" : "0.4.0"
+}, {
+   "artifactId" : "version-management.versioned-recursive-strategy-container",
+   "uploadRepositories" : [ {
+   "uploadRepositoryId" : "archiva.smartactors-modules",
+   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+   "rawName" : "VersionedRecursiveStrategyContainer",
+   "version" : "0.4.0"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
