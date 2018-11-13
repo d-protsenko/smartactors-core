@@ -21,10 +21,14 @@
     </properties>
 
     <modules>
+        <module>CommonFeatures</module>
         <module>CoreFeatures</module>
+        <module>CorePack</module>
+        <module>ServerDevelopmentTools</module>
         <module>Starters</module>
         <module>Servers/Server2</module>
         <module>SystemActors</module>
+        <module>das</module>
     </modules>
 
     <build>
