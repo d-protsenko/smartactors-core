@@ -139,7 +139,10 @@ public class UnzipFeatureActor {
                 List<FileHeader> headers = zipFile.getFileHeaders();
                 FileHeader configFileHeader = headers
                         .stream()
-                        .filter(fh -> fh.getFileName().endsWith(CONFIG_FILE_NAME))
+                        .filter(fh -> {
+                            String[] names = fh.getFileName().split(File.pathSeparator);
+                            return names[names.length - 1].equals(CONFIG_FILE_NAME);
+                        } )
                         .findFirst()
                         .get();
                 if (null != configFileHeader) {
