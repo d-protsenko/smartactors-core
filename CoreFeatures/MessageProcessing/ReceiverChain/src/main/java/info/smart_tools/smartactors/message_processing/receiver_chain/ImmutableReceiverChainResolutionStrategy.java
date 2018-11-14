@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
@@ -101,7 +102,8 @@ public class ImmutableReceiverChainResolutionStrategy implements IResolveDepende
             for (Object chainDesc : exceptionalChains) {
                 IObject desc = (IObject) chainDesc;
 
-                Class<?> clazz = this.getClass().getClassLoader().loadClass(String.valueOf(desc.getValue(exceptionClassFieldName)));
+
+                Class<?> clazz = module.getClassLoader().loadClass(String.valueOf(desc.getValue(exceptionClassFieldName)));
                 Object chainName = desc.getValue(exceptionChainNameFieldName);
                 IAction<IMessageProcessingSequence> afterExceptionAction = IOC.resolve(
                         Keys.resolveByName("afterExceptionAction#" + desc.getValue(exceptionAfterFieldName))
