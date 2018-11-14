@@ -156,7 +156,7 @@ public class CheckpointSchedulerActionTest extends PluginsLoadingTestBase {
 
         action.execute(entryMock);
 
-        verify(messageBusHandlerMock, never()).handle(any(), any());
+        verify(messageBusHandlerMock, never()).handle(any(), any(), eq(true));
     }
 
     @Test
@@ -176,7 +176,7 @@ public class CheckpointSchedulerActionTest extends PluginsLoadingTestBase {
 
         action.execute(entryMock);
 
-        verify(messageBusHandlerMock, never()).handle(any(), any());
+        verify(messageBusHandlerMock, never()).handle(any(), any(), eq(true));
         verify(failureAction).execute(same(entryState.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message"))));
     }
 }

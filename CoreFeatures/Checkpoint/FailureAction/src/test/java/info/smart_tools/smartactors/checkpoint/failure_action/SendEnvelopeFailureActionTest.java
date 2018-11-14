@@ -62,7 +62,7 @@ public class SendEnvelopeFailureActionTest extends PluginsLoadingTestBase {
 
         action.execute(messageMock);
 
-        verify(messageBusHandlerMock).handle(envelopeCaptor.capture(), same(targetChainId));
+        verify(messageBusHandlerMock).handle(envelopeCaptor.capture(), same(targetChainId), eq(true));
 
         assertSame(messageMock, envelopeCaptor.getValue().getValue(messageFN));
     }
@@ -70,7 +70,7 @@ public class SendEnvelopeFailureActionTest extends PluginsLoadingTestBase {
     @Test
     public void Should_callBackupActionWhenErrorOccursSendingTheEnvelope()
             throws Exception {
-        doThrow(SendingMessageException.class).when(messageBusHandlerMock).handle(any(), any());
+        doThrow(SendingMessageException.class).when(messageBusHandlerMock).handle(any(), any(), eq(true));
 
         IAction<IObject> action = new SendEnvelopeFailureAction(targetChainId, messageFN, backupActionMock);
 
@@ -86,7 +86,7 @@ public class SendEnvelopeFailureActionTest extends PluginsLoadingTestBase {
     @Test
     public void Should_suppressExceptionThrownByBackupAction()
             throws Exception {
-        doThrow(SendingMessageException.class).when(messageBusHandlerMock).handle(any(), any());
+        doThrow(SendingMessageException.class).when(messageBusHandlerMock).handle(any(), any(), eq(true));
         doThrow(ActionExecuteException.class).when(backupActionMock).execute(same(messageMock));
 
         IAction<IObject> action = new SendEnvelopeFailureAction(targetChainId, messageFN, backupActionMock);

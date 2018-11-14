@@ -34,12 +34,14 @@ public class ChainSequenceRecoverStrategyTest extends PluginsLoadingTestBase {
 
     @Override
     protected void registerMocks() throws Exception {
+        /*
         IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), new IResolveDependencyStrategy() {
             @Override
             public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
                 return (T) args[0].toString().concat("__1");
             }
         });
+        */
     }
 
     @Test
@@ -53,18 +55,18 @@ public class ChainSequenceRecoverStrategyTest extends PluginsLoadingTestBase {
 
         strategy.init(state, args);
 
-        assertEquals("A__1", strategy.chooseRecoveryChain(state));
-        assertEquals("B__1", strategy.chooseRecoveryChain(state));
-        assertEquals("B__1", strategy.chooseRecoveryChain(state));
-        assertEquals("B__1", strategy.chooseRecoveryChain(state));
-        assertEquals("C__1", strategy.chooseRecoveryChain(state));
-        assertEquals("C__1", strategy.chooseRecoveryChain(state));
-        assertEquals("D__1", strategy.chooseRecoveryChain(state));
-        assertEquals("D__1", strategy.chooseRecoveryChain(state));
-        assertEquals("D__1", strategy.chooseRecoveryChain(state));
-        assertEquals("D__1", strategy.chooseRecoveryChain(state));
-        assertEquals("D__1", strategy.chooseRecoveryChain(state));
-        assertEquals("D__1", strategy.chooseRecoveryChain(state));
+        assertEquals("A", strategy.chooseRecoveryChain(state));
+        assertEquals("B", strategy.chooseRecoveryChain(state));
+        assertEquals("B", strategy.chooseRecoveryChain(state));
+        assertEquals("B", strategy.chooseRecoveryChain(state));
+        assertEquals("C", strategy.chooseRecoveryChain(state));
+        assertEquals("C", strategy.chooseRecoveryChain(state));
+        assertEquals("D", strategy.chooseRecoveryChain(state));
+        assertEquals("D", strategy.chooseRecoveryChain(state));
+        assertEquals("D", strategy.chooseRecoveryChain(state));
+        assertEquals("D", strategy.chooseRecoveryChain(state));
+        assertEquals("D", strategy.chooseRecoveryChain(state));
+        assertEquals("D", strategy.chooseRecoveryChain(state));
     }
 
     @Test(expected = RecoverStrategyInitializationException.class)

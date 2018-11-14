@@ -292,7 +292,7 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
 
         verify(messageProcessingSequenceMock, never()).end();
 
-        verify(messageBusHandlerMock).handle(iObjectArgumentCaptor.capture(), eq("checkpoint_feedback_chain__0"));
+        verify(messageBusHandlerMock).handle(iObjectArgumentCaptor.capture(), eq("checkpoint_feedback_chain__0"), eq(true));
 
         IObject fbMessage = iObjectArgumentCaptor.getValue();
 

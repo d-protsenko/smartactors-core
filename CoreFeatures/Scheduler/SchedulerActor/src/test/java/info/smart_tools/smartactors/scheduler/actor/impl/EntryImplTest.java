@@ -157,7 +157,7 @@ public class EntryImplTest extends PluginsLoadingTestBase {
 
         taskArgumentCaptor.getValue().execute();
 
-        verify(messageBusHandler).handle(iObjectArgumentCaptor.capture());
+        verify(messageBusHandler).handle(iObjectArgumentCaptor.capture(), eq(true));
         verify(strategy).postProcess(same(entry));
 
         assertEquals("{'this is':'the message'}".replace('\'','"'), iObjectArgumentCaptor.getValue().serialize());

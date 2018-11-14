@@ -81,7 +81,7 @@ public class ReSendRestoringSequenceRecoverStrategyTest extends PluginsLoadingTe
         IOC.register(Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), messageProcessorStrategy);
         IOC.register(Keys.resolveByName("task_queue"), new SingletonStrategy(taskQueue));
 
-        when(recoverSequenceStrategy.resolve(eq("This is a sequence dump. Trust me I am IObject."))).thenReturn(sequenceMock);
+        when(recoverSequenceStrategy.resolve(eq("This is a sequence dump. Trust me I am IObject."), any())).thenReturn(sequenceMock);
         when(messageProcessorStrategy.resolve(same(taskQueue), same(sequenceMock))).thenReturn(processorMock);
 
         new ReSendRestoringSequenceRecoverStrategy().reSend(state);

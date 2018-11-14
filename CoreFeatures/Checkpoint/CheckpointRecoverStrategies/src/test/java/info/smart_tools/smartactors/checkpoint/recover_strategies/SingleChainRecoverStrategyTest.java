@@ -53,9 +53,9 @@ public class SingleChainRecoverStrategyTest extends PluginsLoadingTestBase {
 
         strategy.init(state, args);
 
-        assertEquals("theChain__0", strategy.chooseRecoveryChain(state));
-        assertEquals("theChain__0", strategy.chooseRecoveryChain(state));
-        assertEquals("theChain__0", strategy.chooseRecoveryChain(state));
+        assertEquals("theChain", strategy.chooseRecoveryChain(state));
+        assertEquals("theChain", strategy.chooseRecoveryChain(state));
+        assertEquals("theChain", strategy.chooseRecoveryChain(state));
     }
 
     @Test(expected = RecoverStrategyInitializationException.class)

@@ -77,7 +77,7 @@ public class ReSendToChainRecoverStrategyTest extends PluginsLoadingTestBase {
 
         ArgumentCaptor<IObject> mc = ArgumentCaptor.forClass(IObject.class);
 
-        verify(messageBusHandler).handle(mc.capture(), same(chainId));
+        verify(messageBusHandler).handle(mc.capture(), same(chainId), eq(true));
 
 
         assertNotNull(mc.getValue());
