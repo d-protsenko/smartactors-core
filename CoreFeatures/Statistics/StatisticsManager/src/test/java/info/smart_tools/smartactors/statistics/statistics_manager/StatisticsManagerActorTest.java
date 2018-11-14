@@ -75,7 +75,7 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
             }
         });
 
-        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), new IResolveDependencyStrategy() {
+        IOC.register(Keys.resolveByName("chain_id_from_map_name"), new IResolveDependencyStrategy() {
             @Override
             public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
                 return (T) String.valueOf(args[0]).concat("__0");

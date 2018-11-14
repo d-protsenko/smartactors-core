@@ -54,7 +54,7 @@ public class QuerySensorSchedulerActionTest extends PluginsLoadingTestBase {
         schedulerEntryMock = mock(ISchedulerEntry.class);
         when(schedulerEntryMock.getState()).thenReturn(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
 
-        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), new IResolveDependencyStrategy() {
+        IOC.register(Keys.resolveByName("chain_id_from_map_name"), new IResolveDependencyStrategy() {
             @Override
             public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
                 return (T) String.valueOf(args[0]).concat("__0");
@@ -99,7 +99,7 @@ public class QuerySensorSchedulerActionTest extends PluginsLoadingTestBase {
         new QuerySensorSchedulerAction().execute(schedulerEntryMock);
 
         ArgumentCaptor<IObject> messageCaptor = ArgumentCaptor.forClass(IObject.class);
-        verify(messageBusHandlerMock).handle(messageCaptor.capture(), eq("the_statistics_chain__0"));
+        verify(messageBusHandlerMock).handle(messageCaptor.capture(), eq("the_statistics_chain"), eq(true));
 
         assertSame(dataMock, messageCaptor.getValue().getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "data")));
         assertEquals(100600L, messageCaptor.getValue().getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),

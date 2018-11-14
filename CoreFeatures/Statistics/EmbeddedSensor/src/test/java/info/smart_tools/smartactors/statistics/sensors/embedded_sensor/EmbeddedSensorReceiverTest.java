@@ -123,12 +123,12 @@ public class EmbeddedSensorReceiverTest extends PluginsLoadingTestBase {
 
         verify(periods[1]).recordProcessor(processors[1], 62000L);
         verify(timerMock).schedule(taskCaptor.capture(), eq(62000L + 1000L));
-        verify(messageBusHandlerMock, times(0)).handle(any(), any());
+        verify(messageBusHandlerMock, times(0)).handle(any(), any(), eq(true));
         when(periods[0].createMessage()).thenReturn(mock(IObject.class));
 
         taskCaptor.getValue().execute();
 
-        verify(messageBusHandlerMock).handle(same(periods[0].createMessage()), eq("theStatisticsChain__0"));
+        verify(messageBusHandlerMock).handle(same(periods[0].createMessage()), eq("theStatisticsChain"), eq(true));
 
         r.dispose();
     }
