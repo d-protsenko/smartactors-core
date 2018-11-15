@@ -50,7 +50,6 @@ public class Server implements IServer {
      */
     public static void main(final String[] args)
             throws Exception {
-        Thread.sleep(500);
         IServer server = new Server();
         server.initialize();
         server.start();

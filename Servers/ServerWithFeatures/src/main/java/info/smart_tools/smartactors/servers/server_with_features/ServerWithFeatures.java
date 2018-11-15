@@ -19,12 +19,12 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_lo
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.exception.PluginLoaderException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader_visitor.IPluginLoaderVisitor;
 import info.smart_tools.smartactors.feature_loading_system.plugin_creator.PluginCreator;
-import info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar.ExpansibleURLClassLoader;
 import info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar.PluginLoader;
 import info.smart_tools.smartactors.feature_loading_system.plugin_loader_visitor_empty_implementation.PluginLoaderVisitor;
 import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.IServer;
 import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.exception.ServerExecutionException;
 import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.exception.ServerInitializeException;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +39,6 @@ import java.util.List;
  *
  */
 public class ServerWithFeatures implements IServer {
-    private ExpansibleURLClassLoader classLoader = new ExpansibleURLClassLoader(new URL[]{});
     private IPluginLoaderVisitor<String> pluginLoaderVisitor = new PluginLoaderVisitor<>();
     private IPluginCreator pluginCreator = new PluginCreator();
 
@@ -58,7 +57,8 @@ public class ServerWithFeatures implements IServer {
 
     @Override
     public void initialize() throws ServerInitializeException {
-
+        Thread.currentThread().setName("BaseThread");
+        ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
     }
 
     @Override
@@ -131,7 +131,7 @@ public class ServerWithFeatures implements IServer {
             throws InvalidArgumentException, PluginLoaderException, ProcessExecutionException {
         IBootstrap bootstrap = new Bootstrap();
         IPluginLoader<Collection<IPath>> pluginLoader = new PluginLoader(
-                classLoader,
+                ModuleManager.getCurrentClassLoader(),
                 clz -> {
                     try {
                         if (Modifier.isAbstract(clz.getModifiers())) {
@@ -146,7 +146,7 @@ public class ServerWithFeatures implements IServer {
                     }
                 },
                 pluginLoaderVisitor);
-        pluginLoader.loadPlugin(jars);
+        pluginLoader.loadPlugins(jars);
 
         try {
             bootstrap.start();

@@ -114,7 +114,7 @@ public class ContainerTest {
     }
 
     @Test
-    public void checkgetKeyForKeyByNameResolveStrategy()
+    public void checkgetKeyForKeyByNameResolutionStrategy()
             throws InvalidArgumentException {
         IContainer container = new Container();
         assertNotNull(container.getKeyForKeyByNameResolutionStrategy());

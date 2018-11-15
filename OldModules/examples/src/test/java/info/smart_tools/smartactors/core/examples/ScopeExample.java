@@ -65,7 +65,7 @@ public class ScopeExample {
     }
 
     private void initSystemIOC() throws InvalidArgumentException, RegistrationException {
-        IOC.register(IOC.getKeyForKeyByNameResolveStrategy(), new ResolveByNameIocStrategy(
+        IOC.register(IOC.getKeyForKeyByNameResolutionStrategy(), new ResolveByNameIocStrategy(
                 (a) -> {
                     try {
                         return new Key((String) a[0]);

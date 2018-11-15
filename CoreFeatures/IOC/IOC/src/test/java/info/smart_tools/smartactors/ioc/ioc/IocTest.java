@@ -71,7 +71,7 @@ public class IocTest {
     }
 
     @Test
-    public void checkgetKeyForKeyByNameResolveStrategy()
+    public void checkgetKeyForKeyByNameResolutionStrategy()
             throws Exception {
         when(container.getKeyForKeyByNameResolutionStrategy()).thenReturn(mock(IKey.class));
         IKey key = IOC.getKeyForKeyByNameResolutionStrategy();

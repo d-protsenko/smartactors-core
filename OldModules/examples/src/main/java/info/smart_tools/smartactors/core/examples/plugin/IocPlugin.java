@@ -38,7 +38,7 @@ public class IocPlugin implements IPlugin {
                     IScope scope = ScopeProvider.getScope(scopeKey);
                     ScopeProvider.setCurrentScope(scope);
                     scope.setValue(IOC.getIocKey(), new StrategyContainer());
-                    IOC.register(IOC.getKeyForKeyByNameResolveStrategy(), new ResolveByNameIocStrategy(
+                    IOC.register(IOC.getKeyForKeyByNameResolutionStrategy(), new ResolveByNameIocStrategy(
                             (a) -> {
                                 try {
                                     return new Key((String) a[0]);

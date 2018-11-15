@@ -44,7 +44,7 @@ public class CreateAsyncOpPluginTest {
 
         IKey key1 = mock(IKey.class);
         IKey keyPool = mock(IKey.class);
-        when(IOC.getKeyForKeyByNameResolveStrategy()).thenReturn(key1);
+        when(IOC.getKeyForKeyByNameResolutionStrategy()).thenReturn(key1);
         when(IOC.resolve(eq(key1), eq("CreateAsyncOperationActorPlugin"))).thenReturn(keyPool);
 
         bootstrap = mock(IBootstrap.class);
