@@ -183,23 +183,27 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
         IKey sequenceKey = Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence");
         this.sequence = mock(IMessageProcessingSequence.class);
         IOC.register(sequenceKey, this.sequenceResolveStrategy);
-        when(this.sequenceResolveStrategy.resolve(this.stackDepth, chain1)).thenReturn(sequence);
-        when(this.sequenceResolveStrategy.resolve(this.stackDepth, chain2)).thenReturn(sequence);
-        when(this.sequenceResolveStrategy.resolve(this.stackDepth, chain3)).thenReturn(sequence);
+        when(this.sequenceResolveStrategy.resolve(this.stackDepth, "chain1", message11)).thenReturn(sequence);
+        when(this.sequenceResolveStrategy.resolve(this.stackDepth, "chain2", message21)).thenReturn(sequence);
+        when(this.sequenceResolveStrategy.resolve(this.stackDepth, "chain2", message22)).thenReturn(sequence);
+        when(this.sequenceResolveStrategy.resolve(this.stackDepth, "chain3", message31)).thenReturn(sequence);
+        when(this.sequenceResolveStrategy.resolve(this.stackDepth, "chain3", message32)).thenReturn(sequence);
 
         strategy.onLoadConfig(config);
 
-        verify(this.chainMapIdResolveStrategy, times(1)).resolve("chain1");
-        verify(this.chainMapIdResolveStrategy, times(1)).resolve("chain2");
-        verify(this.chainMapIdResolveStrategy, times(0)).resolve("chain3");
+//        verify(this.chainMapIdResolveStrategy, times(1)).resolve("chain1");
+//        verify(this.chainMapIdResolveStrategy, times(1)).resolve("chain2");
+//        verify(this.chainMapIdResolveStrategy, times(0)).resolve("chain3");
 
-        verify(this.chainStorage, times(1)).resolve(mapId1);
-        verify(this.chainStorage, times(1)).resolve(mapId2);
-        verify(this.chainStorage, times(0)).resolve(mapId3);
+//        verify(this.chainStorage, times(1)).resolve(mapId1);
+//        verify(this.chainStorage, times(1)).resolve(mapId2);
+//        verify(this.chainStorage, times(0)).resolve(mapId3);
 
-        verify(this.sequenceResolveStrategy, times(1)).resolve(this.stackDepth, chain1);
-        verify(this.sequenceResolveStrategy, times(2)).resolve(this.stackDepth, chain2);
-        verify(this.sequenceResolveStrategy, times(0)).resolve(this.stackDepth, chain3);
+        verify(this.sequenceResolveStrategy, times(1)).resolve(this.stackDepth, "chain1", message11);
+        verify(this.sequenceResolveStrategy, times(1)).resolve(this.stackDepth, "chain2", message21);
+        verify(this.sequenceResolveStrategy, times(1)).resolve(this.stackDepth, "chain2", message22);
+        verify(this.sequenceResolveStrategy, times(0)).resolve(this.stackDepth, "chain3", message31);
+        verify(this.sequenceResolveStrategy, times(0)).resolve(this.stackDepth, "chain3", message32);
 
         verify(this.messageProcessor, times(1)).process(message11, this.context);
         verify(this.messageProcessor, times(1)).process(message21, this.context);
@@ -209,17 +213,19 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
 
         strategy.onRevertConfig(config);
 
-        verify(this.chainMapIdResolveStrategy, times(1)).resolve("chain1");
-        verify(this.chainMapIdResolveStrategy, times(1)).resolve("chain2");
-        verify(this.chainMapIdResolveStrategy, times(1)).resolve("chain3");
+//        verify(this.chainMapIdResolveStrategy, times(1)).resolve("chain1");
+//        verify(this.chainMapIdResolveStrategy, times(1)).resolve("chain2");
+//        verify(this.chainMapIdResolveStrategy, times(1)).resolve("chain3");
 
-        verify(this.chainStorage, times(1)).resolve(mapId1);
-        verify(this.chainStorage, times(1)).resolve(mapId2);
-        verify(this.chainStorage, times(1)).resolve(mapId3);
+//        verify(this.chainStorage, times(1)).resolve(mapId1);
+//        verify(this.chainStorage, times(1)).resolve(mapId2);
+//        verify(this.chainStorage, times(1)).resolve(mapId3);
 
-        verify(this.sequenceResolveStrategy, times(1)).resolve(this.stackDepth, chain1);
-        verify(this.sequenceResolveStrategy, times(2)).resolve(this.stackDepth, chain2);
-        verify(this.sequenceResolveStrategy, times(2)).resolve(this.stackDepth, chain3);
+        verify(this.sequenceResolveStrategy, times(1)).resolve(this.stackDepth, "chain1", message11);
+        verify(this.sequenceResolveStrategy, times(1)).resolve(this.stackDepth, "chain2", message21);
+        verify(this.sequenceResolveStrategy, times(1)).resolve(this.stackDepth, "chain2", message22);
+        verify(this.sequenceResolveStrategy, times(1)).resolve(this.stackDepth, "chain3", message31);
+        verify(this.sequenceResolveStrategy, times(1)).resolve(this.stackDepth, "chain3", message32);
 
         verify(this.messageProcessor, times(1)).process(message11, this.context);
         verify(this.messageProcessor, times(1)).process(message21, this.context);

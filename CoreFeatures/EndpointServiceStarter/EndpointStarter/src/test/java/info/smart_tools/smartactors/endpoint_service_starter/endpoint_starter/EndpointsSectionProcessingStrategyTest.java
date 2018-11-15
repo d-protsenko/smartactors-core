@@ -167,7 +167,7 @@ public class EndpointsSectionProcessingStrategyTest {
         IObject configMock4 = mock(IObject.class);
         when(configMock1.getValue(any())).thenThrow(ReadValueException.class);
         when(configMock2.getValue(any())).thenThrow(ResolutionException.class);
-        when(configMock3.getValue(any())).thenThrow(ChainNotFoundException.class);
+        when(configMock3.getValue(any())).thenThrow(InvalidArgumentException.class);
         when(configMock4.getValue(any())).thenThrow(ChangeValueException.class);
         try {
             strategy.onLoadConfig(configMock1);

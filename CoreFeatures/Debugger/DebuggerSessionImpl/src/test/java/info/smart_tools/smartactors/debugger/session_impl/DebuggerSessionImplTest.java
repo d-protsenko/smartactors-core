@@ -36,6 +36,7 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
     private IChainStorage chainStorageMock;
     private Object debuggerAddress = new Object();
     private IReceiverChain chainMock = mock(IReceiverChain.class);
+    private IObject message;
 
     private IMessageProcessingSequence innerSequenceMock = mock(IMessageProcessingSequence.class);
     private IDebuggerSequence debuggerSequenceMock;
@@ -82,7 +83,11 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
         debuggerSequenceStrategyMock = mock(IResolveDependencyStrategy.class);
         processorStrategyMock = mock(IResolveDependencyStrategy.class);
         sequenceDumpStrategyMock = mock(IResolveDependencyStrategy.class);
-        when(sequenceStrategyMock.resolve(eq(12), same(chainMock)))
+        message = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                "{'a':'foo','b':'bar'}".replace('\'', '"'));
+
+
+        when(sequenceStrategyMock.resolve(eq(12), eq("the-chain"), eq(message)))
                 .thenReturn(innerSequenceMock)
                 .thenThrow(ResolveDependencyStrategyException.class);
         when(debuggerSequenceStrategyMock.resolve(same(innerSequenceMock), same(debuggerAddress)))
@@ -146,8 +151,7 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
             fail("should not start when there is no message set and no chain selected");
         } catch (CommandExecutionException ignore) {}
 
-        c("setMessage", IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
-                "{'a':'foo','b':'bar'}".replace('\'', '"')));
+        c("setMessage", message);
         c("setChain", "the-chain");
         c("setStackDepth", 12.2);
 
@@ -383,6 +387,6 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
 
         c("call", "chainName");
 
-        verify(debuggerSequenceMock).callChain(chainMock);
+        verify(debuggerSequenceMock).callChain(eq("chainName"));
     }
 }

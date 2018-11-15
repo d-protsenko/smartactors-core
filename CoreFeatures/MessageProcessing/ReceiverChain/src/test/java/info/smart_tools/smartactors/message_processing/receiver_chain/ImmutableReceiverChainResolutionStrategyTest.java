@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.message_processing.receiver_chain;
 
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -47,6 +48,8 @@ public class ImmutableReceiverChainResolutionStrategyTest {
     @Before
     public void setUp()
             throws Exception {
+
+        ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
         keyStorageKey = mock(IKey.class);
         fieldNameKey = mock(IKey.class);
         iobjectKey = mock(IKey.class);
@@ -88,7 +91,7 @@ public class ImmutableReceiverChainResolutionStrategyTest {
         IMessageReceiver receiver2 = mock(IMessageReceiver.class);
 
         IScope scope = mock(IScope.class);
-        IModule module = mock(IModule.class);
+        IModule module = ModuleManager.getCurrentModule();
 
         IObject step1 = mock(IObject.class);
         IObject step2 = mock(IObject.class);

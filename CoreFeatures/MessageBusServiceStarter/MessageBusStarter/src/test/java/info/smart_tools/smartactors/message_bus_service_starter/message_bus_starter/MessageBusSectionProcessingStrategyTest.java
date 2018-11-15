@@ -116,6 +116,7 @@ public class MessageBusSectionProcessingStrategyTest {
     @Test
     public void testLoadingAndRevertingConfig()
             throws Exception {
+        IObject message = mock(IObject.class);
         IResolveDependencyStrategy sequenceStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
@@ -149,7 +150,7 @@ public class MessageBusSectionProcessingStrategyTest {
         strategy.onLoadConfig(config);
 
         IMessageProcessingSequence sequence = mock(IMessageProcessingSequence.class);
-        when(sequenceStrategy.resolve(5, this.receiverChain)).thenReturn(sequence);
+        when(sequenceStrategy.resolve(eq(5), eq("mainChain"), eq(message), eq(true))).thenReturn(sequence);
         IMessageProcessor processor = mock(IMessageProcessor.class);
         when(messageProcessorStrategy.resolve(this.taskQueue, sequence)).thenReturn(processor);
         IObject result = new DSObject();
@@ -165,8 +166,7 @@ public class MessageBusSectionProcessingStrategyTest {
         IMessageBusHandler handler = (IMessageBusHandler) ScopeProvider.getCurrentScope().getValue(MessageBus.getMessageBusKey());
         assertNotNull(handler);
         Object replyToChainName = mock(Object.class);
-        IObject message = mock(IObject.class);
-        handler.handleForReply(message, replyToChainName);
+        handler.handleForReply(message, replyToChainName, true);
         assertSame(result.getValue(new FieldName("message")), message);
         IObject resultContext = (IObject) result.getValue(new FieldName("context"));
         List<IAction> actions = (List<IAction>) resultContext.getValue(new FieldName("finalActions"));
