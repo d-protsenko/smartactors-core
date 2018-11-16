@@ -145,7 +145,7 @@ public class EnvironmentHandlerTest {
         // ToDo: put chain to chain storage
         IQueue<ITask> queue = new BlockingQueue(null);
 
-        IEnvironmentHandler handler = new EnvironmentHandler(queue, 1);
+        IEnvironmentHandler handler = new EnvironmentHandler(queue, 1, true);
         handler.handle(environment, "name", null);
         try {
             verify(messageProcessor, times(1)).process(

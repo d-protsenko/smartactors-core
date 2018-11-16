@@ -2,7 +2,6 @@ package info.smart_tools.smartactors.ioc.field_name_tools;
 
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.field_name_tools.FiledNames;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
@@ -17,7 +16,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Tests for {@link FiledNames}
+ * Tests for {@link FieldNames}
  */
 public class FieldNamesTest {
 
@@ -44,7 +43,7 @@ public class FieldNamesTest {
         when(strategyContainer.resolve(any())).thenReturn(strategy);
         when(strategy.resolve(IFieldName.class.getCanonicalName())).thenReturn(iFieldNameKey);
         when(strategy.resolve("test")).thenReturn(fieldName);
-        IFieldName result = FiledNames.resolveByName("test");
+        IFieldName result = FieldNames.resolveByName("test");
         assertNotNull(result);
         assertEquals(result, fieldName);
     }

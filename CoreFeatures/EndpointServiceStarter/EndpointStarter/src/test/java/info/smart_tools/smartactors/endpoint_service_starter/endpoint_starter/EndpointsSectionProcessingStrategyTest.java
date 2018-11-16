@@ -12,6 +12,7 @@ import info.smart_tools.smartactors.http_endpoint.environment_handler.Environmen
 import info.smart_tools.smartactors.http_endpoint.http_endpoint.HttpEndpoint;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -104,11 +105,16 @@ public class EndpointsSectionProcessingStrategyTest {
                     IObject configuration = (IObject) args[0];
                     IQueue queue = null;
                     Integer stackDepth = null;
+                    Boolean scopeSwitching = null;
                     try {
                         queue = (IQueue) configuration.getValue(new FieldName("queue"));
                         stackDepth =
                             (Integer) configuration.getValue(new FieldName("stackDepth"));
-                        return new EnvironmentHandler(queue, stackDepth);
+                        scopeSwitching = (Boolean) configuration.getValue(new FieldName("scopeSwitching"));
+                        if (scopeSwitching == null) {
+                            scopeSwitching = true;
+                        }
+                        return new EnvironmentHandler(queue, stackDepth, scopeSwitching);
                     } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
                     }
                     return null;

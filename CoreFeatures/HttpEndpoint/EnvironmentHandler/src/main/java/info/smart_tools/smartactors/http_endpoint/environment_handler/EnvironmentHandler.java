@@ -28,6 +28,7 @@ public class EnvironmentHandler implements IEnvironmentHandler {
     private final IFieldName messageFieldName;
     private final IFieldName contextFieldName;
     private final IFieldName fromExternalFieldName;
+    private final Boolean scopeSwitching;
 
     /**
      * Handler for environment from endpoint
@@ -35,7 +36,7 @@ public class EnvironmentHandler implements IEnvironmentHandler {
      * @param stackDepth Stack depth of the {@link IMessageProcessor}
      * @throws InvalidArgumentException if there is invalid arguments
      */
-    public EnvironmentHandler(final IQueue<ITask> taskQueue, final int stackDepth)
+    public EnvironmentHandler(final IQueue<ITask> taskQueue, final int stackDepth, final Boolean scopeSwitching)
             throws InvalidArgumentException, ResolutionException {
         this.messageFieldName = IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "message");
         this.contextFieldName = IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "context");
@@ -48,6 +49,7 @@ public class EnvironmentHandler implements IEnvironmentHandler {
         }
         this.stackDepth = stackDepth;
         this.taskQueue = taskQueue;
+        this.scopeSwitching = scopeSwitching;
     }
 
     public void handle(final IObject environment, final Object receiverChainName, final IAction<Throwable> callback)
@@ -56,7 +58,7 @@ public class EnvironmentHandler implements IEnvironmentHandler {
             IObject message = (IObject) environment.getValue(this.messageFieldName);
             IObject context = (IObject) environment.getValue(this.contextFieldName);
             IMessageProcessingSequence processingSequence =
-                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), stackDepth, receiverChainName, message);
+                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), stackDepth, receiverChainName, message, this.scopeSwitching);
             IMessageProcessor messageProcessor =
                     IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), taskQueue, processingSequence);
 

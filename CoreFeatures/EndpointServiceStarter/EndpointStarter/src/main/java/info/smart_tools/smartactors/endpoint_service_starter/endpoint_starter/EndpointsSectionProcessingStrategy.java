@@ -96,10 +96,6 @@ public class EndpointsSectionProcessingStrategy implements ISectionStrategy {
             for (IObject endpoint : endpointObjects) {
                 // TODO: 25.07.16 remove stack depth from endpoint config
                 String type = (String) endpoint.getValue(typeFieldName);
-                String startChainName = (String) endpoint.getValue(startChainNameFieldName);
-
-
-                endpoint.setValue(startChainNameFieldName, startChainName);
                 endpoint.setValue(queueFieldName, queue);
                 IAsyncService endpointService =
                         IOC.resolve(Keys.resolveByName(type + "_endpoint"), endpoint);

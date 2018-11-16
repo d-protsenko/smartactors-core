@@ -9,14 +9,14 @@ import info.smart_tools.smartactors.ioc.key_tools.Keys;
 /**
  * Service locator for resolving named instances of {@link IFieldName}
  */
-public final class FiledNames {
+public final class FieldNames {
 
     static IKey iFieldNameKey = null;
 
     /**
      * Default private constructor
      */
-    private FiledNames() {
+    private FieldNames() {
     }
 
     /**

@@ -32,9 +32,11 @@ import info.smart_tools.smartactors.http_endpoint.http_response_sender.HttpRespo
 import info.smart_tools.smartactors.http_endpoint.message_to_bytes_mapper.MessageToBytesMapper;
 import info.smart_tools.smartactors.http_endpoint.respons_status_extractor.ResponseStatusExtractor;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.field_name_tools.FieldNames;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
@@ -65,6 +67,7 @@ public class HttpEndpointPlugin implements IPlugin {
     private IFieldName endpointNameFieldName;
     private IFieldName queueFieldName;
     private IFieldName templatesFieldName;
+    private IFieldName scopeSwitchingFieldName;
 
     /**
      * Constructor
@@ -99,11 +102,16 @@ public class HttpEndpointPlugin implements IPlugin {
                                                 IObject configuration = (IObject) args[0];
                                                 IQueue queue = null;
                                                 Integer stackDepth = null;
+                                                Boolean scopeSwitching = null;
                                                 try {
                                                     queue = (IQueue) configuration.getValue(queueFieldName);
                                                     stackDepth =
                                                             (Integer) configuration.getValue(stackDepthFieldName);
-                                                    return new EnvironmentHandler(queue, stackDepth);
+                                                    scopeSwitching = (Boolean) configuration.getValue(scopeSwitchingFieldName);
+                                                    if (scopeSwitching == null) {
+                                                        scopeSwitching = true;
+                                                    }
+                                                    return new EnvironmentHandler(queue, stackDepth, scopeSwitching);
                                                 } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
                                                     throw new RuntimeException(e);
                                                 }
@@ -335,6 +343,7 @@ public class HttpEndpointPlugin implements IPlugin {
                         IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "templates"
                 );
+        scopeSwitchingFieldName = FieldNames.resolveByName("scopeSwitching");
     }
 
     private void registerResponseSenders() throws ResolutionException, InvalidArgumentException, RegistrationException,

@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.configuration_manager.interfaces.iconfigurat
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.field_name_tools.FieldNames;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.key_tools.Keys;
@@ -51,6 +52,7 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
     private final IFieldName chainFieldName;
     private final IFieldName messagesFieldName;
     private final IFieldName revertFieldName;
+    private final IFieldName scopeSwitchingFieldName;
 
     /**
      * The constructor.
@@ -75,6 +77,7 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "messages"
         );
+        this.scopeSwitchingFieldName = FieldNames.resolveByName("scopeSwitching");
     }
 
     @Override
@@ -95,13 +98,18 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                 Boolean isRevert = (Boolean) task.getValue(this.revertFieldName);
                 if ( !isRevert ) {
                     String chainName = (String) task.getValue(this.chainFieldName);
+                    Boolean scopeSwitching = (Boolean) task.getValue(this.scopeSwitchingFieldName);
+                    if (scopeSwitching == null) {
+                        scopeSwitching = true;
+                    }
                     List<IObject> messages = (List<IObject>)task.getValue(this.messagesFieldName);
                     for (IObject message : messages) {
                         IMessageProcessingSequence processingSequence = IOC.resolve(
                                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                                 stackDepth,
                                 chainName,
-                                message
+                                message,
+                                scopeSwitching
                         );
                         IMessageProcessor messageProcessor = IOC.resolve(
                                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
@@ -137,6 +145,10 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                     Boolean isRevert = (Boolean) task.getValue(this.revertFieldName);
                     if (isRevert) {
                         String chainName = (String) task.getValue(this.chainFieldName);
+                        Boolean scopeSwitching = (Boolean) task.getValue(this.scopeSwitchingFieldName);
+                        if (scopeSwitching == null) {
+                            scopeSwitching = true;
+                        }
                         List<IObject> messages = (List<IObject>) task.getValue(this.messagesFieldName);
                         for (IObject message : messages) {
                             try {
@@ -144,7 +156,8 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                                         IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                                         stackDepth,
                                         chainName,
-                                        message
+                                        message,
+                                        scopeSwitching
                                 );
                                 IMessageProcessor messageProcessor = IOC.resolve(
                                         IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
