@@ -62,6 +62,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
     private final IFieldName stepsStackFieldName;
     private final IFieldName chainsStackFieldName;
     private final IFieldName scopeSwitchingStackFieldName;
+    private final IFieldName scopeSwitchingFieldName;
     private final IFieldName maxDepthFieldName;
     private final IFieldName externalAccessFieldName;
     private final IFieldName fromExternalFieldName;
@@ -81,6 +82,7 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         stepsStackFieldName = IOC.resolve(iFieldNameStrategyKey, "stepsStack");
         chainsStackFieldName = IOC.resolve(iFieldNameStrategyKey, "chainsStack");
         scopeSwitchingStackFieldName = IOC.resolve(iFieldNameStrategyKey, "scopeSwitchingStack");
+        scopeSwitchingFieldName = IOC.resolve(iFieldNameStrategyKey, "scopeSwitching");
         maxDepthFieldName = IOC.resolve(iFieldNameStrategyKey, "maxDepth");
         externalAccessFieldName = IOC.resolve(iFieldNameStrategyKey, "externalAccess");
         fromExternalFieldName = IOC.resolve(iFieldNameStrategyKey, "fromExternal");
@@ -396,7 +398,12 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
                 context.setValue(exceptionFieldName, exception);
 
                 this.isException = true;
-                callChain(exceptionalChainAndEnv.getValue(this.chainFieldName));
+                Object chainName = exceptionalChainAndEnv.getValue(this.chainFieldName);
+                Boolean scopeSwitching = (Boolean) exceptionalChainAndEnv.getValue(this.scopeSwitchingFieldName);
+                if (scopeSwitching == null || scopeSwitching == true) {
+                    setScopeSwitchingChainName(chainName);
+                }
+                callChain(chainName);
                 return;
             }
         }

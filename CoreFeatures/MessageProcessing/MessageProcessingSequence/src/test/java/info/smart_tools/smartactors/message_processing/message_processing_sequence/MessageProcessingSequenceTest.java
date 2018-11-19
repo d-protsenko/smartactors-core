@@ -314,6 +314,8 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         Object exceptionalChainName = "exceptional chain";
         when(chainStorage.resolve(eq(exceptionalChainName))).thenReturn(exceptionalChain);
         when(exceptionalChain.getName()).thenReturn(exceptionalChainName);
+        when(exceptionalChain.getScope()).thenReturn(ScopeProvider.getCurrentScope());
+        when(exceptionalChain.getModule()).thenReturn(ModuleManager.getCurrentModule());
 
         when(mainChainMock.getExceptionalChainNamesAndEnvironments(same(exception))).thenReturn(exceptionalChainAndEnv);
 //        when(secondaryChain.getExceptionalChainNamesAndEnvironments(same(exception))).thenReturn(mock(IObject.class));
