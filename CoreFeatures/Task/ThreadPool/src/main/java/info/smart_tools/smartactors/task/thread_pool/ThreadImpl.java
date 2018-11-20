@@ -44,9 +44,18 @@ class ThreadImpl {
 
                 try {
                     setTaskRef.get().execute();
-                } catch (TaskExecutionException e) {
-                    // TODO: Handle
+                } catch (Throwable e) { // was TaskExecutionException before
+                                        // changed to catch runtime exceptions to prevent thread loss
+                    System.out.println("[FAIL] Exception thrown in context of module '" +
+                            ModuleManager.getCurrentModule().getName() + ":" +
+                            ModuleManager.getCurrentModule().getVersion() + "'");
                     e.printStackTrace();
+                    if (!(e instanceof Exception)) {
+                        System.out.println("[FAIL] Thread " + thread.getName() + " have got Error exception " +
+                                "and will be killed.\n New thread with same name is created.");
+                        pool.returnThread(new ThreadImpl(pool, thread.getName()));
+                        return;
+                    }
                 }
 
                 setTaskRef.set(null);

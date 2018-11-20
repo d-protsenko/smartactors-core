@@ -230,6 +230,12 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
                 try {
                     this.afterExceptionAction.execute(this);
                 } catch (Throwable e) {
+                    ModuleManager.setCurrentModule(moduleStack[0]);
+                    try {
+                        ScopeProvider.setCurrentScope(scopeStack[0]);
+                    } catch (ScopeProviderException e1) {
+                        throw new RuntimeException(e1);
+                    }
                     return false;
                 }
             }
