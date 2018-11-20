@@ -50,12 +50,15 @@ class ThreadImpl {
                             ModuleManager.getCurrentModule().getName() + ":" +
                             ModuleManager.getCurrentModule().getVersion() + "'");
                     e.printStackTrace();
-                    if (!(e instanceof Exception)) {
-                        System.out.println("[FAIL] Thread " + thread.getName() + " have got Error exception " +
-                                "and will be killed.\n New thread with same name is created.");
-                        pool.returnThread(new ThreadImpl(pool, thread.getName()));
-                        return;
-                    }
+                    // ToDo: for a while we did not have situations when we can check that re-creation of
+                    // ToDo: thread may help in such a case
+                    //if (!(e instanceof Exception)) {
+                    //    System.out.println("[FAIL] Thread " + thread.getName() + " have got Error exception " +
+                    //            "and will be killed.\n New thread with same name is created.");
+                    //    pool.returnThread(new ThreadImpl(pool, thread.getName()));
+                    //    Thread.currentThread().interrupt();
+                    //    return;
+                    //}
                 }
 
                 setTaskRef.set(null);
