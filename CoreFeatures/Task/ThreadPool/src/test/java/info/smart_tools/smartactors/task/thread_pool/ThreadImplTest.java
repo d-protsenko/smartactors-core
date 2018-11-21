@@ -25,9 +25,10 @@ public class ThreadImplTest {
         threadPoolMock = mock(ThreadPool.class);
         thread = new ThreadImpl(threadPoolMock, "TestThread");
         module = mock(IModule.class);
+        IScope scope = mock(IScope.class);
 
         when(threadPoolMock.getModule()).thenReturn(module);
-        when(threadPoolMock.getScope()).thenReturn(mock(IScope.class));
+        when(threadPoolMock.getScope()).thenReturn(scope);
         when(module.getName()).thenReturn("moduleName");
         when(module.getVersion()).thenReturn("moduleVersion");
         ModuleManager.setCurrentModule(module);
