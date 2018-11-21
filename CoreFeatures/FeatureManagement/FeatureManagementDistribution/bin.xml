@@ -65,6 +65,7 @@
                             <exclude>org.apache.commons:*</exclude>
                             <exclude>commons-lang:*</exclude>
                             <exclude>commons-io:*</exclude>
+                            <exclude>commons-codec:*</exclude>
                             <exclude>com.fasterxml:classmate</exclude>
                             <exclude>org.eclipse.aether:aether-util</exclude>
                         </excludes>
