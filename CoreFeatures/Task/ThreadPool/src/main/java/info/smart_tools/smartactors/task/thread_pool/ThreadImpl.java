@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.task.thread_pool;
 
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
@@ -11,59 +12,55 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * The thread waiting for a task and returning itself to the {@link ThreadPool} when done.
  */
-class ThreadImpl {
+class ThreadImpl implements Runnable {
     private final Thread thread;
     private final ThreadPool pool;
     private final AtomicReference<ITask> setTaskRef;
     private final Object lock;
 
-    /**
-     * The {@link Runnable} that will run on Java thread.
-     */
-    private class ThreadRunnable implements Runnable {
-        @Override
-        public void run() {
+    @Override
+    public void run() {
+        while (!Thread.interrupted()) {
             ModuleManager.setCurrentModule(pool.getModule());
             try {
                 ScopeProvider.setCurrentScope(pool.getScope());
             } catch (ScopeProviderException e) {
-                // TODO: Handle
                 e.printStackTrace();
             }
-            while (!Thread.interrupted()) {
-                try {
-                    synchronized (lock) {
-                        while (setTaskRef.get() == null) {
-                            lock.wait();
-                        }
+            try {
+                synchronized (lock) {
+                    while (setTaskRef.get() == null) {
+                        lock.wait();
                     }
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    continue;
                 }
-
-                try {
-                    setTaskRef.get().execute();
-                } catch (Throwable e) { // was TaskExecutionException before
-                                        // changed to catch runtime exceptions to prevent thread loss
-                    System.out.println("[FAIL] Exception thrown in context of module '" +
-                            ModuleManager.getCurrentModule().getName() + ":" +
-                            ModuleManager.getCurrentModule().getVersion() + "'");
-                    e.printStackTrace();
-                    // ToDo: for a while we did not have situations when we can check that re-creation of
-                    // ToDo: thread may help in such a case
-                    //if (!(e instanceof Exception)) {
-                    //    System.out.println("[FAIL] Thread " + thread.getName() + " have got Error exception " +
-                    //            "and will be killed.\n New thread with same name is created.");
-                    //    pool.returnThread(new ThreadImpl(pool, thread.getName()));
-                    //    Thread.currentThread().interrupt();
-                    //    return;
-                    //}
-                }
-
-                setTaskRef.set(null);
-                pool.returnThread(ThreadImpl.this);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                continue;
             }
+
+            try {
+                setTaskRef.get().execute();
+            } catch (Throwable e) { // was TaskExecutionException before
+                                    // changed to catch runtime exceptions to prevent thread loss
+                IModule module = ModuleManager.getCurrentModule();
+                if (module != null) {
+                    System.out.println("[FAIL] Exception thrown in context of module " +
+                            module.getName() + ":" + module.getVersion());
+                }
+                e.printStackTrace();
+                // ToDo: for a while we did not have situations when we can check that
+                // ToDo: re-creation of thread may help in such a case of thrown Error
+                    /*if (!(e instanceof Exception)) {
+                        System.out.println("[FAIL] Thread " + thread.getName() + " have got Error exception " +
+                                "and will be killed.\n New thread with same name is created.");
+                        pool.returnThread(new ThreadImpl(pool, thread.getName()));
+                        Thread.currentThread().interrupt();
+                        return;
+                    }*/
+            }
+
+            setTaskRef.set(null);
+            pool.returnThread(this);
         }
     }
 
@@ -79,7 +76,7 @@ class ThreadImpl {
         this.setTaskRef = new AtomicReference<>(null);
         this.lock = new Object();
 
-        this.thread = new Thread(new ThreadRunnable(), threadName);
+        this.thread = new Thread(this, threadName);
 
         this.thread.start();
     }
