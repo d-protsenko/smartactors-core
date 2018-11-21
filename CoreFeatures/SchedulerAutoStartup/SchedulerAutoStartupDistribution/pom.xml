@@ -5,7 +5,7 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>scheduler-auto-startup</artifactId>
-        <version>0.4.0</version>
+        <version>0.5.0</version>
     </parent>
     <artifactId>scheduler-auto-startup-distribution</artifactId>
     <packaging>pom</packaging>

@@ -5,10 +5,10 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>email</artifactId>
-        <version>0.3.3</version>
+        <version>0.5.0</version>
     </parent>
     <artifactId>email.email-actor</artifactId>
-    <version>0.3.3</version>
+    <version>0.5.0</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>

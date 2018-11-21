@@ -5,10 +5,10 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>async-operations</artifactId>
-        <version>0.3.3</version>
+        <version>0.5.0</version>
     </parent>
     <artifactId>async-operations.create-async-operation</artifactId>
-    <version>0.3.3</version>
+    <version>0.5.0</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>

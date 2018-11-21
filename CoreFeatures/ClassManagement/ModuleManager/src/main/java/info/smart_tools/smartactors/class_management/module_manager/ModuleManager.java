@@ -17,7 +17,7 @@ public final class ModuleManager {
     public  static final Object coreId = java.util.UUID.randomUUID();
     private static final String coreName = "info.smart_tools:smartactors";
     // ToDo: manage with version
-    private static final String coreVersion = "0.4.0";
+    private static final String coreVersion = "0.5.0";
 
     private static ThreadLocal<IModule> currentModule = new ThreadLocal<>();
 

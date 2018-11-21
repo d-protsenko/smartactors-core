@@ -5,10 +5,10 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>on-feature-loading-service-starter</artifactId>
-        <version>0.4.0</version>
+        <version>0.5.0</version>
     </parent>
     <artifactId>on-feature-loading-service-starter.on-feature-loading-starter</artifactId>
-    <version>0.4.0</version>
+    <version>0.5.0</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
@@ -100,36 +100,36 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.interfaces.iaddition-dependency-strategy</artifactId>
-            <version>0.4.0</version>
+            <version>0.5.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.strategy.apply-function-to-arguments</artifactId>
-            <version>0.4.0</version>
+            <version>0.5.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.field-name</artifactId>
-            <version>0.4.0</version>
+            <version>0.5.0</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject-extension.configuration-object</artifactId>
-            <version>0.4.0</version>
+            <version>0.5.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>class-management.module-manager</artifactId>
-            <version>0.4.0</version>
+            <version>0.5.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.field-name-tools</artifactId>
-            <version>0.4.0</version>
+            <version>0.5.0</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
@@ -161,7 +161,7 @@
                             <inherited>false</inherited>
                             <configuration>
                                 <generatePom>true</generatePom>
-                                <file>target/on-feature-loading-service-starter.on-feature-loading-starter-0.4.0.jar</file>
+                                <file>target/on-feature-loading-service-starter.on-feature-loading-starter-0.5.0.jar</file>
                                 <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
                                 <repositoryId>archiva.smartactors-modules</repositoryId>
                                 <groupId>${project.groupId}</groupId>

@@ -6,13 +6,13 @@
 
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>core-pack-for-server-2</artifactId>
-    <version>0.3.3</version>
+    <version>0.5.0</version>
 
     <packaging>pom</packaging>
 
     <properties>
-        <core.version>0.3.3</core.version>
-        <feature.version>0.3.3</feature.version>
+        <core.version>0.5.0</core.version>
+        <feature.version>0.5.0</feature.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>

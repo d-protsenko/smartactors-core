@@ -20,7 +20,7 @@ public class Das {
         Map<String, IAction> commands = initCommands();
 
         System.out.println("Distributed Actor System. Design, assembly and deploy tools.");
-        System.out.println("Version 0.3.4.");
+        System.out.println("Version 0.5.0.");
 
         if (args.length == 0) {
             return;
