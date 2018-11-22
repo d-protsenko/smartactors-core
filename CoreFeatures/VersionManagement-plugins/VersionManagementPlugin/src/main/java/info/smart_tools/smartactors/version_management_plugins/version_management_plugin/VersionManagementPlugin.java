@@ -34,7 +34,7 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
 
     @Item("versioned_chain_id_from_map_name_strategy")
     @After({"messaging_identifiers"})
-    @Before({"config_section:maps"})
+    @Before({"starter"})
     public void registerChainIdFromMapNameStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
 
