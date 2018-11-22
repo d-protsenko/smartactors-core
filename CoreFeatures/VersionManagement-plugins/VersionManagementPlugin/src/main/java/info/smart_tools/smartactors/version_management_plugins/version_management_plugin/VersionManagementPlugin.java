@@ -47,7 +47,7 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
 
     @Item("versioned_router")
     @After({"router"})
-    @Before({"configuration_manager"})
+    @Before({"receiver_chains_storage"})
     public void registerVersionedRouterStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
 
