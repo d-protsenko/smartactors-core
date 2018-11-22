@@ -125,9 +125,10 @@ public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
 
     @Override
     public IObject getExceptionalChainNamesAndEnvironments(final Throwable exception) {
-        Throwable e = exception;
+        Throwable e;
 
         for (Map.Entry<Class<? extends Throwable>, IObject> entry : this.exceptionalChainNamesAndEnv.entrySet()) {
+            e = exception;
             while (null != e) {
                 if (entry.getKey().isAssignableFrom(e.getClass())) {
                     return entry.getValue();
