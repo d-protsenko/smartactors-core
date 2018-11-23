@@ -43,7 +43,7 @@ public class FeatureManagerActor {
 
     private Map<IMessageProcessor, Set<IFeature>> requestProcesses;
     private Map<IMessageProcessor, Set<IFeature>> requestProcessesForInfo;
-    private Map<IMessageProcessor, IFeature> featureProcesses;
+    private Map<IMessageProcessor, IFeature> featuresPaused;
 
     private Map<Object, IFeature> loadedFeatures;
     private Map<Object, IFeature> failedFeatures;
@@ -72,7 +72,7 @@ public class FeatureManagerActor {
             throws ResolutionException {
         this.requestProcesses = new ConcurrentHashMap<>();
         this.requestProcessesForInfo = new ConcurrentHashMap<>();
-        this.featureProcesses = new ConcurrentHashMap<>();
+        this.featuresPaused = new ConcurrentHashMap<>();
 
         this.loadedFeatures = new ConcurrentHashMap<>();
         this.failedFeatures = new ConcurrentHashMap<>();
@@ -265,7 +265,10 @@ public class FeatureManagerActor {
                 } else {
                     IMessageProcessor mp = wrapper.getMessageProcessor();
                     mp.pauseProcess();
-                    this.featureProcesses.put(mp, feature);
+                    this.featuresPaused.put(mp, feature);
+                    if (this.featuresPaused.size() == this.featuresInProgress.size()) {
+                        checkUnresolved();
+                    }
                 }
             }
         } catch (InvalidArgumentException | ModuleManagerException | ReadValueException | AsynchronousOperationException e) {
@@ -290,7 +293,7 @@ public class FeatureManagerActor {
             wrapper.setLoadedFeatures(this.loadedFeatures.values());
             wrapper.setFailedFeatures(this.failedFeatures.values());
             wrapper.setProcessingFeatures(this.featuresInProgress.values());
-            wrapper.setFrozenFeatureProcesses(this.featureProcesses);
+            wrapper.setFrozenFeatureProcesses(this.featuresPaused);
             wrapper.setFrozenRequests(this.requestProcesses);
         } catch (ChangeValueException e) {
             throw new FeatureManagementException("Could not set parameter to IObject.", e);
@@ -299,10 +302,10 @@ public class FeatureManagerActor {
 
     private void checkAndRunConnectedFeatures() {
         Collection<IMessageProcessor> needContinueFeatures = new HashSet<>();
-        this.featureProcesses.forEach((k, v) -> {
+        this.featuresPaused.forEach((k, v) -> {
             if (v.getDependencies().isEmpty()) {
                 needContinueFeatures.add(k);
-                this.featureProcesses.remove(k);
+                this.featuresPaused.remove(k);
             }
         });
         needContinueFeatures.forEach((mp) -> {
