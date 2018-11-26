@@ -110,7 +110,7 @@
                             <phase>none</phase>
                         </execution>
                         <execution>
-                            <id>archiva.smartactors-modules</id>
+                            <id>${module.rid}</id>
                             <phase>deploy</phase>
                             <goals>
                                 <goal>deploy-file</goal>
@@ -119,8 +119,8 @@
                             <configuration>
                                 <generatePom>true</generatePom>
                                 <file>target/database-service-starter.database-starter-0.5.0.jar</file>
-                                <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
-                                <repositoryId>archiva.smartactors-modules</repositoryId>
+                                <url>${module.rurl}</url>
+                                <repositoryId>${module.rid}</repositoryId>
                                 <groupId>${project.groupId}</groupId>
                                 <artifactId>${project.artifactId}</artifactId>
                                 <version>${project.version}</version>

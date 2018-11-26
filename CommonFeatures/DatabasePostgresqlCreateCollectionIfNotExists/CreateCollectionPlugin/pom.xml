@@ -188,8 +188,8 @@
                             <configuration>
                                 <generatePom>true</generatePom>
                                 <file>${project.basedir}/target/${project.artifactId}-${project.version}.jar</file>
-                                <url>http://archiva.smart-tools.info/repository/common-actors/</url>
-                                <repositoryId>archiva.common-actors</repositoryId>
+                                <url>${module.rurl}</url>
+                                <repositoryId>${module.rid}</repositoryId>
                                 <groupId>${project.groupId}</groupId>
                                 <artifactId>${project.artifactId}</artifactId>
                                 <version>${project.version}</version>

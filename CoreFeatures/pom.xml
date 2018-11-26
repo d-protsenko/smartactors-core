@@ -8,17 +8,22 @@
 
     <packaging>pom</packaging>
 
-    <repositories>
-        <repository>
-            <id>smartactors-modules</id>
-            <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
-        </repository>
-    </repositories>
-
     <properties>
+        <feature.rurl>http://archiva.smart-tools.info/repository/smartactors-features/</feature.rurl>
+        <feature.rid>archiva.smartactors-features</feature.rid>
+        <module.rurl>${feature.rurl}</module.rurl>
+        <module.rid>${feature.rid}</module.rid>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>${feature.rid}</id>
+            <url>${feature.rurl}</url>
+        </repository>
+    </repositories>
 
     <modules>
         <module>Base</module>

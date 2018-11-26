@@ -46,8 +46,8 @@
                             <configuration>
                                 <generatePom>true</generatePom>
                                 <file>${project.basedir}/target/${project.artifactId}-${project.version}.jar</file>
-                                <url>http://archiva.smart-tools.info/repository/server-dev-tools/</url>
-                                <repositoryId>archiva.server-dev-tools</repositoryId>
+                                <url>${feature.rurl}</url>
+                                <repositoryId>${feature.rid}</repositoryId>
                                 <groupId>${project.groupId}</groupId>
                                 <artifactId>${project.artifactId}</artifactId>
                                 <version>${project.version}</version>

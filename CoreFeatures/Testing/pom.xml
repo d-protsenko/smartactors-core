@@ -53,7 +53,7 @@
                             <phase>none</phase>
                         </execution>
                         <execution>
-                            <id>archiva.smartactors-features</id>
+                            <id>${feature.rid}</id>
                             <phase>deploy</phase>
                             <goals>
                                 <goal>deploy-file</goal>
@@ -62,8 +62,8 @@
                             <configuration>
                                 <generatePom>true</generatePom>
                                 <file>${project.parent.basedir}/project-distribution/${project.artifactId}-${project.parent.version}-archive.${deploy.fomat}</file>
-                                <url>http://archiva.smart-tools.info/repository/smartactors-features/</url>
-                                <repositoryId>archiva.smartactors-features</repositoryId>
+                                <url>${feature.rurl}</url>
+                                <repositoryId>${feature.rid}</repositoryId>
                                 <groupId>${project.groupId}</groupId>
                                 <artifactId>${project.artifactId}</artifactId>
                                 <version>${project.version}</version>

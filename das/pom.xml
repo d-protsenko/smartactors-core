@@ -6,6 +6,13 @@
     <artifactId>das</artifactId>
     <version>0.5.0</version>
 
+    <properties>
+        <feature.rurl>http://archiva.smart-tools.info/repository/server-dev-tools/</feature.rurl>
+        <feature.rid>archiva.server-dev-tools</feature.rid>
+        <module.rurl>${feature.rurl}</module.rurl>
+        <module.rid>${feature.rid}</module.rid>
+    </properties>
+
     <dependencies>
 
         <dependency>
@@ -93,8 +100,8 @@
 
     <repositories>
         <repository>
-            <id>archiva.smartactors-modules</id>
-            <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
+            <id>${module.rid}</id>
+            <url>${module.rurl}</url>
         </repository>
     </repositories>
 
@@ -186,8 +193,8 @@
                 <configuration>
                     <generatePom>true</generatePom>
                     <file>${project.build.directory}/das_${project.version}_all.deb</file>
-                    <url>http://archiva.smart-tools.info/repository/server-dev-tools/</url>
-                    <repositoryId>archiva.server-dev-tools</repositoryId>
+                    <url>${feature.rurl}</url>
+                    <repositoryId>${feature.rid}</repositoryId>
                     <groupId>info.smart_tools.smartactors</groupId>
                     <artifactId>${project.artifactId}</artifactId>
                     <version>${project.version}</version>
