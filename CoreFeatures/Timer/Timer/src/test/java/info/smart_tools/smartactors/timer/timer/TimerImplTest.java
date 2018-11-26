@@ -1,10 +1,13 @@
 package info.smart_tools.smartactors.timer.timer;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import info.smart_tools.smartactors.scope.iscope.IScope;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.timer.interfaces.itimer.ITimer;
@@ -63,6 +66,9 @@ public class TimerImplTest {
         taskMock = mock(ITask.class);
         taskQueueMock = mock(IQueue.class);
         taskQueueKey =mock(IKey.class);
+
+        ScopeProvider.setCurrentScope(mock(IScope.class));
+        ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
 
         when(Keys.resolveByName(eq("task_queue"))).thenReturn(taskQueueKey);
         when(IOC.resolve(same(taskQueueKey))).thenReturn(taskQueueMock);
