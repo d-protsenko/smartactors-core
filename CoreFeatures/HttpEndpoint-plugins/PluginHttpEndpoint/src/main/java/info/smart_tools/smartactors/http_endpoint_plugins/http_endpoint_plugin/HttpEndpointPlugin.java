@@ -10,6 +10,7 @@ import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallback
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse_sender.IResponseSender;
 import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_post_form_urlencoded.DeserializeStrategyPostFormUrlencoded;
 import info.smart_tools.smartactors.http_endpoint.http_endpoint.HttpEndpoint;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
@@ -22,6 +23,9 @@ import info.smart_tools.smartactors.http_endpoint.environment_handler.Environmen
 import info.smart_tools.smartactors.http_endpoint.http_response_sender.HttpResponseSender;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
+import info.smart_tools.smartactors.http_endpoint.interfaces.icookies_extractor.ICookiesSetter;
+import info.smart_tools.smartactors.http_endpoint.interfaces.iheaders_extractor.IHeadersExtractor;
+import info.smart_tools.smartactors.http_endpoint.interfaces.iresponse_status_extractor.IResponseStatusExtractor;
 import info.smart_tools.smartactors.http_endpoint.message_to_bytes_mapper.MessageToBytesMapper;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -32,6 +36,7 @@ import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
@@ -84,105 +89,206 @@ public class HttpEndpointPlugin implements IPlugin {
                     .after("response")
                     .after("response_content_strategy")
                     .before("configure")
-                    .process(
-                            () -> {
-                                try {
-                                    initializeFieldNames();
-                                    IKey httpEndpointKey = Keys.getOrAdd("http_endpoint");
-                                    registerCookiesSetter();
-                                    registerHeadersExtractor();
-                                    registerResponseStatusExtractor();
-                                    registerExceptionalResponse();
-                                    IOC.register(
-                                            Keys.getOrAdd(IEnvironmentHandler.class.getCanonicalName()),
-                                            new CreateNewInstanceStrategy(
-                                                    (args) -> {
-                                                        IObject configuration = (IObject) args[0];
-                                                        IQueue queue = null;
-                                                        Integer stackDepth = null;
-                                                        try {
-                                                            queue = (IQueue) configuration.getValue(queueFieldName);
-                                                            stackDepth =
-                                                                    (Integer) configuration.getValue(stackDepthFieldName);
-                                                            return new EnvironmentHandler(queue, stackDepth);
-                                                        } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
-                                                            throw new RuntimeException(e);
-                                                        }
-                                                    }
-                                            )
-                                    );
+                    .process(() -> {
+                        try {
+                            initializeFieldNames();
+                            IKey httpEndpointKey = Keys.getOrAdd("http_endpoint");
+                            registerCookiesSetter();
+                            registerHeadersExtractor();
+                            registerResponseStatusExtractor();
+                            registerExceptionalResponse();
+                            IOC.register(
+                                    Keys.getOrAdd(IEnvironmentHandler.class.getCanonicalName()),
+                                    new CreateNewInstanceStrategy(
+                                            (args) -> {
+                                                IObject configuration = (IObject) args[0];
+                                                IQueue queue = null;
+                                                Integer stackDepth = null;
+                                                try {
+                                                    queue = (IQueue) configuration.getValue(queueFieldName);
+                                                    stackDepth =
+                                                            (Integer) configuration.getValue(stackDepthFieldName);
+                                                    return new EnvironmentHandler(queue, stackDepth);
+                                                } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
+                                                    throw new RuntimeException(e);
+                                                }
+                                            }
+                                    )
+                            );
 
-                                    IOC.register(httpEndpointKey,
-                                            new CreateNewInstanceStrategy(
-                                                    (args) -> {
-                                                        IObject configuration = (IObject) args[0];
-                                                        try {
+                            IOC.register(httpEndpointKey,
+                                    new CreateNewInstanceStrategy(
+                                            (args) -> {
+                                                IObject configuration = (IObject) args[0];
+                                                try {
 
-                                                            IOC.resolve(
-                                                                    Keys.getOrAdd("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
-                                                                    "HTTP_GET",
-                                                                    configuration.getValue(endpointNameFieldName),
-                                                                    configuration.getValue(templatesFieldName));
-                                                            IOC.resolve(
-                                                                    Keys.getOrAdd("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
-                                                                    "HTTP_application/json",
-                                                                    configuration.getValue(endpointNameFieldName));
-                                                            IOC.resolve(
-                                                                    Keys.getOrAdd("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
-                                                                    "HTTP_application/x-www-form-urlencoded",
-                                                                    configuration.getValue(endpointNameFieldName));
+                                                    IOC.resolve(
+                                                            Keys.getOrAdd("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
+                                                            "HTTP_GET",
+                                                            configuration.getValue(endpointNameFieldName),
+                                                            configuration.getValue(templatesFieldName));
+                                                    IOC.resolve(
+                                                            Keys.getOrAdd("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
+                                                            "HTTP_application/json",
+                                                            configuration.getValue(endpointNameFieldName));
+                                                    IOC.resolve(
+                                                            Keys.getOrAdd("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
+                                                            "HTTP_application/x-www-form-urlencoded",
+                                                            configuration.getValue(endpointNameFieldName));
 
-                                                            IUpCounter upCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
+                                                    IUpCounter upCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
 
-                                                            IEnvironmentHandler environmentHandler = IOC.resolve(
-                                                                    Keys.getOrAdd(IEnvironmentHandler.class.getCanonicalName()),
-                                                                    configuration);
-                                                            HttpEndpoint endpoint = new HttpEndpoint(
-                                                                    (Integer) configuration.getValue(portFieldName),
-                                                                    (Integer) configuration.getValue(maxContentLengthFieldName),
-                                                                    ScopeProvider.getCurrentScope(), environmentHandler,
-                                                                    (IReceiverChain) configuration.getValue(startChainNameFieldName),
-                                                                    (String) configuration.getValue(endpointNameFieldName),
-                                                                    upCounter);
+                                                    IEnvironmentHandler environmentHandler = IOC.resolve(
+                                                            Keys.getOrAdd(IEnvironmentHandler.class.getCanonicalName()),
+                                                            configuration);
+                                                    HttpEndpoint endpoint = new HttpEndpoint(
+                                                            (Integer) configuration.getValue(portFieldName),
+                                                            (Integer) configuration.getValue(maxContentLengthFieldName),
+                                                            ScopeProvider.getCurrentScope(), environmentHandler,
+                                                            (IReceiverChain) configuration.getValue(startChainNameFieldName),
+                                                            (String) configuration.getValue(endpointNameFieldName),
+                                                            upCounter);
 
-                                                            upCounter.onShutdownComplete(endpoint::stop);
+                                                    upCounter.onShutdownComplete(this.toString(), endpoint::stop);
 
-                                                            return endpoint;
-                                                        } catch (ReadValueException | InvalidArgumentException
-                                                                | ScopeProviderException | ResolutionException
-                                                                | UpCounterCallbackExecutionException e) {
-                                                            throw new RuntimeException(e);
-                                                        }
-                                                    }
-                                            )
-                                    );
-                                    registerDeserializationStrategies();
-                                    registerResponseSenders();
-                                    IKey emptyIObjectKey = Keys.getOrAdd("EmptyIObject");
-                                    IOC.register(emptyIObjectKey, new CreateNewInstanceStrategy(
-                                                    (args) -> new DSObject()
-                                            )
-                                    );
+                                                    return endpoint;
+                                                } catch (ReadValueException | InvalidArgumentException
+                                                        | ScopeProviderException | ResolutionException
+                                                        | UpCounterCallbackExecutionException e) {
+                                                    throw new RuntimeException(e);
+                                                }
+                                            }
+                                    )
+                            );
+                            registerDeserializationStrategies();
+                            registerResponseSenders();
+                            IKey emptyIObjectKey = Keys.getOrAdd("EmptyIObject");
+                            IOC.register(emptyIObjectKey, new CreateNewInstanceStrategy(
+                                            (args) -> new DSObject()
+                                    )
+                            );
 
-                                    IKey channelHandlerNettyKey = Keys.getOrAdd("info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty");
-                                    IOC.register(channelHandlerNettyKey,
-                                            new CreateNewInstanceStrategy(
-                                                    (args) -> {
-                                                        ChannelHandlerNetty channelHandlerNetty = new ChannelHandlerNetty();
-                                                        channelHandlerNetty.init((ChannelHandlerContext) args[0]);
-                                                        return channelHandlerNetty;
-                                                    }
-                                            ));
+                            IKey channelHandlerNettyKey = Keys.getOrAdd("info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty");
+                            IOC.register(channelHandlerNettyKey,
+                                    new CreateNewInstanceStrategy(
+                                            (args) -> {
+                                                ChannelHandlerNetty channelHandlerNetty = new ChannelHandlerNetty();
+                                                channelHandlerNetty.init((ChannelHandlerContext) args[0]);
+                                                return channelHandlerNetty;
+                                            }
+                                    ));
 
-                                } catch (ResolutionException e) {
-                                    throw new ActionExecuteException("EndpointCollection plugin can't load: can't get key", e);
-                                } catch (InvalidArgumentException e) {
-                                    throw new ActionExecuteException("EndpointCollection plugin can't load: can't create strategy", e);
-                                } catch (RegistrationException | AdditionDependencyStrategyException e) {
-                                    throw new ActionExecuteException("EndpointCollection plugin can't load: can't register new strategy", e);
-                                }
-                            }
-                    );
+                        } catch (ResolutionException e) {
+                            throw new ActionExecuteException("EndpointCollection plugin can't load: can't get key", e);
+                        } catch (InvalidArgumentException e) {
+                            throw new ActionExecuteException("EndpointCollection plugin can't load: can't create strategy", e);
+                        } catch (RegistrationException | AdditionDependencyStrategyException e) {
+                            throw new ActionExecuteException("EndpointCollection plugin can't load: can't register new strategy", e);
+                        }
+                    })
+                    .revertProcess(() -> {
+                        String itemName = "CreateHttpEndpoint";
+                        String keyName = "";
+
+                        try {
+                            keyName = "info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = "EmptyIObject";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = "http_request_key_for_response_sender";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = IParseTree.class.getCanonicalName();
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = "http_request_key_for_deserialize";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = "http_endpoint";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = IEnvironmentHandler.class.getCanonicalName();
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = "HttpShuttingDownException";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = "HttpInternalException";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = "HttpRequestParametersToIObjectException";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = "HttpPostParametersToIObjectException";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = "key_for_response_status_setter";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = "key_for_headers_extractor";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = "key_for_cookies_extractor";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+                    });
+
             bootstrap.add(item);
         } catch (Exception e) {
             throw new PluginException("Can't load \"CreateHttpEndpoint\" plugin", e);

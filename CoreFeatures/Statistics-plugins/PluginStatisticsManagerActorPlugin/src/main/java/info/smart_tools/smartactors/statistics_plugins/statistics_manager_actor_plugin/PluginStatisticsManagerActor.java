@@ -69,6 +69,9 @@ public class PluginStatisticsManagerActor extends BootstrapPlugin {
                             throw new MessageReceiveException(e);
                         }
                     }
+
+                    @Override
+                    public void dispose() { }
                 };
             } catch (Exception e) {
                 throw new FunctionExecutionException(e);

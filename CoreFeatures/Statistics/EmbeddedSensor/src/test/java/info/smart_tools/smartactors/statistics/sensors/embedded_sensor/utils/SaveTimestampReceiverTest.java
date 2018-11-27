@@ -50,8 +50,10 @@ public class SaveTimestampReceiverTest extends PluginsLoadingTestBase {
             throws Exception {
         IMessageProcessor mp = mock(IMessageProcessor.class);
         when(mp.getContext()).thenReturn(mock(IObject.class));
-        new SaveTimestampReceiver(timeFieldMock).receive(mp);
+        SaveTimestampReceiver r = new SaveTimestampReceiver(timeFieldMock);
+        r.receive(mp);
         verify(mp.getContext()).setValue(timeFieldMock, timeMock.currentTimeMillis());
+        r.dispose();
     }
 
     @Test(expected = MessageReceiveException.class)

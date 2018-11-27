@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.message_processing_plugins.chain_modificati
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -32,5 +33,20 @@ public class ChainModificationStrategiesPlugin extends BootstrapPlugin {
     public void registerReceiverReplaceModification()
             throws ResolutionException, RegistrationException {
         IOC.register(Keys.getOrAdd("chain modification: replace receivers"), new ReplaceReceiversChainModificationStrategy());
+    }
+
+    /**
+     * Unregisters {@link ReplaceReceiversChainModificationStrategy}.
+     */
+    @ItemRevert("chain_modification_strategies:replace_receivers")
+    public void unregisterReceiverReplaceModification() {
+        String itemName = "chain_modification_strategies:replace_receivers";
+        String keyName = "chain modification: replace receivers";
+
+        try {
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
     }
 }

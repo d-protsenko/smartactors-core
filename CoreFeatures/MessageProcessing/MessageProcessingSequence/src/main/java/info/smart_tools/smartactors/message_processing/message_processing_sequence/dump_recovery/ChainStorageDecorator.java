@@ -44,6 +44,11 @@ public class ChainStorageDecorator implements IChainStorage {
     }
 
     @Override
+    public void unregister(final Object chainId) {
+        // Not supported
+    }
+
+    @Override
     public Object update(final Object chainId, final IObject modification) throws ChainNotFoundException, ChainModificationException {
         throw new ChainModificationException("Not supported", null);
     }

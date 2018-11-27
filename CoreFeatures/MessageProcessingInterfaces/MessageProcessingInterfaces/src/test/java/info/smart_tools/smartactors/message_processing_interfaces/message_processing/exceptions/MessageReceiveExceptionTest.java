@@ -9,6 +9,13 @@ import static org.junit.Assert.assertEquals;
  */
 public class MessageReceiveExceptionTest {
     @Test(expected = MessageReceiveException.class)
+    public void checkVoidMethod()
+            throws MessageReceiveException {
+        MessageReceiveException exception = new MessageReceiveException();
+        throw exception;
+    }
+
+    @Test(expected = MessageReceiveException.class)
     public void checkMessageMethod()
             throws MessageReceiveException {
         String str = "test";

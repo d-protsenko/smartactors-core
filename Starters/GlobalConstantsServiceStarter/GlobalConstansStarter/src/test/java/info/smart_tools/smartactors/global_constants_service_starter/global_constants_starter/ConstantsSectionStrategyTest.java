@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.configuration_manager.interfaces.iconfigurat
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
@@ -87,13 +88,45 @@ public class ConstantsSectionStrategyTest {
         assertSame(constFieldName, strategy.getSectionName());
     }
 
-    @Test(expected = ConfigurationProcessingException.class)
+    @Test
     public void Should_wrapExceptionOccurredProcessingConfig()
             throws Exception {
         ISectionStrategy strategy = new ConstantsSectionStrategy();
 
         doThrow(ChangeValueException.class).when(globalConstantsObjectMock).setValue(any(), any());
+        doThrow(ResolutionException.class).when(globalConstantsObjectMock).deleteField(any());
 
-        strategy.onLoadConfig(configMock);
+        try {
+            strategy.onLoadConfig(configMock);
+            fail();
+        } catch (ConfigurationProcessingException e) { }
+
+        try {
+            strategy.onRevertConfig(configMock);
+            fail();
+        } catch (ConfigurationProcessingException e) {
+            assertEquals(2, e.getSuppressed().length);
+        }
+
+        doThrow(ResolutionException.class).when(configMock).getValue(any());
+
+        try {
+            strategy.onRevertConfig(configMock);
+            fail();
+        } catch (ConfigurationProcessingException e) {
+            assertEquals(1, e.getSuppressed().length);
+        }
     }
+
+    @Test
+    public void Should_deleteConstantsToGlobalObject()
+            throws Exception {
+        ISectionStrategy strategy = new ConstantsSectionStrategy();
+
+        strategy.onRevertConfig(configMock);
+
+        verify(globalConstantsObjectMock).deleteField(const1FieldName);
+        verify(globalConstantsObjectMock).deleteField(const2FieldName);
+    }
+
 }

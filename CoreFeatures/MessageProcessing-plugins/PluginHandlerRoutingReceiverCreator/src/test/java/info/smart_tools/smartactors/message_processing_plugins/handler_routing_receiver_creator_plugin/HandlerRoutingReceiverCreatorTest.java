@@ -6,9 +6,11 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.iroutable_object_creator.IRoutedObjectCreator;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
@@ -82,7 +84,7 @@ public class HandlerRoutingReceiverCreatorTest {
     }
 
     @Test
-    public void checkLoadExecution()
+    public void checkLoadAndRevertExecution()
             throws Exception {
         Checker checker = new Checker();
         checker.item = new BootstrapItem("test");
@@ -110,6 +112,14 @@ public class HandlerRoutingReceiverCreatorTest {
                 )
         );
         assertNotNull(objectCreator);
+
+        item.executeRevertProcess();
+
+        try {
+            IOC.resolve(Keys.getOrAdd(IRoutedObjectCreator.class.getCanonicalName() + "#stateless_actor"));
+            fail();
+        } catch (ResolutionException e) {}
+
         reset(bootstrap);
     }
 

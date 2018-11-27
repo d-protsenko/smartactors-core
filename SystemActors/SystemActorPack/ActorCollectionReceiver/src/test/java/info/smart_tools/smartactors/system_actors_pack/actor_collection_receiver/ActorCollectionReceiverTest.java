@@ -113,6 +113,12 @@ public class ActorCollectionReceiverTest extends PluginsLoadingTestBase {
         verify(creatorMocks[0], times(1)).create(any(), any(), any());
         verify(creatorMocks[1], times(1)).create(any(), any(), any());
         verify(creatorMocks[2], times(1)).create(any(), any(), any());
+
+        receiver.dispose();
+
+        verify(childReceiverMocks[0], times(1)).dispose();
+        verify(childReceiverMocks[1], times(1)).dispose();
+        verify(childReceiverMocks[2], times(1)).dispose();
     }
 
     @Test(expected = MessageReceiveException.class)

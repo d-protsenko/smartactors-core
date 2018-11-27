@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.configuration_manager.interfaces.iconfigurat
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.DeleteValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -64,6 +65,29 @@ public class ConstantsSectionStrategy implements ISectionStrategy {
             }
         } catch (ReadValueException | InvalidArgumentException | ResolutionException | ChangeValueException e) {
             throw new ConfigurationProcessingException(e);
+        }
+    }
+
+    @Override
+    public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
+        ConfigurationProcessingException exception = new ConfigurationProcessingException("Error occurred reverting \"const\" configuration section.");
+        try {
+            IObject constants = IOC.resolve(Keys.getOrAdd("global constants"));
+            List<IObject> section = (List<IObject>) config.getValue(sectionFieldName);
+
+            for (IObject obj : section) {
+                try {
+                    IFieldName cFName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), obj.getValue(constantNameFN));
+                    constants.deleteField(cFName);
+                } catch (DeleteValueException | ResolutionException e) {
+                    exception.addSuppressed(e);
+                }
+            }
+        } catch ( ReadValueException | InvalidArgumentException | ResolutionException e) {
+            exception.addSuppressed(e);
+        }
+        if (exception.getSuppressed().length > 0) {
+            throw exception;
         }
     }
 

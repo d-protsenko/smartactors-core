@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Router implements IRouter {
+public class ActorInnerRouter implements IRouter {
 
     Map<Object, IMessageReceiver> map = new HashMap<>();
 
@@ -23,6 +23,14 @@ public class Router implements IRouter {
         this.map.put(targetId, receiver);
     }
 
+    @Override
+    public void unregister(Object targetId) {
+        IMessageReceiver receiver = map.remove(targetId);
+
+        if (null != receiver) {
+            receiver.dispose();
+        }
+    }
 
     @Override
     public List<Object> enumerate() {

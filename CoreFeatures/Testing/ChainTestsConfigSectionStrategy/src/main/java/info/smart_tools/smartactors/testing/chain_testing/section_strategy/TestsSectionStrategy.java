@@ -93,6 +93,12 @@ public class TestsSectionStrategy implements ISectionStrategy {
     }
 
     @Override
+    public void onRevertConfig(final IObject config)
+            throws ConfigurationProcessingException {
+        // ToDo: add this block if necessary
+    }
+
+    @Override
     public IFieldName getSectionName() {
         return name;
     }

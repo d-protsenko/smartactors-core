@@ -46,6 +46,10 @@ public class BootstrapPluginTest {
             public void item1Method() {
             }
 
+            @BootstrapPlugin.ItemRevert("item1")
+            public void item1RevertMethod() {
+            }
+
             @BootstrapPlugin.Item("item2")
             public void item2Method() {
             }

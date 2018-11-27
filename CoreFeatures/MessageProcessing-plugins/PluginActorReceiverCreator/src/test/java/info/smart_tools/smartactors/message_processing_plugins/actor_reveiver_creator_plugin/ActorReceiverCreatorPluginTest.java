@@ -6,9 +6,11 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.iroutable_object_creator.IRoutedObjectCreator;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
@@ -23,9 +25,7 @@ import org.mockito.stubbing.Answer;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
@@ -111,6 +111,24 @@ public class ActorReceiverCreatorPluginTest {
                 )
         );
         assertNotNull(objectCreator);
+
+        item.executeRevertProcess();
+
+        try {
+            IOC.resolve(Keys.getOrAdd(IRoutedObjectCreator.class.getCanonicalName() + "#actor"));
+            fail();
+        } catch (ResolutionException e) {}
+
+        try {
+            IOC.resolve(Keys.getOrAdd("actor_receiver_queue"));
+            fail();
+        } catch (ResolutionException e) {}
+
+        try {
+            IOC.resolve(Keys.getOrAdd("actor_receiver_busyness_flag"));
+            fail();
+        } catch (ResolutionException e) {}
+
         reset(bootstrap);
     }
 

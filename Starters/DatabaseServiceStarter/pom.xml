@@ -1,29 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>starters</artifactId>
-        <version>0.3.3</version>
+        <version>0.4.0</version>
     </parent>
-
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>database-service-starter</artifactId>
-    <version>0.3.3</version>
-
+    <version>0.4.0</version>
     <packaging>pom</packaging>
-
     <modules>
         <module>DatabaseStarter</module>
         <module>DatabaseServiceStarterDistribution</module>
     </modules>
-
     <build>
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.5.1</version>
                     <configuration>
@@ -39,10 +34,8 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>3.0.0</version>
-                    <inherited>true</inherited>
                     <executions>
                         <execution>
                             <phase>package</phase>
@@ -51,6 +44,7 @@
                             </goals>
                         </execution>
                     </executions>
+                    <inherited>true</inherited>
                 </plugin>
                 <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
@@ -86,5 +80,4 @@
             </plugins>
         </pluginManagement>
     </build>
-
 </project>

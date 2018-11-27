@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
@@ -54,6 +55,8 @@ public class IFieldNamePluginTest {
         whenNew(BootstrapItem.class).withArguments("IFieldNamePlugin").thenReturn(item);
 
         when(item.after(anyString())).thenReturn(item);
+        when(item.process(any())).thenReturn(item);
+        when(item.revertProcess(any())).thenReturn(item);
 
         plugin.load();
 
@@ -89,6 +92,13 @@ public class IFieldNamePluginTest {
 
         verifyNew(FieldName.class).withArguments(exampleFieldName);
 
+        ArgumentCaptor<IPoorAction> iPoorActionArgumentCaptor2 = ArgumentCaptor.forClass(IPoorAction.class);
+        verify(item).revertProcess(iPoorActionArgumentCaptor2.capture());
+
+        iPoorActionArgumentCaptor2.getValue().execute();
+
+        verifyStatic();
+        IOC.remove(eq(iFieldNameKey));
     }
 
     @Test
@@ -110,6 +120,8 @@ public class IFieldNamePluginTest {
         whenNew(BootstrapItem.class).withArguments("IFieldNamePlugin").thenReturn(item);
 
         when(item.after(anyString())).thenReturn(item);
+        when(item.process(any())).thenReturn(item);
+        when(item.revertProcess(any())).thenReturn(item);
 
         plugin.load();
 
@@ -143,6 +155,8 @@ public class IFieldNamePluginTest {
         whenNew(BootstrapItem.class).withArguments("IFieldNamePlugin").thenReturn(item);
 
         when(item.after(anyString())).thenReturn(item);
+        when(item.process(any())).thenReturn(item);
+        when(item.revertProcess(any())).thenReturn(item);
 
         plugin.load();
 
@@ -180,6 +194,8 @@ public class IFieldNamePluginTest {
         BootstrapItem item = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("IFieldNamePlugin").thenReturn(item);
         when(item.after(anyString())).thenReturn(item);
+        when(item.process(any())).thenReturn(item);
+        when(item.revertProcess(any())).thenReturn(item);
 
         plugin.load();
 
@@ -317,6 +333,8 @@ public class IFieldNamePluginTest {
         whenNew(BootstrapItem.class).withArguments("IFieldNamePlugin").thenReturn(item);
 
         when(item.after(anyString())).thenReturn(item);
+        when(item.process(any())).thenReturn(item);
+        when(item.revertProcess(any())).thenReturn(item);
 
         plugin.load();
 
@@ -357,6 +375,33 @@ public class IFieldNamePluginTest {
         } catch (RuntimeException e) {
             verifyNew(FieldName.class).withArguments(fieldNameName);
         }
-
     }
+
+    @Test
+    public void MustReportToConsoleWhenKeyRemovingThrowsException() throws Exception {
+
+        BootstrapItem item = mock(BootstrapItem.class);
+        whenNew(BootstrapItem.class).withArguments("IFieldNamePlugin").thenReturn(item);
+
+        when(item.after(anyString())).thenReturn(item);
+        when(item.process(any())).thenReturn(item);
+        when(item.revertProcess(any())).thenReturn(item);
+
+        plugin.load();
+
+        verifyNew(BootstrapItem.class).withArguments("IFieldNamePlugin");
+
+        verify(item).after("IOC");
+
+        ArgumentCaptor<IPoorAction> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        verify(item).revertProcess(iPoorActionArgumentCaptor.capture());
+
+        verify(bootstrap).add(item);
+
+        doThrow(new DeletionException("TestException")).when(IOC.class);
+        IOC.remove(any());
+
+        iPoorActionArgumentCaptor.getValue().execute();
+    }
+
 }

@@ -10,6 +10,7 @@ import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -64,6 +65,15 @@ public class ClientSectionProcessingStrategy implements ISectionStrategy {
             throw new ConfigurationProcessingException("Error occurred resolving \"endpoint\".", e);
         } catch (ChangeValueException | RegistrationException e) {
             throw new ConfigurationProcessingException("Error occurred registering \"client\".", e);
+        }
+    }
+
+    @Override
+    public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
+        try {
+            IOC.remove(Keys.getOrAdd("responseHandlerConfiguration"));
+        } catch (DeletionException | ResolutionException e) {
+            throw new ConfigurationProcessingException("Error occurred while reverting \"client\" configuration section.", e);
         }
     }
 

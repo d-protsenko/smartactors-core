@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.C
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
@@ -20,15 +21,12 @@ import org.mockito.ArgumentCaptor;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyNew;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 @PrepareForTest({IOC.class, Keys.class, IPoorAction.class, CreateNewInstanceStrategy.class, IObjectSimpleImplPlugin.class, IObjectImpl.class})
 @RunWith(PowerMockRunner.class)
@@ -61,6 +59,8 @@ public class IObjectSimpleImplPluginTest {
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("IObjectSimpleImplPlugin").thenReturn(bootstrapItem);
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.process(any())).thenReturn(bootstrapItem);
+        when(bootstrapItem.revertProcess(any())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -77,6 +77,14 @@ public class IObjectSimpleImplPluginTest {
         IOC.register(eq(IObjectKey), createNewInstanceStrategyArgumentCaptor.capture());
 
         verify(bootstrap).add(bootstrapItem);
+
+        ArgumentCaptor<IPoorAction> actionArgumentCaptor2 = ArgumentCaptor.forClass(IPoorAction.class);
+        verify(bootstrapItem).revertProcess(actionArgumentCaptor2.capture());
+
+        actionArgumentCaptor2.getValue().execute();
+
+        verifyStatic();
+        IOC.remove(eq(IObjectKey));
     }
 
     @Test(expected = PluginException.class)
@@ -86,14 +94,16 @@ public class IObjectSimpleImplPluginTest {
         plugin.load();
     }
 
-    @Test(expected = ActionExecuteException.class)
-    public void ShouldThrowRuntimeException_When_LambdaThrowsException() throws Exception {
+    @Test
+    public void ShouldThrowRuntimeException_When_processThrowsException() throws Exception {
 
         when(Keys.getOrAdd(IObjectImpl.class.getCanonicalName())).thenThrow(new ResolutionException(""));
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("IObjectSimpleImplPlugin").thenReturn(bootstrapItem);
         when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.process(any())).thenReturn(bootstrapItem);
+        when(bootstrapItem.revertProcess(any())).thenReturn(bootstrapItem);
 
         plugin.load();
 
@@ -101,6 +111,36 @@ public class IObjectSimpleImplPluginTest {
 
         ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
+
+        try {
+            actionArgumentCaptor.getValue().execute();
+            fail();
+        } catch(ActionExecuteException e) { }
+    }
+
+    @Test
+    public void ShouldThrowRuntimeException_When_revertThrowsException() throws Exception {
+
+        doThrow(new DeletionException("TestException")).when(IOC.class);
+        IOC.remove(any());
+
+        BootstrapItem bootstrapItem = mock(BootstrapItem.class);
+        whenNew(BootstrapItem.class).withArguments("IObjectSimpleImplPlugin").thenReturn(bootstrapItem);
+        when(bootstrapItem.after(anyString())).thenReturn(bootstrapItem);
+        when(bootstrapItem.process(any())).thenReturn(bootstrapItem);
+        when(bootstrapItem.revertProcess(any())).thenReturn(bootstrapItem);
+
+        plugin.load();
+
+        verifyNew(BootstrapItem.class).withArguments("IObjectSimpleImplPlugin");
+
+        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        verify(bootstrapItem).revertProcess(actionArgumentCaptor.capture());
+
+        // this wrapper may be enabled when revert throws exception instead of printing to console
+        // try {
         actionArgumentCaptor.getValue().execute();
+        //    fail();
+        //} catch(ActionExecuteException e) { }
     }
 }

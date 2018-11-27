@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
@@ -48,38 +49,61 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
 
             afterExceptionActions
                     .after("IOC")
-                    .process(
-                            () -> {
-                                try {
-                                    IAction<IMessageProcessingSequence> breakAction = IMessageProcessingSequence::end;
-                                    IAction<IMessageProcessingSequence> continueAction = (mps) -> {
-                                    };
-                                    IAction<IMessageProcessingSequence> repeatAction = (mps) -> {
-                                        int currentLevel = mps.getCurrentLevel();
-                                        int repeatStep = mps.getStepAtLevel(currentLevel - 1);
-                                        mps.goTo(currentLevel - 1, repeatStep);
-                                    };
-                                    IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyStorage(), "afterExceptionAction#break"),
-                                            new SingletonStrategy(breakAction)
-                                    );
-                                    IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyStorage(), "afterExceptionAction#continue"),
-                                            new SingletonStrategy(continueAction)
-                                    );
-                                    IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyStorage(), "afterExceptionAction#repeat"),
-                                            new SingletonStrategy(repeatAction)
-                                    );
-                                } catch (ResolutionException e) {
-                                    throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't get AfterExceptionAction key", e);
-                                } catch (InvalidArgumentException e) {
-                                    throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't create strategy", e);
-                                } catch (RegistrationException e) {
-                                    throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't register new strategy", e);
-                                }
-                            }
-                    );
+                    .process(() -> {
+                        try {
+                            IAction<IMessageProcessingSequence> breakAction = IMessageProcessingSequence::end;
+                            IAction<IMessageProcessingSequence> continueAction = (mps) -> {
+                            };
+                            IAction<IMessageProcessingSequence> repeatAction = (mps) -> {
+                                int currentLevel = mps.getCurrentLevel();
+                                int repeatStep = mps.getStepAtLevel(currentLevel - 1);
+                                mps.goTo(currentLevel - 1, repeatStep);
+                            };
+                            IOC.register(
+                                    IOC.resolve(IOC.getKeyForKeyStorage(), "afterExceptionAction#break"),
+                                    new SingletonStrategy(breakAction)
+                            );
+                            IOC.register(
+                                    IOC.resolve(IOC.getKeyForKeyStorage(), "afterExceptionAction#continue"),
+                                    new SingletonStrategy(continueAction)
+                            );
+                            IOC.register(
+                                    IOC.resolve(IOC.getKeyForKeyStorage(), "afterExceptionAction#repeat"),
+                                    new SingletonStrategy(repeatAction)
+                            );
+                        } catch (ResolutionException e) {
+                            throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't get AfterExceptionAction key", e);
+                        } catch (InvalidArgumentException e) {
+                            throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't create strategy", e);
+                        } catch (RegistrationException e) {
+                            throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't register new strategy", e);
+                        }
+                    })
+                    .revertProcess(() -> {
+                        String itemName = "after exception actions";
+                        String keyName = "";
+
+                        try {
+                            keyName = "afterExceptionAction#break";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = "afterExceptionAction#continue";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = "afterExceptionAction#repeat";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+                    });
             bootstrap.add(afterExceptionActions);
 
             /* "message_processor" - register message processor creation strategy */
@@ -132,6 +156,24 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                         } catch (RegistrationException e) {
                             throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't register new strategy", e);
                         }
+                    })
+                    .revertProcess(() -> {
+                        String itemName = "message_processor";
+                        String keyName = "";
+
+                        try {
+                            keyName = "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = "final task";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
                     });
 
             bootstrap.add(processorItem);
@@ -159,6 +201,15 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                         } catch (ResolutionException | InvalidArgumentException | RegistrationException e) {
                             throw new ActionExecuteException(e);
                         }
+                    })
+                    .revertProcess(() -> {
+                        String itemName = "message_processing_sequence";
+                        String keyName = "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence";
+                        try {
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
                     });
 
             bootstrap.add(sequenceItem);
@@ -177,6 +228,15 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                         } catch (ResolutionException | RegistrationException e) {
                             throw new ActionExecuteException(e);
                         }
+                    })
+                    .revertProcess(() -> {
+                        String itemName = "message_processing_sequence_dump_recovery";
+                        String keyName = "recover message processing sequence";
+                        try {
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
                     });
 
             bootstrap.add(recoverItem);

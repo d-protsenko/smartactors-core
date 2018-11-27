@@ -83,4 +83,8 @@ public class ChainCallReceiver implements IMessageReceiver {
             throw new ChainChoiceException("Access forbidden.", e);
         }
     }
+
+    @Override
+    public void dispose() {
+    }
 }

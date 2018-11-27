@@ -92,6 +92,12 @@ public class WrapperCreatorReceiverDecoratorTest extends PluginsLoadingTestBase 
         verify(messageProcessorMock, times(2)).pushEnvironment(same(wrapperMock));
         verify(wrapperResolutionStrategyResolutionStrategyMock, times(1)).resolve(same(wrapperConfMock));
         assertSame(wrapperResolutionStrategyMock, map.get(stepConfMock));
+
+        decorator.dispose();
+        verify(receiverMock).dispose();
+
+        doThrow(new RuntimeException("test")).when(receiverMock).dispose();
+        decorator.dispose();
     }
 
     @Test(expected = MessageReceiveException.class)

@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.base.up_counter;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
@@ -7,8 +8,8 @@ import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.IllegalUpCounterState;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -25,8 +26,8 @@ public class UpCounter implements IUpCounter {
     private final AtomicLong counter = new AtomicLong(0);
     private Object shutdownMode = null;
 
-    private final List<IAction<Object>> shutdownRequestCallbacks = new CopyOnWriteArrayList<>();
-    private final List<IAction<Void>> shutdownCompletionCallbacks = new CopyOnWriteArrayList<>();
+    private final Map<Object,IAction<Object>> shutdownRequestCallbacks = new ConcurrentHashMap<>();
+    private final Map<Object,IAction<Void>> shutdownCompletionCallbacks = new ConcurrentHashMap<>();
 
     /**
      * The constructor.
@@ -53,7 +54,7 @@ public class UpCounter implements IUpCounter {
         parent.up();
 
         try {
-            parent.onShutdownRequest(mode -> {
+            parent.onShutdownRequest(this.toString(), mode -> {
                 try {
                     this.shutdown(mode);
                 } catch (Exception e) {
@@ -63,7 +64,7 @@ public class UpCounter implements IUpCounter {
 
             // Execute shutdown callbacks even in case of force shutdown of parent counter.
             // May cause memory leaks if up-counters are created very frequently.
-            parent.onShutdownComplete(() -> {
+            parent.onShutdownComplete(this.toString(), () -> {
                 try {
                     forceShutdown();
                 } catch (IllegalUpCounterState ignore) {
@@ -73,7 +74,7 @@ public class UpCounter implements IUpCounter {
                 }
             });
 
-            onShutdownComplete(() -> {
+            onShutdownComplete(this.toString(), () -> {
                 try {
                     parent.down();
                 } catch (Exception e) {
@@ -97,10 +98,10 @@ public class UpCounter implements IUpCounter {
      * @throws UpCounterCallbackExecutionException if at least one of callbacks throws; exceptions thrown by subsequent callbacks are
      *                                             suppressed
      */
-    private <T> void executeCallbacks(final List<IAction<T>> callbacks, final T arg) throws UpCounterCallbackExecutionException {
+    private <T> void executeCallbacks(final Map<Object,IAction<T>> callbacks, final T arg) throws UpCounterCallbackExecutionException {
         UpCounterCallbackExecutionException exception = null;
 
-        for (IAction<T> cb : callbacks) {
+        for (IAction<T> cb : callbacks.values()) {
             try {
                 cb.execute(arg);
             } catch (Exception e) {
@@ -187,12 +188,41 @@ public class UpCounter implements IUpCounter {
     }
 
     @Override
-    public void onShutdownRequest(final IAction<Object> callback) throws UpCounterCallbackExecutionException {
-        shutdownRequestCallbacks.add(callback);
+    public IAction<Object> onShutdownRequest(final Object key, final IAction<Object> callback) throws UpCounterCallbackExecutionException {
+        return shutdownRequestCallbacks.put(key, callback);
     }
 
     @Override
-    public void onShutdownComplete(final IPoorAction callback) throws UpCounterCallbackExecutionException {
-        shutdownCompletionCallbacks.add(__ -> callback.execute());
+    public IAction<Object> removeFromShutdownRequest(final Object key) {
+        return shutdownRequestCallbacks.remove(key);
+    }
+
+    @Override
+    public IPoorAction onShutdownComplete(final Object key, final IPoorAction callback)
+            throws UpCounterCallbackExecutionException {
+        IAction<Void> action = shutdownCompletionCallbacks.put(key, __ -> callback.execute());
+        if (null == action) {
+            return null;
+        } else {
+            return () -> {
+                try {
+                    action.execute(null);
+                } catch (InvalidArgumentException e) {
+                    // underlying IPoorAction doesn't throw InvalidArgumentException
+                }
+            };
+        }
+    }
+
+    @Override
+    public IPoorAction removeFromShutdownComplete(final Object key) {
+        IAction<Void> action = shutdownCompletionCallbacks.remove(key);
+        return  () -> {
+            try {
+                action.execute(null);
+            } catch (InvalidArgumentException e) {
+                // underlying IPoorAction doesn't throw InvalidArgumentException
+            }
+        };
     }
 }

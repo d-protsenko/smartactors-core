@@ -1,9 +1,20 @@
 package info.smart_tools.smartactors.message_processing.handler_routing_receiver_creator;
 
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
+import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.message_processing.handler_routing_receiver.HandlerRoutingReceiver;
+import info.smart_tools.smartactors.message_processing_interfaces.ireceiver_generator.IReceiverGenerator;
 import info.smart_tools.smartactors.message_processing_interfaces.iroutable_object_creator.exceptions.ObjectCreationException;
+import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
+import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_generator.IWrapperGenerator;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
@@ -11,13 +22,14 @@ import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests for {@link HandlerRoutingReceiverCreator}
@@ -45,7 +57,7 @@ public class HandlerRoutingReceiverCreatorTest {
         );
     }
 
-/*    @Test
+    @Test
     public void checkCreationAndExecution()
             throws Exception {
         IOC.register(
@@ -105,10 +117,10 @@ public class HandlerRoutingReceiverCreatorTest {
                 });
 
         HandlerRoutingReceiverCreator hrrc = new HandlerRoutingReceiverCreator();
-        IRouter router = new Router();
+        IRouter router = new HandlerInnerRouter();
 
         hrrc.createObject(router, objectSection);
-        assertEquals(((Router) router).map.size(), 1);
+        assertEquals(((HandlerInnerRouter) router).map.size(), 1);
         IMessageReceiver receiver = router.route("actorID");
         assertSame(receiver.getClass(), HandlerRoutingReceiver.class);
         // mock IMessageProcessor, IMessageProcessingSequence, IObject as current sequence
@@ -132,7 +144,7 @@ public class HandlerRoutingReceiverCreatorTest {
         );
         verify(objectSection, times(1)).getValue(new FieldName("name"));
         verify(objectSection, times(1)).getValue(new FieldName("dependency"));
-    }*/
+    }
 
     @Test (expected = ObjectCreationException.class)
     public void checkCreationExceptionOnWrongFieldNameStrategy()

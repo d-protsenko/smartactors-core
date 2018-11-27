@@ -14,6 +14,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.message_processing_interfaces.iresponse_strategy.IResponseStrategy;
+import info.smart_tools.smartactors.scope.iscope.exception.ScopeException;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.scope.iscope.IScope;
@@ -36,9 +37,7 @@ import org.mockito.stubbing.Answer;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -121,7 +120,7 @@ public class MessageBusSectionProcessingStrategyTest {
     }
 
     @Test
-    public void testLoadingConfig()
+    public void testLoadingAndRevertingConfig()
             throws Exception {
         IResolveDependencyStrategy sequenceStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
@@ -185,5 +184,14 @@ public class MessageBusSectionProcessingStrategyTest {
         env.setValue(new FieldName("context"), resultContext);
         action.execute(env);
         verify(responseAction, times(1)).execute(env);
+
+        strategy.getSectionName();
+
+        strategy.onRevertConfig(config);
+
+        try {
+            ScopeProvider.getCurrentScope().getValue(MessageBus.getMessageBusKey());
+            fail();
+        } catch (ScopeException e) { }
     }
 }

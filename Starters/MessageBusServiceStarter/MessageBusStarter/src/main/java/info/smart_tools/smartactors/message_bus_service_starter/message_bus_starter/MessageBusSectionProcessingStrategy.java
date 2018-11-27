@@ -86,11 +86,20 @@ public class MessageBusSectionProcessingStrategy implements ISectionStrategy {
 
             ScopeProvider.getCurrentScope().setValue(MessageBus.getMessageBusKey(), handler);
         } catch (ReadValueException | InvalidArgumentException | ScopeProviderException | ScopeException e) {
-            throw new ConfigurationProcessingException("Error occurred loading \"client\" configuration section.", e);
+            throw new ConfigurationProcessingException("Error occurred loading \"message bus\" configuration section.", e);
         } catch (ResolutionException e) {
-            throw new ConfigurationProcessingException("Error occurred resolving \"client\".", e);
+            throw new ConfigurationProcessingException("Error occurred resolving \"message bus\".", e);
         } catch (ChainNotFoundException e) {
             throw new ConfigurationProcessingException("Error occurred resolving \"chain\".", e);
+        }
+    }
+
+    @Override
+    public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
+        try {
+            ScopeProvider.getCurrentScope().deleteValue(MessageBus.getMessageBusKey());
+        } catch (ScopeProviderException | ScopeException e) {
+            throw new ConfigurationProcessingException("Error occurred reverting \"message bus\" configuration section.", e);
         }
     }
 

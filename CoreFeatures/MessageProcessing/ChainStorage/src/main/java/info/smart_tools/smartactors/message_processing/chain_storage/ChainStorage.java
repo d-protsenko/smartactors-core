@@ -85,6 +85,20 @@ public class ChainStorage implements IChainStorage {
     }
 
     @Override
+    public void unregister(final Object chainId) {
+        IChainState oldState;
+
+        synchronized (modificationLock) {
+            oldState = chainStates.remove(chainId);
+        }
+
+        if (null == oldState) {
+            System.out.println(MessageFormat.format("Warning: ''{1}'' has no chains, nothing to delete",
+                    chainId.toString()));
+        }
+    }
+
+    @Override
     public IReceiverChain resolve(final Object chainId)
             throws ChainNotFoundException {
         return resolveState(chainId).getCurrent();

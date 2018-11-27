@@ -5,10 +5,10 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>ioc-strategy-pack-plugins</artifactId>
-        <version>0.3.3</version>
+        <version>0.4.0</version>
     </parent>
     <artifactId>ioc-strategy-pack-plugins.resolve-iobject-strategies-plugin</artifactId>
-    <version>0.3.3</version>
+    <version>0.4.0</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
@@ -50,8 +50,6 @@
             <artifactId>base.strategy.singleton-strategy</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
-
-        <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

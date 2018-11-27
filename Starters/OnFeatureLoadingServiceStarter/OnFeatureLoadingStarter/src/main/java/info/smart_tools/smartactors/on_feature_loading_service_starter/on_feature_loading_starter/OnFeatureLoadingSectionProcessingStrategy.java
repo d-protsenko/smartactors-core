@@ -31,6 +31,7 @@ import java.util.List;
  *         "onFeatureLoading": [
  *                 {
  *                     "chain": "chain_name_1",
+ *                     "revert": false,
  *                     "messages": [
  *                         {
  *                             "fieldName1": "value1",
@@ -53,6 +54,7 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
     private final IFieldName sectionNameFieldName;
     private final IFieldName chainFieldName;
     private final IFieldName messagesFieldName;
+    private final IFieldName revertFieldName;
 
     /**
      * The constructor.
@@ -68,6 +70,10 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
         this.chainFieldName = IOC.resolve(
                 IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "chain"
+        );
+        this.revertFieldName = IOC.resolve(
+                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                "revert"
         );
         this.messagesFieldName = IOC.resolve(
                 IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
@@ -92,28 +98,86 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
             }
 
             for (IObject task : onFeatureLoadingConfig) {
-                String chainName = (String) task.getValue(this.chainFieldName);
-                Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName);
-                IReceiverChain chain = chainStorage.resolve(mapId);
-                List<IObject> messages = (List<IObject>)task.getValue(this.messagesFieldName);
-                for (IObject message : messages) {
-                    IMessageProcessingSequence processingSequence = IOC.resolve(
-                            IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
-                            stackDepth,
-                            chain
-                    );
-                    IMessageProcessor messageProcessor = IOC.resolve(
-                            IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
-                            queue,
-                            processingSequence
-                    );
-                    messageProcessor.process(message, (IObject) IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
+                Boolean isRevert = (Boolean) task.getValue(this.revertFieldName);
+                if ( !isRevert ) {
+                    String chainName = (String) task.getValue(this.chainFieldName);
+                    Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName);
+                    IReceiverChain chain = chainStorage.resolve(mapId);
+                    List<IObject> messages = (List<IObject>)task.getValue(this.messagesFieldName);
+                    for (IObject message : messages) {
+                        IMessageProcessingSequence processingSequence = IOC.resolve(
+                                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                                stackDepth,
+                                chain
+                        );
+                        IMessageProcessor messageProcessor = IOC.resolve(
+                                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+                                queue,
+                                processingSequence
+                        );
+                        messageProcessor.process(message, (IObject) IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
+                    }
                 }
             }
         } catch (ReadValueException | InvalidArgumentException | ResolutionException | MessageProcessorProcessException e) {
             throw new ConfigurationProcessingException("Error occurred executing \"onFeatureLoading\" configuration section.", e);
         } catch (ChainNotFoundException e) {
             throw new ConfigurationProcessingException("Error occurred resolving \"chain\".", e);
+        }
+    }
+
+    @Override
+    public void onRevertConfig(final IObject config)
+            throws ConfigurationProcessingException {
+        ConfigurationProcessingException exception = new ConfigurationProcessingException("Error occurred reverting \"onFeatureLoading\" configuration section.");
+        try {
+            List<IObject> onFeatureLoadingConfig = (List<IObject>) config.getValue(this.sectionNameFieldName);
+            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(),
+                    IChainStorage.class.getCanonicalName()));
+            IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
+
+            Integer stackDepth;
+            try {
+                stackDepth = IOC.resolve(Keys.getOrAdd("default_stack_depth"));
+            } catch (ResolutionException e) {
+                stackDepth = 5;
+            }
+
+            for (IObject task : onFeatureLoadingConfig) {
+                try {
+                    Boolean isRevert = (Boolean) task.getValue(this.revertFieldName);
+                    if (isRevert) {
+                        String chainName = (String) task.getValue(this.chainFieldName);
+                        Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName);
+                        IReceiverChain chain = chainStorage.resolve(mapId);
+                        List<IObject> messages = (List<IObject>) task.getValue(this.messagesFieldName);
+                        for (IObject message : messages) {
+                            try {
+                                IMessageProcessingSequence processingSequence = IOC.resolve(
+                                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                                        stackDepth,
+                                        chain
+                                );
+                                IMessageProcessor messageProcessor = IOC.resolve(
+                                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+                                        queue,
+                                        processingSequence
+                                );
+                                messageProcessor.process(message, (IObject) IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
+                            } catch (InvalidArgumentException | ResolutionException | MessageProcessorProcessException | RuntimeException e) {
+                                exception.addSuppressed(e);
+                            }
+                        }
+                    }
+                } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
+                    exception.addSuppressed(e);
+                }
+            }
+        } catch (ChainNotFoundException | ReadValueException | InvalidArgumentException | ResolutionException e) {
+            exception.addSuppressed(e);
+        }
+        if (exception.getSuppressed().length > 0) {
+            throw exception;
         }
     }
 

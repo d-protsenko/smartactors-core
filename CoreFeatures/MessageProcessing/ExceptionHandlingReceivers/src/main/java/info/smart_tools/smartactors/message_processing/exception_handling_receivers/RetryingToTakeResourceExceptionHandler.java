@@ -47,4 +47,8 @@ public class RetryingToTakeResourceExceptionHandler extends ExceptionHandlingRec
             throw new MessageReceiveException(e);
         }
     }
+
+    @Override
+    public void dispose() {
+    }
 }

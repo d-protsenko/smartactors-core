@@ -11,6 +11,7 @@ import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_extension.wds_object.WDSObject;
 import info.smart_tools.smartactors.iobject_extension.wds_object.WDSObjectFieldSet;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -51,6 +52,26 @@ public class PluginWDSObject extends BootstrapPlugin {
         );
     }
 
+    @ItemRevert("wds_object_field_set_map_strategies")
+    public void unregisterFieldSetDependencies() {
+        String itemName = "wds_object_field_set_map_strategies";
+        String keyName;
+
+        keyName = "WDSObject field set thread safe map";
+        try {
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
+
+        keyName = "WDSObject field set non thread safe map";
+        try {
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
+    }
+
     @Item("wds_object_rules_strategy")
     public void registerRulesStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
@@ -60,6 +81,19 @@ public class PluginWDSObject extends BootstrapPlugin {
                         (a) -> a[1]
                 )
         );
+    }
+
+    @ItemRevert("wds_object_rules_strategy")
+    public void unregisterRulesStrategy() {
+        String itemName = "wds_object_rules_strategy";
+        String keyName = "";
+
+        try {
+            keyName = IResolveDependencyStrategy.class.getCanonicalName();
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
     }
 
     @Item("wds_object_field_set_strategy")
@@ -95,6 +129,26 @@ public class PluginWDSObject extends BootstrapPlugin {
         );
     }
 
+    @ItemRevert("wds_object_field_set_strategy")
+    public void unregisterFieldSetCreationStrategy() {
+        String itemName = "wds_object_field_set_strategy";
+        String keyName;
+
+        keyName = "thread safe wrapper configuration";
+        try {
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
+
+        keyName = "non thread safe wrapper configuration";
+        try {
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
+    }
+
     @Item("wds_object")
     @After({
         "wds_object_field_set_strategy",
@@ -120,5 +174,25 @@ public class PluginWDSObject extends BootstrapPlugin {
 
                     throw new FunctionExecutionException("Unexpected argument types for WDSObject creation strategy.");
                 }));
+    }
+
+    @ItemRevert("wds_object")
+    public void unregisterWDSObjectCreationStrategy() {
+        String itemName = "wds_object";
+        String keyName = "";
+
+        try {
+            keyName = WDSObject.class.getCanonicalName();
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
+
+        keyName = "non thread safe wrapper configuration";
+        try {
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
     }
 }

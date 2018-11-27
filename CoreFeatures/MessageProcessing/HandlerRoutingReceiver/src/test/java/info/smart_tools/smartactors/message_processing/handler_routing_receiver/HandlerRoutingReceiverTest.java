@@ -16,11 +16,15 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -87,12 +91,25 @@ public class HandlerRoutingReceiverTest {
     public void Should_callNestedReceiver_WhenItExist()
             throws Exception {
         IMessageReceiver theReceiverMock = mock(IMessageReceiver.class);
+        Collection receivers = new ArrayList();
+
+        receivers.add(theReceiverMock);
 
         when(handlerFieldMock.in(same(argsMock))).thenReturn("theReceiver");
         when(mapMock.get(eq("theReceiver"))).thenReturn(theReceiverMock);
+        when(mapMock.values()).thenReturn(receivers);
 
-        new HandlerRoutingReceiver(mapMock).receive(messageProcessorMock);
+        IMessageReceiver theReceiver = new HandlerRoutingReceiver(mapMock);
 
+        theReceiver.receive(messageProcessorMock);
         verify(theReceiverMock).receive(same(messageProcessorMock));
+
+        theReceiver.dispose();
+        verify(theReceiverMock).dispose();
+
+        // here check message if nested receiver throws exceptions on dispose
+        doThrow(new RuntimeException("test")).when(theReceiverMock).dispose();
+        theReceiver.dispose();
     }
+
 }

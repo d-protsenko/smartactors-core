@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
@@ -59,6 +60,13 @@ public class PluginDSObject implements IPlugin {
                         } catch (RegistrationException e) {
                             throw new ActionExecuteException("Dsobject plugin can't load: can't register new strategy", e);
                         }
+                    })
+                    .revertProcess(() -> {
+                        try {
+                            IOC.remove(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \"info.smart_tools.smartactors.iobject.iobject.IObject\" has failed while reverting \"iobject\" plugin.");
+                        } catch (ResolutionException e) { }
                     });
 
             bootstrap.add(dsObjectItem);

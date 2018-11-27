@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.base.strategy.strategy_storage_with_cache_st
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
@@ -26,10 +27,13 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.powermock.api.mockito.PowerMockito.doThrow;
 
 @PrepareForTest({IOC.class, Keys.class, ResolveIObjectByTypeStrategiesPlugin.class})
 @RunWith(PowerMockRunner.class)
@@ -46,16 +50,17 @@ public class ResolveIObjectByTypeStrategiesPluginTest {
 
         bootstrap = PowerMockito.mock(IBootstrap.class);
         plugin = new ResolveIObjectByTypeStrategiesPlugin(bootstrap);
-
     }
 
     @Test
-    public void ShouldCorrectLoadPlugin() throws Exception {
+    public void ShouldCorrectLoadAndRevertPlugin() throws Exception {
 
         BootstrapItem item = PowerMockito.mock(BootstrapItem.class);
         PowerMockito.whenNew(BootstrapItem.class).withArguments("ResolveIObjectByTypeStrategiesPlugin").thenReturn(item);
 
         PowerMockito.when(item.after("IOC")).thenReturn(item);
+        PowerMockito.when(item.process(any())).thenReturn(item);
+        PowerMockito.when(item.revertProcess(any())).thenReturn(item);
 
         plugin.load();
 
@@ -71,7 +76,7 @@ public class ResolveIObjectByTypeStrategiesPluginTest {
         PowerMockito.when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject" + "convert")).thenReturn(strategyKey);
 
         StrategyStorageWithCacheStrategy strategy = PowerMockito.mock(StrategyStorageWithCacheStrategy.class);
-        PowerMockito.whenNew(StrategyStorageWithCacheStrategy.class).withArguments(Matchers.any(IFunction.class), Matchers.any(IBiFunction.class)).thenReturn(strategy);
+        PowerMockito.whenNew(StrategyStorageWithCacheStrategy.class).withArguments(any(IFunction.class), any(IBiFunction.class)).thenReturn(strategy);
 
         iPoorActionArgumentCaptor.getValue().execute();
 
@@ -81,8 +86,38 @@ public class ResolveIObjectByTypeStrategiesPluginTest {
         PowerMockito.verifyStatic();
         IOC.register(eq(strategyKey), eq(strategy));
 
-        Mockito.verify(strategy).register(eq(Map.class), Matchers.any(MapToIObjectResolveDependencyStrategy.class));
-        Mockito.verify(strategy).register(eq(String.class), Matchers.any(StringToIObjectResolveDependencyStrategy.class));
+        Mockito.verify(strategy).register(eq(Map.class), any(MapToIObjectResolveDependencyStrategy.class));
+        Mockito.verify(strategy).register(eq(String.class), any(StringToIObjectResolveDependencyStrategy.class));
+
+        ArgumentCaptor<IPoorAction> iPoorActionArgumentCaptor1 = ArgumentCaptor.forClass(IPoorAction.class);
+        Mockito.verify(item).revertProcess(iPoorActionArgumentCaptor1.capture());
+
+        iPoorActionArgumentCaptor1.getValue().execute();
+    }
+
+    @Test
+    public void ShouldNotifyThatDeregistrationFailed() throws Exception {
+
+        try {
+            ResolveIObjectByTypeStrategiesPlugin failedPlugin = new ResolveIObjectByTypeStrategiesPlugin(null);
+            fail();
+        } catch(InvalidArgumentException e) {}
+
+        BootstrapItem item = PowerMockito.mock(BootstrapItem.class);
+        PowerMockito.whenNew(BootstrapItem.class).withArguments("ResolveIObjectByTypeStrategiesPlugin").thenReturn(item);
+
+        PowerMockito.when(item.after("IOC")).thenReturn(item);
+        PowerMockito.when(item.process(any())).thenReturn(item);
+        PowerMockito.when(item.revertProcess(any())).thenReturn(item);
+
+        plugin.load();
+
+        ArgumentCaptor<IPoorAction> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        Mockito.verify(item).revertProcess(iPoorActionArgumentCaptor.capture());
+
+        doThrow(new DeletionException("TestException")).when(IOC.class);
+        IOC.remove(any());
+        iPoorActionArgumentCaptor.getValue().execute();
     }
 
     @Test(expected = PluginException.class)

@@ -100,7 +100,7 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
         endpointName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "endpointName");
         responseStrategyName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responseStrategy");
 
-        upCounter.onShutdownRequest(mode -> isShuttingDown = true);
+        upCounter.onShutdownRequest(this.toString(), mode -> isShuttingDown = true);
     }
 
     @Override

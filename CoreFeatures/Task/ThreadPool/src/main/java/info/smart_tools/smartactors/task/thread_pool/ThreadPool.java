@@ -27,7 +27,7 @@ public class ThreadPool implements IThreadPool {
         threadsQueue = new ConcurrentLinkedQueue<>();
 
         for (int i = 0; i < threadCount; i++) {
-            threadsQueue.offer(new ThreadImpl(this));
+            threadsQueue.offer(new ThreadImpl(this, "TaskThread"+(i+1)));
         }
 
         try {

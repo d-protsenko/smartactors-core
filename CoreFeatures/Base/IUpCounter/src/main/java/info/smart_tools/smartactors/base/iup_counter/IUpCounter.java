@@ -50,22 +50,42 @@ public interface IUpCounter {
     void forceShutdown() throws UpCounterCallbackExecutionException, IllegalUpCounterState;
 
     /**
-     * Add a callback to be called when shutdown request (call to {@link #shutdown(Object)}) occurs.
+     * Add the callback (under the key) to be called when shutdown request (call to {@link #shutdown(Object)}) occurs.
      *
+     * @param key         the key under which callback is stored
      * @param callback    the callback to call, first argument of callback is the shutdown mode passed to {@link #shutdown(Object)}
+     * @return            the reference to replaced callback if so, otherwise null
      * @throws UpCounterCallbackExecutionException if there is a pending shutdown request and error occurs calling callback synchronously
      */
-    void onShutdownRequest(IAction<Object> callback) throws UpCounterCallbackExecutionException;
+    IAction<Object> onShutdownRequest(final Object key, IAction<Object> callback) throws UpCounterCallbackExecutionException;
 
     /**
-     * Add a callback to be called when shutdown is done.
+     * Remove the callback (by the key) from the set of shutdown request callbacks.
+     *
+     * @param key         the key under which callback is stored
+     * @return            the reference to removed callback
+     */
+    IAction<Object> removeFromShutdownRequest(final Object key);
+
+    /**
+     * Add a callback (under the key) to be called when shutdown is done.
      *
      * A callback is guaranteed to be executed exactly once if {@code #onShutdownComplete(IPoorAction)} call finishes before first
      * {@link #shutdown(Object)} or {@link #forceShutdown()} shutdown call starts. Otherwise the callback will not be executed more than
      * once.
      *
+     * @param key         the key under which callback is stored
      * @param callback    the callback
+     * @return            the reference to replaced callback if so, otherwise null
      * @throws UpCounterCallbackExecutionException if system is already down and error occurs executing callback synchronously
      */
-    void onShutdownComplete(IPoorAction callback) throws UpCounterCallbackExecutionException;
+    IPoorAction onShutdownComplete(final Object key, IPoorAction callback) throws UpCounterCallbackExecutionException;
+
+    /**
+     * Remove the callback (by the key) from the set of shutdown completion callbacks.
+     *
+     * @param key         the key under which callback is stored
+     * @return            the reference to removed callback
+     */
+    IPoorAction removeFromShutdownComplete(final Object key);
 }
