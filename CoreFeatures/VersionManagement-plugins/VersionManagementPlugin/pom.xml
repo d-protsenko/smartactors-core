@@ -92,12 +92,6 @@
             <artifactId>version-management.versioned-recursive-strategy-container</artifactId>
             <version>0.5.0</version>
         </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>ioc.key-tools</artifactId>
-            <version>0.5.0</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
     <build>
         <pluginManagement>
