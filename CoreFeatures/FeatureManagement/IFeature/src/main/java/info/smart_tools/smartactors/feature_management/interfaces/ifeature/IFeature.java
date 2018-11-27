@@ -70,6 +70,12 @@ public interface IFeature {
     String getDisplayName();
 
     /**
+     * Gets feature package type (zip, jar, etc)
+     * @return the feature package type
+     */
+    String getPackageType();
+
+    /**
      * Sets feature name
      * @param featureName the feature name
      */

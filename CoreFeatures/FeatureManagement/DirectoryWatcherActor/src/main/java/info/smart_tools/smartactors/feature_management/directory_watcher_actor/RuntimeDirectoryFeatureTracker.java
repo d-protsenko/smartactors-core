@@ -63,6 +63,20 @@ public class RuntimeDirectoryFeatureTracker {
     //TODO: this parameters would be took out into the config.json as actor arguments
     private final static List<String> FILE_TYPE_LIST = Arrays.asList("zip", "jar", "json");
 
+    private final static String EXTENSION_SEPARATOR = ".";
+    private final static String TASK_QUEUE_IOC_NAME = "task_queue";
+    private final static String CHAIN_ID_STORAGE_STRATEGY_NAME = "chain_id_from_map_name";
+    private final static String IOBJECT_FACTORY_STRATEGY_NAME = "info.smart_tools.smartactors.iobject.iobject.IObject";
+    private final static String FIELD_NAME_FACTORY_STARTEGY_NAME =
+            "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
+    private final static String MESSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME =
+            "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence";
+    private final static String MESSAGE_PROCESSOR_FACTORY_STRATEGY_NAME =
+            "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor";
+
+    //TODO: this parameters would be took out into the config.json as actor arguments
+    private final static List<String> FILE_TYPE_LIST = Arrays.asList("zip", "jar", "json");
+
     /**
      * Default constructor
      * @throws ResolutionException if any errors occurred on IOC resolution

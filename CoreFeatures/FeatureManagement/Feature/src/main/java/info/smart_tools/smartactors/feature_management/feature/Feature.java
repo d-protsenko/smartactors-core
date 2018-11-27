@@ -50,6 +50,7 @@ public class Feature implements IFeature {
         this.packageType = packageType;
         this.id = java.util.UUID.randomUUID();
         this.failed = false;
+        this.packageType = packageType;
     }
 
     @Override
@@ -158,5 +159,15 @@ public class Feature implements IFeature {
         this.packageType = clone.packageType;
         this.failed = clone.failed;
         return true;
+    }
+
+    @Override
+    public String getPackageType() {
+        return this.packageType;
+    }
+
+    @Override
+    public void setPackageType(String packageType) {
+        this.packageType = packageType;
     }
 }
