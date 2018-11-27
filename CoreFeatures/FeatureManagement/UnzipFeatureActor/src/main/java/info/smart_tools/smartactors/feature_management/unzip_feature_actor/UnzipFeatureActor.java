@@ -28,19 +28,6 @@ public class UnzipFeatureActor {
 
     private final IFieldName featureNameFN;
     private final IFieldName dependenciesFieldName;
-    private final IFieldName featureNameFN;
-
-    private final static String CONFIG_FILE_NAME = "config.json";
-    private final static String EXTENSION_SEPARATOR = ".";
-    private final static String IOBJECT_FACTORY_STRATEGY_NAME = "info.smart_tools.smartactors.iobject.iobject.IObject";
-    private final static String FIELD_NAME_FACTORY_STARTEGY_NAME =
-            "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
-    private final static String ARCHIVE_POSTFIX = "archive";
-    private final static String GROUP_AND_NAME_DELIMITER = ":";
-    private final static String END_OF_INPUT_DELIMITER = "\\Z";
-    private final static String NAME_OF_CHECK_FILE = ".checkfile";
-
-    private final Map<String, IBiFunction<File, IFeature, File>> unzipFunctions;
 
     private final static String CONFIG_FILE_NAME = "config.json";
     private final static String EXTENSION_SEPARATOR = ".";
