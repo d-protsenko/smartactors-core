@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulingStrategyExecutionException;
 
@@ -39,7 +39,7 @@ public class CheckpointRegularRepeatStrategy extends CheckpointRepeatStrategy {
      * @throws ResolutionException if error occurs resolving any dependencies
      */
     public CheckpointRegularRepeatStrategy() throws ResolutionException {
-        intervalFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "interval");
+        intervalFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "interval");
     }
 
     @Override

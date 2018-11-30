@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 /**

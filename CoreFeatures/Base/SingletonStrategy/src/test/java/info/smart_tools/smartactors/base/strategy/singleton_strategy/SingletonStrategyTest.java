@@ -4,11 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * Tests for {@link SingletonStrategy}

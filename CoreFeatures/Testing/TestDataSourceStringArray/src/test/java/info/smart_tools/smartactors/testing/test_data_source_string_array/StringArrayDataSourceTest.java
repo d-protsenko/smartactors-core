@@ -5,13 +5,8 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.testing.interfaces.isource.ISource;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.BlockingDeque;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 /**
  * Tests for {@link StringArrayDataSource}.

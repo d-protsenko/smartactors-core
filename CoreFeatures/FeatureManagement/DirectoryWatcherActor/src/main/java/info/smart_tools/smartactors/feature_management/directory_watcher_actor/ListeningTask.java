@@ -7,12 +7,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExec
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardWatchEventKinds;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchKey;
-import java.nio.file.WatchService;
+import java.nio.file.*;
 
 /**
  * The service for watching directory on new file creation

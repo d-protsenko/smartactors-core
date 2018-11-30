@@ -6,7 +6,6 @@ import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.Ap
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.DeleteValueException;
@@ -14,7 +13,7 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionExceptio
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing.object_creation_strategies.*;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.IReceiverObjectCreator;
 
@@ -42,14 +41,14 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
 
     private void registerCreatorType(final String typeName, final CreatorConstructor constructor)
             throws ResolutionException, RegistrationException, InvalidArgumentException, ChangeValueException {
-        registerCreatorType(typeName, constructor, IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
+        registerCreatorType(typeName, constructor, IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
     }
 
     private void registerCreatorType(final String typeName, final CreatorConstructor constructor, final IObject namedFilterConfig)
             throws ResolutionException, RegistrationException, InvalidArgumentException, ChangeValueException {
         String dependencyName = "filter creator#" + typeName;
         IOC.register(
-                Keys.getOrAdd(dependencyName),
+                Keys.resolveByName(dependencyName),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     try {
                         IReceiverObjectCreator underlyingCreator = (IReceiverObjectCreator) args[0];
@@ -65,12 +64,12 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
 
         if (null != namedFilterConfig) {
             namedFilterConfig.setValue(
-                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency"),
+                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency"),
                     dependencyName
             );
 
             IOC.register(
-                    Keys.getOrAdd("named filter config#" + typeName),
+                    Keys.resolveByName("named filter config#" + typeName),
                     new SingletonStrategy(namedFilterConfig)
             );
         }
@@ -78,7 +77,7 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
 
     private void unregisterCreatorType(final String typeName, final String itemName) {
         try {
-            unregisterCreatorType(typeName, itemName, IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
+            unregisterCreatorType(typeName, itemName, IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
         } catch(ResolutionException e) { }
     }
 
@@ -87,15 +86,15 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
 
         keyName = "filter creator#" + typeName;
         try {
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         if (null != namedFilterConfig) {
             keyName = "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
             try {
-                namedFilterConfig.deleteField(IOC.resolve(Keys.getOrAdd(keyName), "dependency"));
+                namedFilterConfig.deleteField(IOC.resolve(Keys.resolveByName(keyName), "dependency"));
             } catch(InvalidArgumentException | DeleteValueException e) {
                 System.out.println("[WARNING] Field \""+keyName+"\" deletion has failed while reverting \""+itemName+"\" plugin.");
             } catch (ResolutionException e) { }
@@ -103,9 +102,9 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
 
             keyName = "named filter config#" + typeName;
             try {
-                IOC.remove(Keys.getOrAdd(keyName));
+                IOC.remove(Keys.resolveByName(keyName));
             } catch(DeletionException e) {
-                System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
             } catch (ResolutionException e) { }
         }
     }
@@ -145,28 +144,28 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
                 GenericDecoratorReceiverObjectCreator::new,
                 null);
 
-        IObject tsWrapperCreatorConfig = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject tsWrapperCreatorConfig = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
         tsWrapperCreatorConfig.setValue(
-                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency"),
+                IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency"),
                 "filter creator#decorate receiver");
         tsWrapperCreatorConfig.setValue(
-                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "decoratorDependency"),
+                IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "decoratorDependency"),
                 "thread safe wrapper creator receiver decorator");
 
         IOC.register(
-                Keys.getOrAdd("named filter config#thread-safe wrapper creator"),
+                Keys.resolveByName("named filter config#thread-safe wrapper creator"),
                 new SingletonStrategy(tsWrapperCreatorConfig)
         );
 
-        IObject ntsWrapperCreatorConfig = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject ntsWrapperCreatorConfig = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
         ntsWrapperCreatorConfig.setValue(
-                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency"),
+                IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency"),
                 "filter creator#decorate receiver");
         ntsWrapperCreatorConfig.setValue(
-                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "decoratorDependency"),
+                IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "decoratorDependency"),
                 "non thread safe wrapper creator receiver decorator");
         IOC.register(
-                Keys.getOrAdd("named filter config#non-thread-safe wrapper creator"),
+                Keys.resolveByName("named filter config#non-thread-safe wrapper creator"),
                 new SingletonStrategy(ntsWrapperCreatorConfig)
         );
     }
@@ -178,16 +177,16 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
 
         keyName = "named filter config#non-thread-safe wrapper creator";
         try {
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         keyName = "named filter config#thread-safe wrapper creator";
         try {
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         unregisterCreatorType("decorate receiver", itemName,null);
@@ -208,7 +207,7 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
     public void registerKinds()
             throws RegistrationException, ResolutionException, InvalidArgumentException {
         IOC.register(
-                Keys.getOrAdd("object kind filter sequence#raw"),
+                Keys.resolveByName("object kind filter sequence#raw"),
                 new SingletonStrategy(Arrays.asList(
                         "top-level object",
                         "thread-safe wrapper creator",
@@ -216,7 +215,7 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
                 ))
         );
         IOC.register(
-                Keys.getOrAdd("object kind filter sequence#stateless_actor"),
+                Keys.resolveByName("object kind filter sequence#stateless_actor"),
                 new SingletonStrategy(Arrays.asList(
                         "top-level object",
                         "method invokers",
@@ -226,7 +225,7 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
                 ))
         );
         IOC.register(
-                Keys.getOrAdd("object kind filter sequence#actor"),
+                Keys.resolveByName("object kind filter sequence#actor"),
                 new SingletonStrategy(Arrays.asList(
                         "top-level object",
                         "method invokers",
@@ -245,23 +244,23 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
 
         try {
             keyName = "object kind filter sequence#raw";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "object kind filter sequence#stateless_actor";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "object kind filter sequence#actor";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
     }
 }

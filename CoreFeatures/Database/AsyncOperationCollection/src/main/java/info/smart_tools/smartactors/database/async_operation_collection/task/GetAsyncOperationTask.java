@@ -1,18 +1,18 @@
 package info.smart_tools.smartactors.database.async_operation_collection.task;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.database.async_operation_collection.exception.GetAsyncOperationException;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.exception.TaskPrepareException;
+import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 /**
  * Task-facade for read task for async operations collection
@@ -38,11 +38,11 @@ public class GetAsyncOperationTask implements IDatabaseTask {
         this.connection = connection;
 
         try {
-            this.callbackField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "callback");
-            this.equalsField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "$eq");
-            this.filterField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "filter");
-            this.tokenField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "token");
-            this.collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+            this.callbackField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "callback");
+            this.equalsField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "$eq");
+            this.filterField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "filter");
+            this.tokenField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "token");
+            this.collectionNameField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "collectionName");
         } catch (ResolutionException e) {
             throw new GetAsyncOperationException("Can't resolve one of fields", e);
         }
@@ -59,12 +59,12 @@ public class GetAsyncOperationTask implements IDatabaseTask {
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-            IObject queryForNestedTask  = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
-            IObject filterObject = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject queryForNestedTask  = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject filterObject = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             String token = tokenField.in(query);
 
-            IObject eqKeyObject = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject eqKeyObject = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
             equalsField.out(eqKeyObject, token);
             tokenField.out(filterObject, eqKeyObject);
 
@@ -72,7 +72,7 @@ public class GetAsyncOperationTask implements IDatabaseTask {
 
 
             getItemTask = IOC.resolve(
-                    Keys.getOrAdd("db.collection.search"),
+                    Keys.resolveByName("db.collection.search"),
                     connection,
                     collectionNameField.in(query),
                     queryForNestedTask,

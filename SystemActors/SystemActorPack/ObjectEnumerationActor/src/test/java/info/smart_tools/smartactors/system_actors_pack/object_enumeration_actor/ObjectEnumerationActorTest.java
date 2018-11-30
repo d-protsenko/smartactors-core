@@ -1,10 +1,10 @@
 package info.smart_tools.smartactors.system_actors_pack.object_enumeration_actor;
 
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.system_actors_pack.object_enumeration_actor.wrapper.EnumerationResult;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,9 +16,7 @@ import java.util.List;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 /**
@@ -43,8 +41,8 @@ public class ObjectEnumerationActorTest {
         routerMock = mock(IRouter.class);
 
         mockStatic(IOC.class, Keys.class);
-        when(Keys.getOrAdd(eq(IChainStorage.class.getCanonicalName()))).thenReturn(chainStorageKey);
-        when(Keys.getOrAdd(eq(IRouter.class.getCanonicalName()))).thenReturn(routerKey);
+        when(Keys.resolveByName(eq(IChainStorage.class.getCanonicalName()))).thenReturn(chainStorageKey);
+        when(Keys.resolveByName(eq(IRouter.class.getCanonicalName()))).thenReturn(routerKey);
 
         when(IOC.resolve(same(chainStorageKey))).thenReturn(chainStorageMock);
         when(IOC.resolve(same(routerKey))).thenReturn(routerMock);

@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.ireceiver_generator.IReceiverGenerator;
 import info.smart_tools.smartactors.message_processing_interfaces.ireceiver_generator.exception.ReceiverGeneratorException;
 
@@ -28,10 +28,10 @@ public class MethodInvokerReceiverResolutionStrategy implements IResolveDependen
      */
     public MethodInvokerReceiverResolutionStrategy()
             throws ResolutionException {
-        wrapperResolutionStrategyDependencyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+        wrapperResolutionStrategyDependencyFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "wrapperResolutionStrategyDependency");
 
-        receiverGenerator = IOC.resolve(Keys.getOrAdd(IReceiverGenerator.class.getCanonicalName()));
+        receiverGenerator = IOC.resolve(Keys.resolveByName(IReceiverGenerator.class.getCanonicalName()));
     }
 
     @Override
@@ -54,7 +54,7 @@ public class MethodInvokerReceiverResolutionStrategy implements IResolveDependen
             }
 
             IResolveDependencyStrategy wrapperResolutionStrategy = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), wrapperResolutionStrategyDependency),
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), wrapperResolutionStrategyDependency),
                     method.getParameterTypes()[0]
             );
 

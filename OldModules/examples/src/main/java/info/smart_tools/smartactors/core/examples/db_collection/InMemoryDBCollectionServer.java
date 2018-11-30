@@ -1,21 +1,21 @@
 package info.smart_tools.smartactors.core.examples.db_collection;
 
-import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
-import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.core.iserver.IServer;
 import info.smart_tools.smartactors.core.iserver.exception.ServerExecutionException;
 import info.smart_tools.smartactors.core.iserver.exception.ServerInitializeException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrapper.ConnectionOptions;
-import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
-import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
-import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
+import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.database_in_memory_plugins.in_memory_database_plugin.PluginInMemoryDatabase;
 import info.smart_tools.smartactors.database_in_memory_plugins.in_memory_db_tasks_plugin.PluginInMemoryDBTasks;
+import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrapper.ConnectionOptions;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
+import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
+import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_simple_container_plugin.PluginIOCSimpleContainer;
 import info.smart_tools.smartactors.plugin.null_connection_pool.NullConnectionPoolPlugin;
@@ -50,16 +50,16 @@ public class InMemoryDBCollectionServer implements IServer {
                     "test_" + Long.toHexString(Double.doubleToLongBits(Math.random())));
 
             IFieldName idField = IOC.resolve(
-                    Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), collection + "ID");
+                    Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), collection + "ID");
 
-            IObject document = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
-            IFieldName textField = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "text");
-            IFieldName intField = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "int");
+            IObject document = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IFieldName textField = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "text");
+            IFieldName intField = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "int");
             document.setValue(textField, "initial value");
             document.setValue(intField, 1);
 
             ConnectionOptions connectionOptions = new TestConnectionOptions();
-            IPool pool = IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool"), connectionOptions);
+            IPool pool = IOC.resolve(Keys.resolveByName("DatabaseConnectionPool"), connectionOptions);
 
             CollectionOperations.createCollection(pool, collection);
 

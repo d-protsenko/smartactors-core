@@ -1,1 +1,6 @@
-{"featureName":"info.smart_tools.smartactors:checkpoint","afterFeatures":["info.smart_tools.smartactors:scheduler"]}
+{"featureName":"info.smart_tools.smartactors:checkpoint",
+  "afterFeatures":[
+    "info.smart_tools.smartactors:dumpable-plugins",
+    "info.smart_tools.smartactors:scheduler-plugins"
+  ]
+}

@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_container.exception.SendingMessageException;
 import info.smart_tools.smartactors.message_bus.message_bus.MessageBus;
 
@@ -16,19 +16,19 @@ import info.smart_tools.smartactors.message_bus.message_bus.MessageBus;
  * The action that sends a lost message wrapped into an envelope message to specified chain.
  */
 public class SendEnvelopeFailureAction implements IAction<IObject> {
-    private final Object targetChainId;
+    private final Object targetChainName;
     private final IFieldName messageFieldName;
     private final IAction<IObject> backupAction;
 
     /**
      * The constructor.
      *
-     * @param targetChainId       identifier of the chain where to send the envelope
+     * @param targetChainName     identifier of the chain where to send the envelope
      * @param messageFieldName    name of the envelope field where to put the message
      * @param backupAction        the action that should be executed if error occurs executing this action
      */
-    public SendEnvelopeFailureAction(final Object targetChainId, final IFieldName messageFieldName, final IAction<IObject> backupAction) {
-        this.targetChainId = targetChainId;
+    public SendEnvelopeFailureAction(final Object targetChainName, final IFieldName messageFieldName, final IAction<IObject> backupAction) {
+        this.targetChainName = targetChainName;
         this.messageFieldName = messageFieldName;
         this.backupAction = backupAction;
     }
@@ -36,9 +36,9 @@ public class SendEnvelopeFailureAction implements IAction<IObject> {
     @Override
     public void execute(final IObject actingObject) throws ActionExecuteException, InvalidArgumentException {
         try {
-            IObject envelope = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject envelope = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
             envelope.setValue(messageFieldName, actingObject);
-            MessageBus.send(envelope, targetChainId);
+            MessageBus.send(envelope, targetChainName);
         } catch (ResolutionException | ChangeValueException | InvalidArgumentException | SendingMessageException e) {
             try {
                 backupAction.execute(actingObject);

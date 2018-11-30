@@ -6,17 +6,15 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.IReceiverObjectCreator;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.isNull;
-import static org.mockito.Matchers.same;
+import static org.junit.Assert.assertSame;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -48,14 +46,14 @@ public class FullObjectCreatorResolutionStrategyTest extends PluginsLoadingTestB
         when(creator1ResolutionStrategyMock.resolve(isNull(), any(), any())).thenReturn(creator1Mock);
         when(creator2ResolutionStrategyMock.resolve(same(creator1Mock), any(), any())).thenReturn(creator2Mock);
 
-        IOC.register(Keys.getOrAdd("filter 1 dependency"), creator1ResolutionStrategyMock);
-        IOC.register(Keys.getOrAdd("filter 2 dependency"), creator2ResolutionStrategyMock);
+        IOC.register(Keys.resolveByName("filter 1 dependency"), creator1ResolutionStrategyMock);
+        IOC.register(Keys.resolveByName("filter 2 dependency"), creator2ResolutionStrategyMock);
     }
 
     @Test
     public void Should_resolveCreatorsPipeline()
             throws Exception {
-        IObject objectConfig = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject objectConfig = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                  "  'filters':[" +
                  "      {" +

@@ -1,10 +1,10 @@
 package info.smart_tools.smartactors.message_processing.handler_routing_receiver;
 
-import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
@@ -19,14 +19,11 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -56,8 +53,8 @@ public class HandlerRoutingReceiverTest {
         messageProcessingSequenceMock = mock(IMessageProcessingSequence.class);
 
         mockStatic(IOC.class);
-        when(IOC.getKeyForKeyStorage()).thenReturn(mock(IKey.class));
-        when(IOC.resolve(IOC.getKeyForKeyStorage(), IField.class.getCanonicalName())).thenReturn(fieldKey);
+        when(IOC.getKeyForKeyByNameResolutionStrategy()).thenReturn(mock(IKey.class));
+        when(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IField.class.getCanonicalName())).thenReturn(fieldKey);
         when(IOC.resolve(fieldKey, "handler")).thenReturn(handlerFieldMock);
 
         when(messageProcessorMock.getSequence()).thenReturn(messageProcessingSequenceMock);

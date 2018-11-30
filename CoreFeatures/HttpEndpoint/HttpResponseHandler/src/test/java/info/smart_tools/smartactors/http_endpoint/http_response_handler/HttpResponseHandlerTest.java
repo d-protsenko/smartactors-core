@@ -3,22 +3,21 @@ package info.smart_tools.smartactors.http_endpoint.http_response_handler;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.exceptions.DeserializationException;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.exception.ResponseHandlerException;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
@@ -30,18 +29,14 @@ import io.netty.handler.codec.http.HttpHeaders;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by sevenbits on 30.09.16.
  */
 public class HttpResponseHandlerTest {
     IQueue<ITask> taskQueue;
-    IReceiverChain receiverChain;
+    Object receiverChain;
     HttpResponseHandler responseHandler;
     IMessageProcessingSequence messageProcessingSequence;
     IMessageProcessor messageProcessor;
@@ -57,7 +52,7 @@ public class HttpResponseHandlerTest {
         this.mapId = mock(Object.class);
         this.chainStorage = mock(IChainStorage.class);
         this.taskQueue = mock(IQueue.class);
-        this.receiverChain = mock(IReceiverChain.class);
+        this.receiverChain = mock(Object.class);
         this.messageProcessingSequence = mock(IMessageProcessingSequence.class);
         this.messageProcessor = mock(IMessageProcessor.class);
         this.response = mock(FullHttpResponse.class);
@@ -79,10 +74,10 @@ public class HttpResponseHandlerTest {
         ScopeProvider.setCurrentScope(mainScope);
 
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameResolutionStrategy(),
                 new ResolveByNameIocStrategy()
         );
-        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+        IOC.register(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
@@ -93,38 +88,39 @@ public class HttpResponseHandlerTest {
                         }
                 )
         );
-        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+        IOC.register(Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                 new SingletonStrategy(
                         messageProcessingSequence
                 )
         );
-        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+        IOC.register(Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                 new SingletonStrategy(
                         messageProcessor
                 )
         );
-        IOC.register(Keys.getOrAdd("httpResponseResolver"), new SingletonStrategy(
+        IOC.register(Keys.resolveByName("httpResponseResolver"), new SingletonStrategy(
                         strategy
                 )
         );
-        IOC.register(Keys.getOrAdd("EmptyIObject"), new CreateNewInstanceStrategy(
+        IOC.register(Keys.resolveByName("EmptyIObject"), new CreateNewInstanceStrategy(
                         (args) -> new DSObject()
 
                 )
         );
         Object obj = mock(Object.class);
-        IOC.register(Keys.getOrAdd("cancelTimerOnRequest"),
+        IOC.register(Keys.resolveByName("cancelTimerOnRequest"),
                 new SingletonStrategy(obj));
 
-        IOC.register(Keys.getOrAdd("chain_id_from_map_name"), new SingletonStrategy(
+        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), new SingletonStrategy(
                         mapId
                 )
         );
-        IOC.register(Keys.getOrAdd(IChainStorage.class.getCanonicalName()), new SingletonStrategy(
+        IOC.register(Keys.resolveByName(IChainStorage.class.getCanonicalName()), new SingletonStrategy(
                         chainStorage
                 )
         );
-        this.responseHandler = new HttpResponseHandler(taskQueue,
+        this.responseHandler = new HttpResponseHandler(
+                taskQueue,
                 5,
                 receiverChain,
                 new DSObject("{" +
@@ -134,12 +130,14 @@ public class HttpResponseHandlerTest {
                         "\"method\": \"POST\", " +
                         "\"uri\": \"https://foo.bar\"" +
                         "}"),
-                ScopeProvider.getCurrentScope()
+                ScopeProvider.getCurrentScope(),
+                ModuleManager.getCurrentModule()
         );
     }
 
     @Test
-    public void testNewTaskAddedToQueue() throws InvalidArgumentException, DeserializationException, InterruptedException, ResponseHandlerException {
+    public void testNewTaskAddedToQueue()
+            throws InvalidArgumentException, DeserializationException, InterruptedException, ResponseHandlerException {
         String chainName = "chainName";
         when(response.headers()).thenReturn(headers);
         when(headers.get("messageMapId")).thenReturn("messageMap");

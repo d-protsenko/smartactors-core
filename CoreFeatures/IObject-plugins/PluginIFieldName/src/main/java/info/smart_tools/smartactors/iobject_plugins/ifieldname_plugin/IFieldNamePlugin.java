@@ -1,20 +1,20 @@
 package info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin;
 
-import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.iobject.field_name.FieldName;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 
 /**
@@ -41,15 +41,12 @@ public class IFieldNamePlugin implements IPlugin {
                     .after("IOC")
                     .process(() -> {
                         try {
-                            IKey iFieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
-                            IOC.register(iFieldNameKey,
+                            IOC.register(Keys.resolveByName(IFieldName.class.getCanonicalName()),
                                     new ResolveByNameIocStrategy(
                                             (args) -> {
                                                 try {
                                                     String nameOfFieldName = (String) args[0];
-                                                    IFieldName result = new FieldName(nameOfFieldName);
-
-                                                    return result;
+                                                    return new FieldName(nameOfFieldName);
                                                 } catch (ClassCastException e) {
                                                     throw new RuntimeException("Can't cast object to String: " + args[0],
                                                             e);
@@ -80,9 +77,9 @@ public class IFieldNamePlugin implements IPlugin {
 
                         try {
                             keyName = "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
-                            IOC.remove(Keys.getOrAdd(keyName));
+                            IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
                     });
             bootstrap.add(item);

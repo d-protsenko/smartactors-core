@@ -19,7 +19,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_container.exception.SendingMessageException;
 import info.smart_tools.smartactors.message_bus.message_bus.MessageBus;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
@@ -42,7 +42,6 @@ public class CheckpointActor {
     private static final long COMPLETE_ENTRY_RESCHEDULE_DELAY = 1000;
 
     private final ISchedulerService service;
-    private final Object feedbackChainId;
 
     private final CheckpointSchedulerEntryStorageObserver storageObserver;
 
@@ -72,42 +71,39 @@ public class CheckpointActor {
             throws ResolutionException, ReadValueException, InvalidArgumentException, ActionExecuteException,
                    UpCounterCallbackExecutionException {
         //
-        responsibleCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responsibleCheckpointId");
-        checkpointEntryIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpointEntryId");
-        schedulingFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "scheduling");
-        messageFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
-        prevCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointId");
-        prevCheckpointEntryIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointEntryId");
-        actionFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "action");
-        recoverFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "recover");
-        completedFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "completed");
-        gotFeedbackFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "gotFeedback");
-        processorFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "processor");
+        responsibleCheckpointIdFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responsibleCheckpointId");
+        checkpointEntryIdFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpointEntryId");
+        schedulingFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "scheduling");
+        messageFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
+        prevCheckpointIdFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointId");
+        prevCheckpointEntryIdFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointEntryId");
+        actionFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "action");
+        recoverFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "recover");
+        completedFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "completed");
+        gotFeedbackFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "gotFeedback");
+        processorFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "processor");
 
         String connectionOptionsDependency = (String) args.getValue(
-                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "connectionOptionsDependency"));
+                IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "connectionOptionsDependency"));
         String connectionPoolDependency = (String) args.getValue(
-                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "connectionPoolDependency"));
+                IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "connectionPoolDependency"));
         String collectionName = (String) args.getValue(
-                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collectionName"));
+                IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collectionName"));
 
         storageObserver = new CheckpointSchedulerEntryStorageObserver();
 
-        Object connectionOptions = IOC.resolve(Keys.getOrAdd(connectionOptionsDependency));
-        Object connectionPool = IOC.resolve(Keys.getOrAdd(connectionPoolDependency), connectionOptions);
-        service = IOC.resolve(Keys.getOrAdd("new scheduler service"),
+        Object connectionOptions = IOC.resolve(Keys.resolveByName(connectionOptionsDependency));
+        Object connectionPool = IOC.resolve(Keys.resolveByName(connectionPoolDependency), connectionOptions);
+        service = IOC.resolve(Keys.resolveByName("new scheduler service"),
                 connectionPool,
                 collectionName,
                 storageObserver);
 
         IAction<ISchedulerService> activationAction = IOC.resolve(
-                Keys.getOrAdd("scheduler service activation action for checkpoint actor"));
+                Keys.resolveByName("scheduler service activation action for checkpoint actor"));
         activationAction.execute(service);
 
-        //
-        feedbackChainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), FEEDBACK_CHAIN_NAME);
-
-        IUpCounter upCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
+        IUpCounter upCounter = IOC.resolve(Keys.resolveByName("root upcounter"));
         upCounter.onShutdownRequest(this.toString(), mode -> {
             try {
                 service.stop();
@@ -151,7 +147,7 @@ public class CheckpointActor {
             }
         }
 
-        IObject entryArguments = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject entryArguments = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
         entryArguments.setValue(schedulingFieldName, message.getSchedulingConfiguration());
         entryArguments.setValue(messageFieldName, cloneMessage(message.getMessage()));
@@ -168,11 +164,11 @@ public class CheckpointActor {
         entryArguments.setValue(actionFieldName, CHECKPOINT_ACTION);
         entryArguments.setValue(processorFieldName, message.getProcessor());
 
-        ISchedulerEntry entry = IOC.resolve(Keys.getOrAdd("new scheduler entry"), entryArguments, service.getEntryStorage());
+        ISchedulerEntry entry = IOC.resolve(Keys.resolveByName("new scheduler entry"), entryArguments, service.getEntryStorage());
 
         // Update checkpoint status in message.
         // Checkpoint status of re-sent messages will be set by checkpoint scheduler action.
-        IObject newCheckpointStatus = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject newCheckpointStatus = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
         newCheckpointStatus.setValue(responsibleCheckpointIdFieldName, message.getCheckpointId());
         newCheckpointStatus.setValue(checkpointEntryIdFieldName, entry.getId());
@@ -260,18 +256,18 @@ public class CheckpointActor {
     private IObject cloneMessage(final IObject message)
             throws SerializeException, ResolutionException {
         String serialized = message.serialize();
-        return IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), serialized);
+        return IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"), serialized);
     }
 
     private void sendFeedback(final IObject checkpointStatus, final String fromCheckpoint, final String newId)
             throws ResolutionException, SendingMessageException, InvalidArgumentException, ChangeValueException, ReadValueException {
-        IObject feedbackMessage = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject feedbackMessage = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
         feedbackMessage.setValue(responsibleCheckpointIdFieldName, fromCheckpoint);
         feedbackMessage.setValue(checkpointEntryIdFieldName, newId);
         feedbackMessage.setValue(prevCheckpointIdFieldName, checkpointStatus.getValue(responsibleCheckpointIdFieldName));
         feedbackMessage.setValue(prevCheckpointEntryIdFieldName, checkpointStatus.getValue(checkpointEntryIdFieldName));
 
-        MessageBus.send(feedbackMessage, feedbackChainId);
+        MessageBus.send(feedbackMessage, FEEDBACK_CHAIN_NAME);
     }
 }

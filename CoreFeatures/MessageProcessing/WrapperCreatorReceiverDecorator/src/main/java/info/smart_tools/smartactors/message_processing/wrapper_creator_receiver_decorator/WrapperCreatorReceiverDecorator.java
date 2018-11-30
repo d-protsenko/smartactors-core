@@ -9,7 +9,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
@@ -43,9 +43,9 @@ public class WrapperCreatorReceiverDecorator implements IMessageReceiver {
         this.underlyingReceiver = underlyingReceiver;
         this.wrapperStrategies = wrapperStrategiesMap;
 
-        this.strategyDependencyKey = Keys.getOrAdd(strategyDependencyName);
+        this.strategyDependencyKey = Keys.resolveByName(strategyDependencyName);
 
-        wrapperFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "wrapper");
+        wrapperFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "wrapper");
     }
 
     @Override

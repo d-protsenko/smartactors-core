@@ -1,10 +1,10 @@
 package info.smart_tools.smartactors.http_endpoint.respons_status_extractor;
 
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.http_endpoint.interfaces.iresponse_status_extractor.IResponseStatusExtractor;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
 
 /**
  * Simple implementation of {@link IResponseStatusExtractor}.
@@ -23,10 +23,10 @@ public class ResponseStatusExtractor implements IResponseStatusExtractor {
      */
     public ResponseStatusExtractor() throws ResolutionException {
         this.httpResponseStatusCodeFieldName = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "httpResponseStatusCode"
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "httpResponseStatusCode"
         );
         this.contextFieldName = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"
         );
     }
 

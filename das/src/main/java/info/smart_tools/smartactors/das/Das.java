@@ -1,22 +1,7 @@
 package info.smart_tools.smartactors.das;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.das.commands.AddOnActorCreationUploadRepository;
-import info.smart_tools.smartactors.das.commands.AddOnFeatureCreationUploadRepository;
-import info.smart_tools.smartactors.das.commands.AddOnPluginCreationUploadRepository;
-import info.smart_tools.smartactors.das.commands.AddOrUpdateActorUploadRepository;
-import info.smart_tools.smartactors.das.commands.AddOrUpdateFeatureUploadRepository;
-import info.smart_tools.smartactors.das.commands.AddOrUpdatePluginUploadRepository;
-import info.smart_tools.smartactors.das.commands.CreateActor;
-import info.smart_tools.smartactors.das.commands.CreateFeature;
-import info.smart_tools.smartactors.das.commands.CreatePlugin;
-import info.smart_tools.smartactors.das.commands.CreateProject;
-import info.smart_tools.smartactors.das.commands.CreateServer;
-import info.smart_tools.smartactors.das.commands.DownloadCore;
-import info.smart_tools.smartactors.das.commands.ImportProject;
-import info.smart_tools.smartactors.das.commands.UpdateActorVersion;
-import info.smart_tools.smartactors.das.commands.UpdateFeatureVersion;
-import info.smart_tools.smartactors.das.commands.UpdatePluginVersion;
+import info.smart_tools.smartactors.das.commands.*;
 import info.smart_tools.smartactors.das.utilities.CommandLineArgsResolver;
 import info.smart_tools.smartactors.das.utilities.ProjectResolver;
 import info.smart_tools.smartactors.das.utilities.interfaces.ICommandLineArgsResolver;
@@ -35,7 +20,7 @@ public class Das {
         Map<String, IAction> commands = initCommands();
 
         System.out.println("Distributed Actor System. Design, assembly and deploy tools.");
-        System.out.println("Version 0.3.4.");
+        System.out.println("Version 0.5.0.");
 
         if (args.length == 0) {
             return;

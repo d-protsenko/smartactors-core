@@ -14,15 +14,14 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageProcessorProcessException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
+import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -45,7 +44,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
     private IMessageProcessor processor;
 
     private IObject message;
-    private IReceiverChain mainChain;
+    private Object mainChainName;
 
     private boolean paused;
     private boolean prePaused;
@@ -69,9 +68,9 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         this.id = id;
         this.debuggerAddress = debuggerAddress;
 
-        this.breakpointsStorage = IOC.resolve(Keys.getOrAdd(IDebuggerBreakpointsStorage.class.getCanonicalName()));
+        this.breakpointsStorage = IOC.resolve(Keys.resolveByName(IDebuggerBreakpointsStorage.class.getCanonicalName()));
 
-        sessionIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sessionId");
+        sessionIdFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sessionId");
 
         commands.put("start", this::startDebugging);
         commands.put("continue", this::continueDebugging);
@@ -85,7 +84,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         //noinspection ThrowableResultOfMethodCallIgnored
         commands.put("getException", args -> ((sequence == null) ? null : sequence.getException()));
         commands.put("getMessage", args -> message);
-        commands.put("getChainName", args -> ((mainChain == null) ? null : mainChain.getName()));
+        commands.put("getChainName", args -> ((mainChainName == null) ? null : mainChainName));
         commands.put("isRunning", args -> isRunning());
         commands.put("isPaused", args -> isPaused());
         commands.put("isCompleted", args -> (sequence != null && sequence.isCompleted()));
@@ -95,15 +94,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         commands.put("setMessage", stopModeCommand(args -> message = (IObject) args));
         commands.put("setMessageField", this::setMessageField);
         commands.put("setChain", stopModeCommand(args -> {
-            try {
-                IChainStorage storage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
-                mainChain = storage.resolve(IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), args));
-            } catch (ResolutionException e) {
-                throw new CommandExecutionException(e);
-            } catch (ChainNotFoundException e) {
-                return "NO SUCH CHAIN";
-            }
-
+            mainChainName = args;
             return "OK";
         }));
         commands.put("setBreakOnException", args -> breakOnException = (Boolean) args);
@@ -133,7 +124,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         commands.put("modifyBreakpoint", args -> {
             try {
                 IObject arg = (IObject) args;
-                String bpId = (String) arg.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id"));
+                String bpId = (String) arg.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id"));
 
                 breakpointsStorage.modifyBreakpoint(bpId, arg);
 
@@ -233,21 +224,24 @@ public class DebuggerSessionImpl implements IDebuggerSession {
 
     private Object startDebugging(final Object arg)
             throws CommandExecutionException {
-        if (message == null || mainChain == null || isRunning() || isPaused()) {
+        if (message == null || mainChainName == null || isRunning() || isPaused()) {
             throw new CommandExecutionException("Can not start debugging.");
         }
 
         try {
             IMessageProcessingSequence innerSequence = IOC.resolve(
-                    Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), stackDepth, mainChain);
+                    Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                    stackDepth,
+                    mainChainName,
+                    message
+            );
+            sequence = IOC.resolve(Keys.resolveByName("new debugger sequence"), innerSequence, debuggerAddress);
 
-            sequence = IOC.resolve(Keys.getOrAdd("new debugger sequence"), innerSequence, debuggerAddress);
+            Object taskQueue = IOC.resolve(Keys.resolveByName("task_queue"));
 
-            Object taskQueue = IOC.resolve(Keys.getOrAdd("task_queue"));
+            processor = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), taskQueue, sequence);
 
-            processor = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), taskQueue, sequence);
-
-            IObject context = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject context = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             context.setValue(sessionIdFieldName, id);
 
@@ -337,7 +331,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         }
 
         try {
-            return IOC.resolve(Keys.getOrAdd("make dump"), sequence, arg);
+            return IOC.resolve(Keys.resolveByName("make dump"), sequence, arg);
         } catch (ResolutionException e) {
             throw new CommandExecutionException(e);
         }
@@ -352,16 +346,16 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         try {
             IObject args = (IObject) arg;
 
-            IFieldName fieldNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
-            IFieldName fieldValueFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "value");
-            IFieldName dependencyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
+            IFieldName fieldNameFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+            IFieldName fieldValueFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "value");
+            IFieldName dependencyFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
 
-            IFieldName fieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), args.getValue(fieldNameFieldName));
+            IFieldName fieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), args.getValue(fieldNameFieldName));
             Object dependencyName = args.getValue(dependencyFieldName);
             Object value = args.getValue(fieldValueFieldName);
 
             if (dependencyName != null) {
-                value = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), dependencyName), value);
+                value = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), dependencyName), value);
             }
 
             message.setValue(fieldName, value);
@@ -377,8 +371,8 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         try {
             IObject args = (IObject) arg;
 
-            IFieldName levelFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "level");
-            IFieldName stepFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "step");
+            IFieldName levelFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "level");
+            IFieldName stepFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "step");
 
             int level = ((Number) args.getValue(levelFieldName)).intValue();
             int step = ((Number) args.getValue(stepFieldName)).intValue();
@@ -395,19 +389,17 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         }
     }
 
-    private Object call(final Object arg)
+    private Object call(final Object chainName)
             throws CommandExecutionException {
         try {
-            IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
-            IReceiverChain chain = chainStorage.resolve(IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), arg));
-
-            sequence.callChain(chain);
-
+            sequence.callChain(chainName);
             return "OK";
         } catch (NestedChainStackOverflowException e) {
             return "STACK OVERFLOW";
         } catch (ChainNotFoundException e) {
             return "NO SUCH CHAIN";
+        } catch (ScopeProviderException e) {
+            return "WRONG CHAIN SCOPE";
         } catch (ResolutionException e) {
             throw new CommandExecutionException(e);
         }

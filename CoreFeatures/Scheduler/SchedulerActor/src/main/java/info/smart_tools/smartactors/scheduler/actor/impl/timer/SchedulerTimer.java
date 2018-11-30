@@ -6,7 +6,7 @@ import info.smart_tools.smartactors.base.isynchronous_service.exceptions.Service
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStopException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.scheduler.interfaces.IDelayedSynchronousService;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
@@ -80,7 +80,7 @@ public class SchedulerTimer implements IDelayedSynchronousService, ITimer {
         this.myStartTime = Long.MAX_VALUE;
         this.myStopTime = Long.MAX_VALUE;
 
-        this.sysTime = IOC.resolve(Keys.getOrAdd("time"));
+        this.sysTime = IOC.resolve(Keys.resolveByName("time"));
         this.underlyingTimer = underlyingTimer;
     }
 

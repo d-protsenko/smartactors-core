@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.feature_loading_system.interfaces.ifilesystem_tracker;
 
-import info.smart_tools.smartactors.feature_loading_system.interfaces.ifilesystem_tracker.exception.FilesystemTrackerStartupException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ifilesystem_tracker.exception.FilesystemTrackerStartupException;
 
 /**
  * Interface for a service that notifies observers (executing {@link IAction}s) about all files exist and appearing in

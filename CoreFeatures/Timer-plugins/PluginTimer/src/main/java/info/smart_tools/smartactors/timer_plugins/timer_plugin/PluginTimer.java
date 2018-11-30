@@ -1,19 +1,19 @@
 package info.smart_tools.smartactors.timer_plugins.timer_plugin;
 
-import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.timer.interfaces.itimer.ITimer;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.timer.timer.SystemTimeImpl;
 import info.smart_tools.smartactors.timer.timer.TimerImpl;
 
@@ -41,7 +41,7 @@ public class PluginTimer implements IPlugin {
 
             item.process(() -> {
                 try {
-                    IOC.register(Keys.getOrAdd("timer"), new SingletonStrategy(
+                    IOC.register(Keys.resolveByName("timer"), new SingletonStrategy(
                             new TimerImpl(new Timer("Smart actors system timer", true))));
                 } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
                     throw new ActionExecuteException(e);
@@ -52,9 +52,9 @@ public class PluginTimer implements IPlugin {
                 String keyName = "timer";
 
                 try {
-                    IOC.remove(Keys.getOrAdd(keyName));
+                    IOC.remove(Keys.resolveByName(keyName));
                 } catch(DeletionException e) {
-                    System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                    System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                 } catch (ResolutionException e) { }
             });
 
@@ -64,7 +64,7 @@ public class PluginTimer implements IPlugin {
 
             item.process(() -> {
                 try {
-                    IOC.register(Keys.getOrAdd("time"), new SingletonStrategy(new SystemTimeImpl()));
+                    IOC.register(Keys.resolveByName("time"), new SingletonStrategy(new SystemTimeImpl()));
                 } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
                     throw new ActionExecuteException(e);
                 }
@@ -74,9 +74,9 @@ public class PluginTimer implements IPlugin {
                 String keyName = "time";
 
                 try {
-                    IOC.remove(Keys.getOrAdd(keyName));
+                    IOC.remove(Keys.resolveByName(keyName));
                 } catch(DeletionException e) {
-                    System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                    System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                 } catch (ResolutionException e) { }
             });
 

@@ -3,16 +3,16 @@ package info.smart_tools.smartactors.database_postgresql.postgres_create_task;
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.database.interfaces.istorage_connection.exception.StorageException;
-import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.JDBCCompiledQuery;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.QueryStatement;
 import info.smart_tools.smartactors.database_postgresql.postgres_schema.PostgresSchema;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 
 import java.sql.PreparedStatement;
 
@@ -49,7 +49,7 @@ public class PostgresCreateTask implements IDatabaseTask {
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-            CreateCollectionMessage message = IOC.resolve(Keys.getOrAdd(CreateCollectionMessage.class.getCanonicalName()), query);
+            CreateCollectionMessage message = IOC.resolve(Keys.resolveByName(CreateCollectionMessage.class.getCanonicalName()), query);
             collection = message.getCollectionName();
             options = message.getOptions();
             preparedQuery = new QueryStatement();

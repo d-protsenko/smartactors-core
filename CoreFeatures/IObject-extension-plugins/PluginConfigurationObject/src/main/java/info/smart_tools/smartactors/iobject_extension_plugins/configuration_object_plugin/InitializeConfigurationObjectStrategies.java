@@ -1,26 +1,21 @@
 package info.smart_tools.smartactors.iobject_extension_plugins.configuration_object_plugin;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.iobject_extension.configuration_object.CObjectStrategy;
-import info.smart_tools.smartactors.iobject_extension.configuration_object.ConfigurationObject;
-import info.smart_tools.smartactors.iobject.field_name.FieldName;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.iobject_extension.configuration_object.CObjectStrategy;
+import info.smart_tools.smartactors.iobject_extension.configuration_object.ConfigurationObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * creates and register some strategies for correct work of
@@ -55,7 +50,7 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                             try {
                                 IOC.register(
                                         IOC.resolve(
-                                                IOC.getKeyForKeyStorage(), "configuration object"
+                                                IOC.getKeyForKeyByNameResolutionStrategy(), "configuration object"
                                         ),
                                         new ApplyFunctionToArgumentsStrategy(
                                                 (a) -> {
@@ -88,13 +83,13 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                 ((IAdditionDependencyStrategy) strategy).register("default", defaultStrategy);
                                 IOC.register(
                                         IOC.resolve(
-                                                IOC.getKeyForKeyStorage(), "resolve key for configuration object"
+                                                IOC.getKeyForKeyByNameResolutionStrategy(), "resolve key for configuration object"
                                         ),
                                         strategy
                                 );
                                 IOC.register(
                                         IOC.resolve(
-                                                IOC.getKeyForKeyStorage(), "expandable_strategy#resolve key for configuration object"
+                                                IOC.getKeyForKeyByNameResolutionStrategy(), "expandable_strategy#resolve key for configuration object"
                                         ),
                                         new SingletonStrategy(strategy)
                                 );
@@ -110,23 +105,23 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
 
                             try {
                                 keyName = "expandable_strategy#resolve key for configuration object";
-                                IOC.remove(IOC.resolve(IOC.getKeyForKeyStorage(), keyName));
+                                IOC.remove(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), keyName));
                             } catch(DeletionException e) {
-                                System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                                System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                             } catch (ResolutionException e) { }
 
                             try {
                                 keyName = "resolve key for configuration object";
-                                IOC.remove(IOC.resolve(IOC.getKeyForKeyStorage(), keyName));
+                                IOC.remove(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), keyName));
                             } catch(DeletionException e) {
-                                System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                                System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                             } catch (ResolutionException e) { }
 
                             try {
                                 keyName = "configuration object";
-                                IOC.remove(IOC.resolve(IOC.getKeyForKeyStorage(), keyName));
+                                IOC.remove(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), keyName));
                             } catch(DeletionException e) {
-                                System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                                System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                             } catch (ResolutionException e) { }
                     });
             this.bootstrap.add(item);

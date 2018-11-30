@@ -1,15 +1,15 @@
 package info.smart_tools.smartactors.async_operations.close_async_operation;
 
 import info.smart_tools.smartactors.async_operations.close_async_operation.wrapper.CloseAsyncOpMessage;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.database.async_operation_collection.IAsyncOperationCollection;
 import info.smart_tools.smartactors.database.async_operation_collection.exception.CompleteAsyncOperationException;
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 /**
  * Actor that close async operation
@@ -25,10 +25,10 @@ public class CloseAsyncOperationActor {
      */
     public CloseAsyncOperationActor(final IObject params) throws InvalidArgumentException {
         try {
-            IField collectionNameF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
-            IField databaseOptionsF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "databaseOptions");
-            Object connectionOpts =  IOC.resolve(Keys.getOrAdd(databaseOptionsF.in(params)));
-            collection = IOC.resolve(Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName()), connectionOpts, collectionNameF.in(params));
+            IField collectionNameF = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "collectionName");
+            IField databaseOptionsF = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "databaseOptions");
+            Object connectionOpts =  IOC.resolve(Keys.resolveByName(databaseOptionsF.in(params)));
+            collection = IOC.resolve(Keys.resolveByName(IAsyncOperationCollection.class.getCanonicalName()), connectionOpts, collectionNameF.in(params));
         } catch (ReadValueException e) {
             throw new InvalidArgumentException("Can't read collection name from message", e);
         } catch (ResolutionException e) {

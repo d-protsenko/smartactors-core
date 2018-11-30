@@ -5,7 +5,7 @@ import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorageObserver;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
@@ -32,7 +32,7 @@ public class CheckpointSchedulerEntryStorageObserver implements ISchedulerEntryS
      */
     public CheckpointSchedulerEntryStorageObserver()
             throws ResolutionException {
-        prevCheckpointEntryIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointEntryId");
+        prevCheckpointEntryIdFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointEntryId");
     }
 
     @Override

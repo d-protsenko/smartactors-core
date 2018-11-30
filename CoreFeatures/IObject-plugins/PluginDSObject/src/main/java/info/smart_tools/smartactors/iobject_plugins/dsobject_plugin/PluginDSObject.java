@@ -1,20 +1,19 @@
 package info.smart_tools.smartactors.iobject_plugins.dsobject_plugin;
 
-import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
-import info.smart_tools.smartactors.iobject.ds_object.DSObject;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 /**
  *
@@ -39,7 +38,7 @@ public class PluginDSObject implements IPlugin {
                     .after("IOC")
                     .process(() -> {
                         try {
-                            IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                            IOC.register(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                                     new CreateNewInstanceStrategy(args -> {
                                         if (args.length == 0) {
                                             return new DSObject();
@@ -63,9 +62,9 @@ public class PluginDSObject implements IPlugin {
                     })
                     .revertProcess(() -> {
                         try {
-                            IOC.remove(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                            IOC.remove(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \"info.smart_tools.smartactors.iobject.iobject.IObject\" has failed while reverting \"iobject\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \"info.smart_tools.smartactors.iobject.iobject.IObject\" has failed while reverting \"iobject\" plugin.");
                         } catch (ResolutionException e) { }
                     });
 

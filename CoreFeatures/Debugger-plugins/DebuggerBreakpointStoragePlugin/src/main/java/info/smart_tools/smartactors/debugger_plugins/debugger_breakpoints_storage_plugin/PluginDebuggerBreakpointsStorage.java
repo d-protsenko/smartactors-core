@@ -10,7 +10,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 /**
  *
@@ -35,7 +35,7 @@ public class PluginDebuggerBreakpointsStorage extends BootstrapPlugin {
     @Item("debugger:breakpoint_storage")
     public void registerBreakppointStorage()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd(IDebuggerBreakpointsStorage.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.resolveByName(IDebuggerBreakpointsStorage.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
                 return new DebuggerBreakpointsStorageImpl();
             } catch (ResolutionException e) {

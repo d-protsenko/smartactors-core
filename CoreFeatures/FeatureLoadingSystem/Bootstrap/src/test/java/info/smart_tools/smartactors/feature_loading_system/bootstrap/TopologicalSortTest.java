@@ -8,9 +8,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests for TopologicalSort

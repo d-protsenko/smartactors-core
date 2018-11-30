@@ -2,13 +2,13 @@ package info.smart_tools.smartactors.actors.validate_form_data;
 
 import info.smart_tools.smartactors.actors.validate_form_data.exception.ValidateFormException;
 import info.smart_tools.smartactors.actors.validate_form_data.wrapper.ValidateFormDataMessage;
+import info.smart_tools.smartactors.field.field.Field;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.field.field.Field;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +39,7 @@ public class ValidateFormDataActorTest {
         mockStatic(Keys.class);
 
         IKey fieldKey = mock(IKey.class);
-        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(fieldKey);
+        when(Keys.resolveByName(IField.class.getCanonicalName())).thenReturn(fieldKey);
         when(IOC.resolve(eq(fieldKey), any())).thenReturn(rulesF);
 
         actor = new ValidateFormDataActor(mock(IObject.class));
@@ -75,7 +75,7 @@ public class ValidateFormDataActorTest {
 
         IObject resultObject = mock(IObject.class);
         IKey iobjectKey = mock(IKey.class);
-        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(iobjectKey);
+        when(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(iobjectKey);
         when(IOC.resolve(iobjectKey)).thenReturn(resultObject);
 
         actor.validate(message);
@@ -108,7 +108,7 @@ public class ValidateFormDataActorTest {
 
         IObject resultObject = mock(IObject.class);
         IKey iobjectKey = mock(IKey.class);
-        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(iobjectKey);
+        when(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(iobjectKey);
         when(IOC.resolve(iobjectKey)).thenReturn(resultObject);
 
         actor.validate(message);

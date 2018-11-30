@@ -1,19 +1,19 @@
 package info.smart_tools.smartactors.message_processing_plugins.immutable_receiver_chain_plugin;
 
-import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing.receiver_chain.ImmutableReceiverChainResolutionStrategy;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 
 /**
  *
@@ -40,7 +40,7 @@ public class PluginReceiverChain implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.getOrAdd(IReceiverChain.class.getCanonicalName()),
+                                    Keys.resolveByName(IReceiverChain.class.getCanonicalName()),
                                     new ImmutableReceiverChainResolutionStrategy());
                         } catch (ResolutionException e) {
                             throw new ActionExecuteException("ReceiverChain plugin can't load: can't get ReceiverChain key", e);
@@ -54,9 +54,9 @@ public class PluginReceiverChain implements IPlugin {
 
                         try {
                             keyName = IReceiverChain.class.getCanonicalName();
-                            IOC.remove(Keys.getOrAdd(keyName));
+                            IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                     });

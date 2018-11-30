@@ -5,11 +5,11 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>system-actors</artifactId>
-        <version>0.4.0</version>
+        <version>0.5.0</version>
     </parent>
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>system-actors-pack</artifactId>
-    <version>0.4.0</version>
+    <version>0.5.0</version>
     <packaging>pom</packaging>
     <modules>
         <module>ObjectEnumerationActor</module>
@@ -39,7 +39,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>3.1.0</version>
                     <executions>
                         <execution>
                             <phase>package</phase>
@@ -59,7 +59,7 @@
                             <phase>none</phase>
                         </execution>
                         <execution>
-                            <id>archiva.smartactors-features</id>
+                            <id>${feature.rid}</id>
                             <phase>deploy</phase>
                             <goals>
                                 <goal>deploy-file</goal>
@@ -68,8 +68,8 @@
                             <configuration>
                                 <generatePom>true</generatePom>
                                 <file>${project.parent.basedir}/project-distribution/${project.artifactId}-${project.parent.version}-archive.${deploy.fomat}</file>
-                                <url>http://archiva.smart-tools.info/repository/smartactors-features/</url>
-                                <repositoryId>archiva.smartactors-features</repositoryId>
+                                <url>${feature.rurl}</url>
+                                <repositoryId>${feature.rid}</repositoryId>
                                 <groupId>${project.groupId}</groupId>
                                 <artifactId>${project.artifactId}</artifactId>
                                 <version>${project.version}</version>

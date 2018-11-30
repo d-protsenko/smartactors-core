@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.base.strategy.apply_function_to_arguments;
 
-import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 

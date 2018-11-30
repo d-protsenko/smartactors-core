@@ -37,8 +37,8 @@
                         <unpack>${build.unpack}</unpack>
                         <scope>runtime</scope>
                         <outputDirectory>/</outputDirectory>
-                        <!--<includes>-->
-                            <!--<include>com.jcabi:jcabi-aether</include>-->
+                        <!--<includes>
+                            <include>com.jcabi:jcabi-aether</include>-->
                             <!---->
                             <!--<include>org.sonatype.aether:aether-api</include>-->
                             <!--<include>org.apache.maven:maven-core</include>-->
@@ -65,6 +65,7 @@
                             <exclude>org.apache.commons:*</exclude>
                             <exclude>commons-lang:*</exclude>
                             <exclude>commons-io:*</exclude>
+                            <exclude>commons-codec:*</exclude>
                             <exclude>com.fasterxml:classmate</exclude>
                             <exclude>org.eclipse.aether:aether-util</exclude>
                         </excludes>

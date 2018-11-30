@@ -5,12 +5,12 @@ import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
+import info.smart_tools.smartactors.feature_loader.interfaces.ifeature_loader.GlobalFeatureLoader;
+import info.smart_tools.smartactors.feature_loader.interfaces.ifeature_loader.exceptions.FeatureLoadException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception.RevertProcessExecutionException;
-import info.smart_tools.smartactors.feature_loader.interfaces.ifeature_loader.GlobalFeatureLoader;
-import info.smart_tools.smartactors.feature_loader.interfaces.ifeature_loader.exceptions.FeatureLoadException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_creator.IPluginCreator;
@@ -18,13 +18,13 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_cr
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.IPluginLoader;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.exception.PluginLoaderException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader_visitor.IPluginLoaderVisitor;
+import info.smart_tools.smartactors.feature_loading_system.plugin_creator.PluginCreator;
+import info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar.PluginLoader;
+import info.smart_tools.smartactors.feature_loading_system.plugin_loader_visitor_empty_implementation.PluginLoaderVisitor;
 import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.IServer;
 import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.exception.ServerExecutionException;
 import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.exception.ServerInitializeException;
-import info.smart_tools.smartactors.feature_loading_system.plugin_creator.PluginCreator;
-import info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar.ExpansibleURLClassLoader;
-import info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar.PluginLoader;
-import info.smart_tools.smartactors.feature_loading_system.plugin_loader_visitor_empty_implementation.PluginLoaderVisitor;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +39,6 @@ import java.util.List;
  *
  */
 public class ServerWithFeatures implements IServer {
-    private ExpansibleURLClassLoader classLoader = new ExpansibleURLClassLoader(new URL[]{});
     private IPluginLoaderVisitor<String> pluginLoaderVisitor = new PluginLoaderVisitor<>();
     private IPluginCreator pluginCreator = new PluginCreator();
 
@@ -58,7 +57,8 @@ public class ServerWithFeatures implements IServer {
 
     @Override
     public void initialize() throws ServerInitializeException {
-
+        Thread.currentThread().setName("BaseThread");
+        ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
     }
 
     @Override
@@ -131,7 +131,7 @@ public class ServerWithFeatures implements IServer {
             throws InvalidArgumentException, PluginLoaderException, ProcessExecutionException {
         IBootstrap bootstrap = new Bootstrap();
         IPluginLoader<Collection<IPath>> pluginLoader = new PluginLoader(
-                classLoader,
+                ModuleManager.getCurrentClassLoader(),
                 clz -> {
                     try {
                         if (Modifier.isAbstract(clz.getModifiers())) {
@@ -146,7 +146,7 @@ public class ServerWithFeatures implements IServer {
                     }
                 },
                 pluginLoaderVisitor);
-        pluginLoader.loadPlugin(jars);
+        pluginLoader.loadPlugins(jars);
 
         try {
             bootstrap.start();

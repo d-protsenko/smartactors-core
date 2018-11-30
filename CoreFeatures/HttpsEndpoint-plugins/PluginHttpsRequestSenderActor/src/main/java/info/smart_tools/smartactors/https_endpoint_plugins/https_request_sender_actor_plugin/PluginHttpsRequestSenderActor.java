@@ -12,7 +12,7 @@ import info.smart_tools.smartactors.https_endpoint.https_request_sender_actor.Ht
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 /**
  * Created by sevenbits on 15.10.16.
@@ -41,7 +41,7 @@ public class PluginHttpsRequestSenderActor implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.getOrAdd("HttpsRequestSenderActor"),
+                                    Keys.resolveByName("HttpsRequestSenderActor"),
                                     // Response sender is stateless so it's safe to use singleton strategy.
                                     new SingletonStrategy(new HttpsRequestSenderActor()));
                         } catch (ResolutionException e) {

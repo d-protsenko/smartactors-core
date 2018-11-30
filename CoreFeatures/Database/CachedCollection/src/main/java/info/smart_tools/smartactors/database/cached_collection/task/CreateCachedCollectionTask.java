@@ -1,17 +1,17 @@
 package info.smart_tools.smartactors.database.cached_collection.task;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.database.cached_collection.exception.CreateCachedCollectionTaskException;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,8 +37,8 @@ public class CreateCachedCollectionTask implements IDatabaseTask {
     public CreateCachedCollectionTask(final IDatabaseTask createCollectionTask) throws CreateCachedCollectionTaskException {
         this.createCollectionTask = createCollectionTask;
         try {
-            this.keyNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "keyName");
-            this.indexesField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "indexes");
+            this.keyNameField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "keyName");
+            this.indexesField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "indexes");
         } catch (ResolutionException e) {
             throw new CreateCachedCollectionTaskException("Can't create CreateCachedCollectionTask.", e);
         }

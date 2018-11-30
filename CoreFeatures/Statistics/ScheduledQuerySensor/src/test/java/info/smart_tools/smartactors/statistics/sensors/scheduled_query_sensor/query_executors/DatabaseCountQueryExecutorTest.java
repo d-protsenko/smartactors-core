@@ -5,12 +5,11 @@ import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolTakeException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
@@ -22,8 +21,8 @@ import org.mockito.ArgumentCaptor;
 
 import java.util.Collection;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.eq;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
 
@@ -52,28 +51,28 @@ public class DatabaseCountQueryExecutorTest extends PluginsLoadingTestBase {
     protected void registerMocks() throws Exception {
         connectionOptionsStrategyMock = mock(IResolveDependencyStrategy.class);
         when(connectionOptionsStrategyMock.resolve()).thenReturn(connectionOptionsMock);
-        IOC.register(Keys.getOrAdd("the connection options"), connectionOptionsStrategyMock);
+        IOC.register(Keys.resolveByName("the connection options"), connectionOptionsStrategyMock);
 
         poolMock = mock(IPool.class);
         connectionPoolStrategyMock = mock(IResolveDependencyStrategy.class);
         when(connectionPoolStrategyMock.resolve(same(connectionOptionsMock))).thenReturn(poolMock);
-        IOC.register(Keys.getOrAdd("the connection pool"), connectionPoolStrategyMock);
+        IOC.register(Keys.resolveByName("the connection pool"), connectionPoolStrategyMock);
         when(poolMock.take()).thenReturn(connectionMock).thenThrow(PoolTakeException.class);
 
         taskMock = mock(ITask.class);
 
         taskStrategyMock = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.getOrAdd("db.collection.count"), taskStrategyMock);
+        IOC.register(Keys.resolveByName("db.collection.count"), taskStrategyMock);
 
         entryMock = mock(ISchedulerEntry.class);
-        when(entryMock.getState()).thenReturn(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
+        when(entryMock.getState()).thenReturn(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
     }
 
     @Test
     public void Should_queryCountOfRecordsFromDatabase()
             throws Exception {
         IQueryExecutor executor = new DatabaseCountQueryExecutor();
-        IObject args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject args = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'collection':'the_collection'," +
                         "'connectionOptionsDependency':'the connection options'," +
@@ -86,7 +85,7 @@ public class DatabaseCountQueryExecutorTest extends PluginsLoadingTestBase {
             verify(taskStrategyMock).resolve(argsCaptor.capture());
             assertSame(connectionMock, argsCaptor.getAllValues().get(0));
             assertEquals("the_collection", argsCaptor.getAllValues().get(1));
-            assertSame(args.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "filter")),
+            assertSame(args.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "filter")),
                     argsCaptor.getAllValues().get(2));
             ((IAction<Long>) argsCaptor.getAllValues().get(3)).execute(3L);
             return null;

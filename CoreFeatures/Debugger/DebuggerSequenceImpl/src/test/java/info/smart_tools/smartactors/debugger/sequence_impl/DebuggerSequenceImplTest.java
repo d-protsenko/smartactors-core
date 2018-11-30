@@ -10,7 +10,7 @@ import info.smart_tools.smartactors.iobject_extension_plugins.configuration_obje
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.exceptions.RouteNotFoundException;
@@ -56,13 +56,13 @@ public class DebuggerSequenceImplTest extends PluginsLoadingTestBase {
         when(sequenceMock.getCurrentReceiverArguments()).thenReturn(sequenceArgumentsMock);
 
         routerMock = mock(IRouter.class);
-        IOC.register(Keys.getOrAdd(IRouter.class.getCanonicalName()), new SingletonStrategy(routerMock));
+        IOC.register(Keys.resolveByName(IRouter.class.getCanonicalName()), new SingletonStrategy(routerMock));
 
         debuggerReceiverMock = mock(IMessageReceiver.class);
         when(routerMock.route(same(debuggerAddress))).thenReturn(debuggerReceiverMock);
 
         dumpCreationStrategy = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.getOrAdd("make dump"), dumpCreationStrategy);
+        IOC.register(Keys.resolveByName("make dump"), dumpCreationStrategy);
     }
 
     @Test(expected = InvalidArgumentException.class)

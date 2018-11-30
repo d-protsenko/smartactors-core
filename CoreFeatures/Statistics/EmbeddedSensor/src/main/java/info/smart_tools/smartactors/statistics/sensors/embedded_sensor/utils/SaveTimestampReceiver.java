@@ -5,7 +5,7 @@ import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
@@ -28,7 +28,7 @@ public class SaveTimestampReceiver implements IMessageReceiver {
     public SaveTimestampReceiver(final IFieldName fieldName)
             throws ResolutionException {
         this.timeContextField = fieldName;
-        this.systemTime = IOC.resolve(Keys.getOrAdd("time"));
+        this.systemTime = IOC.resolve(Keys.resolveByName("time"));
     }
 
     @Override

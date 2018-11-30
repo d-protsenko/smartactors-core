@@ -11,7 +11,7 @@ import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
@@ -35,7 +35,7 @@ public class CreateCollectionActorTest {
         scope.setValue(IOC.getIocKey(), container);
         ScopeProvider.setCurrentScope(scope);
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameResolutionStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -46,7 +46,7 @@ public class CreateCollectionActorTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IFieldName.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IFieldName.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
@@ -57,7 +57,7 @@ public class CreateCollectionActorTest {
                         }
                 )
         );
-        IOC.register(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IOC.register(Keys.resolveByName(IObject.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     if (args.length == 0) {
                         return new DSObject();
@@ -72,10 +72,10 @@ public class CreateCollectionActorTest {
                     }
                 })
         );
-        IOC.register(Keys.getOrAdd("connectionOptions"),
+        IOC.register(Keys.resolveByName("connectionOptions"),
                 new ApplyFunctionToArgumentsStrategy(args -> mock(ConnectionOptions.class))
         );
-        IOC.register(Keys.getOrAdd("PostgresConnectionPool"),
+        IOC.register(Keys.resolveByName("PostgresConnectionPool"),
                 new ApplyFunctionToArgumentsStrategy(args -> mock(IPool.class))
         );
     }
@@ -88,7 +88,7 @@ public class CreateCollectionActorTest {
         when(wrapper.getOptions()).thenReturn(null);
 
         ITask task = mock(ITask.class);
-        IOC.register(Keys.getOrAdd("db.collection.create-if-not-exists"),
+        IOC.register(Keys.resolveByName("db.collection.create-if-not-exists"),
                 new ApplyFunctionToArgumentsStrategy(args -> task)
         );
         actor.createTable(wrapper);

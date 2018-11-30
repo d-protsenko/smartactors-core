@@ -3,12 +3,11 @@ package info.smart_tools.smartactors.message_processing.chain_storage.impl;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainModificationException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
@@ -18,7 +17,7 @@ import org.junit.Test;
 
 import java.text.MessageFormat;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -55,8 +54,8 @@ public class ChainStateImplTest extends PluginsLoadingTestBase {
             modArgMocks[i] = mock(IObject.class);
 
             String mk = MessageFormat.format("mod-{0}", i);
-            IOC.register(Keys.getOrAdd(mk), modStrategyMocks[i]);
-            when(modArgMocks[i].getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "modification")))
+            IOC.register(Keys.resolveByName(mk), modStrategyMocks[i]);
+            when(modArgMocks[i].getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "modification")))
                     .thenReturn(mk);
         }
 

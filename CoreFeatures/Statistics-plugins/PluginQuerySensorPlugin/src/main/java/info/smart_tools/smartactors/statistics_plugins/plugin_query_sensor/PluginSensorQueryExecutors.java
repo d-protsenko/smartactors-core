@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.statistics.sensors.scheduled_query_sensor.query_executors.DatabaseCountQueryExecutor;
 
 /**
@@ -34,6 +34,6 @@ public class PluginSensorQueryExecutors extends BootstrapPlugin {
     @Item("sensor_query_executor:database_count")
     public void registerDatabaseCountQueryExecutor()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("database count sensor query executor"), new SingletonStrategy(new DatabaseCountQueryExecutor()));
+        IOC.register(Keys.resolveByName("database count sensor query executor"), new SingletonStrategy(new DatabaseCountQueryExecutor()));
     }
 }

@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
-import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -21,11 +21,12 @@ import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.field_name_tools.FieldNames;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
@@ -48,6 +49,7 @@ public class HttpsEndpointPlugin implements IPlugin {
     private IFieldName endpointNameFieldName;
     private IFieldName queueFieldName;
     private IFieldName templatesFieldName;
+    private IFieldName scopeSwitchingFieldName;
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
@@ -76,7 +78,7 @@ public class HttpsEndpointPlugin implements IPlugin {
                             () -> {
                                 try {
                                     initializeFieldNames();
-                                    IOC.register(Keys.getOrAdd(ISslEngineProvider.class.getCanonicalName()),
+                                    IOC.register(Keys.resolveByName(ISslEngineProvider.class.getCanonicalName()),
                                             new CreateNewInstanceStrategy(
                                                     (args) -> {
                                                         ISslEngineProvider sslContextProvider = new SslEngineProvider();
@@ -94,17 +96,22 @@ public class HttpsEndpointPlugin implements IPlugin {
                                     );
 
                                     IOC.register(
-                                            Keys.getOrAdd(IEnvironmentHandler.class.getCanonicalName()),
+                                            Keys.resolveByName(IEnvironmentHandler.class.getCanonicalName()),
                                             new CreateNewInstanceStrategy(
                                                     (args) -> {
                                                         IObject configuration = (IObject) args[0];
                                                         IQueue queue = null;
                                                         Integer stackDepth = null;
+                                                        Boolean scopeSwitching = null;
                                                         try {
                                                             queue = (IQueue) configuration.getValue(queueFieldName);
                                                             stackDepth =
                                                                     (Integer) configuration.getValue(stackDepthFieldName);
-                                                            return new EnvironmentHandler(queue, stackDepth);
+                                                            scopeSwitching = (Boolean) configuration.getValue(scopeSwitchingFieldName);
+                                                            if (scopeSwitching == null) {
+                                                                scopeSwitching = true;
+                                                            }
+                                                            return new EnvironmentHandler(queue, stackDepth, scopeSwitching);
                                                         } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
                                                             throw new RuntimeException(e);
                                                         }
@@ -113,7 +120,7 @@ public class HttpsEndpointPlugin implements IPlugin {
                                     );
                                     registerHttpsEndpoint();
 
-                                    IOC.register(Keys.getOrAdd(FileInputStream.class.getCanonicalName()),
+                                    IOC.register(Keys.resolveByName(FileInputStream.class.getCanonicalName()),
                                             new CreateNewInstanceStrategy(
                                                     (args) -> {
                                                         try {
@@ -123,13 +130,13 @@ public class HttpsEndpointPlugin implements IPlugin {
                                                         return null;
                                                     }
                                             ));
-                                    IKey emptyIObjectKey = Keys.getOrAdd("EmptyIObject");
+                                    IKey emptyIObjectKey = Keys.resolveByName("EmptyIObject");
                                     IOC.register(emptyIObjectKey, new CreateNewInstanceStrategy(
                                                     (args) -> new DSObject()
                                             )
                                     );
 
-                                    IKey channelHandlerNettyKey = Keys.getOrAdd("info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty");
+                                    IKey channelHandlerNettyKey = Keys.resolveByName("info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty");
                                     IOC.register(channelHandlerNettyKey,
                                             new CreateNewInstanceStrategy(
                                                     (args) -> {
@@ -155,81 +162,84 @@ public class HttpsEndpointPlugin implements IPlugin {
 
         typeFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "type"
                 );
         portFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "port"
                 );
         startChainNameFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "startChain"
                 );
         stackDepthFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "stackDepth"
                 );
         maxContentLengthFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "maxContentLength"
                 );
         endpointNameFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "endpointName"
                 );
 
         queueFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "queue"
                 );
 
         templatesFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "templates"
                 );
+        scopeSwitchingFieldName = FieldNames.resolveByName("scopeSwitching");
     }
 
 
     private void registerHttpsEndpoint() throws InvalidArgumentException, RegistrationException, ResolutionException {
-        IKey httpsEndpointKey = Keys.getOrAdd("https_endpoint");
+        IKey httpsEndpointKey = Keys.resolveByName("https_endpoint");
         IOC.register(httpsEndpointKey,
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             IObject configuration = (IObject) args[0];
                             try {
                                 IOC.resolve(
-                                        Keys.getOrAdd("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
+                                        Keys.resolveByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
                                         "HTTP_GET",
                                         configuration.getValue(endpointNameFieldName),
                                         configuration.getValue(templatesFieldName));
                                 IOC.resolve(
-                                        Keys.getOrAdd("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
+                                        Keys.resolveByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
                                         "HTTP_POST",
                                         configuration.getValue(endpointNameFieldName));
 
                                 IEnvironmentHandler environmentHandler = IOC.resolve(
-                                        Keys.getOrAdd(IEnvironmentHandler.class.getCanonicalName()),
+                                        Keys.resolveByName(IEnvironmentHandler.class.getCanonicalName()),
                                         configuration);
                                 ISslEngineProvider sslContextProvider =
                                         IOC.resolve(
-                                                Keys.getOrAdd(ISslEngineProvider.class.getCanonicalName()),
+                                                Keys.resolveByName(ISslEngineProvider.class.getCanonicalName()),
                                                 configuration
                                         );
 
-                                IUpCounter upCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
+                                IUpCounter upCounter = IOC.resolve(Keys.resolveByName("root upcounter"));
 
                                 HttpsEndpoint endpoint = new HttpsEndpoint(
                                         (Integer) configuration.getValue(portFieldName),
                                         (Integer) configuration.getValue(maxContentLengthFieldName),
-                                        ScopeProvider.getCurrentScope(), environmentHandler,
+                                        ScopeProvider.getCurrentScope(),
+                                        ModuleManager.getCurrentModule(),
+                                        environmentHandler,
                                         (String) configuration.getValue(endpointNameFieldName),
                                         (IReceiverChain) configuration.getValue(startChainNameFieldName),
                                         sslContextProvider, upCounter);

@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.Boot
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing.message_processor.MessageProcessor;
 import info.smart_tools.smartactors.task.itask_preprocess_strategy.ITaskProcessStrategy;
 
@@ -29,9 +29,9 @@ public class MessageProcessorShutdownPlugin extends BootstrapPlugin {
     })
     public void registerMessageProcessorShutdownStrategies()
             throws ResolutionException, AdditionDependencyStrategyException, InvalidArgumentException {
-        IAdditionDependencyStrategy strategy = IOC.resolve(Keys.getOrAdd(
+        IAdditionDependencyStrategy strategy = IOC.resolve(Keys.resolveByName(
                 "expandable_strategy#shutdown mode task processing strategy by task class"));
-        ITaskProcessStrategy taskProcessStrategy = IOC.resolve(Keys.getOrAdd("notify task processing strategy"));
+        ITaskProcessStrategy taskProcessStrategy = IOC.resolve(Keys.resolveByName("notify task processing strategy"));
         strategy.register(MessageProcessor.class, new SingletonStrategy(taskProcessStrategy));
     }
 

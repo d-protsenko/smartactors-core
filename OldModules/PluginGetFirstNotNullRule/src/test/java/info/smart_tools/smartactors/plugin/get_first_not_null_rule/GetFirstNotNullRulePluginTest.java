@@ -1,15 +1,15 @@
 package info.smart_tools.smartactors.plugin.get_first_not_null_rule;
 
-import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.transformation_rules.get_first_not_null.GetFirstNotNullRule;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +19,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.*;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
@@ -63,7 +62,7 @@ public class GetFirstNotNullRulePluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey strategyKey = mock(IKey.class);
-        when(Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName())).thenReturn(strategyKey);
+        when(Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName())).thenReturn(strategyKey);
 
         GetFirstNotNullRule targetObject = mock(GetFirstNotNullRule.class);
         whenNew(GetFirstNotNullRule.class).withNoArguments().thenReturn(targetObject);
@@ -71,7 +70,7 @@ public class GetFirstNotNullRulePluginTest {
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName());
+        Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName());
 
         verifyNew(GetFirstNotNullRule.class).withNoArguments();
 

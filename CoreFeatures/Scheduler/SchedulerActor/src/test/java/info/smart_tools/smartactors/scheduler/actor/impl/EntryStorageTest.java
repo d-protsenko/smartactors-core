@@ -7,13 +7,6 @@ import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy
 import info.smart_tools.smartactors.base.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.scheduler.actor.impl.filter.AllPassEntryFilter;
-import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.DatabaseRemoteStorage;
-import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.IRemoteEntryStorage;
-import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
-import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryFilter;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryNotFoundException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
 import info.smart_tools.smartactors.database_in_memory_plugins.in_memory_database_plugin.PluginInMemoryDatabase;
 import info.smart_tools.smartactors.database_in_memory_plugins.in_memory_db_tasks_plugin.PluginInMemoryDBTasks;
 import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
@@ -22,8 +15,14 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
+import info.smart_tools.smartactors.scheduler.actor.impl.filter.AllPassEntryFilter;
+import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.DatabaseRemoteStorage;
+import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.IRemoteEntryStorage;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryFilter;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryNotFoundException;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
@@ -63,32 +62,32 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
 
     @Override
     protected void registerMocks() throws Exception {
-//        connectionPool = IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool"));
+//        connectionPool = IOC.resolve(Keys.resolveByName("DatabaseConnectionPool"));
         connectionPool = mock(IPool.class);
 
         try (IPoolGuard guard = new PoolGuard(connectionPool)) {
             ITask createTask = IOC.resolve(
-                    Keys.getOrAdd("db.collection.create"),
+                    Keys.resolveByName("db.collection.create"),
                     guard.getObject(),
                     "scheduler_collection",
-                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
+                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
 
             createTask.execute();
 
             saved = new IObject[] {
-                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                             "{'strategy':'strategy1','entryId':'0'}".replace('\'', '"')),
-                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                             "{'strategy':'strategy2','entryId':'1'}".replace('\'', '"')),
-                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                             "{'strategy':'strategy3','entryId':'2'}".replace('\'', '"')),
-                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                             "{'strategy':'strategy4','entryId':'3'}".replace('\'', '"')),
-                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                             "{'strategy':'strategy5','entryId':'4'}".replace('\'', '"')),
-                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                             "{'strategy':'strategy6','entryId':'5'}".replace('\'', '"')),
-                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                             "{'strategy':'strategy7','entryId':'6'}".replace('\'', '"')),
             };
 
@@ -103,7 +102,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
 
             for (IObject obj : saved) {
                 ITask task = IOC.resolve(
-                        Keys.getOrAdd("db.collection.insert"),
+                        Keys.resolveByName("db.collection.insert"),
                         guard.getObject(),
                         "scheduler_collection",
                         obj);
@@ -116,10 +115,10 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
 
         restoreEntryStrategy = mock(IResolveDependencyStrategy.class);
         when(restoreEntryStrategy.resolve(any(), any())).thenReturn(entries[0], Arrays.copyOfRange(entries, 1, entries.length));
-        IOC.register(Keys.getOrAdd("restore scheduler entry"), restoreEntryStrategy);
+        IOC.register(Keys.resolveByName("restore scheduler entry"), restoreEntryStrategy);
 
         timerMock = mock(ITimer.class);
-        IOC.register(Keys.getOrAdd("timer"), new SingletonStrategy(timerMock));
+        IOC.register(Keys.resolveByName("timer"), new SingletonStrategy(timerMock));
     }
 
     private int countDBEntries() throws Exception {
@@ -127,10 +126,10 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
 
         try (IPoolGuard guard = new PoolGuard(connectionPool)) {
             ITask createTask = IOC.resolve(
-                    Keys.getOrAdd("db.collection.count"),
+                    Keys.resolveByName("db.collection.count"),
                     guard.getObject(),
                     "scheduler_collection",
-                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'filter':{},'sort':[]}".replace('\'','"')),
+                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'filter':{},'sort':[]}".replace('\'','"')),
                     (IAction<Long>) c -> res[0] = c.intValue());
 
             createTask.execute();

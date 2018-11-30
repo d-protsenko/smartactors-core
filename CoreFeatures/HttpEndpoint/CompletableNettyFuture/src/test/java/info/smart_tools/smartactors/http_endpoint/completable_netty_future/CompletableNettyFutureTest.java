@@ -1,6 +1,5 @@
 package info.smart_tools.smartactors.http_endpoint.completable_netty_future;
 
-import info.smart_tools.smartactors.http_endpoint.completable_netty_future.CompletableNettyFuture;
 import io.netty.channel.local.LocalEventLoopGroup;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;

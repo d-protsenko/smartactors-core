@@ -1,25 +1,23 @@
 package info.smart_tools.smartactors.message_processing_plugins.standard_object_creators_plugin;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.iroutable_object_creator.IRoutedObjectCreator;
 import info.smart_tools.smartactors.message_processing_interfaces.iroutable_object_creator.exceptions.ObjectCreationException;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.same;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -55,8 +53,8 @@ public class RawObjectCreatorTest {
         when(IOC.resolve(fieldNameKey, "dependency")).thenReturn(dependencyFieldName);
         when(IOC.resolve(fieldNameKey, "name")).thenReturn(nameFieldName);
 
-        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(fieldNameKey);
-        when(Keys.getOrAdd("route_from_object_name")).thenReturn(routeFromObjectNameKey);
+        when(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(fieldNameKey);
+        when(Keys.resolveByName("route_from_object_name")).thenReturn(routeFromObjectNameKey);
 
         routerMock = mock(IRouter.class);
         descriptionMock = mock(IObject.class);
@@ -84,7 +82,7 @@ public class RawObjectCreatorTest {
 
         when(descriptionMock.getValue(same(dependencyFieldName))).thenReturn("dependency_1");
         when(descriptionMock.getValue(same(nameFieldName))).thenReturn("name_1");
-        when(Keys.getOrAdd("dependency_1")).thenReturn(dependencyKey);
+        when(Keys.resolveByName("dependency_1")).thenReturn(dependencyKey);
         when(IOC.resolve(same(dependencyKey), same(descriptionMock))).thenReturn(receiverMock);
         when(IOC.resolve(same(routeFromObjectNameKey), eq("name_1"))).thenReturn("route_1");
 
@@ -101,7 +99,7 @@ public class RawObjectCreatorTest {
 
         when(descriptionMock.getValue(same(dependencyFieldName))).thenReturn("dependency_1");
         when(descriptionMock.getValue(same(nameFieldName))).thenReturn("name_1");
-        when(Keys.getOrAdd("dependency_1")).thenReturn(dependencyKey);
+        when(Keys.resolveByName("dependency_1")).thenReturn(dependencyKey);
         when(IOC.resolve(same(dependencyKey), same(descriptionMock))).thenReturn(notReceiverMock);
         when(IOC.resolve(same(routeFromObjectNameKey), eq("name_1"))).thenReturn("route_1");
 
@@ -116,7 +114,7 @@ public class RawObjectCreatorTest {
 
         when(descriptionMock.getValue(same(dependencyFieldName))).thenReturn("dependency_1");
         when(descriptionMock.getValue(same(nameFieldName))).thenReturn("name_1");
-        when(Keys.getOrAdd("dependency_1")).thenReturn(dependencyKey);
+        when(Keys.resolveByName("dependency_1")).thenReturn(dependencyKey);
         when(IOC.resolve(any(), any())).thenThrow(ResolutionException.class);
 
         creator.createObject(routerMock, descriptionMock);

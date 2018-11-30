@@ -1,11 +1,11 @@
 package info.smart_tools.smartactors.ioc.iioccontainer;
 
 
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 
 /**
  * Interface of IOC
@@ -22,7 +22,14 @@ public interface IContainer {
      * Return specific instance of {@link IKey} for resolve dependencies from key storage
      * @return instance of {@link IKey}
      */
+    @Deprecated
     IKey getKeyForKeyStorage();
+
+    /**
+     * Return specific instance of {@link IKey} for strategy of resolving key by name
+     * @return instance of {@link IKey}
+     */
+    IKey getKeyForKeyByNameResolutionStrategy();
 
     /**
      * Resolve dependency by given given {@link IKey} instance and args

@@ -1,12 +1,12 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_iobject_strategies;
 
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,9 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({IOC.class, Keys.class})
@@ -44,7 +42,7 @@ public class MapToIObjectResolveDependencyStrategyTest {
     public void ShouldCorrectConvertMapToIObject() throws Exception {
 
         IKey key = mock(IKey.class);
-        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(key);
+        when(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(key);
 
         IFieldName fieldName1 = mock(IFieldName.class);
         IFieldName fieldName2 = mock(IFieldName.class);

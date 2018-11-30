@@ -1,18 +1,18 @@
 package info.smart_tools.smartactors.field_plugins.ifield_plugin;
 
-import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.field.field.Field;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.field.field.Field;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,16 +25,9 @@ import java.util.function.Function;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyNew;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 @PrepareForTest({IOC.class, Keys.class, ResolveByNameIocStrategy.class, IFieldPlugin.class, IFieldName.class, Function.class})
 @RunWith(PowerMockRunner.class)
@@ -75,9 +68,9 @@ public class IFieldPluginTest {
         verify(bootstrap).add(item);
 
         IKey iFieldKey = mock(IKey.class);
-        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(iFieldKey);
+        when(Keys.resolveByName(IField.class.getCanonicalName())).thenReturn(iFieldKey);
         IKey iFieldNameKey = mock(IKey.class);
-        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(iFieldNameKey);
+        when(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(iFieldNameKey);
 
         IFieldName fieldName = mock(IFieldName.class);
         when(IOC.resolve(eq(iFieldNameKey), anyString())).thenReturn(fieldName);
@@ -88,7 +81,7 @@ public class IFieldPluginTest {
         iPoorActionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(IField.class.getCanonicalName());
+        Keys.resolveByName(IField.class.getCanonicalName());
 
         verifyStatic();
         IOC.register(eq(iFieldKey), resolveByNameIocStrategyArgumentCaptor.capture());
@@ -140,7 +133,7 @@ public class IFieldPluginTest {
 
         verify(bootstrap).add(item);
 
-        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenThrow(new ResolutionException(""));
+        when(Keys.resolveByName(IField.class.getCanonicalName())).thenThrow(new ResolutionException(""));
 
         try {
             iPoorActionArgumentCaptor.getValue().execute();
@@ -148,7 +141,7 @@ public class IFieldPluginTest {
         } catch (ActionExecuteException e) {
 
             verifyStatic();
-            Keys.getOrAdd(IField.class.getCanonicalName());
+            Keys.resolveByName(IField.class.getCanonicalName());
         }
     }
 
@@ -173,9 +166,9 @@ public class IFieldPluginTest {
         verify(bootstrap).add(item);
 
         IKey iFieldNameKey = mock(IKey.class);
-        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(iFieldNameKey);
+        when(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(iFieldNameKey);
         IKey iFieldKey = mock(IKey.class);
-        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(iFieldKey);
+        when(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(iFieldKey);
 
         whenNew(ResolveByNameIocStrategy.class).withArguments(any()).thenThrow(new InvalidArgumentException(""));
 
@@ -184,7 +177,7 @@ public class IFieldPluginTest {
         } catch (ActionExecuteException e) {
 
             verifyStatic();
-            Keys.getOrAdd(IField.class.getCanonicalName());
+            Keys.resolveByName(IField.class.getCanonicalName());
 
             verifyNew(ResolveByNameIocStrategy.class).withArguments(any());
             return;

@@ -1,20 +1,20 @@
 package info.smart_tools.smartactors.iobject_plugins.iobject_simple_impl_plugin;
 
-import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.iobject.iobject_simple_implementation.IObjectImpl;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.iobject.iobject_simple_implementation.IObjectImpl;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 /**
  *
@@ -39,7 +39,7 @@ public class IObjectSimpleImplPlugin implements IPlugin {
                 .after("IOC")
                 .process(() -> {
                     try {
-                        IKey fieldKey = Keys.getOrAdd(IObjectImpl.class.getCanonicalName());
+                        IKey fieldKey = Keys.resolveByName(IObjectImpl.class.getCanonicalName());
                         IOC.register(fieldKey, new CreateNewInstanceStrategy(
                                 (args) -> new IObjectImpl()
                         ));
@@ -57,9 +57,9 @@ public class IObjectSimpleImplPlugin implements IPlugin {
 
                     try {
                         keyName = IObjectImpl.class.getCanonicalName();
-                        IOC.remove(Keys.getOrAdd(keyName));
+                        IOC.remove(Keys.resolveByName(keyName));
                     } catch(DeletionException e) {
-                        System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                     } catch (ResolutionException e) { }
                 });
             bootstrap.add(item);

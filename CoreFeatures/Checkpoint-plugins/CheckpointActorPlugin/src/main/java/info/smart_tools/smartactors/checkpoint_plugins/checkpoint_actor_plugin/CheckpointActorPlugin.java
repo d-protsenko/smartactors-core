@@ -15,7 +15,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerService;
 
 /**
@@ -41,7 +41,7 @@ public class CheckpointActorPlugin extends BootstrapPlugin {
     @Item("checkpoint_actor")
     public void registerCheckpointActorStub()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("checkpoint actor"), new ApplyFunctionToArgumentsStrategy(a -> {
+        IOC.register(Keys.resolveByName("checkpoint actor"), new ApplyFunctionToArgumentsStrategy(a -> {
             try {
                 return new CheckpointActor((IObject) a[0]);
             } catch (Exception e) {
@@ -61,7 +61,7 @@ public class CheckpointActorPlugin extends BootstrapPlugin {
     @Before({"checkpoint_actor"})
     public void registerSchedulerAction()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("checkpoint scheduler action"),
+        IOC.register(Keys.resolveByName("checkpoint scheduler action"),
                 new SingletonStrategy(new CheckpointSchedulerAction()));
     }
 
@@ -80,7 +80,7 @@ public class CheckpointActorPlugin extends BootstrapPlugin {
     @Before({"checkpoint_actor"})
     public void registerDefaultFailureAction()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("checkpoint failure action"),
+        IOC.register(Keys.resolveByName("checkpoint failure action"),
                 new SingletonStrategy((IAction<IObject>) msg -> {
                     try {
                         String msgString = msg.serialize();
@@ -104,7 +104,7 @@ public class CheckpointActorPlugin extends BootstrapPlugin {
     })
     public void registerDefaultActivationAction()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("scheduler service activation action for checkpoint actor"),
+        IOC.register(Keys.resolveByName("scheduler service activation action for checkpoint actor"),
                 new SingletonStrategy((IAction<ISchedulerService>) service -> { }));
     }
 }

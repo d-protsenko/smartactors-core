@@ -9,7 +9,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 
 /**
@@ -35,7 +35,7 @@ public class PluginDebuggerSequence extends BootstrapPlugin {
     @Item("debugger:sequence")
     public void registerSequence()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("new debugger sequence"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.resolveByName("new debugger sequence"), new ApplyFunctionToArgumentsStrategy(args -> {
             IMessageProcessingSequence innerSeq = (IMessageProcessingSequence) args[0];
             Object debuggerAddress = args[1];
 

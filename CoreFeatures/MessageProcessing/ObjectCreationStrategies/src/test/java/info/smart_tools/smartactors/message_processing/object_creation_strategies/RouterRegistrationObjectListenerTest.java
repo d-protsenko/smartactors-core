@@ -3,12 +3,11 @@ package info.smart_tools.smartactors.message_processing.object_creation_strategi
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
-import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
@@ -19,7 +18,6 @@ import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginSc
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -46,7 +44,7 @@ public class RouterRegistrationObjectListenerTest extends PluginsLoadingTestBase
 
         when(routerStrategy.resolve()).thenReturn(routerMock);
 
-        IOC.register(Keys.getOrAdd(IRouter.class.getCanonicalName()), routerStrategy);
+        IOC.register(Keys.resolveByName(IRouter.class.getCanonicalName()), routerStrategy);
 
         receiverMocks = new IMessageReceiver[] {
             mock(IMessageReceiver.class),

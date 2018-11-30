@@ -6,7 +6,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryFilter;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerEntryFilterException;
@@ -24,7 +24,7 @@ public class SchedulerPreShutdownModeEntryFilter implements ISchedulerEntryFilte
      */
     public SchedulerPreShutdownModeEntryFilter()
             throws ResolutionException {
-        preShutdownExecFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "preShutdownExec");
+        preShutdownExecFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "preShutdownExec");
     }
 
     @Override

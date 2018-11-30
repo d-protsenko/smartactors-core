@@ -8,18 +8,13 @@ import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObje
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
-import info.smart_tools.smartactors.scheduler.interfaces.ISchedulingStrategy;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Duration;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.*;
 
 /**
  * Test for {@link CheckpointRepeatStrategy}.

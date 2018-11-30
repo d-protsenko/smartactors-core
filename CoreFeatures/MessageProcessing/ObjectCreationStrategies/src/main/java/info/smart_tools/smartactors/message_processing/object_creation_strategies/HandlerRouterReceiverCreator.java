@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.IReceiverObjectCreator;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.exeptions.InvalidReceiverPipelineException;
@@ -70,7 +70,7 @@ public class HandlerRouterReceiverCreator extends BasicIntermediateReceiverObjec
     public void endItems()
             throws ReceiverObjectListenerException, InvalidReceiverPipelineException {
         try {
-            IMessageReceiver resultingReceiver = IOC.resolve(Keys.getOrAdd("create handler router receiver"), handlersMap);
+            IMessageReceiver resultingReceiver = IOC.resolve(Keys.resolveByName("create handler router receiver"), handlersMap);
 
             getListener().acceptItem(null, resultingReceiver);
             getListener().endItems();

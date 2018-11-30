@@ -1,16 +1,16 @@
 package info.smart_tools.smartactors.message_processing_plugins.standard_object_creators_plugin;
 
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.iroutable_object_creator.IRoutedObjectCreator;
 import info.smart_tools.smartactors.message_processing_interfaces.iroutable_object_creator.exceptions.ObjectCreationException;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 /**
  * Implementation of {@link IRoutedObjectCreator} that creates receiver of some class define in configuration.
@@ -35,8 +35,8 @@ public class RawObjectCreator implements IRoutedObjectCreator {
      */
     public RawObjectCreator()
             throws ResolutionException {
-        dependencyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
-        nameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+        dependencyFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
+        nameFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
     }
 
     @Override
@@ -51,8 +51,8 @@ public class RawObjectCreator implements IRoutedObjectCreator {
         }
 
         try {
-            Object address = IOC.resolve(Keys.getOrAdd("route_from_object_name"), description.getValue(nameFieldName));
-            Object receiver = IOC.resolve(Keys.getOrAdd(String.valueOf(description.getValue(dependencyFieldName))), description);
+            Object address = IOC.resolve(Keys.resolveByName("route_from_object_name"), description.getValue(nameFieldName));
+            Object receiver = IOC.resolve(Keys.resolveByName(String.valueOf(description.getValue(dependencyFieldName))), description);
 
             if (!(receiver instanceof IMessageReceiver)) {
                 throw new ObjectCreationException("Resolved dependency does not implement receiver interface.");

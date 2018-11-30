@@ -7,20 +7,13 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.scheduler.actor.impl.utils.QuickLock;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerAction;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulingStrategy;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryNotFoundException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryPauseException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerActionExecutionException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerActionInitializationException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulerEntryFilterException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulingStrategyExecutionException;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.*;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.timer.interfaces.itimer.ITimerTask;
@@ -70,7 +63,7 @@ public final class EntryImpl implements ISchedulerEntry {
             final ISchedulerAction action,
             final boolean isSavedRemotely)
                 throws ResolutionException, ReadValueException, InvalidArgumentException {
-        IFieldName idFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "entryId");
+        IFieldName idFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "entryId");
 
         this.storage = storage;
         this.state = state;
@@ -105,10 +98,10 @@ public final class EntryImpl implements ISchedulerEntry {
     public static EntryImpl newEntry(final IObject args, final ISchedulerEntryStorage storage)
             throws ResolutionException, ReadValueException, ChangeValueException, InvalidArgumentException,
             SchedulingStrategyExecutionException, SchedulerActionInitializationException {
-        IFieldName idFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "entryId");
-        IFieldName actionFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "action");
-        IFieldName strategyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "strategy");
-        IFieldName schedulingFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "scheduling");
+        IFieldName idFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "entryId");
+        IFieldName actionFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "action");
+        IFieldName strategyFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "strategy");
+        IFieldName schedulingFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "scheduling");
 
         IObject schedulingArguments = (IObject) args.getValue(schedulingFieldName);
         IObject state = args;
@@ -118,12 +111,12 @@ public final class EntryImpl implements ISchedulerEntry {
         } else {
             // If arguments contain "scheduling" field then object contained in that field will be used to initialize scheduling strategy
             // and the new IObject will be created for entry state. The object contained in "scheduling" field will be read-only.
-            state = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            state = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
         }
 
         // Resolve strategy and save it's key to entry state
         String strategyKeyName = (String) schedulingArguments.getValue(strategyFieldName);
-        ISchedulingStrategy strategy = IOC.resolve(Keys.getOrAdd(strategyKeyName));
+        ISchedulingStrategy strategy = IOC.resolve(Keys.resolveByName(strategyKeyName));
         state.setValue(strategyFieldName, strategyKeyName);
 
         // Generate entry id
@@ -137,7 +130,7 @@ public final class EntryImpl implements ISchedulerEntry {
             actionKeyName = DEFAULT_ACTION_KEY_NAME;
         }
 
-        ISchedulerAction action = IOC.resolve(Keys.getOrAdd(actionKeyName.toString()));
+        ISchedulerAction action = IOC.resolve(Keys.resolveByName(actionKeyName.toString()));
 
         state.setValue(actionFieldName, actionKeyName);
 
@@ -173,10 +166,10 @@ public final class EntryImpl implements ISchedulerEntry {
     public static EntryImpl restoreEntry(final IObject savedState, final ISchedulerEntryStorage storage)
             throws ResolutionException, ReadValueException, InvalidArgumentException,
             SchedulingStrategyExecutionException {
-        IFieldName strategyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "strategy");
-        IFieldName actionFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "action");
+        IFieldName strategyFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "strategy");
+        IFieldName actionFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "action");
 
-        ISchedulingStrategy strategy = IOC.resolve(Keys.getOrAdd((String) savedState.getValue(strategyFieldName)));
+        ISchedulingStrategy strategy = IOC.resolve(Keys.resolveByName((String) savedState.getValue(strategyFieldName)));
 
         Object actionKey = savedState.getValue(actionFieldName);
 
@@ -184,7 +177,7 @@ public final class EntryImpl implements ISchedulerEntry {
             actionKey = DEFAULT_ACTION_KEY_NAME;
         }
 
-        ISchedulerAction action = IOC.resolve(Keys.getOrAdd(actionKey.toString()));
+        ISchedulerAction action = IOC.resolve(Keys.resolveByName(actionKey.toString()));
 
         EntryImpl entry = new EntryImpl(
                 savedState,

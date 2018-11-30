@@ -1,7 +1,5 @@
 package info.smart_tools.smartactors.core.proof_of_assumption;
 
-import org.junit.Test;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

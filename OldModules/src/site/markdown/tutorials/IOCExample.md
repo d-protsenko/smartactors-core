@@ -20,13 +20,13 @@ The simplest way is to use the `new` operator.
     
 However, the recommended way to get the key is to resolve it with IOC.
 
-    IKey resolveKey = IOC.resolve(IOC.getKeyForKeyStorage(), "sample");
+    IKey resolveKey = IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "sample");
 
-`IOC.getKeyForKeyStorage()` produces the key to get the key.
+`IOC.getKeyForKeyByNameResolutionStrategy()` produces the key to get the key.
     
-This magic is hidden in `Keys` class, so it's necessary just to call `Keys.getOrAdd()`.
+This magic is hidden in `Keys` class, so it's necessary just to call `Keys.resolveByName()`.
 
-    IKey key = Keys.getOrAdd("sample");
+    IKey key = Keys.resolveByName("sample");
     
 ## Initialization
 
@@ -38,7 +38,7 @@ So this initialization code is required (usually it's already called by the serv
     IScope scope = ScopeProvider.getScope(scopeKey);
     ScopeProvider.setCurrentScope(scope);
     scope.setValue(IOC.getIocKey(), new StrategyContainer());
-    IOC.register(IOC.getKeyForKeyStorage(), new ResolveByNameIocStrategy(
+    IOC.register(IOC.getKeyForKeyByNameResolutionStrategy(), new ResolveByNameIocStrategy(
             (a) -> {
                 try {
                     return new Key((String) a[0]);
@@ -55,7 +55,7 @@ The [`ResolveByNameIocStrategy`](../apidocs/info/smart_tools/smartactors/core/re
 When you have a key, you can register the resolving strategy.
 For example, [`SingletonStrategy`](../apidocs/info/smart_tools/smartactors/core/singleton_strategy/SingletonStrategy.html):
 
-    IKey key = Keys.getOrAdd("singleton");
+    IKey key = Keys.resolveByName("singleton");
     SampleClass sampleObject = new SampleClass("singleton");
     IOC.register(key, new SingletonStrategy(sampleObject));
     
@@ -71,7 +71,7 @@ Both these variables point to the same object.
 The [`CreateNewInstanceStrategy`](../apidocs/info/smart_tools/smartactors/core/create_new_instance_strategy/CreateNewInstanceStrategy.html) creates a new object for each call to `resolve()`.
 You should define a [lambda expression](https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html) to create your objects and pass it to the strategy constructor.
  
-    IKey key = Keys.getOrAdd("new");
+    IKey key = Keys.resolveByName("new");
     IOC.register(key, new CreateNewInstanceStrategy(
             (args) -> new SampleClass((String) args[0])));
             

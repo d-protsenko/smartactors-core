@@ -11,7 +11,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 public final class TestPostgresConnectionPoolPlugin extends BootstrapPlugin {
     protected TestPostgresConnectionPoolPlugin(IBootstrap bootstrap) {
@@ -22,7 +22,7 @@ public final class TestPostgresConnectionPoolPlugin extends BootstrapPlugin {
     @After({})
     @Before("")
     public void register() throws ResolutionException, InvalidArgumentException, RegistrationException {
-        IOC.register(Keys.getOrAdd("PostgresConnectionPool"), new ApplyFunctionToArgumentsStrategy(args -> new IPool() {
+        IOC.register(Keys.resolveByName("PostgresConnectionPool"), new ApplyFunctionToArgumentsStrategy(args -> new IPool() {
             @Override
             public Object take() throws PoolTakeException {
                 return null;

@@ -1,19 +1,19 @@
 package info.smart_tools.smartactors.database.cached_collection.task;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.database.cached_collection.exception.CreateCachedCollectionTaskException;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.exception.TaskPrepareException;
+import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.field.nested_field.NestedField;
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -38,10 +38,10 @@ public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
     public UpsertIntoCachedCollectionTask(final IStorageConnection connection) throws CreateCachedCollectionTaskException {
         this.connection = connection;
         try {
-            this.formatter = IOC.resolve(Keys.getOrAdd("datetime_formatter"));
-            this.startDateTimeField = IOC.resolve(Keys.getOrAdd(NestedField.class.getCanonicalName()), "document/startDateTime");
-            this.collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
-            this.documentField  = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document");
+            this.formatter = IOC.resolve(Keys.resolveByName("datetime_formatter"));
+            this.startDateTimeField = IOC.resolve(Keys.resolveByName(NestedField.class.getCanonicalName()), "document/startDateTime");
+            this.collectionNameField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "collectionName");
+            this.documentField  = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "document");
         } catch (ResolutionException e) {
             throw new CreateCachedCollectionTaskException("Can't create UpsertIntoCachedCollectionTask.", e);
         }
@@ -68,7 +68,7 @@ public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
                 startDateTimeField.out(query, LocalDateTime.now().format(formatter));
             }
             upsertTask = IOC.resolve(
-                Keys.getOrAdd("db.collection.upsert"),
+                Keys.resolveByName("db.collection.upsert"),
                 connection,
                 collectionNameField.in(query),
                 documentField.in(query)

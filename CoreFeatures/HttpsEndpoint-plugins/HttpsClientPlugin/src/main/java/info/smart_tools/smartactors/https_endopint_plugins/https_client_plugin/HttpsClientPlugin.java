@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.core.https_endpoint.https_client.HttpsClient;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
@@ -16,8 +17,8 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.http_endpoint.http_request_maker.HttpRequestMaker;
 import info.smart_tools.smartactors.http_endpoint.http_client_initializer.HttpClientInitializer;
+import info.smart_tools.smartactors.http_endpoint.http_request_maker.HttpRequestMaker;
 import info.smart_tools.smartactors.http_endpoint.http_response_deserialization_strategy.HttpResponseDeserializationStrategy;
 import info.smart_tools.smartactors.http_endpoint.http_response_handler.HttpResponseHandler;
 import info.smart_tools.smartactors.http_endpoint.message_to_bytes_mapper.MessageToBytesMapper;
@@ -28,7 +29,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
@@ -71,7 +72,7 @@ public class HttpsClientPlugin implements IPlugin {
                             () -> {
                                 try {
                                     registerFieldNames();
-                                    IOC.register(Keys.getOrAdd(URI.class.getCanonicalName()), new CreateNewInstanceStrategy(
+                                    IOC.register(Keys.resolveByName(URI.class.getCanonicalName()), new CreateNewInstanceStrategy(
                                                     (args) -> {
                                                         try {
                                                             return new URI((String) args[0]);
@@ -85,26 +86,27 @@ public class HttpsClientPlugin implements IPlugin {
 
                                     IDeserializeStrategy deserializeStrategy = new HttpResponseDeserializationStrategy(messageMapper);
 
-                                    IOC.register(Keys.getOrAdd("httpResponseResolver"), new SingletonStrategy(
+                                    IOC.register(Keys.resolveByName("httpResponseResolver"), new SingletonStrategy(
                                                     deserializeStrategy
                                             )
                                     );
 
-                                    IOC.register(Keys.getOrAdd("EmptyIObject"), new CreateNewInstanceStrategy(
+                                    IOC.register(Keys.resolveByName("EmptyIObject"), new CreateNewInstanceStrategy(
                                                     (args) -> new DSObject()
                                             )
                                     );
-                                    IOC.register(Keys.getOrAdd(IResponseHandler.class.getCanonicalName()), new CreateNewInstanceStrategy(
+                                    IOC.register(Keys.resolveByName(IResponseHandler.class.getCanonicalName()), new CreateNewInstanceStrategy(
                                                     (args) -> {
                                                         try {
-                                                            IObject configuration = IOC.resolve(Keys.getOrAdd("responseHandlerConfiguration"));
+                                                            IObject configuration = IOC.resolve(Keys.resolveByName("responseHandlerConfiguration"));
                                                             IObject request = (IObject) args[0];
                                                             IResponseHandler responseHandler = new HttpResponseHandler(
                                                                     (IQueue<ITask>) configuration.getValue(queueFieldName),
                                                                     (Integer) configuration.getValue(stackDepthFieldName),
                                                                     request.getValue(startChainNameFieldName),
                                                                     request,
-                                                                    ScopeProvider.getCurrentScope()
+                                                                    ScopeProvider.getCurrentScope(),
+                                                                    ModuleManager.getCurrentModule()
                                                             );
                                                             return responseHandler;
                                                         } catch (ResponseHandlerException | ResolutionException |
@@ -116,24 +118,24 @@ public class HttpsClientPlugin implements IPlugin {
                                             )
                                     );
                                     IRequestMaker<FullHttpRequest> requestMaker = new HttpRequestMaker();
-                                    IOC.register(Keys.getOrAdd(IRequestMaker.class.getCanonicalName()), new SingletonStrategy(
+                                    IOC.register(Keys.resolveByName(IRequestMaker.class.getCanonicalName()), new SingletonStrategy(
                                                     requestMaker
                                             )
                                     );
-                                    IOC.register(Keys.getOrAdd(MessageToBytesMapper.class.getCanonicalName()),
+                                    IOC.register(Keys.resolveByName(MessageToBytesMapper.class.getCanonicalName()),
                                             new SingletonStrategy(
                                                     messageMapper
                                             )
                                     );
 
-                                    IOC.register(Keys.getOrAdd("sendHttpsRequest"), new ApplyFunctionToArgumentsStrategy(
+                                    IOC.register(Keys.resolveByName("sendHttpsRequest"), new ApplyFunctionToArgumentsStrategy(
                                                     (args) -> {
                                                         try {
                                                             HttpsClient client = (HttpsClient) args[0];
                                                             IObject request = (IObject) args[1];
                                                             client.sendRequest(request);
                                                             IOC.resolve(
-                                                                    Keys.getOrAdd("createTimerOnRequest"),
+                                                                    Keys.resolveByName("createTimerOnRequest"),
                                                                     request,
                                                                     request.getValue(exceptionalMessageMapId)
                                                             );
@@ -145,12 +147,12 @@ public class HttpsClientPlugin implements IPlugin {
                                             )
                                     );
 
-                                    IOC.register(Keys.getOrAdd("getHttpsClient"), new ApplyFunctionToArgumentsStrategy(
+                                    IOC.register(Keys.resolveByName("getHttpsClient"), new ApplyFunctionToArgumentsStrategy(
                                                     (args) -> {
                                                         IObject request = (IObject) args[0];
                                                         try {
                                                             IResponseHandler responseHandler = IOC.resolve(
-                                                                    Keys.getOrAdd(IResponseHandler.class.getCanonicalName()),
+                                                                    Keys.resolveByName(IResponseHandler.class.getCanonicalName()),
                                                                     request
                                                             );
                                                             HttpsClient client =
@@ -181,10 +183,10 @@ public class HttpsClientPlugin implements IPlugin {
     }
 
     private void registerFieldNames() throws ResolutionException {
-        this.uriFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uri");
-        this.startChainNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "startChain");
-        this.queueFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "queue");
-        this.stackDepthFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "stackDepth");
-        this.exceptionalMessageMapId = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "exceptionalMessageMapId");
+        this.uriFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uri");
+        this.startChainNameFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "startChain");
+        this.queueFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "queue");
+        this.stackDepthFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "stackDepth");
+        this.exceptionalMessageMapId = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "exceptionalMessageMapId");
     }
 }

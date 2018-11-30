@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader_visitor.IPluginLoaderVisitor;
@@ -12,9 +13,9 @@ import info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_ja
 import info.smart_tools.smartactors.feature_loading_system.plugin_loader_visitor_empty_implementation.PluginLoaderVisitor;
 import info.smart_tools.smartactors.feature_management.after_features_callback_storage.AfterFeaturesCallbackStorage;
 import info.smart_tools.smartactors.feature_management.all_in_direcory_feature_tracker.AllInDirectoryFeatureTracker;
-import info.smart_tools.smartactors.feature_management.directory_watcher_actor.exception.WatchingServiceException;
-import info.smart_tools.smartactors.feature_management.directory_watcher_actor.wrapper.StopWatchingWrapper;
+import info.smart_tools.smartactors.feature_management.directory_watcher_actor.RuntimeDirectoryFeatureTracker;
 import info.smart_tools.smartactors.feature_management.download_feature_actor.DownloadFeatureActor;
+import info.smart_tools.smartactors.feature_management.feature_creator_actor.FeaturesCreatorActor;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.FeatureManagerActor;
 import info.smart_tools.smartactors.feature_management.load_feature_actor.LoadFeatureActor;
 import info.smart_tools.smartactors.feature_management.unzip_feature_actor.UnzipFeatureActor;
@@ -24,10 +25,8 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionExceptio
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
-import info.smart_tools.smartactors.feature_management.feature_creator_actor.FeaturesCreatorActor;
-import info.smart_tools.smartactors.feature_management.directory_watcher_actor.RuntimeDirectoryFeatureTracker;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 
 import java.util.ArrayList;
 
@@ -58,22 +57,22 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
     public void register()
             throws ResolutionException, RegistrationException, InvalidArgumentException, ChainNotFoundException, ChangeValueException {
 
-        IOC.register(Keys.getOrAdd("plugin creator"), new SingletonStrategy(new PluginCreator()));
-        IOC.register(Keys.getOrAdd("plugin loader visitor"), new SingletonStrategy(new PluginLoaderVisitor<String>()));
-        IOC.register(Keys.getOrAdd("plugin loader"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.resolveByName("plugin creator"), new SingletonStrategy(new PluginCreator()));
+        IOC.register(Keys.resolveByName("plugin loader visitor"), new SingletonStrategy(new PluginLoaderVisitor<String>()));
+        IOC.register(Keys.resolveByName("plugin loader"), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
                 return new PluginLoader(
-                        getClass().getClassLoader(), (IAction<Class>) args[0], (IPluginLoaderVisitor) args[1]);
+                        (ISmartactorsClassLoader) args[0], (IAction<Class>) args[1], (IPluginLoaderVisitor) args[2]);
             } catch (InvalidArgumentException e) {
                 throw new RuntimeException(e);
             }
         }));
 
-        IOC.register(Keys.getOrAdd("feature-repositories"), new SingletonStrategy(
+        IOC.register(Keys.resolveByName("feature-repositories"), new SingletonStrategy(
                 new ArrayList<IObject>()
         ));
 
-        IOC.register(Keys.getOrAdd("FeatureManager"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.resolveByName("FeatureManager"), new ApplyFunctionToArgumentsStrategy(
                 (args) -> {
                     try {
                         return new FeatureManagerActor();
@@ -82,12 +81,12 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
                     }
                 }));
         IOC.register(
-                Keys.getOrAdd("feature group load completion task queue"),
+                Keys.resolveByName("feature group load completion task queue"),
                 new ApplyFunctionToArgumentsStrategy(
-                        args -> AfterFeaturesCallbackStorage.getLocaleCallbackQueue()
+                        args -> AfterFeaturesCallbackStorage.getLocalCallbackQueue()
                 )
         );
-        IOC.register(Keys.getOrAdd("DownloadFeatureActor"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.resolveByName("DownloadFeatureActor"), new ApplyFunctionToArgumentsStrategy(
                 (args) -> {
                     try {
                         return new DownloadFeatureActor();
@@ -95,7 +94,7 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
                         throw new RuntimeException(e);
                     }
                 }));
-        IOC.register(Keys.getOrAdd("UnzipFeatureActor"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.resolveByName("UnzipFeatureActor"), new ApplyFunctionToArgumentsStrategy(
                 (args) -> {
                     try {
                         return new UnzipFeatureActor();
@@ -103,7 +102,7 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
                         throw new RuntimeException(e);
                     }
                 }));
-        IOC.register(Keys.getOrAdd("LoadFeatureActor"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.resolveByName("LoadFeatureActor"), new ApplyFunctionToArgumentsStrategy(
                 (args) -> {
                     try {
                         return new LoadFeatureActor();
@@ -111,7 +110,7 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
                         throw new RuntimeException(e);
                     }
                 }));
-        IOC.register(Keys.getOrAdd("AllInDirectoryFeatureTracker"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.resolveByName("AllInDirectoryFeatureTracker"), new ApplyFunctionToArgumentsStrategy(
                 (args) -> {
                     try {
                         return new AllInDirectoryFeatureTracker();
@@ -119,7 +118,7 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
                         throw new RuntimeException(e);
                     }
                 }));
-        IOC.register(Keys.getOrAdd("DirectoryWatcherActor"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.resolveByName("DirectoryWatcherActor"), new ApplyFunctionToArgumentsStrategy(
                 (args) -> {
                     try {
                         return new RuntimeDirectoryFeatureTracker();
@@ -128,7 +127,7 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
                     }
                 })
         );
-        IOC.register(Keys.getOrAdd("FeatureCreatorActor"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.resolveByName("FeatureCreatorActor"), new ApplyFunctionToArgumentsStrategy(
                 (args) -> {
                     try {
                         return new FeaturesCreatorActor();
@@ -146,14 +145,14 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
 
         try {
             keyName = "FeatureCreatorActor";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "DirectoryWatcherActor";
-            RuntimeDirectoryFeatureTracker runtimeDirectoryFeatureTracker = IOC.resolve(Keys.getOrAdd(keyName));
+            RuntimeDirectoryFeatureTracker runtimeDirectoryFeatureTracker = IOC.resolve(Keys.resolveByName(keyName));
             runtimeDirectoryFeatureTracker.stopService(null);
         } catch(Throwable e) {
             System.out.println("[WARNING] \""+keyName+"\" stopping has failed while reverting \""+itemName+"\" plugin.");
@@ -161,72 +160,72 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
 
         try {
             keyName = "DirectoryWatcherActor";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "LoadFeatureActor";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "UnzipFeatureActor";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "DownloadFeatureActor";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "feature group load completion task queue";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "FeatureManager";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "feature-repositories";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "plugin loader";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "plugin loader visitor";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "plugin creator";
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
     }
 }

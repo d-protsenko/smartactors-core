@@ -3,13 +3,13 @@ package info.smart_tools.smartactors.actors.validate_form_data;
 import info.smart_tools.smartactors.actors.validate_form_data.exception.ValidateFormException;
 import info.smart_tools.smartactors.actors.validate_form_data.parser.Parser;
 import info.smart_tools.smartactors.actors.validate_form_data.wrapper.ValidateFormDataMessage;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.field.field.Field;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.field.field.Field;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 import java.util.Iterator;
 import java.util.List;
@@ -29,8 +29,8 @@ public class ValidateFormDataActor {
      */
     public ValidateFormDataActor(final IObject params) throws InvalidArgumentException {
         try {
-            validationRulesF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "validationRules");
-            ruleF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "rule");
+            validationRulesF = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "validationRules");
+            ruleF = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "rule");
 
         } catch (Exception e) {
             throw new InvalidArgumentException(e);
@@ -47,7 +47,7 @@ public class ValidateFormDataActor {
             IObject formFields = message.getForm();
             IObject clientData = message.getFormFromRequest();
 
-            IObject resultObject = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject resultObject = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             Iterator<Map.Entry<IFieldName, Object>> fieldsIterator = formFields.iterator();
             Map.Entry<IFieldName, Object> entry = fieldsIterator.next();

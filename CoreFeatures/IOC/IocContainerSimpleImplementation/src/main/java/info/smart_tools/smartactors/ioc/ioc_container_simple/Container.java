@@ -24,7 +24,7 @@ public class Container implements IContainer {
 
     private final Map<IKey, IResolveDependencyStrategy> storage = new ConcurrentHashMap<>();
 
-    private final IKey keyForKeyStorage;
+    private final IKey keyForKeyByNameResolveStrategy;
 
     /**
      * The constructor.
@@ -33,7 +33,7 @@ public class Container implements IContainer {
      */
     public Container()
             throws InvalidArgumentException {
-        keyForKeyStorage = new Key(UUID.randomUUID().toString());
+        keyForKeyByNameResolveStrategy = new Key(UUID.randomUUID().toString());
     }
 
     /**
@@ -48,12 +48,21 @@ public class Container implements IContainer {
 
     /**
      * Return specific instance of {@link IKey} for resolve dependencies from key storage
-     *
      * @return instance of {@link IKey}
      */
     @Override
+    @Deprecated
     public IKey getKeyForKeyStorage() {
-        return keyForKeyStorage;
+        return keyForKeyByNameResolveStrategy;
+    }
+
+    /**
+     * Return specific instance of {@link IKey} for strategy of resolving key by name
+     * @return instance of {@link IKey}
+     */
+    @Override
+    public IKey getKeyForKeyByNameResolutionStrategy() {
+        return keyForKeyByNameResolveStrategy;
     }
 
     /**
@@ -80,7 +89,7 @@ public class Container implements IContainer {
         try {
             return (T) strategy.resolve(args);
         } catch (Exception e) {
-            throw new ResolutionException("Resolution of dependency failed for key " + key, e);
+            throw new ResolutionException("Resolution of dependency failed for key '" + key + "'.", e);
         }
     }
 

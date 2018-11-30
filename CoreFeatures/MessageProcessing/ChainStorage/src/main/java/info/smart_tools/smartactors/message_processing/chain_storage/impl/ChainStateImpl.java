@@ -6,7 +6,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing.chain_storage.interfaces.IChainState;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainModificationException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
@@ -60,13 +60,13 @@ public class ChainStateImpl implements IChainState {
         this.current = initial;
         this.modifications.put(initial, new Modification(null, initial));
 
-        modificationFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "modification");
+        modificationFN = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "modification");
     }
 
     private IReceiverChain applyModification(final IReceiverChain chain, final IObject modification)
             throws ResolutionException, ReadValueException, InvalidArgumentException {
         return IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), modification.getValue(modificationFN)),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), modification.getValue(modificationFN)),
                 chain, modification
         );
     }

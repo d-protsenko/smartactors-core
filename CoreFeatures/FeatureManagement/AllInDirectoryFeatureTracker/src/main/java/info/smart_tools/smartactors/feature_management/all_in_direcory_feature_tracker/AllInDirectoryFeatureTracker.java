@@ -9,18 +9,13 @@ import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Actor that scans specific directory,
@@ -30,6 +25,7 @@ import java.util.Set;
 public class AllInDirectoryFeatureTracker {
 
     private final IFieldName featureNameFN;
+    private final IFieldName featureVersionFN;
     private final IFieldName afterFeaturesFN;
     private final IFieldName repositoriesFN;
     private final IFieldName featuresFN;
@@ -49,8 +45,10 @@ public class AllInDirectoryFeatureTracker {
     //TODO: this parameters would be took out into the config.json as actor arguments
     private final static String FEATURE_LIST_FILE_NAME = "features.json";
     private final static String DEF_PACKAGE_TYPE = "jar";
-    private final static String FEATURE_VERSION_PATTERN = "-\\d+\\.\\d+\\.\\d+";
+    private final static String FILENAME_VERSION_PATTERN = "-\\d+\\.\\d+\\.\\d+";
+    private final static String FEATURE_VERSION_PATTERN = "\\d+\\.\\d+\\.\\d+";
     private final static List<String> FILE_TYPE_LIST = Arrays.asList("zip", "jar");
+    private final static String FEATURE_NAME_DELIMITER = ":";
 
     /**
      * Default constructor
@@ -59,14 +57,15 @@ public class AllInDirectoryFeatureTracker {
      */
     public AllInDirectoryFeatureTracker()
             throws ResolutionException {
-        this.featureNameFN =   IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "featureName");
-        this.afterFeaturesFN = IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "afterFeatures");
-        this.repositoriesFN =  IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "repositories");
-        this.featuresFN =      IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "features");
-        this.nameFN =          IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "name");
-        this.groupFN =         IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "group");
-        this.versionFN =       IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "version");
-        this.packageTypeFN =   IOC.resolve(Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), "packageType");
+        this.featureNameFN =    IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "featureName");
+        this.featureVersionFN = IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "featureVersion");
+        this.afterFeaturesFN =  IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "afterFeatures");
+        this.repositoriesFN =   IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "repositories");
+        this.featuresFN =       IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "features");
+        this.nameFN =           IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "name");
+        this.groupFN =          IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "group");
+        this.versionFN =        IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "version");
+        this.packageTypeFN =    IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "packageType");
     }
 
     /**
@@ -114,27 +113,46 @@ public class AllInDirectoryFeatureTracker {
         }
 
         IObject jsonConfig = IOC.resolve(
-                Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME),
+                Keys.resolveByName(IOBJECT_FACTORY_STRATEGY_NAME),
                 new Scanner(jsonFile).useDelimiter(END_OF_INPUT_DELIMITER).next()
         );
 
-        String name = (String) jsonConfig.getValue(this.featureNameFN);
+        String featureName = (String) jsonConfig.getValue(this.featureNameFN);
+        String[] featureNames = parseFullName(featureName);
+        String groupId = featureNames[0];
+        String name = featureNames[1];
+        String version = featureNames.length > 2 ? featureNames[2] : null;
+
         Set<String> dependencies = new HashSet<String>((List) jsonConfig.getValue(this.afterFeaturesFN));
 
-        return new Feature(name, dependencies, new Path(f.getPath()), null);
+        return new Feature(
+                featureNames[0],
+                featureNames[1],
+                featureNames[2],
+                dependencies,
+                new Path(f.getPath()),
+                null,
+                null
+        );
     }
 
     private IFeature createZippedFeature(final File f)
             throws Exception {
 
+        String name = f.getName().split(FILENAME_VERSION_PATTERN)[0];
+        Pattern pattern = Pattern.compile(FEATURE_VERSION_PATTERN);
+        Matcher matcher = pattern.matcher(f.getName());
+        String version = matcher.find() ? matcher.group() : null;
+
         return new Feature(
-                parseNameOfZippedFeature(f), null, new Path(f.getPath()), this.getExtension(f)
+                null,
+                name,
+                version,
+                null,
+                new Path(f.getPath()),
+                null,
+                this.getExtension(f)
         );
-    }
-
-    private String parseNameOfZippedFeature(final File f) {
-
-        return f.getName().split(FEATURE_VERSION_PATTERN)[0];
     }
 
     private Map<String, IFeature> parseFeatureList(final File jsonFile)
@@ -145,12 +163,12 @@ public class AllInDirectoryFeatureTracker {
         }
 
         IObject jsonConfig = IOC.resolve(
-                Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME),
+                Keys.resolveByName(IOBJECT_FACTORY_STRATEGY_NAME),
                 new Scanner(jsonFile).useDelimiter(END_OF_INPUT_DELIMITER).next()
         );
 
         List<IObject> repositories = (List<IObject>) jsonConfig.getValue(this.repositoriesFN);
-        List<IObject> repositoryStorage = IOC.resolve(Keys.getOrAdd(IOC_FEATURE_REPOSITORY_STORAGE_NAME));
+        List<IObject> repositoryStorage = IOC.resolve(Keys.resolveByName(IOC_FEATURE_REPOSITORY_STORAGE_NAME));
 
         repositoryStorage.addAll(repositories);
         List<IObject> featuresFromJson = (List<IObject>) jsonConfig.getValue(this.featuresFN);
@@ -158,9 +176,11 @@ public class AllInDirectoryFeatureTracker {
             String name = (String) feature.getValue(this.nameFN);
             String packageType = (String) feature.getValue(this.packageTypeFN);
             features.put(name, new Feature(
-                            (String) feature.getValue(this.nameFN),
                             (String) feature.getValue(this.groupFN),
+                            (String) feature.getValue(this.nameFN),
                             (String) feature.getValue(this.versionFN),
+                            null,
+                            null,
                             new Path(jsonFile.getParent()),
                             null != packageType ? packageType : DEF_PACKAGE_TYPE
                     )
@@ -172,5 +192,20 @@ public class AllInDirectoryFeatureTracker {
 
     private String getExtension(final File f) {
         return f.getName().substring(f.getName().lastIndexOf(EXTENSION_SEPARATOR) + 1);
+    }
+
+    // todo: replace this code by parsing strategy
+    private String[] parseFullName(String fullName)
+            throws FeatureTrackerException {
+        String[] dependencyNames = fullName.split(FEATURE_NAME_DELIMITER);
+        if (dependencyNames.length < 2) {
+            throw new FeatureTrackerException("Wrong feature name or dependency format '"+fullName+"'.");
+        }
+        String[] result = {
+                dependencyNames[0],
+                dependencyNames[1],
+                dependencyNames.length > 2 ? dependencyNames[2] : ""
+        };
+        return result;
     }
 }

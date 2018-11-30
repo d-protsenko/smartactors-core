@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.examples.db_collection;
 
+import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrapper.ConnectionOptions;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrapper.ConnectionOptions;
 
 /**
  * Simplest hardcoded Postgres connection options.

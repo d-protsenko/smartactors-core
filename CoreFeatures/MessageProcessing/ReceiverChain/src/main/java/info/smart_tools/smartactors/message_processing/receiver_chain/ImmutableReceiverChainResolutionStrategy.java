@@ -1,24 +1,25 @@
 package info.smart_tools.smartactors.message_processing.receiver_chain;
 
-import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.exceptions.RouteNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.scope.iscope.IScope;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -61,25 +62,26 @@ import java.util.List;
 public class ImmutableReceiverChainResolutionStrategy implements IResolveDependencyStrategy {
     private static final int CHAIN_ID_ARG_INDEX = 0;
     private static final int DESCRIPTION_ARG_INDEX = 1;
-    private static final int STORAGE_ARG_INDEX = 2;
-    private static final int ROUTER_ARG_INDEX = 3;
+    private static final int ROUTER_ARG_INDEX = 2;
+    private static final int SCOPE_ARG_INDEX = 3;
+    private static final int MODULE_ARG_INDEX = 4;
 
     @Override
     public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
         try {
             Object chainId = args[CHAIN_ID_ARG_INDEX];
             IObject description = (IObject) args[DESCRIPTION_ARG_INDEX];
-            IChainStorage chainStorage = (IChainStorage) args[STORAGE_ARG_INDEX];
             IRouter router = (IRouter) args[ROUTER_ARG_INDEX];
+            IScope scope = (IScope) args[SCOPE_ARG_INDEX];
+            IModule module = (IModule) args[MODULE_ARG_INDEX];
 
-            IKey fieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
-            IKey receiverIdKey = Keys.getOrAdd("receiver_id_from_iobject");
-            IKey chainIdKey = Keys.getOrAdd("chain_id");
+            IKey fieldNameKey = Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+            IKey receiverIdKey = Keys.resolveByName("receiver_id_from_iobject");
 
             IFieldName stepsFieldName = IOC.resolve(fieldNameKey, "steps");
             IFieldName exceptionalChainsFieldName = IOC.resolve(fieldNameKey, "exceptional");
             IFieldName exceptionClassFieldName = IOC.resolve(fieldNameKey, "class");
-            IFieldName exceptionChainFieldName = IOC.resolve(fieldNameKey, "chain");
+            IFieldName exceptionChainNameFieldName = IOC.resolve(fieldNameKey, "chain");
             IFieldName exceptionAfterFieldName = IOC.resolve(fieldNameKey, "after");
 
             List chainSteps = (List) description.getValue(stepsFieldName);
@@ -95,24 +97,26 @@ public class ImmutableReceiverChainResolutionStrategy implements IResolveDepende
                 arguments[i] = step;
             }
 
-            LinkedHashMap<Class<? extends Throwable>, IObject> exceptionalChainsMap = new LinkedHashMap<>();
+            LinkedHashMap<Class<? extends Throwable>, IObject> exceptionalChainNamesMap = new LinkedHashMap<>();
 
             for (Object chainDesc : exceptionalChains) {
                 IObject desc = (IObject) chainDesc;
 
-                Class<?> clazz = this.getClass().getClassLoader().loadClass(String.valueOf(desc.getValue(exceptionClassFieldName)));
-                IReceiverChain chain = chainStorage.resolve(IOC.resolve(chainIdKey, desc.getValue(exceptionChainFieldName)));
+
+                Class<?> clazz = module.getClassLoader().loadClass(String.valueOf(desc.getValue(exceptionClassFieldName)));
+                Object chainName = desc.getValue(exceptionChainNameFieldName);
                 IAction<IMessageProcessingSequence> afterExceptionAction = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), "afterExceptionAction#" + desc.getValue(exceptionAfterFieldName))
+                        Keys.resolveByName("afterExceptionAction#" + desc.getValue(exceptionAfterFieldName))
                 );
-                IObject chainAndEnv = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
-                chainAndEnv.setValue(exceptionChainFieldName, chain);
-                chainAndEnv.setValue(exceptionAfterFieldName, afterExceptionAction);
-                exceptionalChainsMap.put((Class<? extends Throwable>) clazz, chainAndEnv);
+                //Object afterExceptionAction = "afterExceptionAction#" + desc.getValue(exceptionAfterFieldName);
+                IObject chainNameAndEnv = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                chainNameAndEnv.setValue(exceptionChainNameFieldName, chainName);
+                chainNameAndEnv.setValue(exceptionAfterFieldName, afterExceptionAction);
+                exceptionalChainNamesMap.put((Class<? extends Throwable>) clazz, chainNameAndEnv);
             }
 
-            return (T) new ImmutableReceiverChain(String.valueOf(chainId), description, receivers, arguments, exceptionalChainsMap);
-        } catch (ChainNotFoundException | ClassNotFoundException | ResolutionException | ReadValueException |
+            return (T) new ImmutableReceiverChain(String.valueOf(chainId), description, receivers, arguments, exceptionalChainNamesMap, scope, module);
+        } catch (ClassNotFoundException | ResolutionException | ReadValueException |
                 RouteNotFoundException | ChangeValueException | InvalidArgumentException e) {
             throw new ResolveDependencyStrategyException(e);
         }

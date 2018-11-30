@@ -4,16 +4,16 @@ import info.smart_tools.smartactors.actors.exception.SampleDBException;
 import info.smart_tools.smartactors.actors.wrapper.SampleGetByIdWrapper;
 import info.smart_tools.smartactors.actors.wrapper.SampleUpsertWrapper;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
+import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
+import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrapper.ConnectionOptions;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
-import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrapper.ConnectionOptions;
 
 /**
  * Sample actor which upserts and retreives the document from database.
@@ -32,8 +32,8 @@ public class SampleDBActor {
      */
     public SampleDBActor() throws SampleDBException {
         try {
-            ConnectionOptions options = IOC.resolve(Keys.getOrAdd("PostgresConnectionOptions"));
-            pool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), options);
+            ConnectionOptions options = IOC.resolve(Keys.resolveByName("PostgresConnectionOptions"));
+            pool = IOC.resolve(Keys.resolveByName("PostgresConnectionPool"), options);
         } catch (ResolutionException e) {
             throw new SampleDBException("Cannot create actor", e);
         }
@@ -48,7 +48,7 @@ public class SampleDBActor {
 
             try (PoolGuard guard = new PoolGuard(pool)) {
                 ITask task = IOC.resolve(
-                        Keys.getOrAdd("db.collection.upsert"),
+                        Keys.resolveByName("db.collection.upsert"),
                         guard.getObject(),
                         collectionName,
                         document
@@ -76,7 +76,7 @@ public class SampleDBActor {
 
             try (PoolGuard guard = new PoolGuard(pool)) {
                 ITask task = IOC.resolve(
-                        Keys.getOrAdd("db.collection.getbyid"),
+                        Keys.resolveByName("db.collection.getbyid"),
                         guard.getObject(),
                         wrapper.getCollectionName(),
                         id,

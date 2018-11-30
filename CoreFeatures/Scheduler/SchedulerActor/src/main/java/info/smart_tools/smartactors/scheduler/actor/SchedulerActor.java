@@ -9,13 +9,12 @@ import info.smart_tools.smartactors.base.isynchronous_service.exceptions.Service
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStopException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.scheduler.actor.wrappers.*;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryFilter;
@@ -47,23 +46,23 @@ public class SchedulerActor {
             throws ResolutionException, ReadValueException, EntryStorageAccessException, InvalidArgumentException, ActionExecuteException,
                    UpCounterCallbackExecutionException {
         String connectionOptionsDependency = (String) args.getValue(
-                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "connectionOptionsDependency"));
+                IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "connectionOptionsDependency"));
         String connectionPoolDependency = (String) args.getValue(
-                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "connectionPoolDependency"));
+                IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "connectionPoolDependency"));
         String collectionName = (String) args.getValue(
-                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collectionName"));
+                IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collectionName"));
 
-        Object connectionOptions = IOC.resolve(Keys.getOrAdd(connectionOptionsDependency));
-        IPool connectionPool = IOC.resolve(Keys.getOrAdd(connectionPoolDependency), connectionOptions);
-        service = IOC.resolve(Keys.getOrAdd("new scheduler service"),
+        Object connectionOptions = IOC.resolve(Keys.resolveByName(connectionOptionsDependency));
+        IPool connectionPool = IOC.resolve(Keys.resolveByName(connectionPoolDependency), connectionOptions);
+        service = IOC.resolve(Keys.resolveByName("new scheduler service"),
                 connectionPool,
                 collectionName);
 
         IAction<ISchedulerService> activationAction = IOC.resolve(
-                Keys.getOrAdd("scheduler service activation action for scheduler actor"));
+                Keys.resolveByName("scheduler service activation action for scheduler actor"));
         activationAction.execute(service);
 
-        IUpCounter upCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
+        IUpCounter upCounter = IOC.resolve(Keys.resolveByName("root upcounter"));
         upCounter.onShutdownComplete(this.toString(), () -> {
             try {
                 service.stop();
@@ -74,7 +73,7 @@ public class SchedulerActor {
             }
         });
         // Execute only entries with "preShutdownExec" flag after shutdown request received
-        ISchedulerEntryFilter preShutdownModeFilter = IOC.resolve(Keys.getOrAdd("pre shutdown mode entry filter"));
+        ISchedulerEntryFilter preShutdownModeFilter = IOC.resolve(Keys.resolveByName("pre shutdown mode entry filter"));
         upCounter.onShutdownRequest(this.toString(), mode -> service.getEntryStorage().setFilter(preShutdownModeFilter));
     }
 
@@ -87,7 +86,7 @@ public class SchedulerActor {
      */
     public void addEntry(final AddEntryQueryMessage message)
             throws ResolutionException, ReadValueException {
-        IOC.resolve(Keys.getOrAdd("new scheduler entry"), message.getEntryArguments(), service.getEntryStorage());
+        IOC.resolve(Keys.resolveByName("new scheduler entry"), message.getEntryArguments(), service.getEntryStorage());
     }
 
     /**
@@ -100,7 +99,7 @@ public class SchedulerActor {
      */
     public void addEntryWithSettingId(final SetEntryIdMessage message)
             throws ResolutionException, ReadValueException, ChangeValueException {
-        ISchedulerEntry entry = IOC.resolve(Keys.getOrAdd("new scheduler entry"), message.getEntryArguments(), service.getEntryStorage());
+        ISchedulerEntry entry = IOC.resolve(Keys.resolveByName("new scheduler entry"), message.getEntryArguments(), service.getEntryStorage());
         message.setEntryId(entry.getId());
     }
 
@@ -114,7 +113,7 @@ public class SchedulerActor {
     public void addEntryList(final AddEntryQueryListMessage message)
             throws ResolutionException, ReadValueException {
         for (IObject entry : message.getEntryArgumentsList()) {
-            IOC.resolve(Keys.getOrAdd("new scheduler entry"), entry, service.getEntryStorage());
+            IOC.resolve(Keys.resolveByName("new scheduler entry"), entry, service.getEntryStorage());
         }
     }
 

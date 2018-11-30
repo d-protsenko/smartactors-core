@@ -1,16 +1,16 @@
 package info.smart_tools.smartactors.database_plugins.collection_name_plugin;
 
-import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,12 +25,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyNew;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 @PrepareForTest({IOC.class, Keys.class, IPoorAction.class, ResolveByNameIocStrategy.class, CollectionNamePlugin.class, CollectionName.class})
 @RunWith(PowerMockRunner.class)
@@ -48,7 +43,7 @@ public class CollectionNamePluginTest {
 
         IKey keyGeneral = mock(IKey.class);
         IKey keyPlugin = mock(IKey.class);
-        when(IOC.getKeyForKeyStorage()).thenReturn(keyGeneral);
+        when(IOC.getKeyForKeyByNameResolutionStrategy()).thenReturn(keyGeneral);
         when(IOC.resolve(eq(keyGeneral), eq("CollectionNamePlugin"))).thenReturn(keyPlugin);
 
         bootstrap = mock(IBootstrap.class);
@@ -59,7 +54,7 @@ public class CollectionNamePluginTest {
     public void ShouldCorrectLoadPlugin() throws Exception {
 
         IKey collectionNameKey = mock(IKey.class);
-        when(Keys.getOrAdd(CollectionName.class.getCanonicalName())).thenReturn(collectionNameKey);
+        when(Keys.resolveByName(CollectionName.class.getCanonicalName())).thenReturn(collectionNameKey);
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("CollectionNamePlugin").thenReturn(bootstrapItem);
@@ -106,7 +101,7 @@ public class CollectionNamePluginTest {
     @Test(expected = ActionExecuteException.class)
     public void ShouldThrowRuntimeException_When_LambdaThrowsException() throws Exception {
 
-        when(Keys.getOrAdd(CollectionName.class.getCanonicalName())).thenThrow(new ResolutionException(""));
+        when(Keys.resolveByName(CollectionName.class.getCanonicalName())).thenThrow(new ResolutionException(""));
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("CollectionNamePlugin").thenReturn(bootstrapItem);

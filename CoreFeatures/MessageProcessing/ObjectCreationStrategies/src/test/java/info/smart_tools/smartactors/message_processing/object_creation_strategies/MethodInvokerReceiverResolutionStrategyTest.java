@@ -4,12 +4,11 @@ import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.ireceiver_generator.IReceiverGenerator;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
@@ -17,7 +16,7 @@ import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginSc
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
@@ -52,7 +51,7 @@ public class MethodInvokerReceiverResolutionStrategyTest extends PluginsLoadingT
     protected void registerMocks() throws Exception {
         receiverGeneratorMock = mock(IReceiverGenerator.class);
 
-        IOC.register(Keys.getOrAdd(IReceiverGenerator.class.getCanonicalName()), new SingletonStrategy(receiverGeneratorMock));
+        IOC.register(Keys.resolveByName(IReceiverGenerator.class.getCanonicalName()), new SingletonStrategy(receiverGeneratorMock));
 
         configMock = mock(IObject.class);
 
@@ -75,9 +74,9 @@ public class MethodInvokerReceiverResolutionStrategyTest extends PluginsLoadingT
         when(receiverGeneratorMock.generate(same(object), same(specialWrapperResolutionStrategyMock), eq("method1")))
                 .thenReturn(receiverMock2);
 
-        IOC.register(Keys.getOrAdd("default wrapper resolution strategy dependency for invoker receiver"),
+        IOC.register(Keys.resolveByName("default wrapper resolution strategy dependency for invoker receiver"),
                 defaultWrapperResolutionStrategyResolutionStrategyMock);
-        IOC.register(Keys.getOrAdd("special wrapper resolution strategy dependency for invoker receiver"),
+        IOC.register(Keys.resolveByName("special wrapper resolution strategy dependency for invoker receiver"),
                 specialWrapperResolutionStrategyResolutionStrategyMock);
     }
 
@@ -113,7 +112,7 @@ public class MethodInvokerReceiverResolutionStrategyTest extends PluginsLoadingT
     @Test
     public void Should_generateReceiverWithSpecificWrapperStrategy()
             throws Exception {
-        when(configMock.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "wrapperResolutionStrategyDependency")))
+        when(configMock.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "wrapperResolutionStrategyDependency")))
                 .thenReturn("special wrapper resolution strategy dependency for invoker receiver");
 
         assertSame(receiverMock2, strategy.resolve(

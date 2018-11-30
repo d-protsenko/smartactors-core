@@ -86,8 +86,7 @@
           "handler":"onFeatureStepCompleted",
           "wrapper":{
             "in_getFeature":"message/feature",
-            "in_getMessageProcessor":"processor",
-            "in_getFeatureProcess":"message/featureProcess"
+            "in_getMessageProcessor":"processor"
           },
           "target":"feature-manager"
         },
@@ -102,8 +101,7 @@
           "handler":"onFeatureStepCompleted",
           "wrapper":{
             "in_getFeature":"message/feature",
-            "in_getMessageProcessor":"processor",
-            "in_getFeatureProcess":"message/featureProcess"
+            "in_getMessageProcessor":"processor"
           },
           "target":"feature-manager"
         },

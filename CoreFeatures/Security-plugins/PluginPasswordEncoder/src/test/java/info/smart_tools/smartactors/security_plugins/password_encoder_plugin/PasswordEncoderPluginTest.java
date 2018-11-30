@@ -1,20 +1,20 @@
 package info.smart_tools.smartactors.security_plugins.password_encoder_plugin;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import info.smart_tools.smartactors.security.encoding.MDPasswordEncoder;
 import info.smart_tools.smartactors.security.encoding.codec.Base64;
 import info.smart_tools.smartactors.security.encoding.codec.CharSequenceCodec;
 import info.smart_tools.smartactors.security.encoding.codec.Hex;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.security.encoding.MDPasswordEncoder;
 import info.smart_tools.smartactors.security.encoding.codecs.ICharSequenceCodec;
 import info.smart_tools.smartactors.security.encoding.codecs.ICodec;
-import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,12 +25,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyNew;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 @PrepareForTest({IOC.class, Keys.class, PasswordEncoderPlugin.class, ApplyFunctionToArgumentsStrategy.class})
 @RunWith(PowerMockRunner.class)
@@ -69,12 +64,12 @@ public class PasswordEncoderPluginTest {
     public void ShouldCorrectLoadPluginAndResolveHex() throws Exception {
 
         IKey hexEncoderKey = mock(IKey.class);
-        when(Keys.getOrAdd("HexEncoder")).thenReturn(hexEncoderKey);
+        when(Keys.resolveByName("HexEncoder")).thenReturn(hexEncoderKey);
 
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd("HexEncoder");
+        Keys.resolveByName("HexEncoder");
 
         ArgumentCaptor<ApplyFunctionToArgumentsStrategy> argumentCaptor = ArgumentCaptor.forClass(ApplyFunctionToArgumentsStrategy.class);
 
@@ -91,12 +86,12 @@ public class PasswordEncoderPluginTest {
     public void ShouldCorrectLoadPluginAndResolveBase64() throws Exception {
 
         IKey base64EncoderKey = mock(IKey.class);
-        when(Keys.getOrAdd("Base64Encoder")).thenReturn(base64EncoderKey);
+        when(Keys.resolveByName("Base64Encoder")).thenReturn(base64EncoderKey);
 
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd("Base64Encoder");
+        Keys.resolveByName("Base64Encoder");
 
         ArgumentCaptor<ApplyFunctionToArgumentsStrategy> argumentCaptor = ArgumentCaptor.forClass(ApplyFunctionToArgumentsStrategy.class);
 
@@ -113,12 +108,12 @@ public class PasswordEncoderPluginTest {
     public void ShouldCorrectLoadPluginAndResolveCharset() throws Exception {
 
         IKey charsetKey = mock(IKey.class);
-        when(Keys.getOrAdd("CharSequenceCodec")).thenReturn(charsetKey);
+        when(Keys.resolveByName("CharSequenceCodec")).thenReturn(charsetKey);
 
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd("CharSequenceCodec");
+        Keys.resolveByName("CharSequenceCodec");
 
         ArgumentCaptor<ApplyFunctionToArgumentsStrategy> argumentCaptor = ArgumentCaptor.forClass(ApplyFunctionToArgumentsStrategy.class);
 
@@ -136,12 +131,12 @@ public class PasswordEncoderPluginTest {
     public void ShouldCorrectLoadPluginAndResolvePasswordEncoder() throws Exception {
 
         IKey passwordEncoderKey = mock(IKey.class);
-        when(Keys.getOrAdd("PasswordEncoder")).thenReturn(passwordEncoderKey);
+        when(Keys.resolveByName("PasswordEncoder")).thenReturn(passwordEncoderKey);
 
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd("PasswordEncoder");
+        Keys.resolveByName("PasswordEncoder");
 
         ArgumentCaptor<ApplyFunctionToArgumentsStrategy> argumentCaptor = ArgumentCaptor.forClass(ApplyFunctionToArgumentsStrategy.class);
 
@@ -153,12 +148,12 @@ public class PasswordEncoderPluginTest {
         String charset = "UTF-8";
 
         IKey charsetKey = mock(IKey.class);
-        when(Keys.getOrAdd("CharSequenceCodec")).thenReturn(charsetKey);
+        when(Keys.resolveByName("CharSequenceCodec")).thenReturn(charsetKey);
         ICharSequenceCodec charsetCodec = mock(ICharSequenceCodec.class);
         when(IOC.resolve(charsetKey, charset)).thenReturn(charsetCodec);
 
         IKey encoderKey = mock(IKey.class);
-        when(Keys.getOrAdd(encoder)).thenReturn(encoderKey);
+        when(Keys.resolveByName(encoder)).thenReturn(encoderKey);
         ICodec codec = mock(ICodec.class);
         when(IOC.resolve(encoderKey)).thenReturn(codec);
 

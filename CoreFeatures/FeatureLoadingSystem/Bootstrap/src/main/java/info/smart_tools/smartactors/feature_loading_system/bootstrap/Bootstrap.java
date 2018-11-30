@@ -56,10 +56,10 @@ public class Bootstrap implements IBootstrap<IBootstrapItem<String>> {
                 try {
                     item.executeProcess();
                     doneItems.add(item);
-                    System.out.println("[OK] "+Thread.currentThread().getName()+" Initial load of plugin \"" + item.getItemName() + "\" done.");
+                    System.out.println("[OK] Initial load of plugin \"" + item.getItemName() + "\" done.");
                 } catch (Throwable ex) {
                     ex.printStackTrace();
-                    System.out.println("[WARNING] "+Thread.currentThread().getName()+" Initial load of plugin \"" + item.getItemName() + "\" failed.");
+                    System.out.println("[WARNING] Initial load of plugin \"" + item.getItemName() + "\" failed.");
                     item.executeRevertProcess();
                     failedItems.add(item);
                 }

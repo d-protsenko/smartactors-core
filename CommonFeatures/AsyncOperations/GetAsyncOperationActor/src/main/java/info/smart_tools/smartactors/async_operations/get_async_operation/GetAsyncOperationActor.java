@@ -2,16 +2,16 @@ package info.smart_tools.smartactors.async_operations.get_async_operation;
 
 import info.smart_tools.smartactors.async_operations.get_async_operation.exception.GetAsyncOperationActorException;
 import info.smart_tools.smartactors.async_operations.get_async_operation.wrapper.GetAsyncOperationMessage;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.database.async_operation_collection.IAsyncOperationCollection;
 import info.smart_tools.smartactors.database.async_operation_collection.exception.GetAsyncOperationException;
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 /**
  * Actor for read asynchronous operation by token
@@ -27,11 +27,11 @@ public class GetAsyncOperationActor {
      */
     public GetAsyncOperationActor(final IObject params) throws GetAsyncOperationActorException {
         try {
-            IField collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
-            IField databaseOptionsF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "databaseOptions");
-            Object connectionOpts =  IOC.resolve(Keys.getOrAdd(databaseOptionsF.in(params)));
+            IField collectionNameField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "collectionName");
+            IField databaseOptionsF = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "databaseOptions");
+            Object connectionOpts =  IOC.resolve(Keys.resolveByName(databaseOptionsF.in(params)));
             collection = IOC.resolve(
-                Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName()), connectionOpts, collectionNameField.in(params)
+                Keys.resolveByName(IAsyncOperationCollection.class.getCanonicalName()), connectionOpts, collectionNameField.in(params)
             );
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new GetAsyncOperationActorException("Can't read collection name from message", e);

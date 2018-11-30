@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;

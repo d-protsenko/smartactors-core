@@ -1,28 +1,27 @@
 package info.smart_tools.smartactors.database.async_operation_collection;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
+import info.smart_tools.smartactors.base.pool_guard.IPoolGuard;
+import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
+import info.smart_tools.smartactors.base.pool_guard.exception.PoolGuardException;
 import info.smart_tools.smartactors.database.async_operation_collection.exception.CompleteAsyncOperationException;
 import info.smart_tools.smartactors.database.async_operation_collection.exception.CreateAsyncOperationException;
 import info.smart_tools.smartactors.database.async_operation_collection.exception.DeleteAsyncOperationException;
 import info.smart_tools.smartactors.database.async_operation_collection.exception.GetAsyncOperationException;
-import info.smart_tools.smartactors.iobject.field_name.FieldName;
-import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.base.pool_guard.IPoolGuard;
-import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
-import info.smart_tools.smartactors.base.pool_guard.exception.PoolGuardException;
 
 /**
  * Implementation of collection for asynchronous operations
@@ -43,7 +42,7 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
     public AsyncOperationCollection(final IPool connectionPool, final String collectionName) throws InvalidArgumentException {
         this.connectionPool = connectionPool;
         try {
-            this.idField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "id");
+            this.idField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "id");
             this.collectionName = collectionName;
         } catch (ResolutionException e) {
             throw new InvalidArgumentException("Can't create field", e);
@@ -53,10 +52,10 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
     @Override
     public IObject getAsyncOperation(final String token) throws GetAsyncOperationException {
         try (IPoolGuard guard = new PoolGuard(connectionPool)) {
-            IObject result = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject result = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             IDatabaseTask getItemTask = IOC.resolve(
-                Keys.getOrAdd("db.async_ops_collection.get"),
+                Keys.resolveByName("db.async_ops_collection.get"),
                 guard.getObject(),
                 collectionName,
                 token,
@@ -70,7 +69,7 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
             );
             getItemTask.execute();
 
-            IObject searchResult = (IObject) result.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "result"));
+            IObject searchResult = (IObject) result.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "result"));
             if (searchResult == null) {
                 throw new GetAsyncOperationException("Can't find operation.");
             }
@@ -96,7 +95,7 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
 
 
                 IDatabaseTask createItemTask = IOC.resolve(
-                        Keys.getOrAdd("db.async_ops_collection.create"),
+                        Keys.resolveByName("db.async_ops_collection.create"),
                         poolGuard.getObject(),
                         collectionName,
                         data,
@@ -118,7 +117,7 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
         try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
 
             ITask task = IOC.resolve(
-                    Keys.getOrAdd("db.async_ops_collection.delete"),
+                    Keys.resolveByName("db.async_ops_collection.delete"),
                     poolGuard.getObject(),
                     collectionName,
                     token
@@ -139,7 +138,7 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
 
         try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
 
-            ITask updateTask = IOC.resolve(Keys.getOrAdd("db.async_ops_collection.complete"),
+            ITask updateTask = IOC.resolve(Keys.resolveByName("db.async_ops_collection.complete"),
                     poolGuard.getObject(),
                     collectionName,
                     document

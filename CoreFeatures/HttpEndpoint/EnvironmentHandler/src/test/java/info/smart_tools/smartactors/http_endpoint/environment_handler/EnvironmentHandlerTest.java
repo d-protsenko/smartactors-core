@@ -1,35 +1,34 @@
 package info.smart_tools.smartactors.http_endpoint.environment_handler;
 
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
-import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.task.blocking_queue.BlockingQueue;
-import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
-import info.smart_tools.smartactors.scope.iscope.IScope;
-import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
-import info.smart_tools.smartactors.task.interfaces.itask.ITask;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_strategy.ResolveByNameIocStrategy;
+import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
+import info.smart_tools.smartactors.message_processing.message_processing_sequence.MessageProcessingSequence;
+import info.smart_tools.smartactors.message_processing.receiver_chain.ImmutableReceiverChain;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
-import info.smart_tools.smartactors.message_processing.message_processing_sequence.MessageProcessingSequence;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.message_processing.receiver_chain.ImmutableReceiverChain;
-import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_strategy.ResolveByNameIocStrategy;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
+import info.smart_tools.smartactors.scope.iscope.IScope;
+import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
-import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
+import info.smart_tools.smartactors.task.blocking_queue.BlockingQueue;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +36,6 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 public class EnvironmentHandlerTest {
@@ -61,15 +59,15 @@ public class EnvironmentHandlerTest {
         IScope mainScope = ScopeProvider.getScope(keyOfMainScope);
         ScopeProvider.setCurrentScope(mainScope);
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameResolutionStrategy(),
                 new ResolveByNameIocStrategy()
         );
-        IKey keyIObjectByString = Keys.getOrAdd("IObjectByString");
-        IKey keyIObject = Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
-        IKey keyIMessageProcessingSequence = Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence");
-        IKey keyIReceiverChain = Keys.getOrAdd(IReceiverChain.class.toString());
-        IKey keyIFieldName = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
-        IKey keyFieldName = Keys.getOrAdd(IFieldName.class.getCanonicalName());
+        IKey keyIObjectByString = Keys.resolveByName("IObjectByString");
+        IKey keyIObject = Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject");
+        IKey keyIMessageProcessingSequence = Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence");
+        IKey keyIReceiverChain = Keys.resolveByName(IReceiverChain.class.toString());
+        IKey keyIFieldName = Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey keyFieldName = Keys.resolveByName(IFieldName.class.getCanonicalName());
         IOC.register(
                 keyIObjectByString,
                 new CreateNewInstanceStrategy(
@@ -87,8 +85,9 @@ public class EnvironmentHandlerTest {
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
-                                return new MessageProcessingSequence((int) args[0], (IReceiverChain) args[1]);
-                            } catch (InvalidArgumentException | ResolutionException ignored) {
+                                boolean switchScopeOnStartup = args.length > 3 ? (Boolean)args[3] : true;
+                                return new MessageProcessingSequence((int) args[0], args[1], (IObject)args[2], switchScopeOnStartup);
+                            } catch (InvalidArgumentException | ResolutionException | ChainNotFoundException ignored) {
                             }
                             return null;
                         }
@@ -124,33 +123,34 @@ public class EnvironmentHandlerTest {
     public void whenEnvironmentHandlerReceiveEnvironment_ItShouldProcessMessageProcessor()
             throws Exception {
         messageProcessor = mock(IMessageProcessor.class);
-        IKey keyIMessageProcessor = Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor");
+        IKey keyIMessageProcessor = Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor");
         IOC.register(
                 keyIMessageProcessor,
                 new SingletonStrategy(messageProcessor)
         );
-        IObject iObject = IOC.resolve(Keys.getOrAdd("IObjectByString"), "{}");
-        IKey keyIObject = Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
+        IObject iObject = IOC.resolve(Keys.resolveByName("IObjectByString"), "{}");
+        IKey keyIObject = Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject");
         IOC.register(
                 keyIObject,
                 new SingletonStrategy(iObject)
         );
-        IObject environment = IOC.resolve(Keys.getOrAdd("IObjectByString"), "{\"message\": {\"hello\": \"world\"}, \"context\": {}}");
+        IObject environment = IOC.resolve(Keys.resolveByName("IObjectByString"), "{\"message\": {\"hello\": \"world\"}, \"context\": {}}");
         Map<Class<? extends Throwable>, IObject> exceptionalChainsAndEnv = new HashMap<>();
 //        exceptionalChainsAndEnv.put(InvalidArgumentException.class, null);
         IMessageReceiver messageReceivers[] = new IMessageReceiver[1];
         IObject iObjects[] = new IObject[1];
         messageReceivers[0] = null;
         iObjects[0] = null;
-        IReceiverChain chain = new ImmutableReceiverChain("name", mock(IObject.class), messageReceivers, iObjects, exceptionalChainsAndEnv);
+        IReceiverChain chain = new ImmutableReceiverChain("name", mock(IObject.class), messageReceivers, iObjects, exceptionalChainsAndEnv, null, null);
+        // ToDo: put chain to chain storage
         IQueue<ITask> queue = new BlockingQueue(null);
 
-        IEnvironmentHandler handler = new EnvironmentHandler(queue, 1);
-        handler.handle(environment, chain, null);
+        IEnvironmentHandler handler = new EnvironmentHandler(queue, 1, true);
+        handler.handle(environment, "name", null);
         try {
             verify(messageProcessor, times(1)).process(
-                    (IObject) environment.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message")),
-                    (IObject) environment.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context")));
+                    (IObject) environment.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message")),
+                    (IObject) environment.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context")));
         } catch (ReadValueException e) {
             e.printStackTrace();
         }

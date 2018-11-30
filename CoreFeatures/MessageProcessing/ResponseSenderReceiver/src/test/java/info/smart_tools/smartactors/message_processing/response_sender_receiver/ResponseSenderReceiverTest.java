@@ -2,12 +2,11 @@ package info.smart_tools.smartactors.message_processing.response_sender_receiver
 
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.iresponse_strategy.IResponseStrategy;
 import info.smart_tools.smartactors.message_processing_interfaces.iresponse_strategy.exceptions.ResponseException;
@@ -18,7 +17,6 @@ import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginSc
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
 
@@ -46,13 +44,13 @@ public class ResponseSenderReceiverTest extends PluginsLoadingTestBase {
         ctxMock = mock(IObject.class);
         responseStrategyMock = mock(IResponseStrategy.class);
 
-        IOC.register(Keys.getOrAdd("send response action"), new SingletonStrategy(new ResponseSenderAction()));
+        IOC.register(Keys.resolveByName("send response action"), new SingletonStrategy(new ResponseSenderAction()));
 
-        when(envMock.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context")))
+        when(envMock.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context")))
                 .thenReturn(ctxMock);
         when(messageProcessorMock.getContext()).thenReturn(ctxMock);
         when(messageProcessorMock.getEnvironment()).thenReturn(envMock);
-        when(ctxMock.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responseStrategy")))
+        when(ctxMock.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responseStrategy")))
                 .thenReturn(responseStrategyMock);
     }
 

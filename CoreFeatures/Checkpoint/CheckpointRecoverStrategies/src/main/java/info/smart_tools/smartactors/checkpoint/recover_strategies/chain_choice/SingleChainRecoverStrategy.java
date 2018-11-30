@@ -9,7 +9,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 /**
  * Strategy that sends message to the same chain every time.
@@ -22,7 +22,7 @@ import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
  * </pre>
  */
 public class SingleChainRecoverStrategy implements IRecoveryChainChoiceStrategy {
-    private final IFieldName chainFieldName;
+    private final IFieldName chainNameFieldName;
 
     /**
      * The constructor.
@@ -31,19 +31,19 @@ public class SingleChainRecoverStrategy implements IRecoveryChainChoiceStrategy 
      */
     public SingleChainRecoverStrategy()
             throws ResolutionException {
-        chainFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
+        chainNameFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
     }
 
     @Override
     public void init(final IObject state, final IObject args) throws RecoverStrategyInitializationException {
         try {
-            String chainName = (String) args.getValue(chainFieldName);
+            String chainName = (String) args.getValue(chainNameFieldName);
 
             if (null == chainName) {
                 throw new RecoverStrategyInitializationException("Chain name should be defined.", null);
             }
 
-            state.setValue(chainFieldName, chainName);
+            state.setValue(chainNameFieldName, chainName);
         } catch (ReadValueException | ChangeValueException | InvalidArgumentException e) {
             throw new RecoverStrategyInitializationException("Error occurred initializing strategy.", e);
         }
@@ -52,8 +52,9 @@ public class SingleChainRecoverStrategy implements IRecoveryChainChoiceStrategy 
     @Override
     public Object chooseRecoveryChain(final IObject state) throws RecoverStrategyExecutionException {
         try {
-            return IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), state.getValue(chainFieldName));
-        } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
+            // return IOC.resolve(Keys.resolveByName("chain_id_from_map_name_and_message"), state.getValue(chainFieldName));
+            return state.getValue(chainNameFieldName);
+        } catch (ReadValueException | InvalidArgumentException e) {
             throw new RecoverStrategyExecutionException("Error occurred resolving chain identifier.", e);
         }
     }

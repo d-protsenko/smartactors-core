@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
@@ -57,7 +57,7 @@ public class MessageAttributeSetters {
 
     static {
         try {
-            senderAddress_Context_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "senderAddress");
+            senderAddress_Context_F = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "senderAddress");
         } catch (Exception e) {
             throw new RuntimeException("Failed to initialize field", e);
         }

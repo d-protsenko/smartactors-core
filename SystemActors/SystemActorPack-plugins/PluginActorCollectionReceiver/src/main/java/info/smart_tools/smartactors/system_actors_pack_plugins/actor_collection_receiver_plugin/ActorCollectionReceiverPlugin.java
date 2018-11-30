@@ -16,7 +16,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.system_actors_pack.actor_collection_receiver.ActorCollectionReceiver;
 import info.smart_tools.smartactors.system_actors_pack.actor_collection_receiver.pipeline.ChildDeletionCheckerReceiver;
@@ -44,9 +44,9 @@ public class ActorCollectionReceiverPlugin extends BootstrapPlugin {
     @Item("actor_collection_receiver_config_canonization_strategies")
     public void registerConfigCanonizationStrategies()
             throws ResolutionException, RegistrationException, InvalidArgumentException, AdditionDependencyStrategyException {
-        IFieldName kindFieldName = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "kind");
+        IFieldName kindFieldName = IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "kind");
 
-        IAdditionDependencyStrategy strategy = IOC.resolve(Keys.getOrAdd("expandable_strategy#resolve key for configuration object"));
+        IAdditionDependencyStrategy strategy = IOC.resolve(Keys.resolveByName("expandable_strategy#resolve key for configuration object"));
 
         strategy.register("new", new ApplyFunctionToArgumentsStrategy(args -> {
             try {
@@ -62,7 +62,7 @@ public class ActorCollectionReceiverPlugin extends BootstrapPlugin {
                     ((IObject) value).setValue(kindFieldName, "child_" + kindName);
                 }
 
-                return IOC.resolve(Keys.getOrAdd("canonize objects configuration section item filters list"), value);
+                return IOC.resolve(Keys.resolveByName("canonize objects configuration section item filters list"), value);
             } catch (ResolutionException | ReadValueException | ChangeValueException | InvalidArgumentException e) {
                 throw new FunctionExecutionException(e);
             }
@@ -72,7 +72,7 @@ public class ActorCollectionReceiverPlugin extends BootstrapPlugin {
     @Item("actor_collection_receiver_default_child_deletion_check_strategy")
     public void registerDefailtDeletionCheckStrategy()
             throws ResolutionException, InvalidArgumentException, RegistrationException {
-        IOC.register(Keys.getOrAdd("default child deletion check strategy"),
+        IOC.register(Keys.resolveByName("default child deletion check strategy"),
                 new SingletonStrategy(new DefaultDeletionCheckStrategy()));
     }
     
@@ -82,10 +82,10 @@ public class ActorCollectionReceiverPlugin extends BootstrapPlugin {
     })
     public void registerDeletionCheckerDecorator()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IFieldName deletionCheckStrategyFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "deletionCheckStrategy");
-        IFieldName deletionActionFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "deletionAction");
+        IFieldName deletionCheckStrategyFN = IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "deletionCheckStrategy");
+        IFieldName deletionActionFN = IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "deletionAction");
 
-        IOC.register(Keys.getOrAdd("child deletion checker receiver decorator"),
+        IOC.register(Keys.resolveByName("child deletion checker receiver decorator"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     IMessageReceiver receiver = (IMessageReceiver) args[0];
                     IObject objectConfig = (IObject) args[2];
@@ -99,7 +99,7 @@ public class ActorCollectionReceiverPlugin extends BootstrapPlugin {
                         }
 
                         IChildDeletionCheckStrategy deletionCheckStrategy = IOC.resolve(
-                                IOC.resolve(IOC.getKeyForKeyStorage(), deletionCheckStrategyKeyName),
+                                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), deletionCheckStrategyKeyName),
                                 objectConfig
                         );
 
@@ -119,20 +119,20 @@ public class ActorCollectionReceiverPlugin extends BootstrapPlugin {
     })
     public void registerPipelineConfiguration()
             throws ResolutionException, RegistrationException, ChangeValueException, InvalidArgumentException {
-        IObject childDeletionCheckerConfig = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        IObject childDeletionCheckerConfig = IOC.resolve(Keys.resolveByName(IObject.class.getCanonicalName()));
         childDeletionCheckerConfig.setValue(
-                IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "dependency"),
+                IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "dependency"),
                 "filter creator#decorate receiver");
         childDeletionCheckerConfig.setValue(
-                IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "decoratorDependency"),
+                IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "decoratorDependency"),
                 "child deletion checker receiver decorator");
         IOC.register(
-                Keys.getOrAdd("named filter config#child receiver deletion checker"),
+                Keys.resolveByName("named filter config#child receiver deletion checker"),
                 new SingletonStrategy(childDeletionCheckerConfig)
         );
 
         IOC.register(
-                Keys.getOrAdd("object kind filter sequence#child_raw"),
+                Keys.resolveByName("object kind filter sequence#child_raw"),
                 new SingletonStrategy(Arrays.asList(
                         "top-level object",
                         "child receiver deletion checker",
@@ -140,7 +140,7 @@ public class ActorCollectionReceiverPlugin extends BootstrapPlugin {
                 ))
         );
         IOC.register(
-                Keys.getOrAdd("object kind filter sequence#child_stateless_actor"),
+                Keys.resolveByName("object kind filter sequence#child_stateless_actor"),
                 new SingletonStrategy(Arrays.asList(
                         "top-level object",
                         "method invokers",
@@ -150,7 +150,7 @@ public class ActorCollectionReceiverPlugin extends BootstrapPlugin {
                 ))
         );
         IOC.register(
-                Keys.getOrAdd("object kind filter sequence#child_actor"),
+                Keys.resolveByName("object kind filter sequence#child_actor"),
                 new SingletonStrategy(Arrays.asList(
                         "top-level object",
                         "method invokers",
@@ -170,7 +170,7 @@ public class ActorCollectionReceiverPlugin extends BootstrapPlugin {
     public void registerCollectionReceiver()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
-                Keys.getOrAdd("ActorCollection"),
+                Keys.resolveByName("ActorCollection"),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {

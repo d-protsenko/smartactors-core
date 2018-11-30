@@ -5,10 +5,10 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>server-developing-tools</artifactId>
-        <version>0.3.3</version>
+        <version>0.5.0</version>
     </parent>
     <artifactId>server-developing-tools.interfaces.iserver</artifactId>
-    <version>0.3.3</version>
+    <version>0.5.0</version>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -46,8 +46,8 @@
                             <configuration>
                                 <generatePom>true</generatePom>
                                 <file>${project.basedir}/target/${project.artifactId}-${project.version}.jar</file>
-                                <url>http://archiva.smart-tools.info/repository/server-dev-tools/</url>
-                                <repositoryId>archiva.server-dev-tools</repositoryId>
+                                <url>${feature.rurl}</url>
+                                <repositoryId>${feature.rid}</repositoryId>
                                 <groupId>${project.groupId}</groupId>
                                 <artifactId>${project.artifactId}</artifactId>
                                 <version>${project.version}</version>

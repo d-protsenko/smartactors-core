@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.ioc.resolve_by_name_ioc_strategy;
 
-import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
 
 import java.util.Map;

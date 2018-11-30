@@ -1,18 +1,18 @@
 package info.smart_tools.smartactors.scheduler.strategies;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
-import info.smart_tools.smartactors.scheduler.interfaces.ISchedulingStrategy;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulingStrategyExecutionException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
+import info.smart_tools.smartactors.scheduler.interfaces.ISchedulingStrategy;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulingStrategyExecutionException;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -52,10 +52,10 @@ public class OnceSchedulingStrategy implements ISchedulingStrategy {
      */
     public OnceSchedulingStrategy()
             throws ResolutionException {
-        timeFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "time");
-        saveFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "save");
-        neverTooLateFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "neverTooLate");
-        pausedExecutionFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "executionPaused");
+        timeFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "time");
+        saveFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "save");
+        neverTooLateFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "neverTooLate");
+        pausedExecutionFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "executionPaused");
     }
 
     @Override

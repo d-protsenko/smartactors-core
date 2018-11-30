@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.message_processing.receiver_chain;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.dumpable_interface.idumpable.IDumpable;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -8,10 +9,11 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import org.junit.Test;
@@ -40,37 +42,43 @@ public class ImmutableReceiverChainTest extends PluginsLoadingTestBase {
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrow_When_invalidNamePassed()
             throws Exception {
-        assertNotNull(new ImmutableReceiverChain(null, mock(IObject.class), new IMessageReceiver[0], new IObject[0], mock(Map.class)));
+        assertNotNull(new ImmutableReceiverChain(null, mock(IObject.class), new IMessageReceiver[0],
+                new IObject[0], mock(Map.class), mock(IScope.class), mock(IModule.class)));
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrow_When_invalidDescriptionListPassed()
             throws Exception {
-        assertNotNull(new ImmutableReceiverChain("theChain", null, new IMessageReceiver[0], null, mock(Map.class)));
+        assertNotNull(new ImmutableReceiverChain("theChain", null, new IMessageReceiver[0],
+                null, mock(Map.class), mock(IScope.class), mock(IModule.class)));
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrow_When_invalidArgumentsListPassed()
             throws Exception {
-        assertNotNull(new ImmutableReceiverChain("theChain", mock(IObject.class), new IMessageReceiver[0], null, mock(Map.class)));
+        assertNotNull(new ImmutableReceiverChain("theChain", mock(IObject.class), new IMessageReceiver[0],
+                null, mock(Map.class), mock(IScope.class), mock(IModule.class)));
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrow_When_numberOfReceiversDoesNotMatchNumberOfArgumentsObjects()
             throws Exception {
-        new ImmutableReceiverChain("theChain", mock(IObject.class), new IMessageReceiver[1], new IObject[0], mock(Map.class));
+        new ImmutableReceiverChain("theChain", mock(IObject.class), new IMessageReceiver[1],
+                new IObject[0], mock(Map.class), mock(IScope.class), mock(IModule.class));
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrow_When_invalidReceiversListPassed()
             throws Exception {
-        assertNotNull(new ImmutableReceiverChain("theChain", mock(IObject.class), null, new IObject[0], mock(Map.class)));
+        assertNotNull(new ImmutableReceiverChain("theChain", mock(IObject.class), null,
+                new IObject[0], mock(Map.class), mock(IScope.class), mock(IModule.class)));
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void Should_constructorThrow_When_invalidExceptionsMappingGiven()
             throws Exception {
-        assertNotNull(new ImmutableReceiverChain("theChain",mock(IObject.class), new IMessageReceiver[0], new IObject[0], null));
+        assertNotNull(new ImmutableReceiverChain("theChain",mock(IObject.class), new IMessageReceiver[0],
+                new IObject[0], null, mock(IScope.class), mock(IModule.class)));
     }
 
     @Test
@@ -78,9 +86,9 @@ public class ImmutableReceiverChainTest extends PluginsLoadingTestBase {
             throws Exception {
         IMessageReceiver[] receivers = new IMessageReceiver[0];
 
-        IReceiverChain chain = new ImmutableReceiverChain("theChain", mock(IObject.class), receivers, new IObject[0], mock(Map.class));
+        IReceiverChain chain = new ImmutableReceiverChain("theChain", mock(IObject.class), receivers, new IObject[0], mock(Map.class), mock(IScope.class), mock(IModule.class));
 
-        assertEquals("theChain", chain.getName());
+        assertEquals("theChain", chain.getId());
     }
 
     @Test
@@ -93,7 +101,7 @@ public class ImmutableReceiverChainTest extends PluginsLoadingTestBase {
                 mock(IObject.class),
                 mock(IObject.class)};
 
-        IReceiverChain chain = new ImmutableReceiverChain("theChain", mock(IObject.class), receivers, arguments, mock(Map.class));
+        IReceiverChain chain = new ImmutableReceiverChain("theChain", mock(IObject.class), receivers, arguments, mock(Map.class), mock(IScope.class), mock(IModule.class));
 
         assertSame(receivers[0], chain.get(0));
         assertSame(arguments[0], chain.getArguments(0));
@@ -113,13 +121,13 @@ public class ImmutableReceiverChainTest extends PluginsLoadingTestBase {
 
         when(selfCaused.getCause()).thenReturn(selfCaused);
 
-        IReceiverChain chain = new ImmutableReceiverChain("theChain", mock(IObject.class), new IMessageReceiver[0], new IObject[0], mappingMap);
+        IReceiverChain chain = new ImmutableReceiverChain("theChain", mock(IObject.class), new IMessageReceiver[0], new IObject[0], mappingMap, mock(IScope.class), mock(IModule.class));
 
-        assertNull(chain.getExceptionalChainAndEnvironments(new NullPointerException()));
-        assertNull(chain.getExceptionalChainAndEnvironments(new IllegalStateException()));
-        assertNull(chain.getExceptionalChainAndEnvironments(selfCaused));
-        assertSame(mappingMap.get(InvalidArgumentException.class), chain.getExceptionalChainAndEnvironments(new InvalidArgumentException("invalid")));
-        assertSame(mappingMap.get(InvalidArgumentException.class), chain.getExceptionalChainAndEnvironments(
+        assertNull(chain.getExceptionalChainNamesAndEnvironments(new NullPointerException()));
+        assertNull(chain.getExceptionalChainNamesAndEnvironments(new IllegalStateException()));
+        assertNull(chain.getExceptionalChainNamesAndEnvironments(selfCaused));
+        assertSame(mappingMap.get(InvalidArgumentException.class), chain.getExceptionalChainNamesAndEnvironments(new InvalidArgumentException("invalid")));
+        assertSame(mappingMap.get(InvalidArgumentException.class), chain.getExceptionalChainNamesAndEnvironments(
                 new IllegalStateException(new InvalidArgumentException(new Throwable()))));
     }
 
@@ -128,7 +136,7 @@ public class ImmutableReceiverChainTest extends PluginsLoadingTestBase {
         IMessageReceiver[] receivers = new IMessageReceiver[0];
         IObject description = mock(IObject.class);
 
-        IReceiverChain chain = new ImmutableReceiverChain("theChain", description, receivers, new IObject[0], mock(Map.class));
+        IReceiverChain chain = new ImmutableReceiverChain("theChain", description, receivers, new IObject[0], mock(Map.class), mock(IScope.class), mock(IModule.class));
         assertSame(description, chain.getChainDescription());
     }
 
@@ -138,7 +146,7 @@ public class ImmutableReceiverChainTest extends PluginsLoadingTestBase {
         IMessageReceiver[] receivers = new IMessageReceiver[0];
         IObject description = mock(IObject.class);
 
-        IReceiverChain chain = new ImmutableReceiverChain("theChain", description, receivers, new IObject[0], mock(Map.class));
+        IReceiverChain chain = new ImmutableReceiverChain("theChain", description, receivers, new IObject[0], mock(Map.class), mock(IScope.class), mock(IModule.class));
         assertSame(description, ((IDumpable) chain).dump(null));
     }
 
@@ -146,7 +154,7 @@ public class ImmutableReceiverChainTest extends PluginsLoadingTestBase {
     public void Should_provideCollectionOfUniqueExceptionalChains()
             throws Exception {
         IReceiverChain exceptional1 = mock(IReceiverChain.class), exceptional2 = mock(IReceiverChain.class);
-        IFieldName chainFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
+        IFieldName chainFN = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
         IObject eobj1 = mock(IObject.class), eobj2 = mock(IObject.class), eobj3 = mock(IObject.class);
         when(eobj1.getValue(eq(chainFN))).thenReturn(exceptional1);
         when(eobj2.getValue(eq(chainFN))).thenReturn(exceptional2);
@@ -157,9 +165,9 @@ public class ImmutableReceiverChainTest extends PluginsLoadingTestBase {
         eMap.put(NullPointerException.class, eobj2);
         eMap.put(RuntimeException.class, eobj3);
 
-        IReceiverChain chain = new ImmutableReceiverChain("theChain", mock(IObject.class), new IMessageReceiver[0], new IObject[0], eMap);
+        IReceiverChain chain = new ImmutableReceiverChain("theChain", mock(IObject.class), new IMessageReceiver[0], new IObject[0], eMap, mock(IScope.class), mock(IModule.class));
 
-        Collection<IReceiverChain> eColl = chain.getExceptionalChains();
+        Collection<Object> eColl = chain.getExceptionalChainNames();
 
         assertEquals(new HashSet<>(Arrays.asList(exceptional1, exceptional2)), eColl);
     }
