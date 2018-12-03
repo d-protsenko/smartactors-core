@@ -34,7 +34,14 @@ import java.util.List;
  *                 "templates": [
  *                     "/messageMapId/:messageMapId/bar/:barId",
  *                     "/:messageMapId"
- *                 ]
+ *                 ],
+ *                 "cookies": {
+ *                     "encoder": "strict",
+ *                     "path": "/",
+ *                     "domain": "example.com",
+ *                     "secure": true,
+ *                     "httpOnly": true
+ *                 }
  *                 // . . .
  *             },
  *             {
@@ -50,7 +57,14 @@ import java.util.List;
  *                 "templates": [
  *                     "/messageMapId/:messageMapId/bar/:barId",
  *                     "/:messageMapId"
- *                 ]
+ *                 ],
+ *                 "cookies": {
+    *                  "encoder": "lax",
+ *                     "path": "/",
+ *                     "domain": "example.com",
+ *                     "secure": true,
+ *                     "httpOnly": true
+ *                 }
  *             }
  *         ]
  *     }

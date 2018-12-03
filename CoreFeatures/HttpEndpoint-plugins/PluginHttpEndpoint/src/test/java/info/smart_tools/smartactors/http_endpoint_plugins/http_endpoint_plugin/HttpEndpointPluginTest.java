@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.http_endpoint_plugins.http_endpoint_plugin;
 
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
@@ -11,7 +11,9 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.http_endpoint_plugins.endpoint_plugin.EndpointPlugin;
+import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_strategy.ResolveByNameIocStrategy;
@@ -32,6 +34,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 public class HttpEndpointPluginTest {
+
     private IBootstrap bootstrap;
     private HttpEndpointPlugin plugin;
     private ResolveByTypeAndNameStrategy deserializationStrategyChooser;
@@ -61,8 +64,12 @@ public class HttpEndpointPluginTest {
         bootstrap.start();
 
         IOC.register(
+                Keys.resolveByName(IObject.class.getCanonicalName()),
+                new ApplyFunctionToArgumentsStrategy(a -> new DSObject())
+        );
+        IOC.register(
                 Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
-                new CreateNewInstanceStrategy(
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
                                 return new FieldName((String) args[0]);
@@ -73,7 +80,6 @@ public class HttpEndpointPluginTest {
                         }
                 )
         );
-
         IOC.register(Keys.resolveByName("DeserializationStrategyChooser"), new SingletonStrategy(
                         deserializationStrategyChooser
                 )
