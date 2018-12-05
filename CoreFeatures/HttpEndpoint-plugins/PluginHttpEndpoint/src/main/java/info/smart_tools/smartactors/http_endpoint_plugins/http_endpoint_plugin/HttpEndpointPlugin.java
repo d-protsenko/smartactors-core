@@ -6,7 +6,6 @@ import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strate
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
-import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
@@ -41,7 +40,6 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.key_tools.Keys;
-import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import io.netty.channel.ChannelHandlerContext;
@@ -127,22 +125,24 @@ public class HttpEndpointPlugin implements IPlugin {
                                                 IObject configuration = (IObject) args[0];
 
                                                 try {
+                                                    String endpointName = (String) configuration.getValue(endpointNameFieldName);
+
                                                     IOC.resolve(
                                                             Keys.resolveByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
                                                             "HTTP_GET",
-                                                            configuration.getValue(endpointNameFieldName),
-                                                            configuration.getValue(templatesFieldName));
+                                                            endpointName,
+                                                            configuration.getValue(templatesFieldName)
+                                                    );
                                                     IOC.resolve(
                                                             Keys.resolveByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
                                                             "HTTP_application/json",
-                                                            configuration.getValue(endpointNameFieldName));
+                                                            endpointName
+                                                    );
                                                     IOC.resolve(
                                                             Keys.resolveByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
                                                             "HTTP_application/x-www-form-urlencoded",
-                                                            configuration.getValue(endpointNameFieldName));
-
-                                                    String endpointName = (String) configuration.getValue(endpointNameFieldName);
-
+                                                            endpointName
+                                                    );
                                                     IOC.register(
                                                             Keys.resolveByName(endpointName + "_endpoint-config"),
                                                             new SingletonStrategy(configuration)
@@ -166,11 +166,7 @@ public class HttpEndpointPlugin implements IPlugin {
                                                     upCounter.onShutdownComplete(this.toString(), endpoint::stop);
 
                                                     return endpoint;
-                                                } catch (ReadValueException | InvalidArgumentException
-                                                        | ScopeProviderException | ResolutionException
-                                                        | UpCounterCallbackExecutionException
-                                                        | RegistrationException e) {
-
+                                                } catch (Exception e) {
                                                     throw new RuntimeException(e);
                                                 }
                                             }
