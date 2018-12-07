@@ -12,7 +12,6 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.key_tools.Keys;
-
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.cookie.Cookie;
@@ -20,8 +19,6 @@ import io.netty.handler.codec.http.cookie.DefaultCookie;
 import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 
@@ -162,7 +159,7 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
             throw this.getError("Invalid request(NULL)", null);
         }
         try {
-            final URI uri =                           this.getRequestURI(request);
+            final URL url =                           this.getRequestURL(request);
             final IObject content =                   this.getRequestContent(request);
             final HttpMethod method =                 this.getRequestMethod(request);
             final HttpVersion version =               this.getRequestVersion(request);
@@ -170,7 +167,7 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
             final List<Cookie> cookies =              this.getRequestCookies(request);
             final ServerCookieEncoder cookieEncoder = this.getCookieEncoder(request);
 
-            return this.createHttpRequest(method, version, uri, content, headers, cookies, cookieEncoder);
+            return this.createHttpRequest(method, version, url, content, headers, cookies, cookieEncoder);
         } catch (ReadValueException | InvalidArgumentException exc) {
             throw this.getError(exc.getMessage(), exc);
         }
@@ -212,7 +209,7 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
         }
     }
 
-    private URI getRequestURI(final IObject request)
+    private URL getRequestURL(final IObject request)
             throws RequestMakerException, ReadValueException, InvalidArgumentException {
 
         String requestUri = Optional
@@ -220,18 +217,8 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
                 .orElseThrow(() -> this.getError("Invalid request URI(NULL)", null))
                 .toString();
         try {
-            URL url = new URL(requestUri);
-
-            return new URI(
-                    url.getProtocol(),
-                    url.getUserInfo(),
-                    url.getHost(),
-                    url.getPort(),
-                    url.getPath(),
-                    url.getQuery(),
-                    url.getRef()
-            );
-        } catch (MalformedURLException | URISyntaxException exc) {
+            return new URL(requestUri);
+        } catch (MalformedURLException exc) {
             throw this.getError(String.format("Invalid request URI(%s)", requestUri), exc);
         }
     }
@@ -327,7 +314,7 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
     private FullHttpRequest createHttpRequest(
             HttpMethod method,
             HttpVersion version,
-            URI uri,
+            URL url,
             final IObject content,
             final HttpHeaders headers,
             final List<Cookie> cookies,
@@ -339,7 +326,7 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
                 httpRequest = new DefaultFullHttpRequest(
                         version,
                         method,
-                        uri.toASCIIString()
+                        url.toString()
                 );
             } else {
                 IKey contentMapperKey = Keys.resolveByName(MessageToBytesMapper.class.getCanonicalName());
@@ -348,7 +335,7 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
                 httpRequest = new DefaultFullHttpRequest(
                         version,
                         method,
-                        uri.toASCIIString(),
+                        url.toString(),
                         Unpooled.copiedBuffer(contentMapper.serialize(content))
                 );
             }
@@ -367,7 +354,7 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
             }
             httpRequest.headers().set(
                     HttpHeaderNames.HOST,
-                    uri.getHost()
+                    url.getHost()
             );
             httpRequest.headers().set(
                     HttpHeaderNames.CONNECTION,
