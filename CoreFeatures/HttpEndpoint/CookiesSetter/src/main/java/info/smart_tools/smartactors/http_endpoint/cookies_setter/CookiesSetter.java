@@ -84,7 +84,7 @@ public class CookiesSetter implements ICookiesSetter {
     /**
      * Default cookie encoder
      */
-    private final ServerCookieEncoder defaultCookieEncoder = STRICT_COOKIE_ENCODER;
+    private final String defaultCookieEncoder = "STRICT";
 
 // Constructors ------------------------------------------------------------------------------------------------------
 
@@ -162,26 +162,29 @@ public class CookiesSetter implements ICookiesSetter {
      */
     @Override
     public void set(final Object response, final IObject environment) throws CookieSettingException {
+        try {
+            final HttpResponse httpResponse =   this.getHttpResponse(response);
+            final IObject context =             this.getContext(environment);
+            final IObject cookieConfig =        this.getCookieConfig(context);
+            final List<IObject> cookiesParams = this.getCookiesParams(context);
 
-        final HttpResponse httpResponse =   this.getHttpResponse(response);
-        final IObject context =             this.getContext(environment);
-        final IObject cookieConfig =        this.getCookieConfig(context);
-        final List<IObject> cookiesParams = this.getCookiesParams(context);
+            if (cookiesParams == null || cookiesParams.isEmpty()) {
+                return;
+            }
 
-        if (cookiesParams == null || cookiesParams.isEmpty()) {
-            return;
+            final List<Cookie> cookies = new ArrayList<>();
+
+            for (IObject cookieParams: cookiesParams) {
+                cookies.add(this.createCookie(cookieParams, cookieConfig));
+            }
+
+            httpResponse.headers().set(
+                    HttpHeaderNames.SET_COOKIE,
+                    this.getCookieEncoder(cookieConfig).encode(cookies)
+            );
+        } catch (ReadValueException | InvalidArgumentException exc) {
+            throw this.getError(exc.getMessage(), exc);
         }
-
-        final List<Cookie> cookies = new ArrayList<>();
-
-        for (IObject cookieParams: cookiesParams) {
-            cookies.add(this.createCookie(cookieParams, cookieConfig));
-        }
-
-        httpResponse.headers().set(
-                HttpHeaderNames.SET_COOKIE,
-                this.getCookieEncoder(cookieConfig).encode(cookies)
-        );
     }
 
 
@@ -193,22 +196,24 @@ public class CookiesSetter implements ICookiesSetter {
         return (HttpResponse) response;
     }
 
-    private IObject getContext(final IObject environment) throws CookieSettingException {
+    private IObject getContext(final IObject environment)
+            throws CookieSettingException, ReadValueException, InvalidArgumentException {
+
         if (environment == null) {
-            throw this.getError("Invalid environment", null);
+            throw this.getError("Invalid environment(NULL)", null);
         }
         try {
             return (IObject) environment.getValue(contextFN);
-        } catch (ReadValueException | InvalidArgumentException exc) {
-            throw this.getError(exc.getMessage(), exc);
         } catch (ClassCastException exc) {
             throw this.getError("Invalid context", exc);
         }
     }
 
-    private IObject getCookieConfig(final IObject context) throws CookieSettingException {
+    private IObject getCookieConfig(final IObject context)
+            throws CookieSettingException, ReadValueException, InvalidArgumentException {
+
         if (context == null) {
-            throw this.getError("Invalid context", null);
+            throw this.getError("Invalid context(NULL)", null);
         }
         try {
             String endpointName = String.valueOf(context.getValue(endpointNameFN));
@@ -216,91 +221,90 @@ public class CookiesSetter implements ICookiesSetter {
             IObject cookieConfig = (IObject) endpointConfig.getValue(cookiesFN);
 
             return  (cookieConfig != null) ? cookieConfig : emptyCookieConfig;
-        } catch (Exception exc) {
+        } catch (ResolutionException exc) {
             return emptyCookieConfig;
         }
     }
 
     @SuppressWarnings("unchecked")
-    private List<IObject> getCookiesParams(final IObject context) throws CookieSettingException {
+    private List<IObject> getCookiesParams(final IObject context)
+            throws CookieSettingException, ReadValueException, InvalidArgumentException {
+
         if (context == null) {
-            throw this.getError("Invalid context", null);
+            throw this.getError("Invalid context(NULL)", null);
         }
         try {
             return (List<IObject>) context.getValue(cookiesFN);
-        } catch (ReadValueException | InvalidArgumentException exc) {
-            throw this.getError(exc.getMessage(), exc);
         } catch (ClassCastException exc) {
             throw this.getError("Invalid cookie parameters", exc);
         }
     }
 
-    private ServerCookieEncoder getCookieEncoder(final IObject config) {
-        if (config == null) {
-            return defaultCookieEncoder;
-        }
-        try {
-            String encoderType = (String) config.getValue(cookieEncoderFN);
-            if (encoderType == null) {
-                return defaultCookieEncoder;
-            }
-            ServerCookieEncoder encoder = encoders.get(encoderType.trim().toUpperCase());
+    private ServerCookieEncoder getCookieEncoder(final IObject config)
+            throws CookieSettingException, ReadValueException, InvalidArgumentException {
 
-            return (encoder != null) ? encoder : defaultCookieEncoder;
-        } catch (ReadValueException | InvalidArgumentException exc) {
-            return defaultCookieEncoder;
-        }
+        String encoderType = Optional
+                .ofNullable(config.getValue(cookieEncoderFN))
+                .orElse(defaultCookieEncoder)
+                .toString()
+                .toUpperCase()
+                .trim();
+
+        return Optional
+                .ofNullable(encoders.get(encoderType))
+                .orElseThrow(() -> this.getError(
+                        String.format("Unsupported cookie encoder(%s)", encoderType),
+                        null
+                ));
     }
 
-    private Cookie createCookie(final IObject params, IObject config) throws CookieSettingException {
-        try {
-            String cookieName = Optional
-                    .ofNullable(params.getValue(cookieNameFN))
-                    .orElseThrow(() -> this.getError("Empty cookie name", null))
-                    .toString();
+    private Cookie createCookie(final IObject params, IObject config)
+            throws CookieSettingException, ReadValueException, InvalidArgumentException {
 
-            String cookieValue = Optional
-                    .ofNullable(params.getValue(cookieValueFN))
-                    .orElse("")
-                    .toString();
+        String cookieName = Optional
+                .ofNullable(params.getValue(cookieNameFN))
+                .orElseThrow(() -> this.getError("Empty cookie name", null))
+                .toString();
 
-            String cookiePath = String.valueOf(this.getFirstNotNull(
-                    Optional.ofNullable(params.getValue(cookiePathFN)),
-                    Optional.ofNullable(config.getValue(cookiePathFN)),
-                    Optional.of(DEFAULT_COOKIE_PATH)
-            ));
-            String cookieDomain = String.valueOf(this.getFirstNotNull(
-                    Optional.ofNullable(params.getValue(cookieDomainFN)),
-                    Optional.ofNullable(config.getValue(cookieDomainFN)),
-                    Optional.of(DEFAULT_COOKIE_DOMAIN)
-            ));
-            Boolean cookieSecure = (Boolean) this.getFirstNotNull(
-                    Optional.ofNullable(params.getValue(cookieSecureFN)),
-                    Optional.ofNullable(config.getValue(cookieSecureFN)),
-                    Optional.of(DEFAULT_COOKIE_SECURE)
-            );
-            Boolean cookieHttpOnly = (Boolean) this.getFirstNotNull(
-                    Optional.ofNullable(params.getValue(cookieHttpOnlyFN)),
-                    Optional.ofNullable(config.getValue(cookieHttpOnlyFN)),
-                    Optional.of(DEFAULT_COOKIE_HTTP_ONLY)
-            );
-            Number cookieMaxAge = (Number) this.getFirstNotNull(
-                    Optional.ofNullable(params.getValue(cookieMaxAgeFN)),
-                    Optional.ofNullable(config.getValue(cookieMaxAgeFN)),
-                    Optional.of(DEFAULT_COOKIE_MAX_AGE)
-            );
+        String cookieValue = Optional
+                .ofNullable(params.getValue(cookieValueFN))
+                .orElse("")
+                .toString();
 
-            Cookie cookie = new DefaultCookie(cookieName, cookieValue);
-            cookie.setPath(cookiePath);
-            cookie.setDomain(cookieDomain);
-            cookie.setSecure(cookieSecure);
-            cookie.setHttpOnly(cookieHttpOnly);
-            cookie.setMaxAge(cookieMaxAge.longValue());
+        String cookiePath = String.valueOf(this.getFirstNotNull(
+                Optional.ofNullable(params.getValue(cookiePathFN)),
+                Optional.ofNullable(config.getValue(cookiePathFN)),
+                Optional.of(DEFAULT_COOKIE_PATH)
+        ));
+        String cookieDomain = String.valueOf(this.getFirstNotNull(
+                Optional.ofNullable(params.getValue(cookieDomainFN)),
+                Optional.ofNullable(config.getValue(cookieDomainFN)),
+                Optional.of(DEFAULT_COOKIE_DOMAIN)
+        ));
+        Boolean cookieSecure = (Boolean) this.getFirstNotNull(
+                Optional.ofNullable(params.getValue(cookieSecureFN)),
+                Optional.ofNullable(config.getValue(cookieSecureFN)),
+                Optional.of(DEFAULT_COOKIE_SECURE)
+        );
+        Boolean cookieHttpOnly = (Boolean) this.getFirstNotNull(
+                Optional.ofNullable(params.getValue(cookieHttpOnlyFN)),
+                Optional.ofNullable(config.getValue(cookieHttpOnlyFN)),
+                Optional.of(DEFAULT_COOKIE_HTTP_ONLY)
+        );
+        Number cookieMaxAge = (Number) this.getFirstNotNull(
+                Optional.ofNullable(params.getValue(cookieMaxAgeFN)),
+                Optional.ofNullable(config.getValue(cookieMaxAgeFN)),
+                Optional.of(DEFAULT_COOKIE_MAX_AGE)
+        );
 
-            return cookie;
-        } catch (Exception exc) {
-            throw this.getError(exc.getMessage(), exc);
-        }
+        Cookie cookie = new DefaultCookie(cookieName, cookieValue);
+        cookie.setPath(cookiePath);
+        cookie.setDomain(cookieDomain);
+        cookie.setSecure(cookieSecure);
+        cookie.setHttpOnly(cookieHttpOnly);
+        cookie.setMaxAge(cookieMaxAge.longValue());
+
+        return cookie;
     }
 
     private Object getFirstNotNull(Optional... optionals) {

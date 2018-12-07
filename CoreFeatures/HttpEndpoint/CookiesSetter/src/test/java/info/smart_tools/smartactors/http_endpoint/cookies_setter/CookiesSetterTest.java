@@ -418,6 +418,46 @@ public class CookiesSetterTest {
     }
 
     @Test(expected = CookieSettingException.class)
+    public void should_ThrowException_UnsupportedCookieEncoder() throws Exception {
+        final FullHttpResponse response = new DefaultFullHttpResponse(
+                HttpVersion.HTTP_1_1,
+                HttpResponseStatus.OK
+        );
+
+        final IObject cookiesConfig = new DSObject();
+        cookiesConfig.setValue(cookieEncoderFN, "UnsupportedCookieEncoder");
+        cookiesConfig.setValue(cookieDomainFN, "example.com");
+        cookiesConfig.setValue(cookiePathFN, "/");
+        cookiesConfig.setValue(cookieMaxAgeFN, 100);
+        cookiesConfig.setValue(cookieSecureFN, true);
+        cookiesConfig.setValue(cookieHttpOnlyFN, true);
+
+        final IObject endpointConfig = new DSObject();
+        endpointConfig.setValue(cookiesFN, cookiesConfig);
+
+        IOC.register(
+                Keys.resolveByName("http-test_endpoint-config"),
+                new SingletonStrategy(endpointConfig)
+        );
+
+        final List<IObject> cookies = new ArrayList<IObject>() {{
+            addAll(getCookiesWithoutParameters());
+            add(createCookie("cookie3", "value3", "path3", "domain3", 10L, false, false));
+        }};
+
+        final IObject context = new DSObject();
+        context.setValue(cookiesFN, cookies);
+        context.setValue(endpointNameFN, "http-test");
+
+        final IObject environment = new DSObject();
+        environment.setValue(contextFN, context);
+
+        final CookiesSetter setter = new CookiesSetter();
+
+        setter.set(response, environment);
+    }
+
+    @Test(expected = CookieSettingException.class)
     public void should_ThrowException_EmptyCookieName() throws Exception {
         FullHttpResponse response = new DefaultFullHttpResponse(
                 HttpVersion.HTTP_1_1,
