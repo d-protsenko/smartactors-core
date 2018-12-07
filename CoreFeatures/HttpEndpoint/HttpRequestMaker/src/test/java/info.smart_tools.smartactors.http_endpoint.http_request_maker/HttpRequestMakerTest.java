@@ -115,8 +115,8 @@ public class HttpRequestMakerTest {
 
     @Test
     public void should_MakeHttpRequest_WithContent_UseDefaultVersionAndCookieEncoder() throws Exception {
-        List<IObject> requestHeaders = this.getRequestHeaders();
-        List<IObject> requestCookies = this.getRequestCookies();
+        List<IObject> requestHeaders = this.getCustomHeaders();
+        List<IObject> requestCookies = this.getCustomCookies();
 
         IObject request = new DSObject();
         request.setValue(requestMethodFN, HttpMethod.POST.name());
@@ -140,30 +140,8 @@ public class HttpRequestMakerTest {
         );
 
         List<IObject> expectedHeaders = new ArrayList<>(requestHeaders);
-        expectedHeaders.add(
-                this.createKeyValue(
-                        HttpHeaderNames.HOST.toString(),
-                        uri.getHost()
-                )
-        );
-        expectedHeaders.add(
-                this.createKeyValue(
-                        HttpHeaderNames.CONNECTION.toString(),
-                        HttpHeaderValues.CLOSE.toString()
-                )
-        );
-        expectedHeaders.add(
-                this.createKeyValue(
-                        HttpHeaderNames.CONTENT_LENGTH.toString(),
-                        contentBody.length()
-                )
-        );
-        expectedHeaders.add(
-                this.createKeyValue(
-                        HttpHeaderNames.CONTENT_TYPE.toString(),
-                        "application/json"
-                )
-        );
+        expectedHeaders.addAll(this.getRequiredCommonHeaders());
+        expectedHeaders.addAll(this.getRequiredContentHeaders());
 
         for (IObject expectedHeader: expectedHeaders) {
             String expectedValue = expectedHeader.getValue(valueFN).toString();
@@ -188,8 +166,8 @@ public class HttpRequestMakerTest {
 
     @Test
     public void should_MakeHttpRequest_WithoutContent_UseDefaultVersionAndCookieEncoder() throws Exception {
-        List<IObject> requestHeaders = this.getRequestHeaders();
-        List<IObject> requestCookies = this.getRequestCookies();
+        List<IObject> requestHeaders = this.getCustomHeaders();
+        List<IObject> requestCookies = this.getCustomCookies();
 
         IObject request = new DSObject();
         request.setValue(requestMethodFN, HttpMethod.GET.name());
@@ -218,18 +196,7 @@ public class HttpRequestMakerTest {
         );
 
         List<IObject> expectedHeaders = new ArrayList<>(requestHeaders);
-        expectedHeaders.add(
-                this.createKeyValue(
-                        HttpHeaderNames.HOST.toString(),
-                        uri.getHost()
-                )
-        );
-        expectedHeaders.add(
-                this.createKeyValue(
-                        HttpHeaderNames.CONNECTION.toString(),
-                        HttpHeaderValues.CLOSE.toString()
-                )
-        );
+        expectedHeaders.addAll(this.getRequiredCommonHeaders());
 
         for (IObject header: expectedHeaders) {
             String expectedValue = header.getValue(valueFN).toString();
@@ -248,8 +215,8 @@ public class HttpRequestMakerTest {
 
     @Test
     public void should_MakeHttpRequest_WithContent_UseSpecificVersionAndCookieEncoder() throws Exception {
-        List<IObject> requestHeaders = this.getRequestHeaders();
-        List<IObject> requestCookies = this.getRequestCookies();
+        List<IObject> requestHeaders = this.getCustomHeaders();
+        List<IObject> requestCookies = this.getCustomCookies();
 
         IObject request = new DSObject();
         request.setValue(requestMethodFN, HttpMethod.PUT.name());
@@ -281,30 +248,8 @@ public class HttpRequestMakerTest {
         );
 
         List<IObject> expectedHeaders = new ArrayList<>(requestHeaders);
-        expectedHeaders.add(
-                this.createKeyValue(
-                        HttpHeaderNames.HOST.toString(),
-                        uri.getHost()
-                )
-        );
-        expectedHeaders.add(
-                this.createKeyValue(
-                        HttpHeaderNames.CONNECTION.toString(),
-                        HttpHeaderValues.CLOSE.toString()
-                )
-        );
-        expectedHeaders.add(
-                this.createKeyValue(
-                        HttpHeaderNames.CONTENT_LENGTH.toString(),
-                        contentBody.length()
-                )
-        );
-        expectedHeaders.add(
-                this.createKeyValue(
-                        HttpHeaderNames.CONTENT_TYPE.toString(),
-                        "application/json"
-                )
-        );
+        expectedHeaders.addAll(this.getRequiredCommonHeaders());
+        expectedHeaders.addAll(this.getRequiredContentHeaders());
 
         for (IObject header: expectedHeaders) {
             String expectedValue = header.getValue(valueFN).toString();
@@ -356,30 +301,8 @@ public class HttpRequestMakerTest {
         );
 
         List<IObject> expectedHeaders = new ArrayList<>();
-        expectedHeaders.add(
-                this.createKeyValue(
-                        HttpHeaderNames.HOST.toString(),
-                        uri.getHost()
-                )
-        );
-        expectedHeaders.add(
-                this.createKeyValue(
-                        HttpHeaderNames.CONNECTION.toString(),
-                        HttpHeaderValues.CLOSE.toString()
-                )
-        );
-        expectedHeaders.add(
-                this.createKeyValue(
-                        HttpHeaderNames.CONTENT_LENGTH.toString(),
-                        contentBody.length()
-                )
-        );
-        expectedHeaders.add(
-                this.createKeyValue(
-                        HttpHeaderNames.CONTENT_TYPE.toString(),
-                        "application/json"
-                )
-        );
+        expectedHeaders.addAll(this.getRequiredCommonHeaders());
+        expectedHeaders.addAll(this.getRequiredContentHeaders());
 
         for (IObject header: expectedHeaders) {
             String expectedValue = header.getValue(valueFN).toString();
@@ -396,16 +319,24 @@ public class HttpRequestMakerTest {
     }
 
     @Test(expected = RequestMakerException.class)
-    public void should_ThrowException_EmptyRequestMethod() throws Exception {
-        List<IObject> requestHeaders = this.getRequestHeaders();
-        List<IObject> requestCookies = this.getRequestCookies();
+    public void should_ThrowException_RequestIsNull() throws Exception {
+        requestMaker.make(null);
+    }
 
+    @Test(expected = RequestMakerException.class)
+    public void should_ThrowException_RequestMethodIsNull() throws Exception {
+        IObject request = new DSObject();
+        request.setValue(requestMethodFN, null);
+        request.setValue(requestUriFN, uri.toASCIIString());
+
+        requestMaker.make(request);
+    }
+
+    @Test(expected = RequestMakerException.class)
+    public void should_ThrowException_InvalidRequestMethod() throws Exception {
         IObject request = new DSObject();
         request.setValue(requestMethodFN, "");
-        request.setValue(requestVersionFN, "HTTP/1.0");
         request.setValue(requestUriFN, uri.toASCIIString());
-        request.setValue(requestHeadersFN, requestHeaders);
-        request.setValue(requestCookiesFN, requestCookies);
         request.setValue(requestContentFN, content);
 
         requestMaker.make(request);
@@ -413,70 +344,59 @@ public class HttpRequestMakerTest {
 
     @Test(expected = RequestMakerException.class)
     public void should_ThrowException_InvalidRequestVersion() throws Exception {
-        List<IObject> requestHeaders = this.getRequestHeaders();
-        List<IObject> requestCookies = this.getRequestCookies();
-
         IObject request = new DSObject();
         request.setValue(requestMethodFN, HttpMethod.GET);
         request.setValue(requestVersionFN, "InvalidVersion");
-        request.setValue(requestUriFN, uri.toASCIIString());
-        request.setValue(requestHeadersFN, requestHeaders);
-        request.setValue(requestCookiesFN, requestCookies);
-        request.setValue(requestContentFN, content);
+
+        requestMaker.make(request);
+    }
+
+    @Test(expected = RequestMakerException.class)
+    public void should_ThrowException_RequestURIIsNull() throws Exception {
+        IObject request = new DSObject();
+        request.setValue(requestMethodFN, HttpMethod.GET);
+        request.setValue(requestUriFN, null);
 
         requestMaker.make(request);
     }
 
     @Test(expected = RequestMakerException.class)
     public void should_ThrowException_InvalidRequestURI() throws Exception {
-        List<IObject> requestHeaders = this.getRequestHeaders();
-        List<IObject> requestCookies = this.getRequestCookies();
-
         IObject request = new DSObject();
         request.setValue(requestMethodFN, HttpMethod.GET);
-        request.setValue(requestUriFN, "Invaliduri.toASCIIString()");
-        request.setValue(requestHeadersFN, requestHeaders);
-        request.setValue(requestCookiesFN, requestCookies);
-        request.setValue(requestContentFN, content);
+        request.setValue(requestUriFN, "InvalidUri");
 
         requestMaker.make(request);
     }
 
     @Test(expected = RequestMakerException.class)
     public void should_ThrowException_InvalidRequestHeaders() throws Exception {
-        List<IObject> requestHeaders = this.getRequestHeaders();
-        List<IObject> requestCookies = this.getRequestCookies();
-
+        List<IObject> requestHeaders = this.getCustomHeaders();
         requestHeaders.add(this.createKeyValue("", "emptyHeader"));
 
         IObject request = new DSObject();
         request.setValue(requestMethodFN, HttpMethod.GET);
         request.setValue(requestUriFN, uri.toASCIIString());
         request.setValue(requestHeadersFN, requestHeaders);
-        request.setValue(requestCookiesFN, requestCookies);
-        request.setValue(requestContentFN, content);
 
         requestMaker.make(request);
     }
 
     @Test(expected = RequestMakerException.class)
     public void should_ThrowException_InvalidRequestCookies() throws Exception {
-        List<IObject> requestHeaders = this.getRequestHeaders();
-        List<IObject> requestCookies = this.getRequestCookies();
-
+        List<IObject> requestCookies = this.getCustomCookies();
         requestCookies.add(this.createKeyValue("", "emptyCookie"));
 
         IObject request = new DSObject();
         request.setValue(requestMethodFN, HttpMethod.GET);
         request.setValue(requestUriFN, uri.toASCIIString());
-        request.setValue(requestHeadersFN, requestHeaders);
         request.setValue(requestCookiesFN, requestCookies);
-        request.setValue(requestContentFN, content);
 
         requestMaker.make(request);
     }
 
-    private List<IObject> getRequestHeaders() throws Exception {
+
+    private List<IObject> getCustomHeaders() throws Exception {
         return new ArrayList<IObject>() {{
             add(createKeyValue("header-1", "1"));
             add(createKeyValue("header-1", 1));
@@ -484,7 +404,21 @@ public class HttpRequestMakerTest {
         }};
     }
 
-    private List<IObject> getRequestCookies() throws Exception {
+    private List<IObject> getRequiredCommonHeaders() throws Exception {
+        return new ArrayList<IObject>() {{
+           add(createKeyValue(HttpHeaderNames.HOST.toString(), uri.getHost()));
+           add(createKeyValue(HttpHeaderNames.CONNECTION.toString(), HttpHeaderValues.CLOSE.toString()));
+        }};
+    }
+
+    private List<IObject> getRequiredContentHeaders() throws Exception {
+        return new ArrayList<IObject>() {{
+            add(createKeyValue(HttpHeaderNames.CONTENT_LENGTH.toString(), contentBody.length()));
+            add(createKeyValue(HttpHeaderNames.CONTENT_TYPE.toString(), "application/json"));
+        }};
+    }
+
+    private List<IObject> getCustomCookies() throws Exception {
         return new ArrayList<IObject>() {{
             add(createKeyValue("cookie-1", 1));
             add(createKeyValue("cookie-1", "1"));

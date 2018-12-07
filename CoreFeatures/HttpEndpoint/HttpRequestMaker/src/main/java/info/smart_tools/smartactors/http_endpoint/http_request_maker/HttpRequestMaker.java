@@ -36,7 +36,7 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
     /**
      * Common error message template
      */
-    private static final String COMMON_ERROR_MSG = "Failed to create HTTP request. %s";
+    private static final String COMMON_ERROR_MSG = "Failed to create HTTP request: %s";
 
     /**
      * {@code Strict} encoder that validates that name and value chars are in the valid scope
@@ -70,7 +70,10 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
         put("LAX", LAX_COOKIE_ENCODER);
     }};
 
-    private final HttpVersion defaultHttpVersion = HttpVersion.HTTP_1_1;
+    /**
+     * Default HTTP request version
+     */
+    private final String defaultVersionName = HttpVersion.HTTP_1_1.toString();
 
     /**
      * Default cookie encoder
@@ -106,22 +109,22 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
      *         "version": "HTTP/1.1",
      *         "headers": [
      *              {
-     *                  "name": @headerName,
-     *                  "value": @headerValue
+     *                  "name": "headerName",
+     *                  "value": @Value
      *              },
      *              ...
      *         ],
      *         "cookie": [
      *              {
-     *                  "name": @cookieName,
-     *                  "value": @cookieValue
+     *                  "name": "cookieName",
+     *                  "value": @Value
      *              },
      *              ...
      *         ],
      *         "cookieEncoder": "strict",
      *         "content: {
-     *             "name1": "value1",
-     *             "name2": "value2",
+     *             "name1": @Value,
+     *             "name2": @Value,
      *             ...
      *         }
      *     }
@@ -134,8 +137,8 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
      * <p>{@code version} -       the version of HTTP or its derived protocols, such as
      *                            <a href="http://en.wikipedia.org/wiki/Real_Time_Streaming_Protocol">RTSP</a> and
      *                            <a href="http://en.wikipedia.org/wiki/Internet_Content_Adaptation_Protocol">ICAP</a></p>
-     * <p>{@code headers} -       headers to be set, should presents as {@link IObject}</p>
-     * <p>{@code cookie} -        cookies to be set, should presents as {@link IObject}</p>
+     * <p>{@code headers} -       headers to be set, should presents as {@link List<IObject>}</p>
+     * <p>{@code cookie} -        cookies to be set, should presents as {@link List<IObject>}</p>
      * <p>{@code cookieEncoder} - cookie encoder type to be used: {@code strict} or {@code lax}.
      *                            Optional value, default {@code strict}.
      *                            {@code Strict} encoder that validates that name and value chars are in the valid scope
@@ -155,6 +158,9 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
      */
     @Override
     public FullHttpRequest make(final IObject request) throws RequestMakerException {
+        if (request == null) {
+            throw this.getError("Invalid request(NULL)", null);
+        }
         try {
             final URI uri =                           this.getRequestURI(request);
             final IObject content =                   this.getRequestContent(request);
@@ -174,12 +180,12 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
     private HttpMethod getRequestMethod(final IObject request)
             throws RequestMakerException, ReadValueException, InvalidArgumentException {
 
-        Object methodName = request.getValue(requestMethodFN);
-        if (methodName == null) {
-            throw this.getError("Invalid HTTP method(NULL)", null);
-        }
+        String methodName = Optional
+                .ofNullable(request.getValue(requestMethodFN))
+                .orElseThrow(() -> this.getError("Invalid HTTP method(NULL)", null))
+                .toString();
         try {
-            return HttpMethod.valueOf(String.valueOf(methodName));
+            return HttpMethod.valueOf(methodName);
         } catch (IllegalArgumentException exc) {
             throw this.getError(
                     String.format("Invalid HTTP method(%s)", methodName),
@@ -191,13 +197,12 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
     private HttpVersion getRequestVersion(final IObject request)
             throws RequestMakerException, ReadValueException, InvalidArgumentException {
 
-        Object versionName = request.getValue(requestVersionFN);
-        if (versionName == null) {
-            return defaultHttpVersion;
-        }
-
+        String versionName = Optional
+                .ofNullable(request.getValue(requestVersionFN))
+                .orElse(defaultVersionName)
+                .toString();
         try {
-            return HttpVersion.valueOf(versionName.toString().trim());
+            return HttpVersion.valueOf(versionName.trim());
         } catch (IllegalArgumentException exc) {
             throw this.getError(
                     String.format("Unsupported HTTP version(%s)", versionName),
@@ -209,12 +214,12 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
     private URI getRequestURI(final IObject request)
             throws RequestMakerException, ReadValueException, InvalidArgumentException {
 
+        String requestUri = Optional
+                .ofNullable(request.getValue(requestUriFN))
+                .orElseThrow(() -> this.getError("Invalid request URI(NULL)", null))
+                .toString();
         try {
-            URL url = new URL(
-                    String.valueOf(
-                            request.getValue(requestUriFN)
-                    )
-            );
+            URL url = new URL(requestUri);
 
             return new URI(
                     url.getProtocol(),
@@ -226,7 +231,7 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
                     url.getRef()
             );
         } catch (MalformedURLException | URISyntaxException exc) {
-            throw this.getError("Invalid request URI: " + exc.getMessage(), exc);
+            throw this.getError(String.format("Invalid request URI(%s)", requestUri), exc);
         }
     }
 
@@ -236,7 +241,7 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
         try {
             return (IObject) request.getValue(requestContentFN);
         } catch (ClassCastException exc) {
-            throw this.getError("Invalid request content: " + exc.getMessage(), exc);
+            throw this.getError("Invalid request content", exc);
         }
     }
 
@@ -260,7 +265,7 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
 
             return httpHeaders;
         } catch (ClassCastException | IllegalArgumentException exc) {
-            throw this.getError("Invalid request headers: " + exc.getMessage(), exc);
+            throw this.getError("Invalid request headers", exc);
         }
     }
 
@@ -296,7 +301,7 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
 
             return httpCookies;
         } catch (ClassCastException exc) {
-            throw this.getError("Invalid request cookies: " + exc.getMessage(), exc);
+            throw this.getError("Invalid request cookies", exc);
         }
     }
 
