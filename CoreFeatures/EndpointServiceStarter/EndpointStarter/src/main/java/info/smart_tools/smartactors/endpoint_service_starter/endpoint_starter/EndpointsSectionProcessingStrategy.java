@@ -59,7 +59,7 @@ import java.util.List;
  *                     "/:messageMapId"
  *                 ],
  *                 "cookies": {
-    *                  "encoder": "lax",
+ *                     "encoder": "lax",
  *                     "path": "/",
  *                     "domain": "example.com",
  *                     "secure": true,
