@@ -78,7 +78,7 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
     /**
      * Default cookie encoder
      */
-    private final ServerCookieEncoder defaultCookieEncoder = STRICT_COOKIE_ENCODER;
+    private final String defaultCookieEncoder = "STRICT";
 
 // Constructors ------------------------------------------------------------------------------------------------------
 
@@ -200,9 +200,10 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
         String versionName = Optional
                 .ofNullable(request.getValue(requestVersionFN))
                 .orElse(defaultVersionName)
-                .toString();
+                .toString()
+                .trim();
         try {
-            return HttpVersion.valueOf(versionName.trim());
+            return HttpVersion.valueOf(versionName);
         } catch (IllegalArgumentException exc) {
             throw this.getError(
                     String.format("Unsupported HTTP version(%s)", versionName),
@@ -306,12 +307,21 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
     }
 
     private ServerCookieEncoder getCookieEncoder(final IObject request)
-            throws ReadValueException, InvalidArgumentException {
+            throws RequestMakerException, ReadValueException, InvalidArgumentException {
 
-        String encoderType = String.valueOf(request.getValue(cookiesEncoderFN)).trim().toUpperCase();
-        ServerCookieEncoder encoder = cookieEncoders.get(encoderType);
+        String encoderType = Optional
+                .ofNullable(request.getValue(cookiesEncoderFN))
+                .orElse(defaultCookieEncoder)
+                .toString()
+                .toUpperCase()
+                .trim();
 
-        return (encoder != null) ? encoder : defaultCookieEncoder;
+        return Optional
+                .ofNullable(cookieEncoders.get(encoderType))
+                .orElseThrow(() -> this.getError(
+                        String.format("Unsupported cookie encoder(%s)", encoderType),
+                        null
+                ));
     }
 
     private FullHttpRequest createHttpRequest(
