@@ -1,6 +1,6 @@
                             <configuration>
                                 <generatePom>true</generatePom>
-                                <file>${project.parent.basedir}/project-distribution/${project.artifactId}-${project.parent.version}.${deploy.format}</file>
+                                <file>${project.parent.basedir}/project-distribution/${project.artifactId}-${project.version}.${deploy.format}</file>
                                 <url>${upload.repository.url}</url>
                                 <repositoryId>${upload.repository.id}</repositoryId>
                                 <groupId>${project.groupId}</groupId>
