@@ -45,6 +45,7 @@
                         </goals>
                         <configuration>
                             <skipAssembly>${deployOnly}</skipAssembly>
+                            <appendAssemblyId>false</appendAssemblyId>
                             <outputDirectory>../../project-distribution</outputDirectory>
                             <finalName>${project.parent.artifactId}-${project.parent.version}</finalName>
                             <descriptors>

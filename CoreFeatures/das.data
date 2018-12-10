@@ -74,7 +74,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginHttpEndpoint",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint-plugins.get-cookie-from-request-plugin",
   "uploadRepositories" : [ {
@@ -82,7 +82,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginGetCookieFromRequestRule",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint-plugins.endpoint-plugin",
   "uploadRepositories" : [ {
@@ -90,7 +90,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginEndpoint",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint-plugins.http-client-plugin",
   "uploadRepositories" : [ {
@@ -98,7 +98,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginHttpClient",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint-plugins.response-content-json-strategy-plugin",
   "uploadRepositories" : [ {
@@ -106,7 +106,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginResponseJsonContentStrategy",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint-plugins.get-query-parameter-rule-plugin",
   "uploadRepositories" : [ {
@@ -114,7 +114,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginGetQueryParameterRule",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint-plugins.response-plugin",
   "uploadRepositories" : [ {
@@ -122,7 +122,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginResponse",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint-plugins.get-header-from-request-rule-plugin",
   "uploadRepositories" : [ {
@@ -130,7 +130,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginGetHeaderRule",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint-plugins.http-request-sender-actor-plugin",
   "uploadRepositories" : [ {
@@ -138,7 +138,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginHttpRequestSenderActor",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -148,7 +148,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "http-endpoint-plugins",
   "rawName" : "HttpEndpoint-plugins",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "actors" : [ {
   "artifactId" : "dumpable-interface.idumpable",
@@ -257,7 +257,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "GetHeaderFromRequestRule",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.http-response-sender",
   "uploadRepositories" : [ {
@@ -265,7 +265,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "HttpResponseSender",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.deserialize-strategy-post-form-urlencoded",
   "uploadRepositories" : [ {
@@ -273,7 +273,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "DeserializeStrategyPostFormUrlencoded",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.http-request-maker",
   "uploadRepositories" : [ {
@@ -281,7 +281,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "HttpRequestMaker",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.channel-handler-netty",
   "uploadRepositories" : [ {
@@ -289,7 +289,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "ChannelHandlerNetty",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.http-endpoint",
   "uploadRepositories" : [ {
@@ -297,7 +297,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "HttpEndpoint",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.strategy.get-cookie-from-request",
   "uploadRepositories" : [ {
@@ -305,7 +305,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "GetCookieFromRequestRule",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.http-response-handler",
   "uploadRepositories" : [ {
@@ -313,7 +313,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "HttpResponseHandler",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.http-headers-setter",
   "uploadRepositories" : [ {
@@ -321,7 +321,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "HttpHeadersSetter",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.http-request-sender-actor",
   "uploadRepositories" : [ {
@@ -329,7 +329,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "HttpRequestSenderActor",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.http-client-initializer",
   "uploadRepositories" : [ {
@@ -337,7 +337,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "HttpClientInitializer",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.deserialize-strategy-get",
   "uploadRepositories" : [ {
@@ -345,7 +345,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "DeserializeStrategyGet",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.completable-netty-future",
   "uploadRepositories" : [ {
@@ -353,7 +353,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "CompletableNettyFuture",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.http-client",
   "uploadRepositories" : [ {
@@ -361,7 +361,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "HttpClient",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.interfaces.icookies-extractor",
   "uploadRepositories" : [ {
@@ -369,7 +369,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "ICookiesSetter",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.response-content-json-strategy",
   "uploadRepositories" : [ {
@@ -377,7 +377,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "ResponseContentJsonStrategy",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.interfaces.iheaders-extractor",
   "uploadRepositories" : [ {
@@ -385,7 +385,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "IHeadersExtractor",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.deserialize-strategy-post-json",
   "uploadRepositories" : [ {
@@ -393,7 +393,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "DeserializeStrategyPostJson",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.strategy.get-query-parameter",
   "uploadRepositories" : [ {
@@ -401,7 +401,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "GetQueryParameterRule",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.message-to-bytes-mapper",
   "uploadRepositories" : [ {
@@ -409,7 +409,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "MessageToBytesMapper",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.http-server",
   "uploadRepositories" : [ {
@@ -417,7 +417,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "HttpServer",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.tcp-server",
   "uploadRepositories" : [ {
@@ -425,7 +425,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "TcpServer",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.response-status-extractor",
   "uploadRepositories" : [ {
@@ -433,7 +433,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "ResponseStatusExtractor",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.netty-client",
   "uploadRepositories" : [ {
@@ -441,7 +441,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "NettyClient",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.plugin-http-request-sender-actor",
   "uploadRepositories" : [ {
@@ -449,7 +449,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginHttpRequestSenderActor",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.http-response-deserialization-strategy",
   "uploadRepositories" : [ {
@@ -457,7 +457,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "HttpResponseDeserializationStrategy",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.interfaces.iresponse-status-extractor",
   "uploadRepositories" : [ {
@@ -465,7 +465,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "IResponseStatusExtractor",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.netty-server",
   "uploadRepositories" : [ {
@@ -473,7 +473,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "NettyServer",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.http-request-handler",
   "uploadRepositories" : [ {
@@ -481,7 +481,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "HttpRequestHandler",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.cookies-setter",
   "uploadRepositories" : [ {
@@ -489,7 +489,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "CookiesSetter",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.environment-handler",
   "uploadRepositories" : [ {
@@ -497,7 +497,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "EnvironmentHandler",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "http-endpoint.http-client-handler",
   "uploadRepositories" : [ {
@@ -505,7 +505,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "HttpClientHandler",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -515,7 +515,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "http-endpoint",
   "rawName" : "HttpEndpoint",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "actors" : [ {
   "artifactId" : "field.field",

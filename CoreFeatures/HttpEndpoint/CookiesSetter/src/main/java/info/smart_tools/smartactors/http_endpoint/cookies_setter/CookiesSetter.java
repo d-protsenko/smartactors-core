@@ -19,7 +19,6 @@ import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 
 import java.util.*;
 
-
 /**
  * Cookies setter for {@link FullHttpResponse}
  * This implementation extract cookies from context of the environment and set them into response

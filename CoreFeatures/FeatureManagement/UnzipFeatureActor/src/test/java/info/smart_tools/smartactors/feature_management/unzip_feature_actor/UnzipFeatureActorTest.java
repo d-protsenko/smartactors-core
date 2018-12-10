@@ -97,7 +97,7 @@ public class UnzipFeatureActorTest {
         when(feature.getName()).thenReturn("test-feature");
         when(feature.getDependencies()).thenReturn(null);
         when(feature.getGroupId()).thenReturn("com.groupId");
-        String fileName = "target/test-classes/test-feature-VERSION-archive.zip";
+        String fileName = "target/test-classes/test-feature-VERSION.zip";
         String directory = "target/test-classes/test-feature-VERSION";
         when(feature.getLocation()).thenReturn(
                 new Path(fileName)
@@ -131,7 +131,7 @@ public class UnzipFeatureActorTest {
         IFeature feature = mock(IFeature.class);
         when(feature.getName()).thenReturn("test-feature");
         when(feature.getDependencies()).thenReturn(null);
-        String fileName = "target/test-classes/unsupported-test-feature-VERSION-archive.zip";
+        String fileName = "target/test-classes/unsupported-test-feature-VERSION.zip";
         when(feature.getLocation()).thenReturn(
                 new Path(fileName)
         );
@@ -148,7 +148,7 @@ public class UnzipFeatureActorTest {
         IFeature feature = mock(IFeature.class);
         when(feature.getName()).thenReturn("test-feature");
         when(feature.getDependencies()).thenReturn(null);
-        String fileName = "target/test-classes/broken-test-feature-VERSION-archive.zip";
+        String fileName = "target/test-classes/broken-test-feature-VERSION.zip";
         when(feature.getLocation()).thenReturn(
                 new Path(fileName)
         );
