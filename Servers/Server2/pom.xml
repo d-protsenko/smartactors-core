@@ -66,7 +66,7 @@
                     <!--</goals>-->
                     <!--<configuration>-->
                         <!--<generatePom>false</generatePom>-->
-                        <!--<file>${basedir}/target/${project.artifactId}-${project.version}-archive.zip</file>-->
+                        <!--<file>${basedir}/target/${project.artifactId}-${project.version}.zip</file>-->
                         <!--<url>${feature.rurl}</url>-->
                         <!--<repositoryId>${feature.rid}</repositoryId>-->
 
@@ -94,7 +94,7 @@
                             <inherited>false</inherited>
                             <configuration>
                                 <generatePom>true</generatePom>
-                                <file>${project.basedir}/project-distribution/${project.artifactId}-${project.version}-archive.zip</file>
+                                <file>${project.basedir}/project-distribution/${project.artifactId}-${project.version}.zip</file>
                                 <url>${feature.rurl}</url>
                                 <repositoryId>${feature.rid}</repositoryId>
                                 <groupId>${project.groupId}</groupId>
