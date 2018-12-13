@@ -1,0 +1,16 @@
+package info.smart_tools.smartactors.database.sql_connection_pool.exception;
+
+public class _exception_name_ extends Exception {
+
+    public _exception_name_(final String message) {
+        super(message);
+    }
+
+    public _exception_name_(final String message, final Throwable cause) {
+        super(message, cause);
+    }
+
+    public _exception_name_(final Throwable cause) {
+        super(cause);
+    }
+}

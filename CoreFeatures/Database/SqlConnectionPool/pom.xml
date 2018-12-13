@@ -7,8 +7,32 @@
         <artifactId>database</artifactId>
         <version>0.5.1</version>
     </parent>
-    <artifactId>database.interfaces.istorage-connection</artifactId>
+    <artifactId>database.sql-connection-pool</artifactId>
     <version>0.5.1</version>
+    <dependencies>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.interfaces.ipool</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>database.interfaces.istorage-connection</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
     <build>
         <pluginManagement>
             <plugins>
@@ -40,6 +64,25 @@
                                 <file>${project.basedir}/target/${project.artifactId}-${project.version}.jar</file>
                                 <url>${module.rurl}</url>
                                 <repositoryId>${module.rid}</repositoryId>
+                                <groupId>${project.groupId}</groupId>
+                                <artifactId>${project.artifactId}</artifactId>
+                                <version>${project.version}</version>
+                                <packaging>jar</packaging>
+                                <description>This package contains ...</description>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>archiva.smartactors-modules</id>
+                            <phase>deploy</phase>
+                            <goals>
+                                <goal>deploy-file</goal>
+                            </goals>
+                            <inherited>false</inherited>
+                            <configuration>
+                                <generatePom>true</generatePom>
+                                <file>${project.basedir}/target/${project.artifactId}-${project.version}.jar</file>
+                                <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
+                                <repositoryId>archiva.smartactors-modules</repositoryId>
                                 <groupId>${project.groupId}</groupId>
                                 <artifactId>${project.artifactId}</artifactId>
                                 <version>${project.version}</version>

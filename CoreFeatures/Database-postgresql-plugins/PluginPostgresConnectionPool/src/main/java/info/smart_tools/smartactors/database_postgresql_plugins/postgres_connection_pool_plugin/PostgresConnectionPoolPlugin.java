@@ -8,6 +8,7 @@ import info.smart_tools.smartactors.base.pool.Pool;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.database.interfaces.istorage_connection.exception.StorageException;
+import info.smart_tools.smartactors.database.sql_connection_pool.SqlConnectionPool;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.PostgresConnection;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrapper.ConnectionOptions;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
@@ -69,7 +70,7 @@ public class PostgresConnectionPoolPlugin implements IPlugin {
                                         return IOC.resolve(poolKey);
                                     } catch (ResolutionException re) {      // pool not found
                                         try {
-                                            IPool pool = new Pool(connectionOptions.getMaxConnections(), () -> {
+                                            IPool pool = new SqlConnectionPool(connectionOptions.getMaxConnections(), () -> {
                                                 try {
                                                     return new PostgresConnection(connectionOptions);
                                                 } catch (StorageException se) {

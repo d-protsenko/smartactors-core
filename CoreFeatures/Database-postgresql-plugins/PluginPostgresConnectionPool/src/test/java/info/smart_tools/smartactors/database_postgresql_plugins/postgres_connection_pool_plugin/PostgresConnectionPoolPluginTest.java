@@ -2,6 +2,8 @@ package info.smart_tools.smartactors.database_postgresql_plugins.postgres_connec
 
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.pool.Pool;
+import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
+import info.smart_tools.smartactors.database.sql_connection_pool.SqlConnectionPool;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.PostgresConnection;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrapper.ConnectionOptions;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
@@ -41,13 +43,13 @@ public class PostgresConnectionPoolPluginTest {
     @Test
     public void testPoolResolve() throws Exception {
         IPool pool = IOC.resolve(Keys.resolveByName("PostgresConnectionPool"), connectionOptions);
-        assertThat(pool, is(instanceOf(Pool.class)));
+        assertThat(pool, is(instanceOf(SqlConnectionPool.class)));
     }
 
     @Test
     public void testPoolResolveDatabaseConnection() throws Exception {
         IPool pool = IOC.resolve(Keys.resolveByName("DatabaseConnectionPool"), connectionOptions);
-        assertThat(pool, is(instanceOf(Pool.class)));
+        assertThat(pool, is(instanceOf(SqlConnectionPool.class)));
     }
 
     @Test
