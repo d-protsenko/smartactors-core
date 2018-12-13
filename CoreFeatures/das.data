@@ -203,7 +203,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginPostgresDBTasks",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "database-postgresql-plugins.postgres-connection-pool-plugin",
   "uploadRepositories" : [ {
@@ -211,7 +211,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginPostgresConnectionPool",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -221,7 +221,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "database-postgresql-plugins",
   "rawName" : "Database-postgresql-plugins",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "actors" : [ {
   "artifactId" : "scheduler-plugins.scheduling-strategies-plugin",
