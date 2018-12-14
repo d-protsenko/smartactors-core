@@ -57,9 +57,7 @@ public class SqlConnectionPool implements IPool {
                 if (lock.tryLock()) {
                     try {
                         ++itemCounter;
-                        return creationFunction.execute();
-                    } catch (FunctionExecutionException e) {
-                        throw new PoolTakeException("Pool object creation failed.", e);
+                        return createNewConnection();
                     } finally {
                         if (itemCounter < size) {
                             lock.unlock();
@@ -69,22 +67,20 @@ public class SqlConnectionPool implements IPool {
             } else {
                 try {
                     connection = items.take();
-                    boolean isValid = false;
-                    try {
-                        isValid = connection.validate();
-                    } catch (StorageException e) {/**/}
-                    if (!isValid) {
-                        try {
-                            connection.close();
-                        } catch (StorageException e) {/**/}
-                        connection = creationFunction.execute();
-                    }
                 } catch (InterruptedException e) {
                     throw new PoolTakeException("Interrupted while waiting for pool object.", e);
-                } catch (FunctionExecutionException e) {
-                    throw new PoolTakeException("Pool object creation failed.", e);
                 }
             }
+        }
+        boolean isValid = false;
+        try {
+            isValid = connection.validate();
+        } catch (StorageException e) {/**/}
+        if (!isValid) {
+            try {
+                connection.close();
+            } catch (StorageException e) {/**/}
+            connection = createNewConnection();
         }
 
         return connection;
@@ -126,10 +122,20 @@ public class SqlConnectionPool implements IPool {
         try {
             if (items.size() > 0) {
                 action.execute();
+                return;
             }
             this.taskQueue.add(action);
         } catch (ActionExecuteException e) {
             throw new RuntimeException("Failed to execute PoorAction", e);
+        }
+    }
+
+    private IStorageConnection createNewConnection()
+            throws PoolTakeException {
+        try {
+            return this.creationFunction.execute();
+        } catch (FunctionExecutionException e) {
+            throw new PoolTakeException("Pool object creation failed.", e);
         }
     }
 }
