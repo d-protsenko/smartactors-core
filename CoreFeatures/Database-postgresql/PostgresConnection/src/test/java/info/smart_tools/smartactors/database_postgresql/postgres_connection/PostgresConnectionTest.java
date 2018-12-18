@@ -1,5 +1,8 @@
 package info.smart_tools.smartactors.database_postgresql.postgres_connection;
 
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.database.interfaces.istorage_connection.exception.StorageException;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrapper.ConnectionOptions;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -13,7 +16,9 @@ import java.io.IOException;
 import java.io.Writer;
 import java.sql.*;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.*;
@@ -28,6 +33,11 @@ public class PostgresConnectionTest {
 
     @Before
     public void before() throws ReadValueException, SQLException, ClassNotFoundException, IOException, StorageException {
+        IModule module = mock(IModule.class);
+        ISmartactorsClassLoader classLoader = mock(ISmartactorsClassLoader.class);
+        ModuleManager.setCurrentModule(module);
+        when(module.getClassLoader()).thenReturn(classLoader);
+        when(classLoader.loadClass("org.postgresql.Driver")).thenReturn(null);
         mockStatic(DriverManager.class);
         mockStatic(Class.class);
 
@@ -52,9 +62,6 @@ public class PostgresConnectionTest {
         when(connection.prepareStatement("SELECT(1);")).thenReturn(validateStatement);
 
         testPostgresConnection = new PostgresConnection(connectionOptions);
-
-        verifyStatic();
-        Class.forName("org.postgresql.Driver");
 
         verifyStatic();
         DriverManager.getConnection(url, name, password);
@@ -110,7 +117,7 @@ public class PostgresConnectionTest {
             verify(connection).rollback();
             return;
         }
-        assertTrue("Must throw exception", false);
+        fail("Must throw exception");
     }
 
     @Test
@@ -123,7 +130,7 @@ public class PostgresConnectionTest {
             verify(connection).isClosed();
             return;
         }
-        assertTrue("Must throw exception", false);
+        fail("Must throw exception");
     }
 
     @Test
@@ -142,7 +149,7 @@ public class PostgresConnectionTest {
             verify(connection).close();
             return;
         }
-        assertTrue("Must throw exception", false);
+        fail("Must throw exception");
     }
 
     @Test
@@ -161,7 +168,7 @@ public class PostgresConnectionTest {
             verify(connection).commit();
             return;
         }
-        assertTrue("Must throw exception", false);
+        fail("Must throw exception");
     }
 
     @Test
@@ -180,7 +187,7 @@ public class PostgresConnectionTest {
             verify(connection).rollback();
             return;
         }
-        assertTrue("Must throw exception", false);
+        fail("Must throw exception");
     }
 
     @Test
@@ -193,7 +200,7 @@ public class PostgresConnectionTest {
         when(statement.compile(connection)).thenReturn(preparedStatement);
         whenNew(JDBCCompiledQuery.class).withArguments(preparedStatement).thenReturn(query);
 
-        assertTrue(testPostgresConnection.compileQuery(statement) == query);
+        assertEquals(testPostgresConnection.compileQuery(statement), query);
 
         verify(statement).compile(connection);
         verifyNew(JDBCCompiledQuery.class).withArguments(preparedStatement);
@@ -215,7 +222,7 @@ public class PostgresConnectionTest {
             verify(statement).compile(connection);
             return;
         }
-        assertTrue("Must throw exception", false);
+        fail("Must throw exception");
     }
 
 }

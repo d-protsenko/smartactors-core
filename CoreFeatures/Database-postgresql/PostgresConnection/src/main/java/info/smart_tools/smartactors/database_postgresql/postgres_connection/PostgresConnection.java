@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.database_postgresql.postgres_connection;
 
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.database.interfaces.istorage_connection.ICompiledQuery;
 import info.smart_tools.smartactors.database.interfaces.istorage_connection.IPreparedQuery;
 import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
@@ -29,7 +30,7 @@ public class PostgresConnection implements IStorageConnection {
             throws StorageException {
         try {
             try {
-                Class.forName(POSTGRESQL_JDBC_DRIVER_NAME);
+                ModuleManager.getCurrentModule().getClassLoader().loadClass(POSTGRESQL_JDBC_DRIVER_NAME);
             } catch (ClassNotFoundException e) {
                 throw new StorageException("Could not load JDBC driver.", e);
             }
