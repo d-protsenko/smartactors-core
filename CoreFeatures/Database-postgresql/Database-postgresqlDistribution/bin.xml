@@ -37,15 +37,9 @@
                         <unpack>${build.unpack}</unpack>
                         <scope>runtime</scope>
                         <outputDirectory>/</outputDirectory>
-                        <!--<excludes>-->
-                            <!--<exclude>*:*</exclude>-->
-                        <!--</excludes>-->
-                        <includes>
-                            <include>com.sun.jna:jna</include>
-                            <include>org.postgresql:postgresql</include>
-                            <include>org.osgi:org.osgi.core</include>
-                            <include>org.osgi:org.osgi.enterprise</include>
-                        </includes>
+                        <excludes>
+                            <exclude>*:*</exclude>
+                        </excludes>
                     </dependencySet>
                 </dependencySets>
                 <outputDirectory>/</outputDirectory>

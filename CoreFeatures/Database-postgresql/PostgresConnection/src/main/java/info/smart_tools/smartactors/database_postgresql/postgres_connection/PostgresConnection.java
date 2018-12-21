@@ -9,15 +9,18 @@ import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrap
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.Driver;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * Implementation of {@link IStorageConnection}
  */
 public class PostgresConnection implements IStorageConnection {
     private static final String POSTGRESQL_JDBC_DRIVER_NAME = "org.postgresql.Driver";
+    private static final String POSTGRESQL_USER_FIELD_NAME = "user";
+    private static final String POSTGRESQL_PASSWORD_FIELD_NAME = "password";
     private Connection connection;
     private PreparedStatement validationQueryStatement;
 
@@ -29,26 +32,19 @@ public class PostgresConnection implements IStorageConnection {
     public PostgresConnection(final ConnectionOptions options)
             throws StorageException {
         try {
-            try {
-                ModuleManager.getCurrentModule().getClassLoader().loadClass(POSTGRESQL_JDBC_DRIVER_NAME);
-            } catch (ClassNotFoundException e) {
-                throw new StorageException("Could not load JDBC driver.", e);
-            }
-
-            try {
-                Connection connection = DriverManager.getConnection(
-                        options.getUrl(),
-                        options.getUsername(),
-                        options.getPassword());
-                connection.setAutoCommit(false);
-                this.connection = connection;
-            } catch (SQLException | ReadValueException e) {
-                throw new StorageException("Could not get JDBC connection.", e);
-            }
-        } catch (StorageException e) {
-            throw new RuntimeException(e);
+            Class c = ModuleManager.getCurrentClassLoader().loadClass(POSTGRESQL_JDBC_DRIVER_NAME);
+            Driver d = (Driver) c.newInstance();
+            Properties prop = new Properties();
+            prop.put(POSTGRESQL_USER_FIELD_NAME, options.getUsername());
+            prop.put(POSTGRESQL_PASSWORD_FIELD_NAME, options.getPassword());
+            Connection connection = d.connect(options.getUrl(), prop);
+            connection.setAutoCommit(false);
+            this.connection = connection;
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+            throw new StorageException("Could not load JDBC driver.", e);
+        } catch (SQLException | ReadValueException e) {
+            throw new StorageException("Could not get JDBC connection.", e);
         }
-
         try {
             this.validationQueryStatement = connection.prepareStatement("SELECT(1);");
         } catch (SQLException e) {
