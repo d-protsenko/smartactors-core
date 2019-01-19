@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.database_plugins.collection_name_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -98,7 +98,7 @@ public class CollectionNamePluginTest {
         plugin.load();
     }
 
-    @Test(expected = ActionExecuteException.class)
+    @Test(expected = ActionExecutionException.class)
     public void ShouldThrowRuntimeException_When_LambdaThrowsException() throws Exception {
 
         when(Keys.resolveByName(CollectionName.class.getCanonicalName())).thenThrow(new ResolutionException(""));

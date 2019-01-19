@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.database_in_memory.in_memory_db_get_by_id_t
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.database.interfaces.idatabase.IDatabase;
 import info.smart_tools.smartactors.database.interfaces.idatabase.exception.IDatabaseException;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
@@ -67,7 +67,7 @@ public class InMemoryGetByIdTask implements IDatabaseTask {
             throw new TaskExecutionException("Failed to resolve InMemoryDatabase", e);
         } catch (IDatabaseException e) {
             throw new TaskExecutionException("Not found: id = " + id);
-        } catch (ActionExecuteException | InvalidArgumentException e) {
+        } catch (ActionExecutionException | InvalidArgumentException e) {
             throw new TaskExecutionException("Failed to execute callback", e);
         }
     }

@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.async_operations_plugins.get_async_operatio
 import info.smart_tools.smartactors.async_operations.get_async_operation.GetAsyncOperationActor;
 import info.smart_tools.smartactors.async_operations.get_async_operation.exception.GetAsyncOperationActorException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -55,11 +55,11 @@ public class GetAsyncOperationPlugin implements IPlugin {
                                     }
                             ));
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("GetAsyncOperationActor plugin can't load: can't get GetAsyncOperationActor key", e);
+                            throw new ActionExecutionException("GetAsyncOperationActor plugin can't load: can't get GetAsyncOperationActor key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("GetAsyncOperationActor plugin can't load: can't create strategy", e);
+                            throw new ActionExecutionException("GetAsyncOperationActor plugin can't load: can't create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("GetAsyncOperationActor plugin can't load: can't register new strategy", e);
+                            throw new ActionExecutionException("GetAsyncOperationActor plugin can't load: can't register new strategy", e);
                         }
                     });
             bootstrap.add(item);

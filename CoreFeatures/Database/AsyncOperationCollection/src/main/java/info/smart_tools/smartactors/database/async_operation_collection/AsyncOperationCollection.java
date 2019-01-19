@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.database.async_operation_collection;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
@@ -63,7 +63,7 @@ public class AsyncOperationCollection implements IAsyncOperationCollection {
                     try {
                         result.setValue(new FieldName("result"), docs[0]);
                     } catch (ChangeValueException e) {
-                        throw new ActionExecuteException(e);
+                        throw new ActionExecutionException(e);
                     }
                 }
             );

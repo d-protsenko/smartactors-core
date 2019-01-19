@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.database_in_memory_plugins.in_memory_database_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.database_in_memory.in_memory_database.InMemoryDatabaseIOCInitializer;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -36,7 +36,7 @@ public class PluginInMemoryDatabase implements IPlugin {
                                 try {
                                     InMemoryDatabaseIOCInitializer.init();
                                 } catch (Exception e) {
-                                    throw new ActionExecuteException("Failed to load plugin \"NestedFieldName\"", e);
+                                    throw new ActionExecutionException("Failed to load plugin \"NestedFieldName\"", e);
                                 }
                             }
                     );

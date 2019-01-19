@@ -4,7 +4,7 @@ import com.jcabi.aether.Aether;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IBiAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.das.utilities.JsonFile;
 import info.smart_tools.smartactors.das.utilities.exception.InvalidCommandLineArgumentException;
 import info.smart_tools.smartactors.das.utilities.interfaces.ICommandLineArgsResolver;
@@ -74,7 +74,7 @@ public class DownloadCore implements IAction {
 
     @Override
     public void execute(final Object o)
-            throws ActionExecuteException, InvalidArgumentException {
+            throws ActionExecutionException, InvalidArgumentException {
         System.out.println("Download server core ...");
         ICommandLineArgsResolver clar = (ICommandLineArgsResolver) ((Object[])o)[0];
 
@@ -133,7 +133,7 @@ public class DownloadCore implements IAction {
             System.out.println("Server core downloading has been failed.");
             System.err.println(e);
 
-            throw new ActionExecuteException(e);
+            throw new ActionExecutionException(e);
         }
         System.out.println("Server core has been downloaded successful.");
     }

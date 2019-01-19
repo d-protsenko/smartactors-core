@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.configuration_manager_plugins.read_config_file_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
@@ -60,15 +60,15 @@ public class PluginReadConfigFile implements IPlugin {
 
                             configurationManager.applyConfig(cObject);
                         } catch (FileNotFoundException e) {
-                            throw new ActionExecuteException("ReadConfigFile plugin can't load: configuration file not found.", e);
+                            throw new ActionExecutionException("ReadConfigFile plugin can't load: configuration file not found.", e);
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("ReadConfigFile plugin can't load: can't get ReadConfigFile key", e);
+                            throw new ActionExecutionException("ReadConfigFile plugin can't load: can't get ReadConfigFile key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("ReadConfigFile plugin can't load: can't create strategy", e);
+                            throw new ActionExecutionException("ReadConfigFile plugin can't load: can't create strategy", e);
                         } catch (IOException e) {
-                            throw new ActionExecuteException("ReadConfigFile plugin can't load: can't read configuration file", e);
+                            throw new ActionExecutionException("ReadConfigFile plugin can't load: can't read configuration file", e);
                         } catch (ConfigurationProcessingException e) {
-                            throw new ActionExecuteException("Error occurred processing configuration.", e);
+                            throw new ActionExecutionException("Error occurred processing configuration.", e);
                         }
                     })
                     .revertProcess(() -> {
@@ -84,17 +84,17 @@ public class PluginReadConfigFile implements IPlugin {
 
                             configurationManager.revertConfig(cObject);
                         } catch (FileNotFoundException e) {
-                            throw new ActionExecuteException("ReadConfigFile plugin can't revert: configuration file not found.", e);
+                            throw new ActionExecutionException("ReadConfigFile plugin can't revert: configuration file not found.", e);
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("ReadConfigFile plugin can't revert: can't get ReadConfigFile key", e);
+                            throw new ActionExecutionException("ReadConfigFile plugin can't revert: can't get ReadConfigFile key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("ReadConfigFile plugin can't revert: can't revert the strategy", e);
+                            throw new ActionExecutionException("ReadConfigFile plugin can't revert: can't revert the strategy", e);
                         } catch (IOException e) {
-                            throw new ActionExecuteException("ReadConfigFile plugin can't revert: can't read configuration file", e);
+                            throw new ActionExecutionException("ReadConfigFile plugin can't revert: can't read configuration file", e);
                         } catch (ConfigurationProcessingException e) {
                             /*  Now suppress all exceptions since we count revert successful
                                 even if not all actions done normally. Before it was:
-                                    throw new ActionExecuteException("Error occurred processing configuration.", e);
+                                    throw new ActionExecutionException("Error occurred processing configuration.", e);
                             */
                         }
                     });

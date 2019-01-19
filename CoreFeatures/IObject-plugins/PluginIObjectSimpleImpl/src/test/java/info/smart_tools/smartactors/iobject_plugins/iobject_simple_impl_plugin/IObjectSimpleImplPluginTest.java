@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.iobject_plugins.iobject_simple_impl_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -113,7 +113,7 @@ public class IObjectSimpleImplPluginTest {
         try {
             actionArgumentCaptor.getValue().execute();
             fail();
-        } catch(ActionExecuteException e) { }
+        } catch(ActionExecutionException e) { }
     }
 
     @Test
@@ -139,6 +139,6 @@ public class IObjectSimpleImplPluginTest {
         // try {
         actionArgumentCaptor.getValue().execute();
         //    fail();
-        //} catch(ActionExecuteException e) { }
+        //} catch(ActionExecutionException e) { }
     }
 }

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.timer_plugins.timer_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -44,7 +44,7 @@ public class PluginTimer implements IPlugin {
                     IOC.register(Keys.resolveByName("timer"), new SingletonStrategy(
                             new TimerImpl(new Timer("Smart actors system timer", true))));
                 } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
-                    throw new ActionExecuteException(e);
+                    throw new ActionExecutionException(e);
                 }
             })
             .revertProcess(() -> {
@@ -66,7 +66,7 @@ public class PluginTimer implements IPlugin {
                 try {
                     IOC.register(Keys.resolveByName("time"), new SingletonStrategy(new SystemTimeImpl()));
                 } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
-                    throw new ActionExecuteException(e);
+                    throw new ActionExecutionException(e);
                 }
             })
             .revertProcess(() -> {

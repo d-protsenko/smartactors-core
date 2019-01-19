@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.core.dependency_resolving_feature_manager;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ifeature_manager.IFeature;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ifeature_manager.exception.FeatureManagementException;
@@ -90,7 +90,7 @@ public class FeatureTest {
     @Test(expected = FeatureManagementException.class)
     public void Should_wrapException_When_ListenerAddedAfterResolutionThrows()
             throws Exception {
-        doThrow(ActionExecuteException.class).when(action1).execute(same(pathsMock));
+        doThrow(ActionExecutionException.class).when(action1).execute(same(pathsMock));
 
         IFeature feature = new Feature(managerMock, "feature");
 
@@ -132,9 +132,9 @@ public class FeatureTest {
     @Test
     public void Should_callAllListenersAndSuppressThrownExceptionsIfAnyListenerThrows()
             throws Exception {
-        ActionExecuteException exception1 = new ActionExecuteException("e1");
-        ActionExecuteException exception2 = new ActionExecuteException("e2");
-        ActionExecuteException exception3 = new ActionExecuteException("e3");
+        ActionExecutionException exception1 = new ActionExecutionException("e1");
+        ActionExecutionException exception2 = new ActionExecutionException("e2");
+        ActionExecutionException exception3 = new ActionExecutionException("e3");
 
         doThrow(exception1).when(action1).execute(same(pathsMock));
         doThrow(exception2).when(action2).execute(same(pathsMock));

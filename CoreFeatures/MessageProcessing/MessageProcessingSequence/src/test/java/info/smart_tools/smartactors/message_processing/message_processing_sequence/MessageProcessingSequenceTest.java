@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.message_processing.message_processing_seque
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
@@ -433,7 +433,7 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         Throwable exception = mock(Throwable.class);
         IReceiverChain exceptionalChain = mock(IReceiverChain.class);
         IObject exceptionalChainAndEnv = mock(IObject.class);
-        IAction<IMessageProcessingSequence> afterAction = (mps) -> {throw new ActionExecuteException("exception");};
+        IAction<IMessageProcessingSequence> afterAction = (mps) -> {throw new ActionExecutionException("exception");};
 
         Object exceptionalChainName = "exceptional chain";
         when(chainStorage.resolve(eq(exceptionalChainName))).thenReturn(exceptionalChain);

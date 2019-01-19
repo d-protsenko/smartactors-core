@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.feature_management.load_feature_actor;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
@@ -102,7 +102,7 @@ public class LoadFeatureActor {
                     IPlugin plugin = pluginCreator.create(clz, bootstrap);
                     plugin.load();
                 } catch (PluginCreationException | PluginException e) {
-                    throw new ActionExecuteException(e);
+                    throw new ActionExecutionException(e);
                 }
             };
             // setup current feature for class loading, bootstrap and applying config

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.testing.chain_testing.section_strategy;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -68,7 +68,7 @@ public class TestsSectionStrategy implements ISectionStrategy {
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     } catch (BrokenBarrierException e) {
-                        throw new ActionExecuteException(e);
+                        throw new ActionExecutionException(e);
                     }
                 });
                 try {

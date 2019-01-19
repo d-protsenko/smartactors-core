@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.testing.test_environment_handler;
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -58,7 +58,7 @@ public class MainTestChain implements IReceiverChain {
                 if (isCompleted.compareAndSet(false, true)) {
                     completionCallback.execute(null);
                 }
-            } catch (ActionExecuteException | InvalidArgumentException e) {
+            } catch (ActionExecutionException | InvalidArgumentException e) {
                 throw new MessageReceiveException(e);
             }
         }
@@ -148,7 +148,7 @@ public class MainTestChain implements IReceiverChain {
             if (isCompleted.compareAndSet(false, true)) {
                 completionCallback.execute(exception);
             }
-        } catch (ActionExecuteException | InvalidArgumentException | ResolutionException | ChangeValueException e) {
+        } catch (ActionExecutionException | InvalidArgumentException | ResolutionException | ChangeValueException e) {
             e.printStackTrace();
         }
 

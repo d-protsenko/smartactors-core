@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
@@ -136,7 +136,7 @@ public class IFieldNamePluginTest {
 
         try {
             iPoorActionArgumentCaptor.getValue().execute();
-        } catch (ActionExecuteException e) {
+        } catch (ActionExecutionException e) {
 
             verifyStatic();
             Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
@@ -174,7 +174,7 @@ public class IFieldNamePluginTest {
 
         try {
             iPoorActionArgumentCaptor.getValue().execute();
-        } catch (ActionExecuteException e) {
+        } catch (ActionExecutionException e) {
 
             verifyStatic();
             Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
@@ -217,7 +217,7 @@ public class IFieldNamePluginTest {
         IOC.register(eq(iFieldNameKey), any());
         try {
             iPoorActionArgumentCaptor.getValue().execute();
-        } catch (ActionExecuteException e) {
+        } catch (ActionExecutionException e) {
 
             verifyStatic();
             Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");

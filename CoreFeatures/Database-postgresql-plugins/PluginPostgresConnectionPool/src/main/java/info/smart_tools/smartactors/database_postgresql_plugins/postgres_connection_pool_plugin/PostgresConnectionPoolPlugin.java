@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.database_postgresql_plugins.postgres_connection_pool_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.pool.Pool;
@@ -89,7 +89,7 @@ public class PostgresConnectionPoolPlugin implements IPlugin {
                         IOC.register(postgresConnectionPoolKey, poolStrategy);
                         IOC.register(databaseConnectionPoolKey, poolStrategy);
                     } catch (Exception e) {
-                        throw new ActionExecuteException(
+                        throw new ActionExecutionException(
                                 "PostgresConnectionPool plugin can't load", e);
                     }
             });

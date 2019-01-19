@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.plugin.exception_handler_actor;
 
 import info.smart_tools.smartactors.actor.exception_handler_actor.ExceptionHandlerActor;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -47,7 +47,7 @@ public class ExceptionHandlerActorPlugin implements IPlugin {
                                 }
                             }));
                 } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
-                    throw new ActionExecuteException(e);
+                    throw new ActionExecutionException(e);
                 }
             });
             bootstrap.add(item);

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
@@ -39,7 +39,7 @@ public class PluginIOCKeys implements IPlugin {
                         try {
                             IOC.register(IOC.getKeyForKeyByNameResolutionStrategy(), new ResolveByNameIocStrategy());
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("IOCKeys plugin can't load: can't register new strategy", e);
+                            throw new ActionExecutionException("IOCKeys plugin can't load: can't register new strategy", e);
                         }
                     })
                     .revertProcess(() -> {

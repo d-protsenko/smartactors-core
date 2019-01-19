@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.checkpoint.checkpoint_actor;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
@@ -405,7 +405,7 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
         try {
             callbackCaptor.getValue().execute(null);
             fail();
-        } catch (ActionExecuteException ignore) { }
+        } catch (ActionExecutionException ignore) { }
 
         doThrow(IllegalServiceStateException.class).when(serviceMock).stop();
         callbackCaptor.getValue().execute(null);

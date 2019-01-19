@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.endpoint_service_starter.endpoint_starter;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -48,7 +48,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
 
                             configurationManager.addSectionStrategy(new EndpointsSectionProcessingStrategy());
                         } catch (ResolutionException | InvalidArgumentException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     });
 
@@ -70,7 +70,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
 
                             configurationManager.addSectionStrategy(new ClientSectionProcessingStrategy());
                         } catch (ResolutionException | InvalidArgumentException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     });
 

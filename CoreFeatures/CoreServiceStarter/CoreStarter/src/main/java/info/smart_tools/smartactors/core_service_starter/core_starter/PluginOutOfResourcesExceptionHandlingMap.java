@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core_service_starter.core_starter;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
@@ -82,7 +82,7 @@ public class PluginOutOfResourcesExceptionHandlingMap implements IPlugin {
 
                             configurationManager.applyConfig(templateObj);
                         } catch (ResolutionException | InvalidArgumentException | ChangeValueException | ConfigurationProcessingException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     });
 

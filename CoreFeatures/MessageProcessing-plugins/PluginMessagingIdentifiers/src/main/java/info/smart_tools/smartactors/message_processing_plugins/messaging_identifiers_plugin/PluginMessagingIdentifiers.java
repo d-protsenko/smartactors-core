@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_processing_plugins.messaging_identifiers_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
@@ -71,9 +71,9 @@ public class PluginMessagingIdentifiers implements IPlugin {
                             IOC.register(Keys.resolveByName("chain_id_from_map_name"), toStringStrategy);
                             IOC.register(Keys.resolveByName("receiver_id_from_iobject"), targetToStringStrategy);
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("MessagingIdentifiers plugin can't load: can't get MessagingIdentifiers key", e);
+                            throw new ActionExecutionException("MessagingIdentifiers plugin can't load: can't get MessagingIdentifiers key", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("MessagingIdentifiers plugin can't load: can't register new strategy", e);
+                            throw new ActionExecutionException("MessagingIdentifiers plugin can't load: can't register new strategy", e);
                         }
                     })
                     .revertProcess(() -> {

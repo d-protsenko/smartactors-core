@@ -4,7 +4,7 @@ package info.smart_tools.smartactors.http_endpoint_plugins.http_endpoint_plugin;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
@@ -195,11 +195,11 @@ public class HttpEndpointPlugin implements IPlugin {
                                     ));
 
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("EndpointCollection plugin can't load: can't get key", e);
+                            throw new ActionExecutionException("EndpointCollection plugin can't load: can't get key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("EndpointCollection plugin can't load: can't create strategy", e);
+                            throw new ActionExecutionException("EndpointCollection plugin can't load: can't create strategy", e);
                         } catch (RegistrationException | AdditionDependencyStrategyException e) {
-                            throw new ActionExecuteException("EndpointCollection plugin can't load: can't register new strategy", e);
+                            throw new ActionExecutionException("EndpointCollection plugin can't load: can't register new strategy", e);
                         }
                     })
                     .revertProcess(() -> {

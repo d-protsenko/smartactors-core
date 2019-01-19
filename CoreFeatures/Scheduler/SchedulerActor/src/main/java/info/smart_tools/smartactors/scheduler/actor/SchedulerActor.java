@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.scheduler.actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartupException;
@@ -39,11 +39,11 @@ public class SchedulerActor {
      * @throws ReadValueException if fails to read any value from arguments object
      * @throws EntryStorageAccessException if fails to download entries saved in database
      * @throws InvalidArgumentException if it occurs
-     * @throws ActionExecuteException if error occurs executing service activation action
+     * @throws ActionExecutionException if error occurs executing service activation action
      * @throws UpCounterCallbackExecutionException if the system is shutting down and error occurs executing any callback
      */
     public SchedulerActor(final IObject args)
-            throws ResolutionException, ReadValueException, EntryStorageAccessException, InvalidArgumentException, ActionExecuteException,
+            throws ResolutionException, ReadValueException, EntryStorageAccessException, InvalidArgumentException, ActionExecutionException,
                    UpCounterCallbackExecutionException {
         String connectionOptionsDependency = (String) args.getValue(
                 IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "connectionOptionsDependency"));
@@ -69,7 +69,7 @@ public class SchedulerActor {
             } catch (IllegalServiceStateException ignore) {
                 // Service is already stopped, OK
             } catch (ServiceStopException e) {
-                throw new ActionExecuteException(e);
+                throw new ActionExecutionException(e);
             }
         });
         // Execute only entries with "preShutdownExec" flag after shutdown request received

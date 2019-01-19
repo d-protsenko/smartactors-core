@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.http_endpoint_plugins.get_header_from_request_rule_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -45,7 +45,7 @@ public class GetHeaderFromRequestRulePlugin implements IPlugin {
                                 new GetHeaderFromRequestRule()
                             );
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException(
+                            throw new ActionExecutionException(
                                 "GetHeaderFromRequestRule plugin can't load: can't get GetHeaderFromRequestRule key", e
                             );
                         }

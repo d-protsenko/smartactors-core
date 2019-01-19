@@ -43,7 +43,7 @@ public class PluginStarter implements IPlugin {
 //
 //                            configurationManager.configure();
 //                        } catch (ResolutionException | InvalidStateException | ConfigurationProcessingException e) {
-//                            throw new ActionExecuteException(e);
+//                            throw new ActionExecutionException(e);
 //                        }
                     });
 

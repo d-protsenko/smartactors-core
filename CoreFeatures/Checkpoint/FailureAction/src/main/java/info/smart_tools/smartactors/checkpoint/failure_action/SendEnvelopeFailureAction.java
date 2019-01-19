@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.checkpoint.failure_action;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
@@ -34,7 +34,7 @@ public class SendEnvelopeFailureAction implements IAction<IObject> {
     }
 
     @Override
-    public void execute(final IObject actingObject) throws ActionExecuteException, InvalidArgumentException {
+    public void execute(final IObject actingObject) throws ActionExecutionException, InvalidArgumentException {
         try {
             IObject envelope = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
             envelope.setValue(messageFieldName, actingObject);
@@ -46,7 +46,7 @@ public class SendEnvelopeFailureAction implements IAction<IObject> {
                 e.addSuppressed(e1);
             }
 
-            throw new ActionExecuteException("Error occurred sending lost message.", e);
+            throw new ActionExecutionException("Error occurred sending lost message.", e);
         }
     }
 }

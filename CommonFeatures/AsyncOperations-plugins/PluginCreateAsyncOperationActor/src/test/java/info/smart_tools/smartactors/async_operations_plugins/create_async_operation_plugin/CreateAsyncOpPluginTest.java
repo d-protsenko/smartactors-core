@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.async_operations.create_async_operation.Crea
 import info.smart_tools.smartactors.async_operations.create_async_operation.exception.CreateAsyncOperationActorException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -132,7 +132,7 @@ public class CreateAsyncOpPluginTest {
 
         try {
             actionArgumentCaptor.getValue().execute();
-        } catch (ActionExecuteException e) {
+        } catch (ActionExecutionException e) {
             verifyStatic();
             Keys.resolveByName(CreateAsyncOperationActor.class.getCanonicalName());
             return;
@@ -173,7 +173,7 @@ public class CreateAsyncOpPluginTest {
 
         try {
             actionArgumentCaptor.getValue().execute();
-        } catch (ActionExecuteException e) {
+        } catch (ActionExecutionException e) {
 
             verifyStatic();
             Keys.resolveByName(CreateAsyncOperationActor.class.getCanonicalName());
@@ -225,7 +225,7 @@ public class CreateAsyncOpPluginTest {
 
         try {
             actionArgumentCaptor.getValue().execute();
-        } catch (ActionExecuteException e) {
+        } catch (ActionExecutionException e) {
 
             verifyStatic();
             Keys.resolveByName(CreateAsyncOperationActor.class.getCanonicalName());

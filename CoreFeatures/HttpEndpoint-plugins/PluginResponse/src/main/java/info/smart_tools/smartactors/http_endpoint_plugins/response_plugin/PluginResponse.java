@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.http_endpoint_plugins.response_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse.IResponse;
 import info.smart_tools.smartactors.endpoint.response.Response;
@@ -42,11 +42,11 @@ public class PluginResponse implements IPlugin {
                                     Keys.resolveByName(IResponse.class.getCanonicalName()),
                                     new CreateNewInstanceStrategy(args -> new Response()));
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("Response plugin can't load: can't get Response key", e);
+                            throw new ActionExecutionException("Response plugin can't load: can't get Response key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("Response plugin can't load: can't create strategy", e);
+                            throw new ActionExecutionException("Response plugin can't load: can't create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("Response plugin can't load: can't register new strategy", e);
+                            throw new ActionExecutionException("Response plugin can't load: can't register new strategy", e);
                         }
                     })
                     .revertProcess(() -> {

@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.feature_management.feature_creator_actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IBiAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
 import info.smart_tools.smartactors.feature_management.feature.Feature;
@@ -121,7 +121,7 @@ public class FeaturesCreatorActor {
                     action.execute(file, wrapper);
                 }
             }
-        } catch (ReadValueException | InvalidArgumentException | ActionExecuteException e) {
+        } catch (ReadValueException | InvalidArgumentException | ActionExecutionException e) {
             throw new FeatureCreationException("Could not create features by given file.", e);
         }
     }

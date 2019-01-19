@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.checkpoint.checkpoint_actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.checkpoint.interfaces.IRecoverStrategy;
 import info.smart_tools.smartactors.checkpoint.interfaces.exceptions.RecoverStrategyExecutionException;
 import info.smart_tools.smartactors.checkpoint.interfaces.exceptions.RecoverStrategyInitializationException;
@@ -113,7 +113,7 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
 
             recoverStrategy.reSend(entry.getState());
         } catch (ResolutionException | ReadValueException | InvalidArgumentException | RecoverStrategyExecutionException
-                | ActionExecuteException e) {
+                | ActionExecutionException e) {
             throw new SchedulerActionExecutionException("Error occurred executing checkpoint action.", e);
         }
     }

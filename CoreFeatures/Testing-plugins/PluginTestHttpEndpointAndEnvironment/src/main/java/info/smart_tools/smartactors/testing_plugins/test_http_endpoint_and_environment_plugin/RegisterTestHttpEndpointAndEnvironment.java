@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.testing_plugins.test_http_endpoint_and_envi
 
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.iasync_service.IAsyncService;
 import info.smart_tools.smartactors.endpoint.interfaces.ichannel_handler.IChannelHandler;
@@ -98,15 +98,15 @@ public class RegisterTestHttpEndpointAndEnvironment implements IPlugin {
                                     );
                                     endpoint.start();
                                 } catch (ScopeProviderException e) {
-                                    throw new ActionExecuteException("RegisterTestHttpEndpoint plugin can't load: current scope is undefined.", e);
+                                    throw new ActionExecutionException("RegisterTestHttpEndpoint plugin can't load: current scope is undefined.", e);
                                 } catch (ResolutionException e) {
-                                    throw new ActionExecuteException("RegisterTestHttpEndpoint plugin can't load: can't get keys for testing objects", e);
+                                    throw new ActionExecutionException("RegisterTestHttpEndpoint plugin can't load: can't get keys for testing objects", e);
                                 } catch (InvalidArgumentException e) {
-                                    throw new ActionExecuteException("RegisterTestHttpEndpoint plugin can't load: can't create strategy", e);
+                                    throw new ActionExecutionException("RegisterTestHttpEndpoint plugin can't load: can't create strategy", e);
                                 } catch (RegistrationException e) {
-                                    throw new ActionExecuteException("RegisterTestHttpEndpoint plugin can't load: can't register new strategy", e);
+                                    throw new ActionExecutionException("RegisterTestHttpEndpoint plugin can't load: can't register new strategy", e);
                                 } catch (InitializationException e) {
-                                    throw new ActionExecuteException("RegisterTestHttpEndpoint plugin can't load: can't create instance of TestHttpEndpoint", e);
+                                    throw new ActionExecutionException("RegisterTestHttpEndpoint plugin can't load: can't create instance of TestHttpEndpoint", e);
                                 }
                             }
                         );

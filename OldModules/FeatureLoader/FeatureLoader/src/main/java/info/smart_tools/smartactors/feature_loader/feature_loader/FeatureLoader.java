@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.feature_loader.feature_loader;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IBiAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
@@ -119,7 +119,7 @@ public class FeatureLoader implements IFeatureLoader {
             metaFeatureStatus.load();
 
             return metaFeatureStatus;
-        } catch (IOException | FeatureLoadException | ActionExecuteException | ResolutionException e) {
+        } catch (IOException | FeatureLoadException | ActionExecutionException | ResolutionException e) {
             throw new FeatureLoadException(
                     MessageFormat.format("Error occurred loading features from ''{0}''.", groupPath.getPath()), e);
         }
@@ -141,7 +141,7 @@ public class FeatureLoader implements IFeatureLoader {
         try {
             preStartProcess(status);
             status.load();
-        } catch (ActionExecuteException e) {
+        } catch (ActionExecutionException e) {
             throw new FeatureLoadException("Error occurred loading the feature.", e);
         }
 
@@ -215,13 +215,13 @@ public class FeatureLoader implements IFeatureLoader {
     }
 
     private void loadPluginsAndConfig(final IObject config, final IPath directory)
-            throws ActionExecuteException {
+            throws ActionExecutionException {
         try {
             loadPluginsFrom(listJarsIn(directory));
             configurationManager.applyConfig(config);
         } catch (FeatureLoadException | InvalidArgumentException | PluginLoaderException | ProcessExecutionException |
                  ConfigurationProcessingException | ResolutionException e) {
-            throw new ActionExecuteException(e);
+            throw new ActionExecutionException(e);
         }
     }
 
@@ -238,7 +238,7 @@ public class FeatureLoader implements IFeatureLoader {
                 IPlugin plugin = pluginCreator.create(clz, bootstrap);
                 plugin.load();
             } catch (PluginCreationException | PluginException e) {
-                throw new ActionExecuteException(e);
+                throw new ActionExecutionException(e);
             }
         };
 
@@ -278,7 +278,7 @@ public class FeatureLoader implements IFeatureLoader {
                             try {
                                 task.execute();
                             } catch (TaskExecutionException e) {
-                                throw new ActionExecuteException(e);
+                                throw new ActionExecutionException(e);
                             }
                         }
                     }
@@ -286,7 +286,7 @@ public class FeatureLoader implements IFeatureLoader {
                     currentLoadingStatus.compareAndSet(status, null);
                 }
             });
-        } catch (ActionExecuteException e) {
+        } catch (ActionExecutionException e) {
             throw new FeatureLoadException("Unexpected feature state.");
         }
     }

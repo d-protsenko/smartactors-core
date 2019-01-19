@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_processing_plugins.receiver_chains_storage_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
@@ -60,7 +60,7 @@ public class PluginReceiverChainsStorage implements IPlugin {
                                     })
                             );
                         } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     })
                     .revertProcess(() -> {
@@ -92,11 +92,11 @@ public class PluginReceiverChainsStorage implements IPlugin {
                                     Keys.resolveByName(IChainStorage.class.getCanonicalName()),
                                     new SingletonStrategy(new ChainStorage(new ConcurrentHashMap<>(), router)));
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("ReceiverChainsStorage plugin can't load: can't get ReceiverChainsStorage key", e);
+                            throw new ActionExecutionException("ReceiverChainsStorage plugin can't load: can't get ReceiverChainsStorage key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("ReceiverChainsStorage plugin can't load: can't create strategy", e);
+                            throw new ActionExecutionException("ReceiverChainsStorage plugin can't load: can't create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("ReceiverChainsStorage plugin can't load: can't register new strategy", e);
+                            throw new ActionExecutionException("ReceiverChainsStorage plugin can't load: can't register new strategy", e);
                         }
                     })
                     .revertProcess(() -> {

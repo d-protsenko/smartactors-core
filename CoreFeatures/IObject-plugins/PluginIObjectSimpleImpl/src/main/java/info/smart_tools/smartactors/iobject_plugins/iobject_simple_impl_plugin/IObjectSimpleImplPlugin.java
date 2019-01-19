@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.iobject_plugins.iobject_simple_impl_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -44,11 +44,11 @@ public class IObjectSimpleImplPlugin implements IPlugin {
                                 (args) -> new IObjectImpl()
                         ));
                     } catch (ResolutionException e) {
-                        throw new ActionExecuteException("IObjectSimpleImpl plugin can't load: can't get IObjectSimpleImpl key", e);
+                        throw new ActionExecutionException("IObjectSimpleImpl plugin can't load: can't get IObjectSimpleImpl key", e);
                     } catch (InvalidArgumentException e) {
-                        throw new ActionExecuteException("IObjectSimpleImpl plugin can't load: can't create strategy", e);
+                        throw new ActionExecutionException("IObjectSimpleImpl plugin can't load: can't create strategy", e);
                     } catch (RegistrationException e) {
-                        throw new ActionExecuteException("IObjectSimpleImpl plugin can't load: can't register new strategy", e);
+                        throw new ActionExecutionException("IObjectSimpleImpl plugin can't load: can't register new strategy", e);
                     }
                 })
                 .revertProcess(() -> {

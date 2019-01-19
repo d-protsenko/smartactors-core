@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.checkpoint.checkpoint_actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartupException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStopException;
@@ -64,11 +64,11 @@ public class CheckpointActor {
      * @throws ResolutionException if error occurs resolving any dependencies
      * @throws ReadValueException if error occurs reading actor description
      * @throws InvalidArgumentException if some methods do not accept our arguments
-     * @throws ActionExecuteException if error occurs executing scheduler service activation action
+     * @throws ActionExecutionException if error occurs executing scheduler service activation action
      * @throws UpCounterCallbackExecutionException if the system is shutting down and error occurs executing any callback
      */
     public CheckpointActor(final IObject args)
-            throws ResolutionException, ReadValueException, InvalidArgumentException, ActionExecuteException,
+            throws ResolutionException, ReadValueException, InvalidArgumentException, ActionExecutionException,
                    UpCounterCallbackExecutionException {
         //
         responsibleCheckpointIdFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responsibleCheckpointId");
@@ -110,7 +110,7 @@ public class CheckpointActor {
             } catch (IllegalServiceStateException ignore) {
                 // Service is stopped, OK
             } catch (ServiceStopException e) {
-                throw new ActionExecuteException(e);
+                throw new ActionExecutionException(e);
             }
         });
     }

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_processing_plugins.standard_object_creators_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -49,11 +49,11 @@ public class PluginStandardObjectCreators implements IPlugin {
                                     Keys.resolveByName(IRoutedObjectCreator.class.getCanonicalName() + "#raw"),
                                     new SingletonStrategy(new RawObjectCreator()));
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("StandardObjectCreators plugin can't load: can't get StandardObjectCreators key", e);
+                            throw new ActionExecutionException("StandardObjectCreators plugin can't load: can't get StandardObjectCreators key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("StandardObjectCreators plugin can't load: can't create strategy", e);
+                            throw new ActionExecutionException("StandardObjectCreators plugin can't load: can't create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("StandardObjectCreators plugin can't load: can't register new strategy", e);
+                            throw new ActionExecutionException("StandardObjectCreators plugin can't load: can't register new strategy", e);
                         }
                     })
                     .revertProcess(() -> {

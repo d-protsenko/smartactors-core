@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.das.commands;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.das.models.Feature;
 import info.smart_tools.smartactors.das.models.Plugin;
 import info.smart_tools.smartactors.das.models.Project;
@@ -19,7 +19,7 @@ public class AddOrUpdatePluginUploadRepository implements IAction {
 
     @Override
     public void execute(Object o)
-            throws ActionExecuteException, InvalidArgumentException {
+            throws ActionExecutionException, InvalidArgumentException {
         System.out.println("Adding/updating repository to the plugin ...");
 
         try {
@@ -77,7 +77,7 @@ public class AddOrUpdatePluginUploadRepository implements IAction {
             System.out.println("Addition/update repository has been failed.");
             System.err.println(e);
 
-            throw new ActionExecuteException(e);
+            throw new ActionExecutionException(e);
         }
         System.out.println("Repository has been added/updated successful.");
     }

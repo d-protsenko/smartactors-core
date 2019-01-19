@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.base.pool;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolPutException;
 import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolTakeException;
@@ -106,7 +106,7 @@ public class Pool implements IPool {
                 return;
             }
             this.taskQueue.add(action);
-        } catch (ActionExecuteException e) {
+        } catch (ActionExecutionException e) {
             throw new RuntimeException("Failed to execute PoorAction", e);
         }
     }

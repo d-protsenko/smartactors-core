@@ -159,7 +159,7 @@ If the document with such id does not exist, the `TaskExecutionException` is thr
                     System.out.println("Found by id");
                     System.out.println((String) doc.serialize());
                 } catch (SerializeException e) {
-                    throw new ActionExecuteException(e);
+                    throw new ActionExecutionException(e);
                 }
             }
     );
@@ -327,7 +327,7 @@ You define the pair: the document field name and the sort direction: "asc" or "d
                         System.out.println((String) doc.serialize());
                     }
                 } catch (SerializeException e) {
-                    throw new ActionExecuteException(e);
+                    throw new ActionExecutionException(e);
                 }
             }
     );

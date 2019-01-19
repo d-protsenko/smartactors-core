@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.configuration_manager_plugins.configuration_manager_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.configuration_manager.configuration_manager.ConfigurationManager;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
@@ -44,11 +44,11 @@ public class PluginConfigurationManager implements IPlugin {
                             IOC.register(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()),
                                     new SingletonStrategy(new ConfigurationManager()));
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("ConfigurationManager plugin can't load: can't get ConfigurationManager key", e);
+                            throw new ActionExecutionException("ConfigurationManager plugin can't load: can't get ConfigurationManager key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("ConfigurationManager plugin can't load: can't create strategy", e);
+                            throw new ActionExecutionException("ConfigurationManager plugin can't load: can't create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("ConfigurationManager plugin can't load: can't register new strategy", e);
+                            throw new ActionExecutionException("ConfigurationManager plugin can't load: can't register new strategy", e);
                         }
                     })
                     .revertProcess(() -> {

@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.base.interfaces.iaction;
 
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 
 /**
  * Interface IPoorAction.
@@ -9,8 +9,8 @@ import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExec
 public interface IPoorAction {
     /**
      * Action without incoming arguments
-     * @throws ActionExecuteException if any errors occurred
+     * @throws ActionExecutionException if any errors occurred
      */
     void execute()
-            throws ActionExecuteException;
+            throws ActionExecutionException;
 }

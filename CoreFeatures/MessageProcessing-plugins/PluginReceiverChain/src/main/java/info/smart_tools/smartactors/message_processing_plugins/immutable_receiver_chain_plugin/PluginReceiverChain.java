@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_processing_plugins.immutable_receiver_chain_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
@@ -43,9 +43,9 @@ public class PluginReceiverChain implements IPlugin {
                                     Keys.resolveByName(IReceiverChain.class.getCanonicalName()),
                                     new ImmutableReceiverChainResolutionStrategy());
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("ReceiverChain plugin can't load: can't get ReceiverChain key", e);
+                            throw new ActionExecutionException("ReceiverChain plugin can't load: can't get ReceiverChain key", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("ReceiverChain plugin can't load: can't register new strategy", e);
+                            throw new ActionExecutionException("ReceiverChain plugin can't load: can't register new strategy", e);
                         }
                     })
                     .revertProcess(() -> {

@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.shutdown_plugins.on_shutown_request_configu
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
@@ -92,7 +92,7 @@ public class OnShutownRequestConfigurationSectionPlugin extends BootstrapPlugin 
                             messageProcessor.process(message, (IObject) IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
                         }
                     } catch (ResolutionException | ChangeValueException | MessageProcessorProcessException e) {
-                        throw new ActionExecuteException(e);
+                        throw new ActionExecutionException(e);
                     }
                 };
             } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {

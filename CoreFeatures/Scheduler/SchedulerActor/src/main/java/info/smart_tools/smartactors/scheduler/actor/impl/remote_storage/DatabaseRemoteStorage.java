@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.scheduler.actor.impl.remote_storage;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
@@ -193,7 +193,7 @@ public class DatabaseRemoteStorage implements IRemoteEntryStorage {
                         try {
                             entriesQueryResult = Arrays.asList(docs);
                         } catch (Exception e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     }
             );

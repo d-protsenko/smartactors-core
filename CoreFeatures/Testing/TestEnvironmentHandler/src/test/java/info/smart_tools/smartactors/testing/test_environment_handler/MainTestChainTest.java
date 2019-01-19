@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.testing.test_environment_handler;
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
@@ -187,7 +187,7 @@ public class MainTestChainTest {
                 ModuleManager.getCurrentModule());
         IMessageProcessor mpMock = mock(IMessageProcessor.class);
 
-        doThrow(ActionExecuteException.class).when(this.completionCallbackMock).execute(null);
+        doThrow(ActionExecutionException.class).when(this.completionCallbackMock).execute(null);
 
         chain.get(1).receive(mpMock);
     }

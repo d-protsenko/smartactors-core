@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.core_service_starter.core_starter;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
@@ -101,7 +101,7 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
             IUpCounter rootUpCounter = IOC.resolve(Keys.resolveByName("root upcounter"));
             IPoorAction taskDispatcherShutdown = rootUpCounter.removeFromShutdownComplete(taskDispatcher.toString());
             taskDispatcherShutdown.execute();
-        } catch (ResolutionException | ActionExecuteException e) {
+        } catch (ResolutionException | ActionExecutionException e) {
             exception.addSuppressed(e);
         }
         try {

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.version_management_plugins.version_management_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -71,7 +71,7 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
     @After({"subscribe_ioc_for_scope_creation"})
     @Before({"create_system_scope"})
     public void registerVersionedStrategyContainerForScope()
-            throws ActionExecuteException {
+            throws ActionExecutionException {
         try {
             ScopeProvider.clearListOfSubscribers();
             ScopeProvider.subscribeOnCreationNewScope(scope -> {
@@ -94,7 +94,7 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
                 }
             });
         } catch (ScopeProviderException e) {
-            throw new ActionExecuteException("ScopedIOC plugin can't load.", e);
+            throw new ActionExecutionException("ScopedIOC plugin can't load.", e);
         }
     }
 
@@ -146,7 +146,7 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
 
     @ItemRevert("versioned_strategy_container_for_scope")
     public void unregisterVersionedStrategyContainerForScope()
-            throws ActionExecuteException {
+            throws ActionExecutionException {
         // nothing to do - we cannot unregister subscription on new scope creation
     }
 

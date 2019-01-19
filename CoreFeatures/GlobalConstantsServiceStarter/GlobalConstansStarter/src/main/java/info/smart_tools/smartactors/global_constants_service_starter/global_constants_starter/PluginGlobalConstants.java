@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.global_constants_service_starter.global_constants_starter;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
@@ -72,7 +72,7 @@ public class PluginGlobalConstants implements IPlugin {
                                 }
                             }));
                 } catch (ResolutionException | InvalidArgumentException | RegistrationException e) {
-                    throw new ActionExecuteException(e);
+                    throw new ActionExecutionException(e);
                 }
             });
 
@@ -89,7 +89,7 @@ public class PluginGlobalConstants implements IPlugin {
                     IConfigurationManager configurationManager = IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
                     configurationManager.addSectionStrategy(new ConstantsSectionStrategy());
                 } catch (ResolutionException | InvalidArgumentException e) {
-                    throw new ActionExecuteException(e);
+                    throw new ActionExecutionException(e);
                 }
             });
 

@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.database_in_memory_plugins.in_memory_db_tas
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
@@ -60,11 +60,11 @@ public class PluginInMemoryDBTasks implements IPlugin {
                             registerDeleteTask();
                             registerCountTask();
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("Can't resolve fields for db task.", e);
+                            throw new ActionExecutionException("Can't resolve fields for db task.", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("Can't create strategy for db task.", e);
+                            throw new ActionExecutionException("Can't create strategy for db task.", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("Can't register strategy for db task.", e);
+                            throw new ActionExecutionException("Can't register strategy for db task.", e);
                         }
                     });
             bootstrap.add(item);

@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.scheduler.actor;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
@@ -230,7 +230,7 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
         try {
             callbackCaptor.getValue().execute();
             fail();
-        } catch (ActionExecuteException ignore) { }
+        } catch (ActionExecutionException ignore) { }
 
         doThrow(IllegalServiceStateException.class).when(service).stop();
         callbackCaptor.getValue().execute();

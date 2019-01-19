@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.core_service_starter.core_starter;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
@@ -56,7 +56,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                                     IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
                             configurationManager.addSectionStrategy(new ObjectsSectionProcessingStrategy());
                         } catch (ResolutionException | InvalidArgumentException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     })
                     .revertProcess(() -> {
@@ -193,7 +193,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                                     })
                             );
                         } catch (ResolutionException | InvalidArgumentException | AdditionDependencyStrategyException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     })
                     .revertProcess(() -> {
@@ -249,7 +249,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
 
                             configurationManager.addSectionStrategy(new ExecutorSectionProcessingStrategy());
                         } catch (ResolutionException | InvalidArgumentException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     })
                     .revertProcess(() -> {

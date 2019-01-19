@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.iobject_plugins.fieldname_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
@@ -65,11 +65,11 @@ public class FieldNamePlugin implements IPlugin {
                                     )
                             );
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("FieldName plugin can't load: can't get FieldName key");
+                            throw new ActionExecutionException("FieldName plugin can't load: can't get FieldName key");
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("FieldName plugin can't load: can't create strategy");
+                            throw new ActionExecutionException("FieldName plugin can't load: can't create strategy");
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("FieldName plugin can't load: can't register new strategy");
+                            throw new ActionExecutionException("FieldName plugin can't load: can't register new strategy");
                         }
                     })
                     .revertProcess(() -> {

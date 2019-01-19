@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.endpoint_plugins.response_sender_actor_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.endpoint.actor.response_sender_actor.ResponseSenderActor;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
@@ -45,11 +45,11 @@ public class PluginResponseSenderActor implements IPlugin {
                                     // Response sender prints deprecation message on creation so create it every time it is resolved.
                                     new ApplyFunctionToArgumentsStrategy(a -> new ResponseSenderActor()));
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("ResponseSenderActor plugin can't load: can't get ResponseSenderActor key", e);
+                            throw new ActionExecutionException("ResponseSenderActor plugin can't load: can't get ResponseSenderActor key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("ResponseSenderActor plugin can't load: can't create strategy", e);
+                            throw new ActionExecutionException("ResponseSenderActor plugin can't load: can't create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("ResponseSenderActor plugin can't load: can't register new strategy", e);
+                            throw new ActionExecutionException("ResponseSenderActor plugin can't load: can't register new strategy", e);
                         }
                     })
                     .revertProcess(() -> {

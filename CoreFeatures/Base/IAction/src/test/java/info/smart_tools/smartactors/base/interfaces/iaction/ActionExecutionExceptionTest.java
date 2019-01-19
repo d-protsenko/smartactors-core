@@ -1,40 +1,40 @@
 package info.smart_tools.smartactors.base.interfaces.iaction;
 
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 /**
- * Tests for ActionExecuteException
+ * Tests for ActionExecutionException
  */
-public class ActionExecuteExceptionTest {
-    @Test(expected = ActionExecuteException.class)
+public class ActionExecutionExceptionTest {
+    @Test(expected = ActionExecutionException.class)
     public void checkMessageMethod()
-            throws ActionExecuteException {
+            throws ActionExecutionException {
         String str = "test";
-        ActionExecuteException exception = new ActionExecuteException(str);
+        ActionExecutionException exception = new ActionExecutionException(str);
         assertEquals(exception.getMessage(), str);
         throw exception;
     }
 
-    @Test(expected = ActionExecuteException.class)
+    @Test(expected = ActionExecutionException.class)
     public void checkCauseMethod()
-            throws ActionExecuteException {
+            throws ActionExecutionException {
         String internalMessage = "Internal message";
         Throwable cause = new Throwable(internalMessage);
-        ActionExecuteException exception = new ActionExecuteException(cause);
+        ActionExecutionException exception = new ActionExecutionException(cause);
         assertEquals(cause, exception.getCause());
         throw exception;
     }
 
-    @Test (expected = ActionExecuteException.class)
+    @Test (expected = ActionExecutionException.class)
     public void checkMessageAndCauseMethod()
-            throws ActionExecuteException {
+            throws ActionExecutionException {
         String str = "test";
         String internalMessage = "Internal message";
         Throwable cause = new Throwable(internalMessage);
-        ActionExecuteException exception = new ActionExecuteException(str, cause);
+        ActionExecutionException exception = new ActionExecutionException(str, cause);
         assertEquals(exception.getMessage(), str);
         assertEquals(exception.getCause(), cause);
         throw exception;

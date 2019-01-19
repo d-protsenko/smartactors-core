@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.database_in_memory.in_memory_db_count_task;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.database.interfaces.idatabase.exception.IDatabaseException;
@@ -78,7 +78,7 @@ public class InMemoryDBCountTaskTest {
     }
 
     @Test
-    public void testExecute() throws InvalidArgumentException, ChangeValueException, TaskPrepareException, TaskExecutionException, IDatabaseException, ActionExecuteException {
+    public void testExecute() throws InvalidArgumentException, ChangeValueException, TaskPrepareException, TaskExecutionException, IDatabaseException, ActionExecutionException {
         InMemoryDBCountTask selectTask = new InMemoryDBCountTask();
         IObject query = new DSObject("{\"collectionName\": \"collection_name\"}");
         IObject criteria = new DSObject("{\"hello\": \"world\"}");

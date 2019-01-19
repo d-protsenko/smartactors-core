@@ -5,7 +5,7 @@ import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strate
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IBiFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.base.strategy.strategy_storage_with_cache_strategy.StrategyStorageWithCacheStrategy;
@@ -245,9 +245,9 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             IOC.register(intKey, intStrategy);
                             IOC.register(expandableStrategyIntKey, new SingletonStrategy(intStrategy));
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("ResolveStandardTypesStrategies plugin can't load: can't get ResolveStandardTypesStrategies key", e);
+                            throw new ActionExecutionException("ResolveStandardTypesStrategies plugin can't load: can't get ResolveStandardTypesStrategies key", e);
                         } catch (RegistrationException | AdditionDependencyStrategyException | InvalidArgumentException e) {
-                            throw new ActionExecuteException("ResolveStandardTypesStrategies plugin can't load: can't register new strategy", e);
+                            throw new ActionExecutionException("ResolveStandardTypesStrategies plugin can't load: can't register new strategy", e);
                         }
                     })
                     .revertProcess(() -> {

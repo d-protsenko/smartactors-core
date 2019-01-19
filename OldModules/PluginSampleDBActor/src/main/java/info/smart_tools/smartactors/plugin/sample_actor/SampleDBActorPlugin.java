@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.plugin.sample_actor;
 import info.smart_tools.smartactors.actors.SampleDBActor;
 import info.smart_tools.smartactors.actors.exception.SampleDBException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrapper.ConnectionOptions;
@@ -99,7 +99,7 @@ public class SampleDBActorPlugin implements IPlugin {
                         }
                     });
                 } catch (ResolutionException | RegistrationException e) {
-                    throw new ActionExecuteException(e);
+                    throw new ActionExecutionException(e);
                 }
             });
             bootstrap.add(item);

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.examples.db_collection;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.exception.PoolGuardException;
@@ -144,7 +144,7 @@ public class TestPostgresSearchServer implements IServer {
                                 System.out.println((String) doc.serialize());
                             }
                         } catch (SerializeException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     }
             );

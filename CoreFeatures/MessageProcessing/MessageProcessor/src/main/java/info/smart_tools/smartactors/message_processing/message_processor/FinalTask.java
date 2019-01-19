@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.message_processing.message_processor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -58,7 +58,7 @@ public class FinalTask implements ITask {
             for (IAction action : actions) {
                 try {
                     action.execute(this.env);
-                } catch (ActionExecuteException e) {
+                } catch (ActionExecutionException e) {
                     e.printStackTrace();
                 }
             }

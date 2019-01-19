@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.system_actors_pack.actor_collection_receive
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
@@ -94,7 +94,7 @@ public class ActorCollectionReceiver implements IMessageReceiver {
             try {
                 childReceivers.remove(ctx.getValue(keyFieldName));
             } catch (ReadValueException | InvalidArgumentException e) {
-                throw new ActionExecuteException(e);
+                throw new ActionExecutionException(e);
             }
         };
     }

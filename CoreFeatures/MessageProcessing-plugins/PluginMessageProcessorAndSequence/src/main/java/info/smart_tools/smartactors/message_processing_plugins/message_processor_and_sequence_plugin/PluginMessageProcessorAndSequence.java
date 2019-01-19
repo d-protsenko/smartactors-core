@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.message_processing_plugins.message_processo
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
@@ -73,11 +73,11 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                     new SingletonStrategy(repeatAction)
                             );
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't get AfterExceptionAction key", e);
+                            throw new ActionExecutionException("MessageProcessorAndSequence plugin can't load: can't get AfterExceptionAction key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't create strategy", e);
+                            throw new ActionExecutionException("MessageProcessorAndSequence plugin can't load: can't create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't register new strategy", e);
+                            throw new ActionExecutionException("MessageProcessorAndSequence plugin can't load: can't register new strategy", e);
                         }
                     })
                     .revertProcess(() -> {
@@ -151,11 +151,11 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                         }
                                     }));
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't get MessageProcessorAndSequence key", e);
+                            throw new ActionExecutionException("MessageProcessorAndSequence plugin can't load: can't get MessageProcessorAndSequence key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't create strategy", e);
+                            throw new ActionExecutionException("MessageProcessorAndSequence plugin can't load: can't create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't register new strategy", e);
+                            throw new ActionExecutionException("MessageProcessorAndSequence plugin can't load: can't register new strategy", e);
                         }
                     })
                     .revertProcess(() -> {
@@ -202,7 +202,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                         }
                                     }));
                         } catch (ResolutionException | InvalidArgumentException | RegistrationException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     })
                     .revertProcess(() -> {
@@ -229,7 +229,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                     Keys.resolveByName("recover message processing sequence"),
                                     new MessageProcessingSequenceRecoveryStrategy());
                         } catch (ResolutionException | RegistrationException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     })
                     .revertProcess(() -> {

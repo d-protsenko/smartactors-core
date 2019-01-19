@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.system_actors_pack_plugins.repeater_actor_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -42,7 +42,7 @@ public class RepeaterActorPlugin implements IPlugin {
                                     Keys.resolveByName("RepeaterActor"),
                                     new SingletonStrategy(new RepeaterActor()));
                         } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     });
 

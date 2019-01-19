@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_processing.exception_handling_receivers;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iresource_source.IResourceSource;
 import info.smart_tools.smartactors.base.interfaces.iresource_source.exceptions.OutOfResourceException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -69,7 +69,7 @@ public class RetryingToTakeResourceExceptionHandlerTest extends ExceptionHandlin
         try {
             callbackCaptor.getValue().execute();
             fail();
-        } catch (ActionExecuteException e) {
+        } catch (ActionExecutionException e) {
             assertSame(asynchronousOperationException, e.getCause());
         }
 

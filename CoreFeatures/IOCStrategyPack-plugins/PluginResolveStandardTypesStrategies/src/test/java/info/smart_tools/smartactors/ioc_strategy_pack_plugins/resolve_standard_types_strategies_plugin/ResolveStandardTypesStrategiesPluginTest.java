@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.ioc_strategy_pack_plugins.resolve_standard_
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -180,7 +180,7 @@ public class ResolveStandardTypesStrategiesPluginTest {
         fail();
     }
 
-    @Test(expected = ActionExecuteException.class)
+    @Test(expected = ActionExecutionException.class)
     public void ShouldThrowException_When_InternalErrorIsOccurred() throws Exception {
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);

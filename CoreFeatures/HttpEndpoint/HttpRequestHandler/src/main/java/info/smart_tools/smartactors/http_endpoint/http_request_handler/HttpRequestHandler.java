@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.http_endpoint.http_request_handler;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
@@ -144,7 +144,7 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
             context.setValue(httpResponseIsSentFieldName, false);
             IAction<IObject> httpFinalAction = new IAction<IObject>() {
                 @Override
-                public void execute(final IObject environment) throws ActionExecuteException, InvalidArgumentException {
+                public void execute(final IObject environment) throws ActionExecutionException, InvalidArgumentException {
                     try {
                         IObject context = (IObject) environment.getValue(contextFieldName);
                         if (null != context) {
@@ -171,7 +171,7 @@ public class HttpRequestHandler extends EndpointHandler<ChannelHandlerContext, F
                         }
                         sender.send(response, environment, channelHandler);
                     } catch (ResolutionException | ReadValueException | ResponseSendingException | ChangeValueException e) {
-                        throw new ActionExecuteException("Could not execute final http action.");
+                        throw new ActionExecutionException("Could not execute final http action.");
                     }
                 }
             };

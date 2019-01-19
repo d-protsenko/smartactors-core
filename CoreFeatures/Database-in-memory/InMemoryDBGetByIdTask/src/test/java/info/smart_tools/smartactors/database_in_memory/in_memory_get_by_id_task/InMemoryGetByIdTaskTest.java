@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.database_in_memory.in_memory_get_by_id_task
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.database.interfaces.idatabase.exception.IDatabaseException;
@@ -81,7 +81,7 @@ public class InMemoryGetByIdTaskTest {
     }
 
     @Test
-    public void testExecution() throws InvalidArgumentException, ChangeValueException, TaskPrepareException, IDatabaseException, ActionExecuteException, TaskExecutionException {
+    public void testExecution() throws InvalidArgumentException, ChangeValueException, TaskPrepareException, IDatabaseException, ActionExecutionException, TaskExecutionException {
         InMemoryGetByIdTask getByIdTask = new InMemoryGetByIdTask();
         IObject query = new DSObject("{\"collectionName\": \"collection_name\", \"id\": 3}");
         IAction<IObject> iObjectIAction = mock(IAction.class);

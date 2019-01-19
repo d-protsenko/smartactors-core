@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.scheduler_auto_startup.scheduler_auto_start
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartupException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
@@ -50,7 +50,7 @@ public class SchedulerAutoStartupPlugin extends BootstrapPlugin {
                             }
                         });
                     } catch (ResolutionException e) {
-                        throw new ActionExecuteException(e);
+                        throw new ActionExecutionException(e);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }

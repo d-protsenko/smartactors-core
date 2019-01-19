@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.checkpoint_plugins.checkpoint_actor_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
@@ -86,7 +86,7 @@ public class CheckpointActorPlugin extends BootstrapPlugin {
                         String msgString = msg.serialize();
                         System.err.printf("Lost message: %s\n", msgString);
                     } catch (SerializeException e) {
-                        throw new ActionExecuteException(e);
+                        throw new ActionExecutionException(e);
                     }
                 }));
     }

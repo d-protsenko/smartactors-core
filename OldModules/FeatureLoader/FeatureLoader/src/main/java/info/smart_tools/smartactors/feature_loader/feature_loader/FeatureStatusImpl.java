@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.feature_loader.feature_loader;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IBiAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.feature_loader.interfaces.ifeature_loader.IFeatureStatus;
 import info.smart_tools.smartactors.feature_loader.interfaces.ifeature_loader.exceptions.FeatureLoadException;
@@ -79,7 +79,7 @@ public class FeatureStatusImpl implements IFeatureStatus {
 
     @Override
     public void whenDone(final IAction<Throwable> action)
-            throws ActionExecuteException {
+            throws ActionExecutionException {
         completionCallbacks.add(action);
         if (isCompleted) {
             runCallbacks();
@@ -87,7 +87,7 @@ public class FeatureStatusImpl implements IFeatureStatus {
     }
 
     private void runCallbacks()
-            throws ActionExecuteException {
+            throws ActionExecutionException {
         IAction<Throwable> action;
         Throwable callbackException = null;
 
@@ -104,12 +104,12 @@ public class FeatureStatusImpl implements IFeatureStatus {
         }
 
         if (null != callbackException) {
-            throw new ActionExecuteException(callbackException);
+            throw new ActionExecutionException(callbackException);
         }
     }
 
     private void decreaseCounter()
-            throws ActionExecuteException {
+            throws ActionExecutionException {
         if (isCompleted || nExpect.decrementAndGet() != 0) {
             return;
         }
@@ -126,7 +126,7 @@ public class FeatureStatusImpl implements IFeatureStatus {
                     isCompleted = true;
                     try {
                         runCallbacks();
-                    } catch (ActionExecuteException e) {
+                    } catch (ActionExecutionException e) {
                         e.printStackTrace();
                     }
                 }
@@ -142,7 +142,7 @@ public class FeatureStatusImpl implements IFeatureStatus {
         isCompleted = true;
         try {
             runCallbacks();
-        } catch (ActionExecuteException e) {
+        } catch (ActionExecutionException e) {
             error.addSuppressed(e);
         }
     }
@@ -163,7 +163,7 @@ public class FeatureStatusImpl implements IFeatureStatus {
                     decreaseCounter();
                 }
             });
-        } catch (ActionExecuteException e) {
+        } catch (ActionExecutionException e) {
             failDependency(feature.getId(), e);
         }
     }
@@ -195,10 +195,10 @@ public class FeatureStatusImpl implements IFeatureStatus {
     /**
      * Load the feature or await for dependencies to be loaded.
      *
-     * @throws ActionExecuteException if error occurs calling callbacks
+     * @throws ActionExecutionException if error occurs calling callbacks
      */
     void load()
-            throws ActionExecuteException {
+            throws ActionExecutionException {
         decreaseCounter();
     }
 }

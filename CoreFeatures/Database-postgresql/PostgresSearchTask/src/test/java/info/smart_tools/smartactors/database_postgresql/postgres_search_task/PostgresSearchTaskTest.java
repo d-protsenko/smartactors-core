@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.database_postgresql.postgres_search_task;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
@@ -91,7 +91,7 @@ public class PostgresSearchTaskTest {
     }
 
     @Test
-    public void testSearch() throws InvalidArgumentException, ReadValueException, TaskPrepareException, TaskSetConnectionException, TaskExecutionException, ChangeValueException, StorageException, SQLException, ActionExecuteException {
+    public void testSearch() throws InvalidArgumentException, ReadValueException, TaskPrepareException, TaskSetConnectionException, TaskExecutionException, ChangeValueException, StorageException, SQLException, ActionExecutionException {
         IAction<IObject[]> callback = mock(IAction.class);
         when(message.getCallback()).thenReturn(callback);
         when(resultSet.next()).thenReturn(true, true, false);
@@ -133,7 +133,7 @@ public class PostgresSearchTaskTest {
     }
 
     @Test
-    public void testSearchNotFound() throws InvalidArgumentException, ReadValueException, TaskPrepareException, TaskSetConnectionException, TaskExecutionException, ChangeValueException, StorageException, SQLException, ActionExecuteException {
+    public void testSearchNotFound() throws InvalidArgumentException, ReadValueException, TaskPrepareException, TaskSetConnectionException, TaskExecutionException, ChangeValueException, StorageException, SQLException, ActionExecutionException {
         IAction<IObject[]> callback = mock(IAction.class);
         when(message.getCallback()).thenReturn(callback);
         when(resultSet.next()).thenReturn(false);

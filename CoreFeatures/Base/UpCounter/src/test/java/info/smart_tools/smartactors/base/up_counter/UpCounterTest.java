@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.base.up_counter;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.IllegalUpCounterState;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
@@ -102,10 +102,10 @@ public class UpCounterTest {
         IPoorAction scCb1 = mock(IPoorAction.class), scCb2 = mock(IPoorAction.class), scCb3 = mock(IPoorAction.class),
                 scCb4 = mock(IPoorAction.class);
 
-        doThrow(ActionExecuteException.class).when(srCb1).execute(any());
-        doThrow(ActionExecuteException.class).when(srCb3).execute(any());
-        doThrow(ActionExecuteException.class).when(scCb1).execute();
-        doThrow(ActionExecuteException.class).when(scCb3).execute();
+        doThrow(ActionExecutionException.class).when(srCb1).execute(any());
+        doThrow(ActionExecutionException.class).when(srCb3).execute(any());
+        doThrow(ActionExecutionException.class).when(scCb1).execute();
+        doThrow(ActionExecutionException.class).when(scCb3).execute();
         doThrow(InvalidArgumentException.class).when(scCb4).execute();
 
         counter.onShutdownRequest(this.toString()+"1",srCb1);
@@ -177,16 +177,16 @@ public class UpCounterTest {
 
         counter.up();
 
-        doThrow(ActionExecuteException.class).when(srCb1).execute(any());
-        doThrow(ActionExecuteException.class).when(srCb3).execute(any());
-        doThrow(ActionExecuteException.class).when(scCb1).execute();
-        doThrow(ActionExecuteException.class).when(scCb3).execute();
+        doThrow(ActionExecutionException.class).when(srCb1).execute(any());
+        doThrow(ActionExecutionException.class).when(srCb3).execute(any());
+        doThrow(ActionExecutionException.class).when(scCb1).execute();
+        doThrow(ActionExecutionException.class).when(scCb3).execute();
 
-        doThrow(ActionExecuteException.class).when(badParent).onShutdownRequest(any(),any());
+        doThrow(ActionExecutionException.class).when(badParent).onShutdownRequest(any(),any());
         try {
             IUpCounter badCounter1 = new UpCounter(badParent);
         } catch (Exception ignore) {}
-        doThrow(ActionExecuteException.class).when(badParent).down();
+        doThrow(ActionExecutionException.class).when(badParent).down();
         try {
             IUpCounter badCounter2 = new UpCounter(badParent);
         } catch (Exception ignore) {}
@@ -234,7 +234,7 @@ public class UpCounterTest {
         IUpCounter parent = new UpCounter();
         IUpCounter counter = new UpCounter(parent);
 
-        doThrow(ActionExecuteException.class).when(scCb).execute();
+        doThrow(ActionExecutionException.class).when(scCb).execute();
 
         counter.onShutdownComplete(this.toString(),scCb);
 

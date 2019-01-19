@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.message_processing.message_processor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.IllegalUpCounterState;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
@@ -167,7 +167,7 @@ public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask,
                 try {
                     upCounter.down();
                 } catch (UpCounterCallbackExecutionException | IllegalUpCounterState e) {
-                    throw new ActionExecuteException(e);
+                    throw new ActionExecutionException(e);
                 }
             });
 

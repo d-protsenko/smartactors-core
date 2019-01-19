@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.shutdown_plugins.shutdown_task_processing_s
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IBiFunction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
@@ -153,7 +153,7 @@ public class ShutdownTaskProcessingStrategiesPlugin extends BootstrapPlugin {
                 ITaskProcessStrategy taskProcessStrategy = IOC.resolve(Keys.resolveByName("task processing strategy for shutdown mode"));
                 taskDispatcher.setProcessStrategy(taskProcessStrategy);
             } catch (ResolutionException e) {
-                throw new ActionExecuteException(e);
+                throw new ActionExecutionException(e);
             }
         });
     }
