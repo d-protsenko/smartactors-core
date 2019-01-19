@@ -1,1 +1,4 @@
-{"featureName":"info.smart_tools.smartactors:configuration-manager-plugins","afterFeatures":[]}
+{
+  "featureName":"info.smart_tools.smartactors:configuration-manager-plugins",
+  "afterFeatures":["info.smart_tools.smartactors:configuration-manager"]
+}
