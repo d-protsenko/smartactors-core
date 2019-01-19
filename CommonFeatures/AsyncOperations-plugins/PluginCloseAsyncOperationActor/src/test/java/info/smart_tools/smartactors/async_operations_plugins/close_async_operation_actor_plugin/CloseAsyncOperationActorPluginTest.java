@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.async_operations_plugins.close_async_operat
 import info.smart_tools.smartactors.async_operations.close_async_operation.CloseAsyncOperationActor;
 import info.smart_tools.smartactors.async_operations.close_async_operation.wrapper.ActorParams;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
@@ -58,7 +58,7 @@ public class CloseAsyncOperationActorPluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("CloseAsyncOperationActorPlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
        // verify(bootstrapItem).after("IOC");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
@@ -115,7 +115,7 @@ public class CloseAsyncOperationActorPluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("CloseAsyncOperationActorPlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
         //verify(bootstrapItem).after("IOC");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
@@ -147,7 +147,7 @@ public class CloseAsyncOperationActorPluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("CloseAsyncOperationActorPlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
        // verify(bootstrapItem).after("IOC");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
@@ -202,7 +202,7 @@ public class CloseAsyncOperationActorPluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("CloseAsyncOperationActorPlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
        // verify(bootstrapItem).after("IOC");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
@@ -251,7 +251,7 @@ public class CloseAsyncOperationActorPluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("CloseAsyncOperationActorPlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
         //verify(bootstrapItem).after("IOC");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
@@ -296,7 +296,7 @@ public class CloseAsyncOperationActorPluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("CloseAsyncOperationActorPlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
         //verify(bootstrapItem).after("IOC");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
@@ -343,7 +343,7 @@ public class CloseAsyncOperationActorPluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("CloseAsyncOperationActorPlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
         //verify(bootstrapItem).after("IOC");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());

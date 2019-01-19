@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.base.strategy.strategy_storage_strategy;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IBiFunction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
@@ -22,14 +22,14 @@ public class StrategyStorageStrategy implements IResolveDependencyStrategy, IAdd
      */
     private ConcurrentMap<Object, IResolveDependencyStrategy> strategyStorage;
     private IFunction argToKeyFunction;
-    private IBiFunction findValueByArgumentFunction;
+    private IFunctionTwoArgs findValueByArgumentFunction;
 
 
     /**
      * @param argToKeyFunction the function that transforms argument to a map key
      * @param findValueByArgumentFunction the function that finds value by given argument in the given map
      */
-    public StrategyStorageStrategy(final IFunction argToKeyFunction, final IBiFunction findValueByArgumentFunction) {
+    public StrategyStorageStrategy(final IFunction argToKeyFunction, final IFunctionTwoArgs findValueByArgumentFunction) {
         this.strategyStorage = new ConcurrentHashMap<>();
         this.argToKeyFunction = argToKeyFunction;
         this.findValueByArgumentFunction = findValueByArgumentFunction;

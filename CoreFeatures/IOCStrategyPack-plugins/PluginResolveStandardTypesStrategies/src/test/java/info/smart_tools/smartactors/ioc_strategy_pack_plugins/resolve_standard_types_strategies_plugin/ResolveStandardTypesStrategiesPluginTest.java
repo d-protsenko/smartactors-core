@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.ioc_strategy_pack_plugins.resolve_standard_types_strategies_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
@@ -28,7 +28,7 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.*;
 
-@PrepareForTest({IOC.class, Keys.class, ResolveStandardTypesStrategiesPlugin.class, IPoorAction.class})
+@PrepareForTest({IOC.class, Keys.class, ResolveStandardTypesStrategiesPlugin.class, IActionNoArgs.class})
 @RunWith(PowerMockRunner.class)
 public class ResolveStandardTypesStrategiesPluginTest {
 
@@ -56,7 +56,7 @@ public class ResolveStandardTypesStrategiesPluginTest {
         verifyNew(BootstrapItem.class).withArguments("ResolveStandardTypesStrategiesPlugin");
 
         verify(bootstrapItem).after("IOC");
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         IKey stringConvertKey = mock(IKey.class);
@@ -114,7 +114,7 @@ public class ResolveStandardTypesStrategiesPluginTest {
         verifyStatic();
         IOC.register(eq(characterConvertKey), any(IResolveDependencyStrategy.class));
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor1 = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor1 = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(bootstrapItem).revertProcess(actionArgumentCaptor1.capture());
 
         actionArgumentCaptor1.getValue().execute();
@@ -166,7 +166,7 @@ public class ResolveStandardTypesStrategiesPluginTest {
         doThrow(new DeletionException("TestException")).when(IOC.class);
         IOC.remove(any());
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(bootstrapItem).revertProcess(actionArgumentCaptor.capture());
 
         actionArgumentCaptor.getValue().execute();
@@ -190,7 +190,7 @@ public class ResolveStandardTypesStrategiesPluginTest {
 
         plugin.load();
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         when(Keys.resolveByName(String.class.getCanonicalName() + "convert")).thenThrow(new ResolutionException(""));

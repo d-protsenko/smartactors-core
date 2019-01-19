@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.base.pool;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolPutException;
@@ -21,7 +21,7 @@ public class Pool implements IPool {
     private Integer maxItemsCount;
     private final ArrayBlockingQueue<Object> freeItems;
     private AtomicInteger freeItemsCounter = new AtomicInteger();
-    private ConcurrentLinkedQueue<IPoorAction> taskQueue = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<IActionNoArgs> taskQueue = new ConcurrentLinkedQueue<>();
 
     /**
      * Local function for creation new instances of items
@@ -85,7 +85,7 @@ public class Pool implements IPool {
                 freeItems.add(item);
                 freeItemsCounter.getAndIncrement();
 
-                IPoorAction task = taskQueue.poll();
+                IActionNoArgs task = taskQueue.poll();
                 if (task != null) {
                     task.execute();
                 }
@@ -99,7 +99,7 @@ public class Pool implements IPool {
      * Add action for executing when the resource becomes available
      * @param action action to execute when the resource becomes available
      */
-    public void onAvailable(final IPoorAction action) {
+    public void onAvailable(final IActionNoArgs action) {
         try {
             if (freeItemsCounter.get() > 0) {
                 action.execute();

@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.base.strategy.strategy_storage_with_cache_s
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IBiFunction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.icacheable.ICacheable;
@@ -26,7 +26,7 @@ public class StrategyStorageWithCacheStrategy implements IResolveDependencyStrat
     private ConcurrentMap<Object, IResolveDependencyStrategy> strategyStorage;
     private ConcurrentMap<Object, IResolveDependencyStrategy> cacheStrategiesMap;
     private IFunction argToKeyFunction;
-    private IBiFunction findValueByArgumentFunction;
+    private IFunctionTwoArgs findValueByArgumentFunction;
 
 
     /**
@@ -34,7 +34,7 @@ public class StrategyStorageWithCacheStrategy implements IResolveDependencyStrat
      * @param argToKeyFunction the function that transforms argument to a map key
      * @param findValueByArgumentFunction the function that finds value by given argument in the given map
      */
-    public StrategyStorageWithCacheStrategy(final IFunction argToKeyFunction, final IBiFunction findValueByArgumentFunction) {
+    public StrategyStorageWithCacheStrategy(final IFunction argToKeyFunction, final IFunctionTwoArgs findValueByArgumentFunction) {
         this.strategyStorage = new ConcurrentHashMap<>();
         this.cacheStrategiesMap = new ConcurrentHashMap<>();
         this.argToKeyFunction = argToKeyFunction;

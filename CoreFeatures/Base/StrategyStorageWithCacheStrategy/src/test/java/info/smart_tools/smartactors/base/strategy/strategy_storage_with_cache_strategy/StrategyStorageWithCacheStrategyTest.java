@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.base.strategy.strategy_storage_with_cache_s
 
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IBiFunction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.icacheable.ICacheable;
 import info.smart_tools.smartactors.base.interfaces.icacheable.exception.DropCacheException;
@@ -38,7 +38,7 @@ public class StrategyStorageWithCacheStrategyTest {
         Map<String, Integer> count = new HashMap<>();
         count.put("count", 0);
         IFunction argToKey = arg -> arg.getClass();
-        IBiFunction findValueByArgument = (map, arg) -> {
+        IFunctionTwoArgs findValueByArgument = (map, arg) -> {
             IResolveDependencyStrategy strategy = null;
             Integer tmp = count.get("count");
             tmp ++;
@@ -80,7 +80,7 @@ public class StrategyStorageWithCacheStrategyTest {
         Map<String, Integer> count = new HashMap<>();
         count.put("count", 0);
         IFunction argToKey = arg -> arg.getClass();
-        IBiFunction findValueByArgument = (map, arg) -> {
+        IFunctionTwoArgs findValueByArgument = (map, arg) -> {
             IResolveDependencyStrategy strategy = null;
             Integer tmp = count.get("count");
             tmp ++;
@@ -120,7 +120,7 @@ public class StrategyStorageWithCacheStrategyTest {
     public void checkOnRemove()
             throws Exception {
         IFunction argToKey = arg -> arg.getClass();
-        IBiFunction findValueByArgument = (map, arg) -> {
+        IFunctionTwoArgs findValueByArgument = (map, arg) -> {
             IResolveDependencyStrategy strategy = null;
             for (Map.Entry<Class, IResolveDependencyStrategy> entry : ((Map<Class, IResolveDependencyStrategy>) map).entrySet()) {
                 if (entry.getKey().isInstance(arg)) {

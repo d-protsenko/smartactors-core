@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.feature_loader.feature_loader;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.IBiAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
@@ -188,7 +188,7 @@ public class FeatureLoader implements IFeatureLoader {
                 return IOC.resolve(
                         Keys.resolveByName(FeatureStatusImpl.class.getCanonicalName()),
                         id,
-                        (IBiAction<IObject, IPath>) this::loadPluginsAndConfig);
+                        (IActionTwoArgs<IObject, IPath>) this::loadPluginsAndConfig);
             } catch (ResolutionException e) {
                 throw new RuntimeException(e);
             }

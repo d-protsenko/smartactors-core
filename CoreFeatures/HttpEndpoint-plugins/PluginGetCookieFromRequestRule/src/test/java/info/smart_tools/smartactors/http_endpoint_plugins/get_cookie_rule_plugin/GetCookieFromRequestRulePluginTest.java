@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.http_endpoint_plugins.get_cookie_rule_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
@@ -54,7 +54,7 @@ public class GetCookieFromRequestRulePluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("GetCookieFromRequestRulePlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
 //        verify(bootstrapItem).after("IOC");
 //        verify(bootstrapItem).after("wds_object");
@@ -108,7 +108,7 @@ public class GetCookieFromRequestRulePluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("GetCookieFromRequestRulePlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
 //        verify(bootstrapItem).after("IOC");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
@@ -143,7 +143,7 @@ public class GetCookieFromRequestRulePluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("GetCookieFromRequestRulePlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
 //        verify(bootstrapItem).after("IOC");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());

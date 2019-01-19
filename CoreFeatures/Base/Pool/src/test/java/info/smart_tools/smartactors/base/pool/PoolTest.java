@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.base.pool;
 
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolTakeException;
 import org.junit.Test;
 
@@ -78,7 +78,7 @@ public class PoolTest {
         Supplier<Object> createFunc = mock(Supplier.class);
         when(createFunc.get()).thenReturn(new Object());
         Pool pool = new Pool(1, createFunc);
-        IPoorAction pAction = mock(IPoorAction.class);
+        IActionNoArgs pAction = mock(IActionNoArgs.class);
         pool.onAvailable(pAction);
         Object item = pool.take();
         pool.put(item);
@@ -90,7 +90,7 @@ public class PoolTest {
         Supplier<Object> createFunc = mock(Supplier.class);
         when(createFunc.get()).thenReturn(new Object());
         Pool pool = new Pool(1, createFunc);
-        IPoorAction pAction = mock(IPoorAction.class);
+        IActionNoArgs pAction = mock(IActionNoArgs.class);
         pool.onAvailable(pAction);
         verify(pAction).execute();
     }

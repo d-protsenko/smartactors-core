@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.database_plugins.collection_name_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
@@ -27,7 +27,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.*;
 
-@PrepareForTest({IOC.class, Keys.class, IPoorAction.class, ResolveByNameIocStrategy.class, CollectionNamePlugin.class, CollectionName.class})
+@PrepareForTest({IOC.class, Keys.class, IActionNoArgs.class, ResolveByNameIocStrategy.class, CollectionNamePlugin.class, CollectionName.class})
 @RunWith(PowerMockRunner.class)
 public class CollectionNamePluginTest {
 
@@ -68,7 +68,7 @@ public class CollectionNamePluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("CollectionNamePlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         ArgumentCaptor<ResolveByNameIocStrategy> createNewInstanceStrategyArgumentCaptor =
@@ -115,7 +115,7 @@ public class CollectionNamePluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("CollectionNamePlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
         actionArgumentCaptor.getValue().execute();
     }

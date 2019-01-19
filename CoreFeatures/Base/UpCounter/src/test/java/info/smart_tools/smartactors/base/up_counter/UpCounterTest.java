@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.base.up_counter;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.IllegalUpCounterState;
@@ -99,8 +99,8 @@ public class UpCounterTest {
         Object mode = new Object();
 
         IAction<Object> srCb1 = mock(IAction.class), srCb2 = mock(IAction.class), srCb3 = mock(IAction.class);
-        IPoorAction scCb1 = mock(IPoorAction.class), scCb2 = mock(IPoorAction.class), scCb3 = mock(IPoorAction.class),
-                scCb4 = mock(IPoorAction.class);
+        IActionNoArgs scCb1 = mock(IActionNoArgs.class), scCb2 = mock(IActionNoArgs.class), scCb3 = mock(IActionNoArgs.class),
+                scCb4 = mock(IActionNoArgs.class);
 
         doThrow(ActionExecutionException.class).when(srCb1).execute(any());
         doThrow(ActionExecutionException.class).when(srCb3).execute(any());
@@ -145,18 +145,18 @@ public class UpCounterTest {
         verify(scCb3, times(1)).execute();
 
         counter.removeFromShutdownRequest(this.toString()+"3");
-        IPoorAction act1 = counter.onShutdownComplete(this.toString()+"4",scCb4);
+        IActionNoArgs act1 = counter.onShutdownComplete(this.toString()+"4",scCb4);
         try {
             act1.execute();
         } catch(Exception ignore) {}
-        IPoorAction act2 = counter.onShutdownComplete(this.toString()+"2",scCb2);
+        IActionNoArgs act2 = counter.onShutdownComplete(this.toString()+"2",scCb2);
         act2.execute();
 
-        IPoorAction act3 = counter.removeFromShutdownComplete(this.toString()+"4");
+        IActionNoArgs act3 = counter.removeFromShutdownComplete(this.toString()+"4");
         try {
             act3.execute();
         } catch(Exception ignore) {}
-        IPoorAction act4 = counter.removeFromShutdownComplete(this.toString()+"2");
+        IActionNoArgs act4 = counter.removeFromShutdownComplete(this.toString()+"2");
         act4.execute();
         verify(scCb4, times(3)).execute();
         verify(scCb2, times(3)).execute();
@@ -169,7 +169,7 @@ public class UpCounterTest {
         Object mode = new Object();
 
         IAction<Object> srCb1 = mock(IAction.class), srCb2 = mock(IAction.class), srCb3 = mock(IAction.class);
-        IPoorAction scCb1 = mock(IPoorAction.class), scCb2 = mock(IPoorAction.class), scCb3 = mock(IPoorAction.class);
+        IActionNoArgs scCb1 = mock(IActionNoArgs.class), scCb2 = mock(IActionNoArgs.class), scCb3 = mock(IActionNoArgs.class);
         IUpCounter badParent = mock(UpCounter.class);
 
         IUpCounter parent = new UpCounter();
@@ -229,7 +229,7 @@ public class UpCounterTest {
     @Test
     public void Should_callCallbacksOnParentForceShutdown()
             throws Exception {
-        IPoorAction scCb = mock(IPoorAction.class);
+        IActionNoArgs scCb = mock(IActionNoArgs.class);
 
         IUpCounter parent = new UpCounter();
         IUpCounter counter = new UpCounter(parent);
@@ -249,7 +249,7 @@ public class UpCounterTest {
     @Test
     public void Should_shutdownImmediatelyWhenParentDoes()
             throws Exception {
-        IPoorAction scCb = mock(IPoorAction.class);
+        IActionNoArgs scCb = mock(IActionNoArgs.class);
 
         IUpCounter parent = new UpCounter();
         IUpCounter counter = new UpCounter(parent);

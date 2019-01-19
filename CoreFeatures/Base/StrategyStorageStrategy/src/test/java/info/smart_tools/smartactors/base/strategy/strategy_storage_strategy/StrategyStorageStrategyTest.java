@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.base.strategy.strategy_storage_strategy;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IBiFunction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class StrategyStorageStrategyTest {
         when(defaultStrategy.resolve(new Object[] {"something", "arg"})).thenReturn(defaultValue);
         when(defaultStrategy.resolve(new Object[] {"in_something", "arg"})).thenReturn(defaultValue);
 
-        IBiFunction findValueByArgument = (map, arg) -> {
+        IFunctionTwoArgs findValueByArgument = (map, arg) -> {
             char[] symbols = arg.toString().toCharArray();
             String defaultKey = "default";
             IResolveDependencyStrategy strategy = null;

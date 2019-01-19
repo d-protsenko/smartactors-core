@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.field_plugins.ifield_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -62,7 +62,7 @@ public class IFieldPluginTest {
 
         verify(item).after("IOC");
 
-        ArgumentCaptor<IPoorAction> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(item).process(iPoorActionArgumentCaptor.capture());
 
         verify(bootstrap).add(item);
@@ -128,7 +128,7 @@ public class IFieldPluginTest {
 
         verify(item).after("IOC");
 
-        ArgumentCaptor<IPoorAction> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(item).process(iPoorActionArgumentCaptor.capture());
 
         verify(bootstrap).add(item);
@@ -160,7 +160,7 @@ public class IFieldPluginTest {
 
         verify(item).after("IOC");
 
-        ArgumentCaptor<IPoorAction> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(item).process(iPoorActionArgumentCaptor.capture());
 
         verify(bootstrap).add(item);

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.feature_loader.feature_loader;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.IBiAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
@@ -163,7 +163,7 @@ public class FeatureLoaderTest {
         verifyStatic(times(1));
         IOC.resolve(same(featureStatusKey), argsCaptor.capture());
 
-        IBiAction loadAction = (IBiAction) argsCaptor.getAllValues().get(1);
+        IActionTwoArgs loadAction = (IActionTwoArgs) argsCaptor.getAllValues().get(1);
 
         argsCaptor.getAllValues().clear();
 

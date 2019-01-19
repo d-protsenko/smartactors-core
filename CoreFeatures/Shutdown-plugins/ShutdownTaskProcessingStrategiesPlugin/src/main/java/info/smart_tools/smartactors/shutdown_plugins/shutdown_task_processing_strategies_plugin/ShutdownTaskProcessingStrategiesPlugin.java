@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.shutdown_plugins.shutdown_task_processing_strategies_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IBiFunction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
@@ -61,7 +61,7 @@ public class ShutdownTaskProcessingStrategiesPlugin extends BootstrapPlugin {
 
         IResolveDependencyStrategy strategyStorage = new StrategyStorageWithCacheStrategy(
                 a -> a,
-                (IBiFunction<Map<Class, Object>, Class, Object>) (map, clz) -> {
+                (IFunctionTwoArgs<Map<Class, Object>, Class, Object>) (map, clz) -> {
                     for (Map.Entry<Class, Object> entry : map.entrySet()) {
                         if (clz.isAssignableFrom(entry.getKey())) {
                             return entry.getValue();

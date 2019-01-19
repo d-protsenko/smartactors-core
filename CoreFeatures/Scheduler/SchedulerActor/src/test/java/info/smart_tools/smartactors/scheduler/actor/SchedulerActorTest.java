@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.scheduler.actor;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
@@ -219,7 +219,7 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
             throws Exception {
         SchedulerActor actor = new SchedulerActor(args);
 
-        ArgumentCaptor<IPoorAction> callbackCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> callbackCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
         verify(upCounterMock).onShutdownComplete(eq(actor.toString()), callbackCaptor.capture());
 

@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.base.up_counter;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.IllegalUpCounterState;
@@ -198,7 +198,7 @@ public class UpCounter implements IUpCounter {
     }
 
     @Override
-    public IPoorAction onShutdownComplete(final Object key, final IPoorAction callback)
+    public IActionNoArgs onShutdownComplete(final Object key, final IActionNoArgs callback)
             throws UpCounterCallbackExecutionException {
         IAction<Void> action = shutdownCompletionCallbacks.put(key, __ -> callback.execute());
         if (null == action) {
@@ -208,20 +208,20 @@ public class UpCounter implements IUpCounter {
                 try {
                     action.execute(null);
                 } catch (InvalidArgumentException e) {
-                    // underlying IPoorAction doesn't throw InvalidArgumentException
+                    // underlying IActionNoArgs doesn't throw InvalidArgumentException
                 }
             };
         }
     }
 
     @Override
-    public IPoorAction removeFromShutdownComplete(final Object key) {
+    public IActionNoArgs removeFromShutdownComplete(final Object key) {
         IAction<Void> action = shutdownCompletionCallbacks.remove(key);
         return  () -> {
             try {
                 action.execute(null);
             } catch (InvalidArgumentException e) {
-                // underlying IPoorAction doesn't throw InvalidArgumentException
+                // underlying IActionNoArgs doesn't throw InvalidArgumentException
             }
         };
     }

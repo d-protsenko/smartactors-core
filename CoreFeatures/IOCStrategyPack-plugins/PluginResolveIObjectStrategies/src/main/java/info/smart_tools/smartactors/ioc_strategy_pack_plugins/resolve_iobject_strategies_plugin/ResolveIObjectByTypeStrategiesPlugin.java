@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.ioc_strategy_pack_plugins.resolve_iobject_s
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IBiFunction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
@@ -54,7 +54,7 @@ public class ResolveIObjectByTypeStrategiesPlugin implements IPlugin {
                 .process(() -> {
                     try {
                         IFunction argToKey = arg -> arg.getClass();
-                        IBiFunction findValueByArgument = (map, arg) -> {
+                        IFunctionTwoArgs findValueByArgument = (map, arg) -> {
                             IResolveDependencyStrategy strategy = null;
                             for (Map.Entry<Class, IResolveDependencyStrategy> entry : ((Map<Class, IResolveDependencyStrategy>) map).entrySet()) {
                                 if (entry.getKey().isInstance(arg)) {

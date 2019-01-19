@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.iobject_plugins.iobject_simple_impl_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
@@ -26,7 +26,7 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.*;
 
-@PrepareForTest({IOC.class, Keys.class, IPoorAction.class, CreateNewInstanceStrategy.class, IObjectSimpleImplPlugin.class, IObjectImpl.class})
+@PrepareForTest({IOC.class, Keys.class, IActionNoArgs.class, CreateNewInstanceStrategy.class, IObjectSimpleImplPlugin.class, IObjectImpl.class})
 @RunWith(PowerMockRunner.class)
 public class IObjectSimpleImplPluginTest {
     private IObjectSimpleImplPlugin plugin;
@@ -64,7 +64,7 @@ public class IObjectSimpleImplPluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("IObjectSimpleImplPlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         ArgumentCaptor<CreateNewInstanceStrategy> createNewInstanceStrategyArgumentCaptor =
@@ -76,7 +76,7 @@ public class IObjectSimpleImplPluginTest {
 
         verify(bootstrap).add(bootstrapItem);
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor2 = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor2 = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(bootstrapItem).revertProcess(actionArgumentCaptor2.capture());
 
         actionArgumentCaptor2.getValue().execute();
@@ -107,7 +107,7 @@ public class IObjectSimpleImplPluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("IObjectSimpleImplPlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         try {
@@ -132,7 +132,7 @@ public class IObjectSimpleImplPluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("IObjectSimpleImplPlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(bootstrapItem).revertProcess(actionArgumentCaptor.capture());
 
         // this wrapper may be enabled when revert throws exception instead of printing to console

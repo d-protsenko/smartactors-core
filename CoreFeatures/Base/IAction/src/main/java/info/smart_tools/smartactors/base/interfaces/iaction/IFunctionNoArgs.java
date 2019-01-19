@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionEx
  *
  * @param <R> the function result type
  */
-public interface IFunction0<R> {
+public interface IFunctionNoArgs<R> {
     /**
      * Execute the function.
      *

@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.das.commands;
 import com.jcabi.aether.Aether;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.IBiAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.das.utilities.JsonFile;
 import info.smart_tools.smartactors.das.utilities.exception.InvalidCommandLineArgumentException;
@@ -36,7 +36,7 @@ public class DownloadCore implements IAction {
     private static final String defDirectoryName = "core";
     private static final String defPackageType = "jar";
 
-    private static final Map<String, IBiAction<File, Path>> func = new HashMap<>();
+    private static final Map<String, IActionTwoArgs<File, Path>> func = new HashMap<>();
 
     static {
         func.put("zip", (o1, o2) -> {
@@ -222,7 +222,7 @@ public class DownloadCore implements IAction {
                     try {
                         File f = a.getFile();
                         if (null != f && f.exists()) {
-                            IBiAction<File, Path> action = func.get(type);
+                            IActionTwoArgs<File, Path> action = func.get(type);
                             action.execute(f, path);
                         }
                     } catch (Exception e) {

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.security_plugins.password_encoder_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -33,7 +33,7 @@ public class PasswordEncoderPluginTest {
 
     private PasswordEncoderPlugin plugin;
     private IBootstrap bootstrap;
-    private ArgumentCaptor<IPoorAction> actionArgumentCaptor;
+    private ArgumentCaptor<IActionNoArgs> actionArgumentCaptor;
 
     @Before
     public void setUp() throws Exception {
@@ -54,7 +54,7 @@ public class PasswordEncoderPluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("PasswordEncoderPlugin");
 
-        actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
         verify(bootstrap).add(bootstrapItem);

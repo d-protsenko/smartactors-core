@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.plugin.get_first_not_null_rule;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
@@ -24,7 +24,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 
-@PrepareForTest({IOC.class, Keys.class, IPoorAction.class, ApplyFunctionToArgumentsStrategy.class, GetFirstNotNullRulePlugin.class})
+@PrepareForTest({IOC.class, Keys.class, IActionNoArgs.class, ApplyFunctionToArgumentsStrategy.class, GetFirstNotNullRulePlugin.class})
 @RunWith(PowerMockRunner.class)
 public class GetFirstNotNullRulePluginTest {
     private GetFirstNotNullRulePlugin targetPlugin;
@@ -52,7 +52,7 @@ public class GetFirstNotNullRulePluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("GetFirstNotNullRulePlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
         verify(bootstrapItem).after("IOC");
         verify(bootstrapItem).after("wds_object");

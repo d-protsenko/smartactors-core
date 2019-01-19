@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.feature_management.feature_creator_actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IBiAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
@@ -55,7 +55,7 @@ public class FeaturesCreatorActor {
     private final static String FILENAME_VERSION_PATTERN = "-\\d+\\.\\d+\\.\\d+";
     private final static String FEATURE_VERSION_PATTERN = "\\d+\\.\\d+\\.\\d+";
 
-    private final Map<String, IBiAction<File, CreateMessageWrapper>> creationFunctions;
+    private final Map<String, IActionTwoArgs<File, CreateMessageWrapper>> creationFunctions;
 
     /**
      * Default constructor
@@ -75,7 +75,7 @@ public class FeaturesCreatorActor {
         this.repositoryUrlFN =   IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "url");
 
         //TODO: need refactoring. This actions would be took out to the plugin.
-        this.creationFunctions = new HashMap<String, IBiAction<File, CreateMessageWrapper>>(){{
+        this.creationFunctions = new HashMap<String, IActionTwoArgs<File, CreateMessageWrapper>>(){{
             put("zip", (f, w) -> {
                 try {
                     w.setJsonFeaturesDescription(createJsonFeatureDescriptionByZip(f));
@@ -114,7 +114,7 @@ public class FeaturesCreatorActor {
             File file = Paths.get(wrapper.getObservedDirectory(), wrapper.getFileName()).toFile();
             if (file.exists() && !file.isDirectory()) {
 
-                IBiAction<File, CreateMessageWrapper> action = this.creationFunctions.get(
+                IActionTwoArgs<File, CreateMessageWrapper> action = this.creationFunctions.get(
                         getExtension(file)
                 );
                 if (null != action) {

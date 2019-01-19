@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.feature_loader.feature_loader;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.IBiAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.feature_loader.interfaces.ifeature_loader.IFeatureStatus;
@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class FeatureStatusImpl implements IFeatureStatus {
     private final String id;
-    private IBiAction<IObject, IPath> loadAction;
+    private IActionTwoArgs<IObject, IPath> loadAction;
     private IPath path = null;
     private boolean isCompleted = false;
     private Throwable error = null;
@@ -43,7 +43,7 @@ public class FeatureStatusImpl implements IFeatureStatus {
      * @throws InvalidArgumentException if {@code id} is {@code null}
      * @throws InvalidArgumentException if {@code loadAction} is {@code null}
      */
-    public FeatureStatusImpl(final String id, final IBiAction<IObject, IPath> loadAction)
+    public FeatureStatusImpl(final String id, final IActionTwoArgs<IObject, IPath> loadAction)
             throws InvalidArgumentException {
         if (null == id) {
             throw new InvalidArgumentException("Feature id should not be null.");

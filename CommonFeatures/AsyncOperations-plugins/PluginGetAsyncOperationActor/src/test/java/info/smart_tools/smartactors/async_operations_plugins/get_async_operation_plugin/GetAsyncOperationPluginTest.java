@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.async_operations_plugins.get_async_operatio
 
 import info.smart_tools.smartactors.async_operations.get_async_operation.GetAsyncOperationActor;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -60,7 +60,7 @@ public class GetAsyncOperationPluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("CreateGetAsyncOperationActor");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         ArgumentCaptor<ApplyFunctionToArgumentsStrategy> createNewInstanceStrategyArgumentCaptor =

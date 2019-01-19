@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.message_processing.exception_handling_receivers;
 
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iresource_source.IResourceSource;
 import info.smart_tools.smartactors.base.interfaces.iresource_source.exceptions.OutOfResourceException;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 public class RetryingToTakeResourceExceptionHandlerTest extends ExceptionHandlingReceiverTest {
     private OutOfResourceException outOfResourceExceptionMock;
     private IResourceSource resourceSourceMock;
-    private ArgumentCaptor<IPoorAction> callbackCaptor;
+    private ArgumentCaptor<IActionNoArgs> callbackCaptor;
     private IMessageProcessingSequence sequenceMock;
 
     @Before
@@ -37,7 +37,7 @@ public class RetryingToTakeResourceExceptionHandlerTest extends ExceptionHandlin
 
         when(outOfResourceExceptionMock.getSource()).thenReturn(resourceSourceMock);
 
-        callbackCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        callbackCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
         sequenceMock = mock(IMessageProcessingSequence.class);
     }

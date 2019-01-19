@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -62,7 +62,7 @@ public class IFieldNamePluginTest {
 
         verify(item).after("IOC");
 
-        ArgumentCaptor<IPoorAction> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(item).process(iPoorActionArgumentCaptor.capture());
 
         verify(bootstrap).add(item);
@@ -90,7 +90,7 @@ public class IFieldNamePluginTest {
 
         verifyNew(FieldName.class).withArguments(exampleFieldName);
 
-        ArgumentCaptor<IPoorAction> iPoorActionArgumentCaptor2 = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> iPoorActionArgumentCaptor2 = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(item).revertProcess(iPoorActionArgumentCaptor2.capture());
 
         iPoorActionArgumentCaptor2.getValue().execute();
@@ -127,7 +127,7 @@ public class IFieldNamePluginTest {
 
         verify(item).after("IOC");
 
-        ArgumentCaptor<IPoorAction> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(item).process(iPoorActionArgumentCaptor.capture());
 
         verify(bootstrap).add(item);
@@ -162,7 +162,7 @@ public class IFieldNamePluginTest {
 
         verify(item).after("IOC");
 
-        ArgumentCaptor<IPoorAction> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(item).process(iPoorActionArgumentCaptor.capture());
 
         verify(bootstrap).add(item);
@@ -201,7 +201,7 @@ public class IFieldNamePluginTest {
 
         verify(item).after("IOC");
 
-        ArgumentCaptor<IPoorAction> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(item).process(iPoorActionArgumentCaptor.capture());
 
         verify(bootstrap).add(item);
@@ -253,7 +253,7 @@ public class IFieldNamePluginTest {
 
         verify(item).after("IOC");
 
-        ArgumentCaptor<IPoorAction> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(item).process(iPoorActionArgumentCaptor.capture());
 
         verify(bootstrap).add(item);
@@ -296,7 +296,7 @@ public class IFieldNamePluginTest {
 
         verify(item).after("IOC");
 
-        ArgumentCaptor<IPoorAction> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(item).process(iPoorActionArgumentCaptor.capture());
 
         verify(bootstrap).add(item);
@@ -340,7 +340,7 @@ public class IFieldNamePluginTest {
 
         verify(item).after("IOC");
 
-        ArgumentCaptor<IPoorAction> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(item).process(iPoorActionArgumentCaptor.capture());
 
         verify(bootstrap).add(item);
@@ -391,7 +391,7 @@ public class IFieldNamePluginTest {
 
         verify(item).after("IOC");
 
-        ArgumentCaptor<IPoorAction> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(item).revertProcess(iPoorActionArgumentCaptor.capture());
 
         verify(bootstrap).add(item);

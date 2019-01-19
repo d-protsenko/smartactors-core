@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.database_postgresql_create_collection_if_not_exists.create_collection_actor_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolPutException;
 import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolTakeException;
@@ -34,7 +34,7 @@ public final class TestPostgresConnectionPoolPlugin extends BootstrapPlugin {
             }
 
             @Override
-            public void onAvailable(IPoorAction iPoorAction) {
+            public void onAvailable(IActionNoArgs iActionNoArgs) {
 
             }
         }));

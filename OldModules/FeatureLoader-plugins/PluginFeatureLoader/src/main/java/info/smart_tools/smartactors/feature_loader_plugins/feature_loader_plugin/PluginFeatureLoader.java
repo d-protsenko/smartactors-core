@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.feature_loader_plugins.feature_loader_plugi
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.IBiAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionTwoArgs;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loader.feature_loader.FeatureLoader;
@@ -49,7 +49,7 @@ public class PluginFeatureLoader extends BootstrapPlugin {
             throws ResolutionException, RegistrationException, InvalidArgumentException, ChangeValueException {
         IOC.register(Keys.resolveByName(FeatureStatusImpl.class.getCanonicalName()), new CreateNewInstanceStrategy(args -> {
             try {
-                return new FeatureStatusImpl((String) args[0], (IBiAction) args[1]);
+                return new FeatureStatusImpl((String) args[0], (IActionTwoArgs) args[1]);
             } catch (InvalidArgumentException e) {
                 throw new RuntimeException(e);
             }
