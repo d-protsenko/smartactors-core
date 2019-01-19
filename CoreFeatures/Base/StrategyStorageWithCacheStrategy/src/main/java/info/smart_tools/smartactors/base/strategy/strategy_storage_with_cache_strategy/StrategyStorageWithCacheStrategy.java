@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.base.strategy.strategy_storage_with_cache_strategy;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.IRegistrationStrategy;
+import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.exception.RegistrationStrategyException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentMap;
  * Strategy to strategyStorage some specific strategies united by a common purpose. Supports cache.
  */
 
-public class StrategyStorageWithCacheStrategy implements IResolveDependencyStrategy, IAdditionDependencyStrategy, ICacheable {
+public class StrategyStorageWithCacheStrategy implements IResolveDependencyStrategy, IRegistrationStrategy, ICacheable {
 
     /**
      * Specific strategies for resolve
@@ -68,23 +68,23 @@ public class StrategyStorageWithCacheStrategy implements IResolveDependencyStrat
 
     @Override
     public void register(Object key, IResolveDependencyStrategy value)
-            throws AdditionDependencyStrategyException {
+            throws RegistrationStrategyException {
         try {
             this.dropCacheFor(key);
             this.strategyStorage.put(key, value);
         } catch (DropCacheException e) {
-            throw new AdditionDependencyStrategyException(e);
+            throw new RegistrationStrategyException(e);
         }
     }
 
     @Override
     public void remove(Object key)
-            throws AdditionDependencyStrategyException {
+            throws RegistrationStrategyException {
         try {
             this.dropCacheFor(key);
             this.strategyStorage.remove(key);
         } catch (DropCacheException e) {
-            throw new AdditionDependencyStrategyException(e);
+            throw new RegistrationStrategyException(e);
         }
     }
 

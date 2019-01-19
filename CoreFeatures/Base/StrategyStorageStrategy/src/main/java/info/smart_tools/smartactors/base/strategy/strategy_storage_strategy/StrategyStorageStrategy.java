@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.base.strategy.strategy_storage_strategy;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.IRegistrationStrategy;
+import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.exception.RegistrationStrategyException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Strategy to storage some specific strategies united by a common purpose
  */
-public class StrategyStorageStrategy implements IResolveDependencyStrategy, IAdditionDependencyStrategy {
+public class StrategyStorageStrategy implements IResolveDependencyStrategy, IRegistrationStrategy {
 
     /**
      * Strategy storage
@@ -48,21 +48,21 @@ public class StrategyStorageStrategy implements IResolveDependencyStrategy, IAdd
 
     @Override
     public void register(Object arg, IResolveDependencyStrategy value)
-            throws AdditionDependencyStrategyException {
+            throws RegistrationStrategyException {
         try {
             this.strategyStorage.put(this.argToKeyFunction.execute(arg), value);
         } catch (InvalidArgumentException | FunctionExecutionException e) {
-            throw new AdditionDependencyStrategyException(e);
+            throw new RegistrationStrategyException(e);
         }
     }
 
     @Override
     public void remove(Object arg)
-            throws AdditionDependencyStrategyException {
+            throws RegistrationStrategyException {
         try {
             this.strategyStorage.remove(this.argToKeyFunction.execute(arg));
         } catch (FunctionExecutionException | InvalidArgumentException e) {
-            throw new AdditionDependencyStrategyException(e);
+            throw new RegistrationStrategyException(e);
         }
     }
 }

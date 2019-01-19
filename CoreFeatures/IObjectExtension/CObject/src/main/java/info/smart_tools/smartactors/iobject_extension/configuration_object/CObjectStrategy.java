@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.iobject_extension.configuration_object;
 
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.IRegistrationStrategy;
+import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.exception.RegistrationStrategyException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 
@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  *
  */
-public class CObjectStrategy implements IResolveDependencyStrategy, IAdditionDependencyStrategy {
+public class CObjectStrategy implements IResolveDependencyStrategy, IRegistrationStrategy {
 
     private final Map<Object, List<IResolveDependencyStrategy>> strategyStorage = new HashMap<>();
 
@@ -47,13 +47,13 @@ public class CObjectStrategy implements IResolveDependencyStrategy, IAdditionDep
 
     @Override
     public void register(Object arg, IResolveDependencyStrategy value)
-            throws AdditionDependencyStrategyException {
+            throws RegistrationStrategyException {
         List strategies = this.strategyStorage.computeIfAbsent(arg, k -> new LinkedList());
         strategies.add(value);
     }
 
     @Override
     public void remove(Object arg)
-            throws AdditionDependencyStrategyException {
+            throws RegistrationStrategyException {
     }
 }

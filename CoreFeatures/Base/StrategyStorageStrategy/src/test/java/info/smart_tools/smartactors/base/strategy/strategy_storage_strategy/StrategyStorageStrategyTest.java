@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.base.strategy.strategy_storage_strategy;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.IRegistrationStrategy;
+import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.exception.RegistrationStrategyException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
@@ -53,9 +53,9 @@ public class StrategyStorageStrategyTest {
             return null != strategy ? strategy : ((Map<String, IResolveDependencyStrategy>)map).get(defaultKey);
         };
         IResolveDependencyStrategy sss = new StrategyStorageStrategy((a) -> a, findValueByArgument);
-        ((IAdditionDependencyStrategy) sss).register("in_", innerStrategy1);
-        ((IAdditionDependencyStrategy) sss).register("out_", innerStrategy2);
-        ((IAdditionDependencyStrategy) sss).register("default", defaultStrategy);
+        ((IRegistrationStrategy) sss).register("in_", innerStrategy1);
+        ((IRegistrationStrategy) sss).register("out_", innerStrategy2);
+        ((IRegistrationStrategy) sss).register("default", defaultStrategy);
 
 
         String result = sss.resolve("in_something", "arg");
@@ -65,7 +65,7 @@ public class StrategyStorageStrategyTest {
         result = sss.resolve("something", "arg");
         assertEquals(defaultValue, result);
 
-        ((IAdditionDependencyStrategy) sss).remove("in_");
+        ((IRegistrationStrategy) sss).remove("in_");
 
         result = sss.resolve("in_something", "arg");
         assertEquals(defaultValue, result);
@@ -78,7 +78,7 @@ public class StrategyStorageStrategyTest {
         sss.resolve(null);
     }
 
-    @Test (expected = AdditionDependencyStrategyException.class)
+    @Test (expected = RegistrationStrategyException.class)
     public void checkExceptionOnRegister()
             throws Exception {
         IResolveDependencyStrategy strategy = new StrategyStorageStrategy(
@@ -87,10 +87,10 @@ public class StrategyStorageStrategyTest {
                 },
                 null
         );
-        ((IAdditionDependencyStrategy) strategy).register(null, null);
+        ((IRegistrationStrategy) strategy).register(null, null);
     }
 
-    @Test (expected = AdditionDependencyStrategyException.class)
+    @Test (expected = RegistrationStrategyException.class)
     public void checkExceptionOnRemove()
             throws Exception {
         IResolveDependencyStrategy strategy = new StrategyStorageStrategy(
@@ -99,6 +99,6 @@ public class StrategyStorageStrategyTest {
                 },
                 null
         );
-        ((IAdditionDependencyStrategy) strategy).remove(null);
+        ((IRegistrationStrategy) strategy).remove(null);
     }
 }

@@ -12,14 +12,15 @@
     <version>0.5.0</version>
     <packaging>pom</packaging>
     <modules>
-        <module>IAdditionDependencyStrategy</module>
         <module>IAction</module>
+        <module>IAdditionDependencyStrategy</module>
         <module>ApplyFunctionToArgumentsStrategy</module>
         <module>IPath</module>
         <module>InvalidStateException</module>
         <module>CreateNewInstanceStrategy</module>
         <module>PoolGuard</module>
         <module>Path</module>
+        <module>IRegistrationStrategy</module>
         <module>SingletonStrategy</module>
         <module>Pool</module>
         <module>InitializationException</module>

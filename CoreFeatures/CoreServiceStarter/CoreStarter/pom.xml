@@ -202,7 +202,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.interfaces.iaddition-dependency-strategy</artifactId>
+            <artifactId>base.interfaces.iregistration-strategy</artifactId>
             <version>0.5.0</version>
             <scope>compile</scope>
         </dependency>

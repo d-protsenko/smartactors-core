@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.iobject_extension.configuration_object;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.IRegistrationStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
@@ -133,9 +133,9 @@ public class ConfigurationObjectTest {
                 }
         );
         IResolveDependencyStrategy strategy = new CObjectStrategy();
-        ((IAdditionDependencyStrategy) strategy).register("in_", inStrategy);
-        ((IAdditionDependencyStrategy) strategy).register("out_", outStrategy);
-        ((IAdditionDependencyStrategy) strategy).register("default", defaultStrategy);
+        ((IRegistrationStrategy) strategy).register("in_", inStrategy);
+        ((IRegistrationStrategy) strategy).register("out_", outStrategy);
+        ((IRegistrationStrategy) strategy).register("default", defaultStrategy);
         IOC.register(
                 IOC.resolve(
                         IOC.getKeyForKeyByNameResolutionStrategy(), "resolve key for configuration object"

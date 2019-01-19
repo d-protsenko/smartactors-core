@@ -1,18 +1,18 @@
-package info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception;
+package info.smart_tools.smartactors.base.interfaces.i_registration_strategy.exception;
 
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 
 /**
  * Exception for error in {@link IResolveDependencyStrategy} methods
  */
-public class AdditionDependencyStrategyException extends Exception {
+public class RegistrationStrategyException extends Exception {
 
     /**
      * Constructor with specific error message as argument
      *
      * @param message specific error message
      */
-    public AdditionDependencyStrategyException(final String message) {
+    public RegistrationStrategyException(final String message) {
         super(message);
     }
 
@@ -23,7 +23,7 @@ public class AdditionDependencyStrategyException extends Exception {
      * @param cause   specific cause
      */
 
-    public AdditionDependencyStrategyException(final String message, final Throwable cause) {
+    public RegistrationStrategyException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
@@ -32,7 +32,7 @@ public class AdditionDependencyStrategyException extends Exception {
      *
      * @param cause specific cause
      */
-    public AdditionDependencyStrategyException(final Throwable cause) {
+    public RegistrationStrategyException(final Throwable cause) {
         super(cause);
     }
 }

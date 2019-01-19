@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_by_type_strategy;
 
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.IRegistrationStrategy;
+import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.exception.RegistrationStrategyException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 
@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentMap;
  *
  */
 @Deprecated
-public class ResolveByTypeStrategy implements IResolveDependencyStrategy, IAdditionDependencyStrategy {
+public class ResolveByTypeStrategy implements IResolveDependencyStrategy, IRegistrationStrategy {
     /**
      * Specific strategies for resolve
      */
@@ -48,7 +48,7 @@ public class ResolveByTypeStrategy implements IResolveDependencyStrategy, IAddit
      * @param key the key for output type
      */
     @Override
-    public void remove(final Object key) throws AdditionDependencyStrategyException {
+    public void remove(final Object key) throws RegistrationStrategyException {
         resolveStrategies.remove(key);
     }
 

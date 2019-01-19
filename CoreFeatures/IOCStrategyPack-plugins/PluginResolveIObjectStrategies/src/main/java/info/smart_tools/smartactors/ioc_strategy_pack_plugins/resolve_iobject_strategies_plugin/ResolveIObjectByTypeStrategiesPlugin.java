@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.ioc_strategy_pack_plugins.resolve_iobject_strategies_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.IRegistrationStrategy;
+import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.exception.RegistrationStrategyException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
@@ -69,13 +69,13 @@ public class ResolveIObjectByTypeStrategiesPlugin implements IPlugin {
                         IKey typeStrategy = Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject" + "convert");
                         IKey expandableTypeStrategy = Keys.resolveByName("expandable_strategy#" + "info.smart_tools.smartactors.iobject.iobject.IObject");
                         IResolveDependencyStrategy resolveStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
-                        ((IAdditionDependencyStrategy) resolveStrategy).register(Map.class, new MapToIObjectResolveDependencyStrategy());
-                        ((IAdditionDependencyStrategy) resolveStrategy).register(String.class, new StringToIObjectResolveDependencyStrategy());
+                        ((IRegistrationStrategy) resolveStrategy).register(Map.class, new MapToIObjectResolveDependencyStrategy());
+                        ((IRegistrationStrategy) resolveStrategy).register(String.class, new StringToIObjectResolveDependencyStrategy());
                         IOC.register(typeStrategy, resolveStrategy);
                         IOC.register(expandableTypeStrategy, new SingletonStrategy(resolveStrategy));
                     } catch (ResolutionException e) {
                         throw new ActionExecutionException("ResolveIObjectByTypeStrategies plugin can't load: can't get ResolveIObjectByTypeStrategies key", e);
-                    } catch (RegistrationException | AdditionDependencyStrategyException | InvalidArgumentException e) {
+                    } catch (RegistrationException | RegistrationStrategyException | InvalidArgumentException e) {
                         throw new ActionExecutionException("ResolveIObjectByTypeStrategies plugin can't load: can't register new strategy", e);
                     }
                 })

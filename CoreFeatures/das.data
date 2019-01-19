@@ -553,6 +553,14 @@
   "rawName" : "IAdditionDependencyStrategy",
   "version" : "0.5.0"
 }, {
+  "artifactId" : "base.interfaces.iregistration-strategy",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "IRegistrationStrategy",
+  "version" : "0.5.0"
+}, {
   "artifactId" : "base.interfaces.iaction",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
