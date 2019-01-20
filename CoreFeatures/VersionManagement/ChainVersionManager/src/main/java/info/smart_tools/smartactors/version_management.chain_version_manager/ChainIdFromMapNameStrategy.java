@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.version_management.chain_version_manager;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 
@@ -12,48 +12,48 @@ public class ChainIdFromMapNameStrategy {
 
     Map<Object, Map<Comparable, Object>> chainIds = new ConcurrentHashMap<>();
     private static Map<Object, ChainVersionStrategies> chainVersionStrategies = new ConcurrentHashMap<>();
-    private IResolveDependencyStrategy resolve_by_message_strategy = new IResolveDependencyStrategy(){
+    private IResolutionStrategy resolve_by_message_strategy = new IResolutionStrategy(){
         @Override
-        public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
+        public <T> T resolve(Object... args) throws ResolutionStrategyException {
             return (T) resolve_by_message(args[0], (IObject) args[1]);
         }
     };
 
-    private IResolveDependencyStrategy resolve_by_module_dependencies_strategy = new IResolveDependencyStrategy(){
+    private IResolutionStrategy resolve_by_module_dependencies_strategy = new IResolutionStrategy(){
         @Override
-        public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
+        public <T> T resolve(Object... args) throws ResolutionStrategyException {
             return (T) resolve_by_module_dependencies(args[0]);
         }
     };
 
-    private IResolveDependencyStrategy register_message_version_strategy = new IResolveDependencyStrategy(){
+    private IResolutionStrategy register_message_version_strategy = new IResolutionStrategy(){
         @Override
-        public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
+        public <T> T resolve(Object... args) throws ResolutionStrategyException {
             registerVersionResolutionStrategy(
                     args[0],                            // map name
-                    (IResolveDependencyStrategy)args[1] // message version resolution strategy
+                    (IResolutionStrategy)args[1] // message version resolution strategy
             );
             return (T) null;
         }
     };
 
-    public IResolveDependencyStrategy getRegisterMessageVersionStrategy() {
+    public IResolutionStrategy getRegisterMessageVersionStrategy() {
         return register_message_version_strategy;
     }
 
-    public IResolveDependencyStrategy getResolveByMessageStrategy() {
+    public IResolutionStrategy getResolveByMessageStrategy() {
         return resolve_by_message_strategy;
     }
 
-    public IResolveDependencyStrategy getResolveByModuleDependenciesStrategy() {
+    public IResolutionStrategy getResolveByModuleDependenciesStrategy() {
         return resolve_by_module_dependencies_strategy;
     }
 
-    private void registerVersionResolutionStrategy(Object mapName, IResolveDependencyStrategy strategy)
-            throws ResolveDependencyStrategyException {
+    private void registerVersionResolutionStrategy(Object mapName, IResolutionStrategy strategy)
+            throws ResolutionStrategyException {
         Comparable version = ModuleManager.getCurrentModule().getVersion();
         if (mapName == null || version == null) {
-            throw new ResolveDependencyStrategyException("Chain name and version cannot be null.");
+            throw new ResolutionStrategyException("Chain name and version cannot be null.");
         }
         ChainVersionStrategies versionStrategies = chainVersionStrategies.get(mapName);
         if (versionStrategies == null) {
@@ -64,10 +64,10 @@ public class ChainIdFromMapNameStrategy {
     }
 
     private Object registerChain(Object mapName, Comparable version)
-            throws ResolveDependencyStrategyException {
+            throws ResolutionStrategyException {
 
         //if (mapName == null || version == null) {
-        //    throw new ResolveDependencyStrategyException("Map name or version cannot be null.");
+        //    throw new ResolutionStrategyException("Map name or version cannot be null.");
         //}
 
         Map<Comparable, Object> versions = chainIds.get(mapName);
@@ -90,15 +90,15 @@ public class ChainIdFromMapNameStrategy {
     }
 
     private Object resolve_by_message(Object chainName, IObject message)
-            throws ResolveDependencyStrategyException {
+            throws ResolutionStrategyException {
         if (chainName == null) {
-            throw new ResolveDependencyStrategyException("Chain name cannot be null.");
+            throw new ResolutionStrategyException("Chain name cannot be null.");
         }
         if (chainName.toString().indexOf(":") > -1) {
             return chainName;
         }
         if (message == null) {
-            throw new ResolveDependencyStrategyException("Message for chain Id resolution cannot be null.");
+            throw new ResolutionStrategyException("Message for chain Id resolution cannot be null.");
         }
 
         Comparable version = chainVersionStrategies.get(chainName).resolveVersion(message);
@@ -106,7 +106,7 @@ public class ChainIdFromMapNameStrategy {
     }
 
     private Object resolve_by_module_dependencies(Object chainName)
-            throws ResolveDependencyStrategyException {
+            throws ResolutionStrategyException {
         if (chainName.toString().indexOf(":") > -1) {
             return chainName;
         }
@@ -115,14 +115,14 @@ public class ChainIdFromMapNameStrategy {
     }
 
     private Object resolve_by_version(Object chainName, Comparable version)
-            throws ResolveDependencyStrategyException {
+            throws ResolutionStrategyException {
 
         //if (chainName == null) {
-        //    throw new ResolveDependencyStrategyException("Chain name cannot be null.");
+        //    throw new ResolutionStrategyException("Chain name cannot be null.");
         //}
 
         if (version == null) {
-            throw new ResolveDependencyStrategyException("Chain Id resolution failed for chain name '"+chainName+"'.");
+            throw new ResolutionStrategyException("Chain Id resolution failed for chain name '"+chainName+"'.");
         }
 
         Map<Comparable, Object> versions = chainIds.get(chainName);

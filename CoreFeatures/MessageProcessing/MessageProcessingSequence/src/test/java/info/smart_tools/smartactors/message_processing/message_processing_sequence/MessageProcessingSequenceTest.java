@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.message_processing.message_processing_seque
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
@@ -63,8 +63,8 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
     private IFieldName chainFieldName;
     private IFieldName afterActionFieldName;
 
-    private IResolveDependencyStrategy makeDumpStrategy;
-    private IResolveDependencyStrategy chainIdStrategy;
+    private IResolutionStrategy makeDumpStrategy;
+    private IResolutionStrategy chainIdStrategy;
     private IChainStorage chainStorage;
     private IRouter router;
 
@@ -88,9 +88,9 @@ public class MessageProcessingSequenceTest extends PluginsLoadingTestBase {
         chainFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
         afterActionFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "after");
 
-        makeDumpStrategy = mock(IResolveDependencyStrategy.class);
+        makeDumpStrategy = mock(IResolutionStrategy.class);
         chainIdStrategy = new ApplyFunctionToArgumentsStrategy(args -> { return args[0]; });
-                //mock(IResolveDependencyStrategy.class);
+                //mock(IResolutionStrategy.class);
         IOC.register(Keys.resolveByName("make dump"), makeDumpStrategy);
         router = mock(IRouter.class);
         mainChainName = "main chain";

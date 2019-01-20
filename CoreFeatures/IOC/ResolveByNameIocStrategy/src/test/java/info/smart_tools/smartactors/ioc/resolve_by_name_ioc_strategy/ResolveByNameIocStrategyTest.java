@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.ioc.resolve_by_name_ioc_strategy;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import org.junit.Test;
 
@@ -14,14 +14,14 @@ public class ResolveByNameIocStrategyTest {
 
     @Test
     public void checkStrategyCreation() {
-        IResolveDependencyStrategy strategy = new ResolveByNameIocStrategy();
+        IResolutionStrategy strategy = new ResolveByNameIocStrategy();
         assertNotNull(strategy);
     }
 
     @Test
     public void checkStrategyResolution()
             throws Exception{
-        IResolveDependencyStrategy strategy = new ResolveByNameIocStrategy();
+        IResolutionStrategy strategy = new ResolveByNameIocStrategy();
         IKey key1 = strategy.resolve("unique_key");
         assertNotNull(key1);
         IKey key2 = strategy.resolve("unique_key");
@@ -31,10 +31,10 @@ public class ResolveByNameIocStrategyTest {
         assertNotEquals(key1, key3);
     }
 
-    @Test (expected = ResolveDependencyStrategyException.class)
+    @Test (expected = ResolutionStrategyException.class)
     public void checkStrategyResolutionException()
             throws Exception {
-        IResolveDependencyStrategy strategy = new ResolveByNameIocStrategy();
+        IResolutionStrategy strategy = new ResolveByNameIocStrategy();
         strategy.resolve(null);
     }
 }

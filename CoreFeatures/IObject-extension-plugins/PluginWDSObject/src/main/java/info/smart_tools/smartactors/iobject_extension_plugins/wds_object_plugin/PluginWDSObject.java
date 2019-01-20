@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.iobject_extension_plugins.wds_object_plugin
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -76,7 +76,7 @@ public class PluginWDSObject extends BootstrapPlugin {
     public void registerRulesStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
-                Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.resolveByName(IResolutionStrategy.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> a[1]
                 )
@@ -89,7 +89,7 @@ public class PluginWDSObject extends BootstrapPlugin {
         String keyName = "";
 
         try {
-            keyName = IResolveDependencyStrategy.class.getCanonicalName();
+            keyName = IResolutionStrategy.class.getCanonicalName();
             IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");

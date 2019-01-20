@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.message_processing.object_creation_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
@@ -22,8 +22,8 @@ import static org.mockito.Mockito.when;
  * Test for {@link FullObjectCreatorResolutionStrategy}.
  */
 public class FullObjectCreatorResolutionStrategyTest extends PluginsLoadingTestBase {
-    private IResolveDependencyStrategy creator1ResolutionStrategyMock;
-    private IResolveDependencyStrategy creator2ResolutionStrategyMock;
+    private IResolutionStrategy creator1ResolutionStrategyMock;
+    private IResolutionStrategy creator2ResolutionStrategyMock;
     private IReceiverObjectCreator creator1Mock;
     private IReceiverObjectCreator creator2Mock;
 
@@ -38,8 +38,8 @@ public class FullObjectCreatorResolutionStrategyTest extends PluginsLoadingTestB
 
     @Override
     protected void registerMocks() throws Exception {
-        creator1ResolutionStrategyMock = mock(IResolveDependencyStrategy.class);
-        creator2ResolutionStrategyMock = mock(IResolveDependencyStrategy.class);
+        creator1ResolutionStrategyMock = mock(IResolutionStrategy.class);
+        creator2ResolutionStrategyMock = mock(IResolutionStrategy.class);
         creator1Mock = mock(IReceiverObjectCreator.class);
         creator2Mock = mock(IReceiverObjectCreator.class);
 

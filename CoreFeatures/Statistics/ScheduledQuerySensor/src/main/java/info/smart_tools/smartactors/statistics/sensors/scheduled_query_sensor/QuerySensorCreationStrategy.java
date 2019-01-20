@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.statistics.sensors.scheduled_query_sensor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
@@ -14,7 +14,7 @@ import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 /**
  *
  */
-public class QuerySensorCreationStrategy implements IResolveDependencyStrategy {
+public class QuerySensorCreationStrategy implements IResolutionStrategy {
     private static final int CHAIN_ID_STRATEGY_ARGUMENT_INDEX = 0;
     private static final int CONFIG_STRATEGY_ARGUMENT_INDEX = 1;
 
@@ -35,7 +35,7 @@ public class QuerySensorCreationStrategy implements IResolveDependencyStrategy {
     }
 
     @Override
-    public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
+    public <T> T resolve(final Object... args) throws ResolutionStrategyException {
         Object statisticsChainId = args[CHAIN_ID_STRATEGY_ARGUMENT_INDEX];
         IObject conf = (IObject) args[CONFIG_STRATEGY_ARGUMENT_INDEX];
 
@@ -51,7 +51,7 @@ public class QuerySensorCreationStrategy implements IResolveDependencyStrategy {
 
             return (T) new QuerySensorHandle(entry);
         } catch (ChangeValueException | InvalidArgumentException | ResolutionException e) {
-            throw new ResolveDependencyStrategyException(e);
+            throw new ResolutionStrategyException(e);
         }
     }
 }

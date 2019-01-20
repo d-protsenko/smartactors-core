@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc.recursive_strategy_container;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
 import info.smart_tools.smartactors.ioc.istrategy_container.exception.StrategyContainerException;
 
@@ -17,7 +17,7 @@ class EmptyStrategyContainer implements IStrategyContainer {
      * @throws StrategyContainerException never
      */
     @Override
-    public IResolveDependencyStrategy resolve(final Object key) throws StrategyContainerException {
+    public IResolutionStrategy resolve(final Object key) throws StrategyContainerException {
 //        throw new StrategyContainerException(String.format("Strategy not found for %s", String.valueOf(key)));
         return null;
     }
@@ -25,11 +25,11 @@ class EmptyStrategyContainer implements IStrategyContainer {
     /**
      * Always throws exception because this container cannot resolve any strategy.
      * @param key unique object identifier
-     * @param strategy instance of {@link IResolveDependencyStrategy}
+     * @param strategy instance of {@link IResolutionStrategy}
      * @throws StrategyContainerException always
      */
     @Override
-    public void register(final Object key, final IResolveDependencyStrategy strategy) throws StrategyContainerException {
+    public void register(final Object key, final IResolutionStrategy strategy) throws StrategyContainerException {
         throw new StrategyContainerException(
                 String.format("Cannot register %s by %s in EmptyStrategyContainer",
                         String.valueOf(strategy), String.valueOf(key)));

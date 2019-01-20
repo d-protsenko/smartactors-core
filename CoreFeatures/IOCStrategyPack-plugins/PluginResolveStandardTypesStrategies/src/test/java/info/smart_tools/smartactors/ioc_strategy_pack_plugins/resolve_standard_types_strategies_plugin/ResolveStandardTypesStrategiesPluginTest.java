@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.ioc_strategy_pack_plugins.resolve_standard_
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
@@ -98,21 +98,21 @@ public class ResolveStandardTypesStrategiesPluginTest {
         Keys.resolveByName(Character.class.getCanonicalName() + "convert");
 
         verifyStatic();
-        IOC.register(eq(stringConvertKey), any(IResolveDependencyStrategy.class));
+        IOC.register(eq(stringConvertKey), any(IResolutionStrategy.class));
         verifyStatic();
-        IOC.register(eq(integerConvertKey), any(IResolveDependencyStrategy.class));
+        IOC.register(eq(integerConvertKey), any(IResolutionStrategy.class));
         verifyStatic();
-        IOC.register(eq(bigDecimalConvertKey), any(IResolveDependencyStrategy.class));
+        IOC.register(eq(bigDecimalConvertKey), any(IResolutionStrategy.class));
         verifyStatic();
-        IOC.register(eq(localDateTimeConvertKey), any(IResolveDependencyStrategy.class));
+        IOC.register(eq(localDateTimeConvertKey), any(IResolutionStrategy.class));
         verifyStatic();
-        IOC.register(eq(listConvertKey), any(IResolveDependencyStrategy.class));
+        IOC.register(eq(listConvertKey), any(IResolutionStrategy.class));
         verifyStatic();
-        IOC.register(eq(intConvertKey), any(IResolveDependencyStrategy.class));
+        IOC.register(eq(intConvertKey), any(IResolutionStrategy.class));
         verifyStatic();
-        IOC.register(eq(booleanConvertKey), any(IResolveDependencyStrategy.class));
+        IOC.register(eq(booleanConvertKey), any(IResolutionStrategy.class));
         verifyStatic();
-        IOC.register(eq(characterConvertKey), any(IResolveDependencyStrategy.class));
+        IOC.register(eq(characterConvertKey), any(IResolutionStrategy.class));
 
         ArgumentCaptor<IActionNoArgs> actionArgumentCaptor1 = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(bootstrapItem).revertProcess(actionArgumentCaptor1.capture());

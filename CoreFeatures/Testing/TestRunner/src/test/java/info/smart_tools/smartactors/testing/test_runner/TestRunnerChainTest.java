@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.base.exception.initialization_exception.Init
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
@@ -123,7 +123,7 @@ public class TestRunnerChainTest {
     @Test (expected = InitializationException.class)
     public void checkInitializationExceptionOnCreation()
             throws Exception {
-        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+        IResolutionStrategy strategy = mock(IResolutionStrategy.class);
         doThrow(ResolutionException.class).when(strategy).resolve(any());
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),

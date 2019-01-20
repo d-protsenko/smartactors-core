@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.http_endpoint.http_request_maker;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.endpoint.irequest_maker.IRequestMaker;
 import info.smart_tools.smartactors.endpoint.irequest_maker.exception.RequestMakerException;
@@ -103,7 +103,7 @@ public class HttpRequestMakerTest {
         MessageToBytesMapper mapper = mock(MessageToBytesMapper.class);
         when(mapper.serialize(eq(content))).thenReturn(contentBody.getBytes());
 
-        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+        IResolutionStrategy strategy = mock(IResolutionStrategy.class);
         when(strategy.resolve()).thenReturn(mapper);
 
         IOC.register(

@@ -1,6 +1,6 @@
 /**
  * Package contains implementation
- * of {@link info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy}
+ * of {@link info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy}
  * <pre>
  * This strategy realize singletone pattern for resolving class
  * </pre>

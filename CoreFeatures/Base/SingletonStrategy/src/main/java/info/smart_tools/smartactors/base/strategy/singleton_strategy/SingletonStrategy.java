@@ -1,16 +1,16 @@
 package info.smart_tools.smartactors.base.strategy.singleton_strategy;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
 
 /**
- * Implementation of {@link IResolveDependencyStrategy}
+ * Implementation of {@link IResolutionStrategy}
  * <pre>
  * This strategy realize singletone pattern for resolving class
  * </pre>
  */
-public class SingletonStrategy implements IResolveDependencyStrategy {
+public class SingletonStrategy implements IResolutionStrategy {
 
     /**
      * instance of Object
@@ -35,10 +35,10 @@ public class SingletonStrategy implements IResolveDependencyStrategy {
      * @param <T> type of object
      * @param args needed parameters for resolve dependency
      * @return instance of object
-     * @throws ResolveDependencyStrategyException if any errors occurred
+     * @throws ResolutionStrategyException if any errors occurred
      */
     public <T> T resolve(final Object... args)
-            throws ResolveDependencyStrategyException {
+            throws ResolutionStrategyException {
         return (T) classInstance;
     }
 }

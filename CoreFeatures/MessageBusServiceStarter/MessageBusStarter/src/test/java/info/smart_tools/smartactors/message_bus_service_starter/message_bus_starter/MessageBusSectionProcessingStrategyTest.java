@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.message_bus_service_starter.message_bus_sta
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
@@ -117,12 +117,12 @@ public class MessageBusSectionProcessingStrategyTest {
     public void testLoadingAndRevertingConfig()
             throws Exception {
         IObject message = mock(IObject.class);
-        IResolveDependencyStrategy sequenceStrategy = mock(IResolveDependencyStrategy.class);
+        IResolutionStrategy sequenceStrategy = mock(IResolutionStrategy.class);
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                 sequenceStrategy
         );
-        IResolveDependencyStrategy messageProcessorStrategy = mock(IResolveDependencyStrategy.class);
+        IResolutionStrategy messageProcessorStrategy = mock(IResolutionStrategy.class);
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                 messageProcessorStrategy

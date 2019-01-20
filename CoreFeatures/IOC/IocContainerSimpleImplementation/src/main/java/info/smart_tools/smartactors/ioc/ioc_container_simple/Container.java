@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.ioc.ioc_container_simple;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.ioc.iioccontainer.IContainer;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Container implements IContainer {
 
-    private final Map<IKey, IResolveDependencyStrategy> storage = new ConcurrentHashMap<>();
+    private final Map<IKey, IResolutionStrategy> storage = new ConcurrentHashMap<>();
 
     private final IKey keyForKeyByNameResolveStrategy;
 
@@ -81,7 +81,7 @@ public class Container implements IContainer {
         if (key == null) {
             throw new ResolutionException("Key can't be null");
         }
-        IResolveDependencyStrategy strategy = storage.get(key);
+        IResolutionStrategy strategy = storage.get(key);
         if (strategy == null) {
             throw new ResolutionException("Strategy for key " + key + " not found");
         }
@@ -97,11 +97,11 @@ public class Container implements IContainer {
      * Register new dependency by instance of {@link IKey}
      *
      * @param key      instance of {@link IKey}
-     * @param strategy instance of {@link IResolveDependencyStrategy}
+     * @param strategy instance of {@link IResolutionStrategy}
      * @throws RegistrationException when registration is impossible because of any error
      */
     @Override
-    public void register(final IKey key, final IResolveDependencyStrategy strategy)
+    public void register(final IKey key, final IResolutionStrategy strategy)
             throws RegistrationException {
         if (key == null) {
             throw new RegistrationException("Key can't be null");

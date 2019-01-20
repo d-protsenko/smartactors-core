@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc.ioc_container;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.ioc.iioccontainer.IContainer;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
@@ -77,7 +77,7 @@ public class Container implements IContainer {
             throws ResolutionException {
         try {
             IStrategyContainer strategyContainer = (IStrategyContainer) ScopeProvider.getCurrentScope().getValue(strategyContainerKey);
-            IResolveDependencyStrategy strategy = strategyContainer.resolve(key);
+            IResolutionStrategy strategy = strategyContainer.resolve(key);
             return (T) strategy.resolve(args);
         } catch (Throwable e) {
             throw new ResolutionException("Resolution of dependency failed for key '" + key + "'.", e);
@@ -87,11 +87,11 @@ public class Container implements IContainer {
     /**
      * Register new dependency by instance of {@link IKey}
      * @param key instance of {@link IKey}
-     * @param strategy instance of {@link IResolveDependencyStrategy}
+     * @param strategy instance of {@link IResolutionStrategy}
      * @throws RegistrationException when registration is impossible because of any error
      */
     @Override
-    public void register(final IKey key, final IResolveDependencyStrategy strategy)
+    public void register(final IKey key, final IResolutionStrategy strategy)
             throws RegistrationException {
         try {
             IStrategyContainer strategyContainer = (IStrategyContainer) ScopeProvider.getCurrentScope().getValue(strategyContainerKey);

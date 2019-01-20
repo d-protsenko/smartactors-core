@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.version_management.versioned_recursive_strategy_container;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
@@ -31,7 +31,7 @@ public class StrategyContainerScopeTest {
 
     private IScope parentScope;
     private IScope childScope;
-    private IResolveDependencyStrategy resolveByNameStrategy = mock(IResolveDependencyStrategy.class);
+    private IResolutionStrategy resolveByNameStrategy = mock(IResolutionStrategy.class);
 
     @Before
     public void setUp() throws ScopeProviderException, InvalidArgumentException, RegistrationException {

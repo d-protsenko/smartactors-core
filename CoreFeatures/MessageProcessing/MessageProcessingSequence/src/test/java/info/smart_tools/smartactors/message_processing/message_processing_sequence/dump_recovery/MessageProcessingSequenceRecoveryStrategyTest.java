@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_processing.message_processing_sequence.dump_recovery;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 public class MessageProcessingSequenceRecoveryStrategyTest extends PluginsLoadingTestBase {
     private IChainStorage chainStorageMock;
     private IRouter routerMock;
-    private IResolveDependencyStrategy chainResolutionStrategyMock;
+    private IResolutionStrategy chainResolutionStrategyMock;
 
     @Override
     protected void loadPlugins() throws Exception {
@@ -46,14 +46,14 @@ public class MessageProcessingSequenceRecoveryStrategyTest extends PluginsLoadin
 
     @Override
     protected void registerMocks() throws Exception {
-        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), new IResolveDependencyStrategy() {
+        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), new IResolutionStrategy() {
             @Override
-            public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
+            public <T> T resolve(Object... args) throws ResolutionStrategyException {
                 return (T) String.valueOf(args[0]);
             }
         });
 
-        chainResolutionStrategyMock = mock(IResolveDependencyStrategy.class);
+        chainResolutionStrategyMock = mock(IResolutionStrategy.class);
         IOC.register(Keys.resolveByName(IReceiverChain.class.getCanonicalName()), chainResolutionStrategyMock);
 
         routerMock = mock(IRouter.class);

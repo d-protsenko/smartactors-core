@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.checkpoint.recover_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
 import info.smart_tools.smartactors.checkpoint.interfaces.exceptions.RecoverStrategyInitializationException;
 import info.smart_tools.smartactors.checkpoint.recover_strategies.chain_choice.IRecoveryChainChoiceStrategy;
 import info.smart_tools.smartactors.checkpoint.recover_strategies.chain_choice.SingleChainRecoverStrategy;
@@ -34,9 +34,9 @@ public class SingleChainRecoverStrategyTest extends PluginsLoadingTestBase {
 
     @Override
     protected void registerMocks() throws Exception {
-        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), new IResolveDependencyStrategy() {
+        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), new IResolutionStrategy() {
             @Override
-            public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
+            public <T> T resolve(Object... args) throws ResolutionStrategyException {
                 return (T) args[0].toString().concat("__0");
             }
         });

@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.message_processing.handler_routing_receiver_creator;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -81,7 +81,7 @@ public class HandlerRoutingReceiverCreatorTest {
         IObject objectSection = mock(IObject.class);
         when(objectSection.getValue(new FieldName("name"))).thenReturn("actorID");
         when(objectSection.getValue(new FieldName("dependency"))).thenReturn("createSampleActorStrategy");
-        IResolveDependencyStrategy createSampleActorStrategy = mock(IResolveDependencyStrategy.class);
+        IResolutionStrategy createSampleActorStrategy = mock(IResolutionStrategy.class);
         IOC.register(Keys.resolveByName("createSampleActorStrategy"), createSampleActorStrategy);
         ConstructorWrapperImpl wrapperImpl = new ConstructorWrapperImpl();
         CustomActor a = new CustomActor(wrapperImpl);
@@ -89,25 +89,25 @@ public class HandlerRoutingReceiverCreatorTest {
                 .thenReturn(a);
 
         // register wrapper generator
-        IResolveDependencyStrategy wgs = mock(IResolveDependencyStrategy.class);
+        IResolutionStrategy wgs = mock(IResolutionStrategy.class);
         IWrapperGenerator wg = mock(IWrapperGenerator.class);
         IOC.register(Keys.resolveByName(IWrapperGenerator.class.getCanonicalName()), wgs);
         when(wgs.resolve()).thenReturn(wg);
         MethodWrapper mw = new MethodWrapper();
         when(wg.generate(IMethodWrapper.class)).thenReturn(mw);
         // register receiver generator
-        IResolveDependencyStrategy rgs = mock(IResolveDependencyStrategy.class);
+        IResolutionStrategy rgs = mock(IResolutionStrategy.class);
         IReceiverGenerator rg = mock(IReceiverGenerator.class);
         IOC.register(Keys.resolveByName(IReceiverGenerator.class.getCanonicalName()), rgs);
         when(rgs.resolve()).thenReturn(rg);
         IMessageReceiver mr = mock(IMessageReceiver.class);
-        when(rg.generate(any(CustomActor.class), any(IResolveDependencyStrategy.class), any(String.class)))
+        when(rg.generate(any(CustomActor.class), any(IResolutionStrategy.class), any(String.class)))
                 .thenAnswer(new Answer<IMessageReceiver>() {
                     @Override
                     public IMessageReceiver answer(InvocationOnMock invocation) throws Throwable {
                         Object[] args = invocation.getArguments();
                         assertSame(args[0], a);
-                        assertEquals(((IResolveDependencyStrategy) args[1]).resolve().getClass(), MethodWrapper.class);
+                        assertEquals(((IResolutionStrategy) args[1]).resolve().getClass(), MethodWrapper.class);
                         assertEquals(args[2], "getSomeValue");
                         return mr;
                     }
@@ -136,7 +136,7 @@ public class HandlerRoutingReceiverCreatorTest {
         verify(createSampleActorStrategy, times(1)).resolve(objectSection);
         verify(rg, times(1)).generate(
                 any(CustomActor.class),
-                any(IResolveDependencyStrategy.class),
+                any(IResolutionStrategy.class),
                 any(String.class)
         );
         verify(objectSection, times(1)).getValue(new FieldName("name"));

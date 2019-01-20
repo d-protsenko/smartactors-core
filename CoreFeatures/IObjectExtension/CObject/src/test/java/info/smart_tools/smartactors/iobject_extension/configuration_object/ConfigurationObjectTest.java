@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.iobject_extension.configuration_object;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.IRegistrationStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.IRegistrationStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -66,7 +66,7 @@ public class ConfigurationObjectTest {
                         }
                 )
         );
-        IResolveDependencyStrategy defaultStrategy = new ApplyFunctionToArgumentsStrategy(
+        IResolutionStrategy defaultStrategy = new ApplyFunctionToArgumentsStrategy(
                 (a) -> {
                     try {
                         return a[1];
@@ -77,7 +77,7 @@ public class ConfigurationObjectTest {
                     }
                 }
         );
-        IResolveDependencyStrategy inStrategy = new ApplyFunctionToArgumentsStrategy(
+        IResolutionStrategy inStrategy = new ApplyFunctionToArgumentsStrategy(
                 (a) -> {
                     try {
                         Object obj = a[1];
@@ -96,7 +96,7 @@ public class ConfigurationObjectTest {
                     }
                 }
         );
-        IResolveDependencyStrategy outStrategy = new ApplyFunctionToArgumentsStrategy(
+        IResolutionStrategy outStrategy = new ApplyFunctionToArgumentsStrategy(
                 (a) -> {
                     try {
                         Object obj = a[1];
@@ -132,7 +132,7 @@ public class ConfigurationObjectTest {
                     }
                 }
         );
-        IResolveDependencyStrategy strategy = new CObjectStrategy();
+        IResolutionStrategy strategy = new CObjectStrategy();
         ((IRegistrationStrategy) strategy).register("in_", inStrategy);
         ((IRegistrationStrategy) strategy).register("out_", outStrategy);
         ((IRegistrationStrategy) strategy).register("default", defaultStrategy);

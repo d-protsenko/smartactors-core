@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.iobject_extension.wds_object;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -59,7 +59,7 @@ public class WDSObjectFieldTest {
                         })
         );
         IOC.register(
-                Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.resolveByName(IResolutionStrategy.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> a[1]
                 )
@@ -120,15 +120,15 @@ public class WDSObjectFieldTest {
     @Test
     public void checkInMethod()
             throws Exception {
-        IResolveDependencyStrategy strategy1 = mock(IResolveDependencyStrategy.class);
+        IResolutionStrategy strategy1 = mock(IResolutionStrategy.class);
         IOC.resolve(
-                Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.resolveByName(IResolutionStrategy.class.getCanonicalName()),
                 "GetValue",
                 strategy1
         );
-        IResolveDependencyStrategy strategy2 = mock(IResolveDependencyStrategy.class);
+        IResolutionStrategy strategy2 = mock(IResolutionStrategy.class);
         IOC.resolve(
-                Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.resolveByName(IResolutionStrategy.class.getCanonicalName()),
                 "Transform",
                 strategy2
         );
@@ -163,9 +163,9 @@ public class WDSObjectFieldTest {
     @Test (expected = ReadValueException.class)
     public void checkInMethodExceptionOnWrongArgs()
             throws Exception {
-        IResolveDependencyStrategy strategy1 = mock(IResolveDependencyStrategy.class);
+        IResolutionStrategy strategy1 = mock(IResolutionStrategy.class);
         IOC.resolve(
-                Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.resolveByName(IResolutionStrategy.class.getCanonicalName()),
                 "GetValue",
                 strategy1
         );
@@ -182,15 +182,15 @@ public class WDSObjectFieldTest {
     @Test
     public void checkOutMethod()
             throws Exception {
-        IResolveDependencyStrategy strategy1 = mock(IResolveDependencyStrategy.class);
+        IResolutionStrategy strategy1 = mock(IResolutionStrategy.class);
         IOC.resolve(
-                Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.resolveByName(IResolutionStrategy.class.getCanonicalName()),
                 "GetValue",
                 strategy1
         );
-        IResolveDependencyStrategy strategy2 = mock(IResolveDependencyStrategy.class);
+        IResolutionStrategy strategy2 = mock(IResolutionStrategy.class);
         IOC.resolve(
-                Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.resolveByName(IResolutionStrategy.class.getCanonicalName()),
                 "Transform",
                 strategy2
         );
@@ -230,9 +230,9 @@ public class WDSObjectFieldTest {
     @Test (expected = ChangeValueException.class)
     public void checkOutMethodExceptionOnWrongArgs()
             throws Exception {
-        IResolveDependencyStrategy strategy1 = mock(IResolveDependencyStrategy.class);
+        IResolutionStrategy strategy1 = mock(IResolutionStrategy.class);
         IOC.resolve(
-                Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.resolveByName(IResolutionStrategy.class.getCanonicalName()),
                 "GetValue",
                 strategy1
         );

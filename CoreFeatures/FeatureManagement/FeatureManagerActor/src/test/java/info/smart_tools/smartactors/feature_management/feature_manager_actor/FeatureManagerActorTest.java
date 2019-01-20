@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.feature_management.feature_manager_actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.exception.FeatureManagementException;
@@ -47,15 +47,15 @@ public class FeatureManagerActorTest {
     private IQueue queue = mock(IQueue.class);
     private IReceiverChain chain = mock(IReceiverChain.class);
     private IChainStorage storage = mock(IChainStorage.class);
-    private IResolveDependencyStrategy getChainIDByNameStrategy = mock(IResolveDependencyStrategy.class);
-    private IResolveDependencyStrategy getSequence = mock(IResolveDependencyStrategy.class);
-    private IResolveDependencyStrategy getProcessor = mock(IResolveDependencyStrategy.class);
+    private IResolutionStrategy getChainIDByNameStrategy = mock(IResolutionStrategy.class);
+    private IResolutionStrategy getSequence = mock(IResolutionStrategy.class);
+    private IResolutionStrategy getProcessor = mock(IResolutionStrategy.class);
 
     private IQueue afterFeaturesCallbackQueue1 = mock(IQueue.class);
     private IQueue afterFeaturesCallbackQueue2 = mock(IQueue.class);
     private IQueue afterFeaturesCallbackQueue3 = mock(IQueue.class);
 
-    private IResolveDependencyStrategy afterFeaturesCallbackStrategy = mock(IResolveDependencyStrategy.class);
+    private IResolutionStrategy afterFeaturesCallbackStrategy = mock(IResolutionStrategy.class);
 
     @Before
     public void init()

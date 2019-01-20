@@ -2,8 +2,8 @@ package info.smart_tools.smartactors.checkpoint.checkpoint_actor;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStopException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
@@ -56,7 +56,7 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
 
     private final String collectionName = "the_collection_name";
 
-    private IResolveDependencyStrategy newEntryStrategyMock;
+    private IResolutionStrategy newEntryStrategyMock;
     private ISchedulerEntry entryMock[];
 
     private EnteringMessage enteringMessageMock;
@@ -95,9 +95,9 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
         serviceMock = mock(ISchedulerService.class);
         when(serviceMock.getEntryStorage()).thenReturn(storageMock);
 
-        IOC.register(Keys.resolveByName("new scheduler service"), new IResolveDependencyStrategy() {
+        IOC.register(Keys.resolveByName("new scheduler service"), new IResolutionStrategy() {
             @Override
-            public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
+            public <T> T resolve(Object... args) throws ResolutionStrategyException {
                 assertSame(connectionPool, args[0]);
                 assertEquals(collectionName, args[1]);
                 observer = (ISchedulerEntryStorageObserver) args[2];
@@ -110,9 +110,9 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
         IOC.register(Keys.resolveByName("scheduler service activation action for checkpoint actor"),
                 new SingletonStrategy(activationActionMock));
 
-        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), new IResolveDependencyStrategy() {
+        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), new IResolutionStrategy() {
             @Override
-            public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
+            public <T> T resolve(Object... args) throws ResolutionStrategyException {
                 if ("checkpoint_feedback_chain".equals(args[0])) {
                     return (T) "checkpoint_feedback_chain__0";
                 }
@@ -122,7 +122,7 @@ public class CheckpointActorTest extends PluginsLoadingTestBase {
             }
         });
 
-        newEntryStrategyMock = mock(IResolveDependencyStrategy.class);
+        newEntryStrategyMock = mock(IResolutionStrategy.class);
         IOC.register(Keys.resolveByName("new scheduler entry"), newEntryStrategyMock);
 
         entryMock = new ISchedulerEntry[] {mock(ISchedulerEntry.class), mock(ISchedulerEntry.class), mock(ISchedulerEntry.class)};

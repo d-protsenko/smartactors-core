@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.version_management.versioned_recursive_strategy_container;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Simple key-value storage
  * <ul>
  *     <li>key is a unique object identifier</li>
- *     <li>value is a instance of {@link IResolveDependencyStrategy}</li>
+ *     <li>value is a instance of {@link IResolutionStrategy}</li>
  * </ul>
  * </p>
  * <p>
@@ -29,7 +29,7 @@ public class StrategyContainer implements IStrategyContainer {
     /**
      * Local storage
      */
-    private Map<Object, Map<IModule, IResolveDependencyStrategy>> strategyStorage = new ConcurrentHashMap<>();
+    private Map<Object, Map<IModule, IResolutionStrategy>> strategyStorage = new ConcurrentHashMap<>();
 
     /**
      *  Constructs the container.
@@ -40,16 +40,16 @@ public class StrategyContainer implements IStrategyContainer {
     }
 
     /**
-     * Resolve {@link IResolveDependencyStrategy} by given unique object identifier.
+     * Resolve {@link IResolutionStrategy} by given unique object identifier.
      * Asks parent strategy if this container doesn't have a strategy for the key.
      * @param key unique object identifier
-     * @return instance of {@link IResolveDependencyStrategy}
+     * @return instance of {@link IResolutionStrategy}
      * @throws StrategyContainerException if any errors occurred
      */
-    public IResolveDependencyStrategy resolve(final Object key)
+    public IResolutionStrategy resolve(final Object key)
             throws StrategyContainerException {
-        IResolveDependencyStrategy strategy = null;
-        Map<IModule, IResolveDependencyStrategy> strategyVersions = strategyStorage.get(key);
+        IResolutionStrategy strategy = null;
+        Map<IModule, IResolutionStrategy> strategyVersions = strategyStorage.get(key);
         if (strategyVersions != null) {
             strategy = ModuleManager.getFromMap(strategyVersions);
         }
@@ -60,14 +60,14 @@ public class StrategyContainer implements IStrategyContainer {
     }
 
     /**
-     * Register new dependency of {@link IResolveDependencyStrategy} instance by unique object identifier
+     * Register new dependency of {@link IResolutionStrategy} instance by unique object identifier
      * @param key unique object identifier
-     * @param strategy instance of {@link IResolveDependencyStrategy}
+     * @param strategy instance of {@link IResolutionStrategy}
      * @throws StrategyContainerException if any error occurred
      */
-    public void register(final Object key, final IResolveDependencyStrategy strategy)
+    public void register(final Object key, final IResolutionStrategy strategy)
             throws StrategyContainerException {
-        Map<IModule, IResolveDependencyStrategy> strategyVersions = strategyStorage.get(key);
+        Map<IModule, IResolutionStrategy> strategyVersions = strategyStorage.get(key);
         if (strategyVersions == null) {
             strategyVersions = new ConcurrentHashMap<>();
             strategyStorage.put(key, strategyVersions);
@@ -76,7 +76,7 @@ public class StrategyContainer implements IStrategyContainer {
     }
 
     /**
-     * Remove existing dependency of {@link IResolveDependencyStrategy} by unique object identifier.
+     * Remove existing dependency of {@link IResolutionStrategy} by unique object identifier.
      * Note remove is done only for this container,
      * the following call to {@link #resolve(Object)} may return the strategy from the parent container.
      * @param key unique object identifier
@@ -84,7 +84,7 @@ public class StrategyContainer implements IStrategyContainer {
      */
     public void remove(final Object key)
             throws StrategyContainerException {
-        Map<IModule, IResolveDependencyStrategy> strategyVersions = strategyStorage.get(key);
+        Map<IModule, IResolutionStrategy> strategyVersions = strategyStorage.get(key);
         if (strategyVersions != null) {
             ModuleManager.removeFromMap(strategyVersions);
             if (strategyVersions.size() == 0) {
