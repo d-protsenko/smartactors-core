@@ -5,7 +5,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
-import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartupException;
+import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStopException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
@@ -155,11 +155,11 @@ public class SchedulerActor {
      * Start the scheduler.
      *
      * @param message    the message
-     * @throws ServiceStartupException if error occurs starting the service
+     * @throws ServiceStartException if error occurs starting the service
      * @throws IllegalServiceStateException if the service is already running/starting
      */
     public void start(final StartStopMessage message)
-            throws ServiceStartupException, IllegalServiceStateException {
+            throws ServiceStartException, IllegalServiceStateException {
         service.start();
     }
 

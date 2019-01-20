@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.scheduler.actor.impl.refresher;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
-import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartupException;
+import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStopException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -197,7 +197,7 @@ public class EntryStorageRefresher implements ISchedulerStorageRefresher {
     }
 
     @Override
-    public void start() throws ServiceStartupException, IllegalServiceStateException {
+    public void start() throws ServiceStartException, IllegalServiceStateException {
         startAfter(time.currentTimeMillis());
     }
 
@@ -241,7 +241,7 @@ public class EntryStorageRefresher implements ISchedulerStorageRefresher {
     }
 
     @Override
-    public void startAfter(final long startTime) throws ServiceStartupException, IllegalServiceStateException {
+    public void startAfter(final long startTime) throws ServiceStartException, IllegalServiceStateException {
         stateLock.lock();
         try {
             if (this.isStarted) {
@@ -255,7 +255,7 @@ public class EntryStorageRefresher implements ISchedulerStorageRefresher {
 
             this.isStarted = true;
         } catch (TaskScheduleException e) {
-            throw new ServiceStartupException(e);
+            throw new ServiceStartException(e);
         } finally {
             stateLock.unlock();
         }

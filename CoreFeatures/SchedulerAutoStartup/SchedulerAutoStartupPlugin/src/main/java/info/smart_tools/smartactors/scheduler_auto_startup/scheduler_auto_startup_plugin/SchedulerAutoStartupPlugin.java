@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
-import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartupException;
+import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -45,7 +45,7 @@ public class SchedulerAutoStartupPlugin extends BootstrapPlugin {
                         featureLoadCompletionQueue.put(() -> {
                             try {
                                 service.start();
-                            } catch (ServiceStartupException | IllegalServiceStateException e) {
+                            } catch (ServiceStartException | IllegalServiceStateException e) {
                                 throw new TaskExecutionException(e);
                             }
                         });

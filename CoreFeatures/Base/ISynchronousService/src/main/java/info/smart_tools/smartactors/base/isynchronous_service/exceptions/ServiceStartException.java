@@ -4,14 +4,14 @@ package info.smart_tools.smartactors.base.isynchronous_service.exceptions;
  * Exception thrown by {@link info.smart_tools.smartactors.base.isynchronous_service.ISynchronousService#start() service start} method when
  * the service cannot be started.
  */
-public class ServiceStartupException extends Exception {
+public class ServiceStartException extends Exception {
     /**
      * The constructor.
      *
      * @param message       the message
      * @param cause         the cause
      */
-    public ServiceStartupException(final String message, final Throwable cause) {
+    public ServiceStartException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
@@ -20,7 +20,7 @@ public class ServiceStartupException extends Exception {
      *
      * @param message       the message
      */
-    public ServiceStartupException(final String message) {
+    public ServiceStartException(final String message) {
         super(message);
     }
 
@@ -29,7 +29,7 @@ public class ServiceStartupException extends Exception {
      *
      * @param cause         the cause
      */
-    public ServiceStartupException(final Throwable cause) {
+    public ServiceStartException(final Throwable cause) {
         super(cause);
     }
 }

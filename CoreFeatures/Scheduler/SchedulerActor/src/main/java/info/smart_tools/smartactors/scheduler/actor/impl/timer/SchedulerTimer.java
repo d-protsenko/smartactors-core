@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.scheduler.actor.impl.timer;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
-import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartupException;
+import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStopException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -86,7 +86,7 @@ public class SchedulerTimer implements IDelayedSynchronousService, ITimer {
 
     @Override
     public void start()
-            throws IllegalServiceStateException, ServiceStartupException {
+            throws IllegalServiceStateException, ServiceStartException {
         this.myStartTime = 0;
     }
 
@@ -98,7 +98,7 @@ public class SchedulerTimer implements IDelayedSynchronousService, ITimer {
 
     @Override
     public void startAfter(final long startTime)
-            throws ServiceStartupException, IllegalServiceStateException, InvalidArgumentException {
+            throws ServiceStartException, IllegalServiceStateException, InvalidArgumentException {
         this.myStartTime = startTime;
         this.myStopTime = Long.MAX_VALUE;
     }
