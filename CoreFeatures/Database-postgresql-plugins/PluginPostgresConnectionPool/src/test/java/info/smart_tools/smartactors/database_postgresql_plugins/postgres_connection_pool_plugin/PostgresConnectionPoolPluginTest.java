@@ -54,7 +54,7 @@ public class PostgresConnectionPoolPluginTest {
     @Ignore("Requires actual DB connection, need to mock JDBC :(")
     public void testPoolReturnConnection() throws Exception {
         IPool pool = IOC.resolve(Keys.resolveByName("DatabaseConnectionPool"), connectionOptions);
-        Object connection = pool.take();
+        Object connection = pool.get();
         assertThat(connection, is(instanceOf(PostgresConnection.class)));
     }
 

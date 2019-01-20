@@ -5,13 +5,13 @@ import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 /**
  * Exception for error in {@link IPool} method put
  */
-public class PoolPutException extends Exception {
+public class PuttingToPoolException extends Exception {
 
     /**
      * Constructor with specific error message as argument
      * @param message specific error message
      */
-    public PoolPutException(final String message) {
+    public PuttingToPoolException(final String message) {
         super(message);
     }
 
@@ -21,7 +21,7 @@ public class PoolPutException extends Exception {
      * @param cause specific cause
      */
 
-    public PoolPutException(final String message, final Throwable cause) {
+    public PuttingToPoolException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
@@ -29,7 +29,7 @@ public class PoolPutException extends Exception {
      * Constructor with specific cause as argument
      * @param cause specific cause
      */
-    public PoolPutException(final Throwable cause) {
+    public PuttingToPoolException(final Throwable cause) {
         super(cause);
     }
 }

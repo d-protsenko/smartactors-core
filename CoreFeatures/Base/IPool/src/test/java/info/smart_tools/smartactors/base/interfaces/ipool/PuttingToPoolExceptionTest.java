@@ -1,39 +1,40 @@
 package info.smart_tools.smartactors.base.interfaces.ipool;
 
-import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolTakeException;
+
+import info.smart_tools.smartactors.base.interfaces.ipool.exception.PuttingToPoolException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 /**
- * Tests for PoolTakeException
+ * Tests for PuttingToPoolException
  */
-public class PoolTakeExceptionTest {
-    @Test(expected = PoolTakeException.class)
-    public void checkMessageMethod() throws PoolTakeException {
+public class PuttingToPoolExceptionTest {
+    @Test(expected = PuttingToPoolException.class)
+    public void checkMessageMethod() throws PuttingToPoolException {
         String str = "test";
-        PoolTakeException exception = new PoolTakeException(str);
+        PuttingToPoolException exception = new PuttingToPoolException(str);
         assertEquals(exception.getMessage(), str);
         throw exception;
     }
 
-    @Test(expected = PoolTakeException.class)
+    @Test(expected = PuttingToPoolException.class)
     public void checkCauseMethod()
-            throws PoolTakeException {
+            throws PuttingToPoolException {
         String internalMessage = "Internal message";
         Throwable cause = new Throwable(internalMessage);
-        PoolTakeException exception = new PoolTakeException(cause);
+        PuttingToPoolException exception = new PuttingToPoolException(cause);
         assertEquals(cause, exception.getCause());
         throw exception;
     }
 
-    @Test(expected = PoolTakeException.class)
+    @Test(expected = PuttingToPoolException.class)
     public void checkMessageAndCauseMethod()
-            throws PoolTakeException {
+            throws PuttingToPoolException {
         String str = "test";
         String internalMessage = "Internal message";
         Throwable cause = new Throwable(internalMessage);
-        PoolTakeException exception = new PoolTakeException(str, cause);
+        PuttingToPoolException exception = new PuttingToPoolException(str, cause);
         assertEquals(exception.getMessage(), str);
         assertEquals(exception.getCause(), cause);
         throw exception;

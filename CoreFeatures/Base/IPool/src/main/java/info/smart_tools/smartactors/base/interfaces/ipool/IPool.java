@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.base.interfaces.ipool;
 
-import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolPutException;
-import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolTakeException;
+import info.smart_tools.smartactors.base.interfaces.ipool.exception.GettingFromPoolException;
+import info.smart_tools.smartactors.base.interfaces.ipool.exception.PuttingToPoolException;
 import info.smart_tools.smartactors.base.interfaces.iresource_source.IResourceSource;
 
 /**
@@ -9,16 +9,16 @@ import info.smart_tools.smartactors.base.interfaces.iresource_source.IResourceSo
  */
 public interface IPool extends IResourceSource {
     /**
-     * Get an item from the pool
+     * Gets an item from the pool
      * @return found object
-     * @throws PoolTakeException if value is not found or any error occurred
+     * @throws GettingFromPoolException if value is not found or any error occurred
      */
-    Object take() throws PoolTakeException;
+    Object get() throws GettingFromPoolException;
 
     /**
-     * Stores an value to the pool after using
-     * @param value given value
-     * @throws PoolPutException any if error occurred
+     * Puts an item to the pool after using
+     * @param item given item
+     * @throws PuttingToPoolException any if error occurred
      */
-    void put(final Object value) throws PoolPutException;
+    void put(final Object item) throws PuttingToPoolException;
 }

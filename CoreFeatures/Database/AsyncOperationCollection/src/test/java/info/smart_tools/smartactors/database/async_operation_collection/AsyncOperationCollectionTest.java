@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.database.async_operation_collection;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
-import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolTakeException;
+import info.smart_tools.smartactors.base.interfaces.ipool.exception.GettingFromPoolException;
 import info.smart_tools.smartactors.database.async_operation_collection.exception.CompleteAsyncOperationException;
 import info.smart_tools.smartactors.database.async_operation_collection.exception.DeleteAsyncOperationException;
 import info.smart_tools.smartactors.database.async_operation_collection.exception.GetAsyncOperationException;
@@ -45,7 +45,7 @@ public class AsyncOperationCollectionTest {
     private IField searchResultField;
 
     @Before
-    public void setUp() throws ReadValueException, ChangeValueException, InvalidArgumentException, PoolTakeException, ResolutionException {
+    public void setUp() throws ReadValueException, ChangeValueException, InvalidArgumentException, GettingFromPoolException, ResolutionException {
 
         mockStatic(IOC.class);
         mockStatic(Keys.class);
@@ -80,7 +80,7 @@ public class AsyncOperationCollectionTest {
         IPool connectionPool = mock(IPool.class);
         connection = mock(IStorageConnection.class);
         collectionName = mock(String.class);
-        when(connectionPool.take()).thenReturn(connection);
+        when(connectionPool.get()).thenReturn(connection);
         collection = new AsyncOperationCollection(connectionPool, "async_operation");
 
         IKey keyConnection = mock(IKey.class);

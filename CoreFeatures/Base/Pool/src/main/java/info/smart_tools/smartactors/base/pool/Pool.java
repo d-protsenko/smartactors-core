@@ -4,8 +4,8 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
-import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolPutException;
-import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolTakeException;
+import info.smart_tools.smartactors.base.interfaces.ipool.exception.GettingFromPoolException;
+import info.smart_tools.smartactors.base.interfaces.ipool.exception.PuttingToPoolException;
 import info.smart_tools.smartactors.base.interfaces.iresource_source.exceptions.OutOfResourceException;
 
 import java.util.concurrent.ArrayBlockingQueue;
@@ -48,16 +48,16 @@ public class Pool implements IPool {
 
     /**
      * Get a value by the key from the scope.
-     * @throws PoolTakeException if error was occurred
+     * @throws GettingFromPoolException if error was occurred
      * @return Object from pool
      */
-    public Object take() throws PoolTakeException {
+    public Object get() throws GettingFromPoolException {
         if (freeItemsCounter.getAndDecrement() <= 0) {
             freeItemsCounter.getAndIncrement();
             try {
-                throw new PoolTakeException("Reached limit of items for this pool.", new OutOfResourceException(this));
+                throw new GettingFromPoolException("Reached limit of items for this pool.", new OutOfResourceException(this));
             } catch (InvalidArgumentException ex) {
-                throw new PoolTakeException("Reached limit of items for this pool.", ex);
+                throw new GettingFromPoolException("Reached limit of items for this pool.", ex);
             }
         }
 
@@ -70,16 +70,16 @@ public class Pool implements IPool {
             return result;
         } catch (Exception e) {
             freeItemsCounter.getAndIncrement();
-            throw new PoolTakeException("Failed to get item", e);
+            throw new GettingFromPoolException("Failed to get item", e);
         }
     }
 
     /**
      * Stores a value to the pool.
      * @param item the item that now free.
-     * @throws PoolPutException if any error occurred
+     * @throws PuttingToPoolException if any error occurred
      */
-    public void put(final Object item) throws PoolPutException {
+    public void put(final Object item) throws PuttingToPoolException {
         try {
             if (maxItemsCount >= freeItemsCounter.get()) {
                 freeItems.add(item);
@@ -91,7 +91,7 @@ public class Pool implements IPool {
                 }
             }
         } catch (Exception e) {
-            throw new PoolPutException("Error was occurred", e);
+            throw new PuttingToPoolException("Error was occurred", e);
         }
     }
 

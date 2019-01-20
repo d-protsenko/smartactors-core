@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.database.cached_collection;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
-import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolTakeException;
+import info.smart_tools.smartactors.base.interfaces.ipool.exception.GettingFromPoolException;
 import info.smart_tools.smartactors.database.cached_collection.exception.DeleteCacheItemException;
 import info.smart_tools.smartactors.database.cached_collection.exception.GetCacheItemException;
 import info.smart_tools.smartactors.database.cached_collection.exception.UpsertCacheItemException;
@@ -55,7 +55,7 @@ public class CachedCollectionTest {
     private IField searchResultField;
 
     @Before
-    public void setUp() throws ReadValueException, ChangeValueException, InvalidArgumentException, PoolTakeException, ResolutionException {
+    public void setUp() throws ReadValueException, ChangeValueException, InvalidArgumentException, GettingFromPoolException, ResolutionException {
 
         mockStatic(IOC.class);
         mockStatic(Keys.class);
@@ -90,7 +90,7 @@ public class CachedCollectionTest {
         IPool connectionPool = mock(IPool.class);
         connection = mock(IStorageConnection.class);
         collectionName = mock(String.class);
-        when(connectionPool.take()).thenReturn(connection);
+        when(connectionPool.get()).thenReturn(connection);
         when(connectionPoolField.in(config)).thenReturn(connectionPool);
         when(collectionNameField.in(config)).thenReturn(collectionName);
         collection = new CachedCollection(config);

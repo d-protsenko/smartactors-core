@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.statistics.sensors.scheduled_query_sensor.q
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
-import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolTakeException;
+import info.smart_tools.smartactors.base.interfaces.ipool.exception.GettingFromPoolException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -57,7 +57,7 @@ public class DatabaseCountQueryExecutorTest extends PluginsLoadingTestBase {
         connectionPoolStrategyMock = mock(IResolveDependencyStrategy.class);
         when(connectionPoolStrategyMock.resolve(same(connectionOptionsMock))).thenReturn(poolMock);
         IOC.register(Keys.resolveByName("the connection pool"), connectionPoolStrategyMock);
-        when(poolMock.take()).thenReturn(connectionMock).thenThrow(PoolTakeException.class);
+        when(poolMock.get()).thenReturn(connectionMock).thenThrow(GettingFromPoolException.class);
 
         taskMock = mock(ITask.class);
 
