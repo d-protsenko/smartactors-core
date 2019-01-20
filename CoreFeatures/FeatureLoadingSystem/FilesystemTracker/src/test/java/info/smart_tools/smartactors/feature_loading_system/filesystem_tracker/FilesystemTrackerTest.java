@@ -108,7 +108,7 @@ public class FilesystemTrackerTest {
         IPath[] fileMocks = new IPath[]{mock(IPath.class),mock(IPath.class), mock(IPath.class)};
         IAction<IPath> fileActionMock = mock(IAction.class);
 
-        when(pathFilterMock.accept(any())).thenReturn(true);
+        when(pathFilterMock.checkPath(any())).thenReturn(true);
 
         FilesystemTracker tracker = new FilesystemTracker(pathFilterMock, taskFactoryMock, fileSystemMock);
         tracker.start(directoryMock);
@@ -138,7 +138,7 @@ public class FilesystemTrackerTest {
         IPath fileMock = mock(IPath.class);
         IAction<IPath> fileActionMock = mock(IAction.class);
 
-        when(pathFilterMock.accept(any())).thenReturn(false);
+        when(pathFilterMock.checkPath(any())).thenReturn(false);
 
         FilesystemTracker tracker = new FilesystemTracker(pathFilterMock, taskFactoryMock, fileSystemMock);
         tracker.start(directoryMock);
@@ -165,7 +165,7 @@ public class FilesystemTrackerTest {
         IAction<Throwable> errorActionMock = mock(IAction.class);
         ActionExecutionException exceptionMock = mock(ActionExecutionException.class);
 
-        when(pathFilterMock.accept(any())).thenReturn(true);
+        when(pathFilterMock.checkPath(any())).thenReturn(true);
         doThrow(exceptionMock).when(fileActionMock).execute(same(fileMock));
 
         FilesystemTracker tracker = new FilesystemTracker(pathFilterMock, taskFactoryMock, fileSystemMock);

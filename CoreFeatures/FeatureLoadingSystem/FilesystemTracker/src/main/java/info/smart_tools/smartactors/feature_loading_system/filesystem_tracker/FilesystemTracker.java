@@ -39,7 +39,7 @@ public class FilesystemTracker implements IFilesystemTracker {
         @Override
         public void execute(final IPath file) throws ActionExecutionException {
             synchronized (knownFilesLock) {
-                if (!filter.accept(file)) {
+                if (!filter.checkPath(file)) {
                     return;
                 }
 
