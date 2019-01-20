@@ -5,7 +5,7 @@ import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.exce
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.icacheable.ICacheable;
-import info.smart_tools.smartactors.base.interfaces.icacheable.exception.DropCacheException;
+import info.smart_tools.smartactors.base.interfaces.icacheable.exception.CacheDropException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
@@ -141,12 +141,12 @@ public class StrategyStorageWithCacheStrategyTest {
         String result = cachedStrategy.resolve(2f);
         assertEquals("2.0", result);
 
-        ((IRegistrationStrategy) cachedStrategy).remove(Float.class);
+        ((IRegistrationStrategy) cachedStrategy).unregister(Float.class);
         cachedStrategy.resolve(2f);
         fail();
     }
 
-    @Test (expected = DropCacheException.class)
+    @Test (expected = CacheDropException.class)
     public void checkExceptionOnDropCache()
             throws Exception {
         IResolveDependencyStrategy cachedStrategy = new StrategyStorageWithCacheStrategy(null, null);
@@ -164,6 +164,6 @@ public class StrategyStorageWithCacheStrategyTest {
     public void checkExceptionOnRemove()
             throws Exception {
         IResolveDependencyStrategy cachedStrategy = new StrategyStorageWithCacheStrategy(null, null);
-        ((IRegistrationStrategy) cachedStrategy).remove(null);
+        ((IRegistrationStrategy) cachedStrategy).unregister(null);
     }
 }

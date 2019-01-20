@@ -48,7 +48,7 @@ public class ResolveByTypeStrategy implements IResolveDependencyStrategy, IRegis
      * @param key the key for output type
      */
     @Override
-    public void remove(final Object key) throws RegistrationStrategyException {
+    public void unregister(final Object key) throws RegistrationStrategyException {
         resolveStrategies.remove(key);
     }
 

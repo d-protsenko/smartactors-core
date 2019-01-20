@@ -65,7 +65,7 @@ public class StrategyStorageStrategyTest {
         result = sss.resolve("something", "arg");
         assertEquals(defaultValue, result);
 
-        ((IRegistrationStrategy) sss).remove("in_");
+        ((IRegistrationStrategy) sss).unregister("in_");
 
         result = sss.resolve("in_something", "arg");
         assertEquals(defaultValue, result);
@@ -99,6 +99,6 @@ public class StrategyStorageStrategyTest {
                 },
                 null
         );
-        ((IRegistrationStrategy) strategy).remove(null);
+        ((IRegistrationStrategy) strategy).unregister(null);
     }
 }

@@ -1,38 +1,38 @@
 package info.smart_tools.smartactors.base.interfaces.icacheable;
 
-import info.smart_tools.smartactors.base.interfaces.icacheable.exception.DropCacheException;
+import info.smart_tools.smartactors.base.interfaces.icacheable.exception.CacheDropException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class DropCacheExceptionTest {
+public class CacheDropExceptionTest {
 
-    @Test(expected = DropCacheException.class)
+    @Test(expected = CacheDropException.class)
     public void checkMessageMethod()
-            throws DropCacheException {
+            throws CacheDropException {
         String str = "test";
-        DropCacheException exception = new DropCacheException(str);
+        CacheDropException exception = new CacheDropException(str);
         assertEquals(exception.getMessage(), str);
         throw exception;
     }
 
-    @Test(expected = DropCacheException.class)
+    @Test(expected = CacheDropException.class)
     public void checkCauseMethod()
-            throws DropCacheException {
+            throws CacheDropException {
         String internalMessage = "Internal message";
         Throwable cause = new Throwable(internalMessage);
-        DropCacheException exception = new DropCacheException(cause);
+        CacheDropException exception = new CacheDropException(cause);
         assertEquals(cause, exception.getCause());
         throw exception;
     }
 
-    @Test (expected = DropCacheException.class)
+    @Test (expected = CacheDropException.class)
     public void checkMessageAndCauseMethod()
-            throws DropCacheException {
+            throws CacheDropException {
         String str = "test";
         String internalMessage = "Internal message";
         Throwable cause = new Throwable(internalMessage);
-        DropCacheException exception = new DropCacheException(str, cause);
+        CacheDropException exception = new CacheDropException(str, cause);
         assertEquals(exception.getMessage(), str);
         assertEquals(exception.getCause(), cause);
         throw exception;

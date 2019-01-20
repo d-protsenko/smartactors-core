@@ -57,7 +57,7 @@ public class StrategyStorageStrategy implements IResolveDependencyStrategy, IReg
     }
 
     @Override
-    public void remove(Object arg)
+    public void unregister(Object arg)
             throws RegistrationStrategyException {
         try {
             this.strategyStorage.remove(this.argToKeyFunction.execute(arg));

@@ -38,7 +38,7 @@ public class ResolveByTypeAndNameStrategy implements IResolveDependencyStrategy,
     }
 
     @Override
-    public void remove(final Object key) throws RegistrationStrategyException {
+    public void unregister(final Object key) throws RegistrationStrategyException {
         creatingStrategy.remove(key);
     }
 }

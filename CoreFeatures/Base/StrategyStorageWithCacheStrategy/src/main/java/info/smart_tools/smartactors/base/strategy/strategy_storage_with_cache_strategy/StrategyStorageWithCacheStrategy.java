@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.icacheable.ICacheable;
-import info.smart_tools.smartactors.base.interfaces.icacheable.exception.DropCacheException;
+import info.smart_tools.smartactors.base.interfaces.icacheable.exception.CacheDropException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 
@@ -72,35 +72,35 @@ public class StrategyStorageWithCacheStrategy implements IResolveDependencyStrat
         try {
             this.dropCacheFor(key);
             this.strategyStorage.put(key, value);
-        } catch (DropCacheException e) {
+        } catch (CacheDropException e) {
             throw new RegistrationStrategyException(e);
         }
     }
 
     @Override
-    public void remove(Object key)
+    public void unregister(Object key)
             throws RegistrationStrategyException {
         try {
             this.dropCacheFor(key);
             this.strategyStorage.remove(key);
-        } catch (DropCacheException e) {
+        } catch (CacheDropException e) {
             throw new RegistrationStrategyException(e);
         }
     }
 
     @Override
     public void dropCache()
-            throws DropCacheException {
+            throws CacheDropException {
         this.cacheStrategiesMap.clear();
     }
 
     @Override
     public void dropCacheFor(final Object key)
-            throws DropCacheException {
+            throws CacheDropException {
         try {
             this.cacheStrategiesMap.remove(key);
         } catch (Throwable e) {
-            throw new DropCacheException(e);
+            throw new CacheDropException(e);
         }
     }
 }

@@ -53,7 +53,7 @@ public class CObjectStrategy implements IResolveDependencyStrategy, IRegistratio
     }
 
     @Override
-    public void remove(Object arg)
+    public void unregister(Object arg)
             throws RegistrationStrategyException {
     }
 }

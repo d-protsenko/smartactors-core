@@ -9,7 +9,7 @@ import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy
 public interface IRegistrationStrategy {
 
     /**
-     * Method for register new strategy at strategy
+     * Method for register new strategy to key
      *
      * @param key   key for using strategy
      * @param value {@link IResolveDependencyStrategy} object, which should register by the key
@@ -18,11 +18,11 @@ public interface IRegistrationStrategy {
     void register(final Object key, final IResolveDependencyStrategy value) throws RegistrationStrategyException;
 
     /**
-     * Method for remove strategy from strategy
+     * Method for unregistering strategy from key
      *
-     * @param key key of the deletion strategy
+     * @param key key of the unregistering strategy
      * @throws RegistrationStrategyException if any errors occurred
      */
-    void remove(final Object key) throws RegistrationStrategyException;
+    void unregister(final Object key) throws RegistrationStrategyException;
 
 }

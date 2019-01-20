@@ -200,22 +200,22 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                         try {
                             IRegistrationStrategy strategy = IOC.resolve(Keys.resolveByName("expandable_strategy#resolve key for configuration object"));
                             try {
-                                strategy.remove("exceptional");
+                                strategy.unregister("exceptional");
                             } catch (RegistrationStrategyException e) {
                                 System.out.println("[WARNING] Deregistration of \"exceptional\" strategy has failed while reverting \"config_section:maps\" plugin.");
                             }
                             try {
-                                strategy.remove("out_");
+                                strategy.unregister("out_");
                             } catch (RegistrationStrategyException e) {
                                 System.out.println("[WARNING] Deregistration of \"out_\" strategy has failed while reverting \"config_section:maps\" plugin.");
                             }
                             try {
-                                strategy.remove("in_");
+                                strategy.unregister("in_");
                             } catch (RegistrationStrategyException e) {
                                 System.out.println("[WARNING] Deregistration of \"in_\" strategy has failed while reverting \"config_section:maps\" plugin.");
                             }
                             try {
-                                strategy.remove("maps");
+                                strategy.unregister("maps");
                             } catch (RegistrationStrategyException e) {
                                 System.out.println("[WARNING] Deregistration of \"maps\" strategy has failed while reverting \"config_section:maps\" plugin.");
                             }

@@ -77,7 +77,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                         try {
                             IRegistrationStrategy strategy = IOC.resolve(Keys.resolveByName("expandable_strategy#resolve key for configuration object"));
                             try {
-                                strategy.remove("onFeatureLoading");
+                                strategy.unregister("onFeatureLoading");
                             } catch (RegistrationStrategyException e) {
                                 System.out.println("[WARNING] Deregistration of \"onFeatureLoading\" strategy has failed while reverting \"config_section:onFeatureLoading\" plugin.");
                             }
