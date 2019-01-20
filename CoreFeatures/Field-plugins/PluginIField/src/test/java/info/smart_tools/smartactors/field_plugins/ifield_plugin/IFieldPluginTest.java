@@ -62,8 +62,8 @@ public class IFieldPluginTest {
 
         verify(item).after("IOC");
 
-        ArgumentCaptor<IActionNoArgs> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
-        verify(item).process(iPoorActionArgumentCaptor.capture());
+        ArgumentCaptor<IActionNoArgs> iActionNoArgsArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
+        verify(item).process(iActionNoArgsArgumentCaptor.capture());
 
         verify(bootstrap).add(item);
 
@@ -78,7 +78,7 @@ public class IFieldPluginTest {
         ArgumentCaptor<ResolveByNameIocStrategy> resolveByNameIocStrategyArgumentCaptor =
             ArgumentCaptor.forClass(ResolveByNameIocStrategy.class);
 
-        iPoorActionArgumentCaptor.getValue().execute();
+        iActionNoArgsArgumentCaptor.getValue().execute();
 
         verifyStatic();
         Keys.resolveByName(IField.class.getCanonicalName());
@@ -95,8 +95,8 @@ public class IFieldPluginTest {
 
         verifyNew(Field.class).withArguments(fieldName);
 
-        verify(item).revertProcess(iPoorActionArgumentCaptor.capture());
-        iPoorActionArgumentCaptor.getValue().execute();
+        verify(item).revertProcess(iActionNoArgsArgumentCaptor.capture());
+        iActionNoArgsArgumentCaptor.getValue().execute();
     }
 
     @Test
@@ -128,15 +128,15 @@ public class IFieldPluginTest {
 
         verify(item).after("IOC");
 
-        ArgumentCaptor<IActionNoArgs> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
-        verify(item).process(iPoorActionArgumentCaptor.capture());
+        ArgumentCaptor<IActionNoArgs> iActionNoArgsArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
+        verify(item).process(iActionNoArgsArgumentCaptor.capture());
 
         verify(bootstrap).add(item);
 
         when(Keys.resolveByName(IField.class.getCanonicalName())).thenThrow(new ResolutionException(""));
 
         try {
-            iPoorActionArgumentCaptor.getValue().execute();
+            iActionNoArgsArgumentCaptor.getValue().execute();
             fail();
         } catch (ActionExecutionException e) {
 
@@ -160,8 +160,8 @@ public class IFieldPluginTest {
 
         verify(item).after("IOC");
 
-        ArgumentCaptor<IActionNoArgs> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
-        verify(item).process(iPoorActionArgumentCaptor.capture());
+        ArgumentCaptor<IActionNoArgs> iActionNoArgsArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
+        verify(item).process(iActionNoArgsArgumentCaptor.capture());
 
         verify(bootstrap).add(item);
 
@@ -173,7 +173,7 @@ public class IFieldPluginTest {
         whenNew(ResolveByNameIocStrategy.class).withArguments(any()).thenThrow(new InvalidArgumentException(""));
 
         try {
-            iPoorActionArgumentCaptor.getValue().execute();
+            iActionNoArgsArgumentCaptor.getValue().execute();
         } catch (ActionExecutionException e) {
 
             verifyStatic();

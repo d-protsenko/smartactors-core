@@ -63,8 +63,8 @@ public class ResolveIObjectByTypeStrategiesPluginTest {
         PowerMockito.verifyNew(BootstrapItem.class).withArguments("ResolveIObjectByTypeStrategiesPlugin");
         Mockito.verify(item).after("IOC");
 
-        ArgumentCaptor<IActionNoArgs> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
-        Mockito.verify(item).process(iPoorActionArgumentCaptor.capture());
+        ArgumentCaptor<IActionNoArgs> iActionNoArgsArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
+        Mockito.verify(item).process(iActionNoArgsArgumentCaptor.capture());
 
         Mockito.verify(bootstrap).add(item);
 
@@ -74,7 +74,7 @@ public class ResolveIObjectByTypeStrategiesPluginTest {
         StrategyStorageWithCacheStrategy strategy = PowerMockito.mock(StrategyStorageWithCacheStrategy.class);
         PowerMockito.whenNew(StrategyStorageWithCacheStrategy.class).withArguments(any(IFunction.class), any(IFunctionTwoArgs.class)).thenReturn(strategy);
 
-        iPoorActionArgumentCaptor.getValue().execute();
+        iActionNoArgsArgumentCaptor.getValue().execute();
 
         PowerMockito.verifyStatic();
         Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject" + "convert");
@@ -85,10 +85,10 @@ public class ResolveIObjectByTypeStrategiesPluginTest {
         Mockito.verify(strategy).register(eq(Map.class), any(MapToIObjectResolutionStrategy.class));
         Mockito.verify(strategy).register(eq(String.class), any(StringToIObjectResolutionStrategy.class));
 
-        ArgumentCaptor<IActionNoArgs> iPoorActionArgumentCaptor1 = ArgumentCaptor.forClass(IActionNoArgs.class);
-        Mockito.verify(item).revertProcess(iPoorActionArgumentCaptor1.capture());
+        ArgumentCaptor<IActionNoArgs> iActionNoArgsArgumentCaptor1 = ArgumentCaptor.forClass(IActionNoArgs.class);
+        Mockito.verify(item).revertProcess(iActionNoArgsArgumentCaptor1.capture());
 
-        iPoorActionArgumentCaptor1.getValue().execute();
+        iActionNoArgsArgumentCaptor1.getValue().execute();
     }
 
     @Test
@@ -108,12 +108,12 @@ public class ResolveIObjectByTypeStrategiesPluginTest {
 
         plugin.load();
 
-        ArgumentCaptor<IActionNoArgs> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
-        Mockito.verify(item).revertProcess(iPoorActionArgumentCaptor.capture());
+        ArgumentCaptor<IActionNoArgs> iActionNoArgsArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
+        Mockito.verify(item).revertProcess(iActionNoArgsArgumentCaptor.capture());
 
         doThrow(new DeletionException("TestException")).when(IOC.class);
         IOC.remove(any());
-        iPoorActionArgumentCaptor.getValue().execute();
+        iActionNoArgsArgumentCaptor.getValue().execute();
     }
 
     @Test(expected = PluginException.class)
@@ -137,13 +137,13 @@ public class ResolveIObjectByTypeStrategiesPluginTest {
         PowerMockito.verifyNew(BootstrapItem.class).withArguments("ResolveIObjectByTypeStrategiesPlugin");
         Mockito.verify(item).after("IOC");
 
-        ArgumentCaptor<IActionNoArgs> iPoorActionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
-        Mockito.verify(item).process(iPoorActionArgumentCaptor.capture());
+        ArgumentCaptor<IActionNoArgs> iActionNoArgsArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
+        Mockito.verify(item).process(iActionNoArgsArgumentCaptor.capture());
 
         Mockito.verify(bootstrap).add(item);
 
         PowerMockito.doThrow(new ResolutionException("")).when(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject" + "convert"));
-        iPoorActionArgumentCaptor.getValue().execute();
+        iActionNoArgsArgumentCaptor.getValue().execute();
         fail();
     }
 

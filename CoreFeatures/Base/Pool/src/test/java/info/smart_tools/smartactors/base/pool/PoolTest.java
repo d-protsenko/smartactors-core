@@ -74,7 +74,7 @@ public class PoolTest {
     }
 
     @Test
-    public void Should_executePoorActionWhenItemReturns() throws Exception {
+    public void Should_executeActionNoArgsWhenItemReturns() throws Exception {
         Supplier<Object> createFunc = mock(Supplier.class);
         when(createFunc.get()).thenReturn(new Object());
         Pool pool = new Pool(1, createFunc);
@@ -86,7 +86,7 @@ public class PoolTest {
     }
 
     @Test
-    public void Should_executePoorActionWhenFreeItemsAreExists() throws Exception {
+    public void Should_executeActionNoArgsWhenFreeItemsAreExists() throws Exception {
         Supplier<Object> createFunc = mock(Supplier.class);
         when(createFunc.get()).thenReturn(new Object());
         Pool pool = new Pool(1, createFunc);

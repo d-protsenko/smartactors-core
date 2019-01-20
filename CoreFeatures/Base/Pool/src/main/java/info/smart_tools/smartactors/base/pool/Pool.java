@@ -107,7 +107,7 @@ public class Pool implements IPool {
             }
             this.taskQueue.add(action);
         } catch (ActionExecutionException e) {
-            throw new RuntimeException("Failed to execute PoorAction", e);
+            throw new RuntimeException("Failed to execute ActionNoArgs", e);
         }
     }
 }
