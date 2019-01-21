@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc.recursive_strategy_container;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
 import info.smart_tools.smartactors.ioc.istrategy_container.exception.StrategyContainerException;
 import org.junit.Test;
@@ -18,10 +18,10 @@ public class StrategyContainerTest {
     public void testRegistrationResolutionDeletion()
             throws Exception {
         IStrategyContainer container = new StrategyContainer(null);
-        IResolutionStrategy strategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
         Object key = new Object();
         container.register(key, strategy);
-        IResolutionStrategy result = container.resolve(key);
+        IResolveDependencyStrategy result = container.resolve(key);
         assertEquals(result, strategy);
         container.remove(key);
         result = container.resolve(key);
@@ -35,8 +35,8 @@ public class StrategyContainerTest {
         IStrategyContainer child = new StrategyContainer(parent);
 
         Object key = new Object();
-        IResolutionStrategy parentStrategy = mock(IResolutionStrategy.class);
-        IResolutionStrategy childStrategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy parentStrategy = mock(IResolveDependencyStrategy.class);
+        IResolveDependencyStrategy childStrategy = mock(IResolveDependencyStrategy.class);
 
         assertNull(parent.resolve(key));
         assertNull(child.resolve(key));

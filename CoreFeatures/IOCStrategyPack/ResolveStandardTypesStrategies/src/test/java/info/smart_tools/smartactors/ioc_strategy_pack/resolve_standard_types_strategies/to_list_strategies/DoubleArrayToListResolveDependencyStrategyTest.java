@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_standard_types_strategies.to_list_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,18 +9,18 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class DoubleArrayToListResolutionStrategyTest {
+public class DoubleArrayToListResolveDependencyStrategyTest {
 
-    private DoubleArrayToListResolutionStrategy strategy;
+    private DoubleArrayToListResolveDependencyStrategy strategy;
 
     @Before
     public void setUp() {
 
-        strategy = new DoubleArrayToListResolutionStrategy();
+        strategy = new DoubleArrayToListResolveDependencyStrategy();
     }
 
     @Test
-    public void ShouldConvertDoubleArrayToList() throws ResolutionStrategyException {
+    public void ShouldConvertDoubleArrayToList() throws ResolveDependencyStrategyException {
 
         double[] array = new double[] {12.0, 5.7, 34.33};
         List<Double> result = strategy.resolve(array);
@@ -30,8 +30,8 @@ public class DoubleArrayToListResolutionStrategyTest {
         assertEquals(result.get(2), new Double(34.33));
     }
 
-    @Test(expected = ResolutionStrategyException.class)
-    public void ShouldThrowException_When_ErrorIsOccurred() throws ResolutionStrategyException {
+    @Test(expected = ResolveDependencyStrategyException.class)
+    public void ShouldThrowException_When_ErrorIsOccurred() throws ResolveDependencyStrategyException {
 
         Double[] array = new Double[] {1.0, 2.6};
         strategy.resolve(array);

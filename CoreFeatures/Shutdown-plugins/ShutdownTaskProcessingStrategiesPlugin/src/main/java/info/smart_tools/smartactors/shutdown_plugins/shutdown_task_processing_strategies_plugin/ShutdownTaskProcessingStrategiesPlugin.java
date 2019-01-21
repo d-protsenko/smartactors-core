@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
@@ -59,7 +59,7 @@ public class ShutdownTaskProcessingStrategiesPlugin extends BootstrapPlugin {
                     }
                 }));
 
-        IResolutionStrategy strategyStorage = new StrategyStorageWithCacheStrategy(
+        IResolveDependencyStrategy strategyStorage = new StrategyStorageWithCacheStrategy(
                 a -> a,
                 (IFunctionTwoArgs<Map<Class, Object>, Class, Object>) (map, clz) -> {
                     for (Map.Entry<Class, Object> entry : map.entrySet()) {

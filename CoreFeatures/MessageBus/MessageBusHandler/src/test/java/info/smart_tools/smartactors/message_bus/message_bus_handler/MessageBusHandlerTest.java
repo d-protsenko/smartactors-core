@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.message_bus.message_bus_handler;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
@@ -121,17 +121,17 @@ public class MessageBusHandlerTest {
     @Test
     public void checkMessageHandle()
             throws Exception {
-        IResolutionStrategy sequenceStrategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy sequenceStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                 sequenceStrategy
         );
-        IResolutionStrategy messageProcessorStrategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy messageProcessorStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                 messageProcessorStrategy
         );
-        IResolutionStrategy iobjectStrategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy iobjectStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 iobjectStrategy
@@ -164,27 +164,27 @@ public class MessageBusHandlerTest {
     @Test
     public void checkMessageHandleWithSpecificChain()
             throws Exception {
-        IResolutionStrategy sequenceStrategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy sequenceStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                 sequenceStrategy
         );
-        IResolutionStrategy messageProcessorStrategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy messageProcessorStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                 messageProcessorStrategy
         );
-        IResolutionStrategy iobjectStrategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy iobjectStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 iobjectStrategy
         );
-        IResolutionStrategy chainIdStrategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy chainIdStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "chain_id_from_map_name_and_message"),
                 chainIdStrategy
         );
-        IResolutionStrategy chainStorageStrategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy chainStorageStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IChainStorage.class.getCanonicalName()),
                 chainStorageStrategy
@@ -217,27 +217,27 @@ public class MessageBusHandlerTest {
     @Test
     public void checkMessageHandleWithReply()
             throws Exception {
-        IResolutionStrategy sequenceStrategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy sequenceStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                 sequenceStrategy
         );
-        IResolutionStrategy messageProcessorStrategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy messageProcessorStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                 messageProcessorStrategy
         );
-        IResolutionStrategy iobjectStrategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy iobjectStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 iobjectStrategy
         );
-        IResolutionStrategy chainIdStrategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy chainIdStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "chain_id_from_map_name_and_message"),
                 chainIdStrategy
         );
-        IResolutionStrategy chainStorageStrategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy chainStorageStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IChainStorage.class.getCanonicalName()),
                 chainStorageStrategy
@@ -281,27 +281,27 @@ public class MessageBusHandlerTest {
     @Test
     public void checkMessageHandleWithSpecificChainAndReply()
             throws Exception {
-        IResolutionStrategy sequenceStrategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy sequenceStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                 sequenceStrategy
         );
-        IResolutionStrategy messageProcessorStrategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy messageProcessorStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                 messageProcessorStrategy
         );
-        IResolutionStrategy iobjectStrategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy iobjectStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 iobjectStrategy
         );
-        IResolutionStrategy chainIdStrategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy chainIdStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "chain_id_from_map_name_and_message"),
                 chainIdStrategy
         );
-        IResolutionStrategy chainStorageStrategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy chainStorageStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IChainStorage.class.getCanonicalName()),
                 chainStorageStrategy

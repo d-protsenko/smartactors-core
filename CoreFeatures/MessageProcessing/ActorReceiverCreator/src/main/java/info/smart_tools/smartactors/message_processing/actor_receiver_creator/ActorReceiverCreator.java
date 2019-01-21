@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_processing.actor_receiver_creator;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -61,7 +61,7 @@ public class ActorReceiverCreator implements IRoutedObjectCreator {
             for (Method m : methods) {
                 Class wrapperInterface = m.getParameterTypes()[0];
                 Object wrapper = wg.generate(wrapperInterface);
-                IResolutionStrategy strategy = new SingletonStrategy(wrapper);
+                IResolveDependencyStrategy strategy = new SingletonStrategy(wrapper);
                 IMessageReceiver handlerReceiver = rg.generate(object, strategy, m.getName());
                 handlerReceiversMap.put(m.getName(), handlerReceiver);
             }

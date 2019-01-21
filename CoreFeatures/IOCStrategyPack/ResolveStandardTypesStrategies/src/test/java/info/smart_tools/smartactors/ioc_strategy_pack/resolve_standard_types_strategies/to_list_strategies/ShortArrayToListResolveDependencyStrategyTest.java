@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_standard_types_strategies.to_list_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,18 +9,18 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class ShortArrayToListResolutionStrategyTest {
+public class ShortArrayToListResolveDependencyStrategyTest {
 
-    private ShortArrayToListResolutionStrategy strategy;
+    private ShortArrayToListResolveDependencyStrategy strategy;
 
     @Before
     public void setUp() {
 
-        strategy = new ShortArrayToListResolutionStrategy();
+        strategy = new ShortArrayToListResolveDependencyStrategy();
     }
 
     @Test
-    public void ShouldConvertShortArrayToList() throws ResolutionStrategyException {
+    public void ShouldConvertShortArrayToList() throws ResolveDependencyStrategyException {
 
         short[] array = new short[] {1, 2, 3};
         List<Short> result = strategy.resolve(array);
@@ -30,8 +30,8 @@ public class ShortArrayToListResolutionStrategyTest {
         assertEquals(result.get(2), new Short("3"));
     }
 
-    @Test(expected = ResolutionStrategyException.class)
-    public void ShouldThrowException_When_ErrorIsOccurred() throws ResolutionStrategyException {
+    @Test(expected = ResolveDependencyStrategyException.class)
+    public void ShouldThrowException_When_ErrorIsOccurred() throws ResolveDependencyStrategyException {
 
         Short[] array = new Short[] {1, 2};
         strategy.resolve(array);

@@ -38,12 +38,6 @@
             <version>1.6.4</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.interfaces.iresolution-strategy</artifactId>
-            <version>0.5.0</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
     <build>
         <pluginManagement>

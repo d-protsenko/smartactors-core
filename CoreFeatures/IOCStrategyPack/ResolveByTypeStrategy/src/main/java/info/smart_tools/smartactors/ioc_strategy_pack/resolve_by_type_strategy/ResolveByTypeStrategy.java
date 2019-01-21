@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_by_type_strategy;
 
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.IRegistrationStrategy;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.exception.RegistrationStrategyException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.IRegistrationStrategy;
+import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.exception.RegistrationStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,12 +16,12 @@ import java.util.concurrent.ConcurrentMap;
  *
  */
 @Deprecated
-public class ResolveByTypeStrategy implements IResolutionStrategy, IRegistrationStrategy {
+public class ResolveByTypeStrategy implements IResolveDependencyStrategy, IRegistrationStrategy {
     /**
      * Specific strategies for resolve
      */
-    private ConcurrentMap<Class, IResolutionStrategy> resolveStrategies;
-    private ConcurrentMap<Class, IResolutionStrategy> cacheStrategiesMap;
+    private ConcurrentMap<Class, IResolveDependencyStrategy> resolveStrategies;
+    private ConcurrentMap<Class, IResolveDependencyStrategy> cacheStrategiesMap;
 
 
     /**
@@ -38,7 +38,7 @@ public class ResolveByTypeStrategy implements IResolutionStrategy, IRegistration
      * @param strategy the strategy for specific output type
      */
     @Override
-    public void register(final Object key, final IResolutionStrategy strategy) {
+    public void register(final Object key, final IResolveDependencyStrategy strategy) {
         cacheStrategiesMap.remove((Class) key);
         resolveStrategies.put((Class) key, strategy);
     }
@@ -53,11 +53,11 @@ public class ResolveByTypeStrategy implements IResolutionStrategy, IRegistration
     }
 
     @Override
-    public <T> T resolve(final Object... args) throws ResolutionStrategyException {
+    public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
         try {
-            IResolutionStrategy strategy = cacheStrategiesMap.get(args[0].getClass());
+            IResolveDependencyStrategy strategy = cacheStrategiesMap.get(args[0].getClass());
             if (strategy == null) {
-                for (Map.Entry<Class, IResolutionStrategy> entry : resolveStrategies.entrySet()) {
+                for (Map.Entry<Class, IResolveDependencyStrategy> entry : resolveStrategies.entrySet()) {
                     if (entry.getKey().isInstance(args[0])) {
                         strategy = entry.getValue();
                         cacheStrategiesMap.put(args[0].getClass(), strategy);
@@ -69,7 +69,7 @@ public class ResolveByTypeStrategy implements IResolutionStrategy, IRegistration
             Object result = strategy.resolve(args[0]);
             return (T) result;
         } catch (Exception e) {
-            throw new ResolutionStrategyException("Object resolution failed.", e);
+            throw new ResolveDependencyStrategyException("Object resolution failed.", e);
         }
     }
 }

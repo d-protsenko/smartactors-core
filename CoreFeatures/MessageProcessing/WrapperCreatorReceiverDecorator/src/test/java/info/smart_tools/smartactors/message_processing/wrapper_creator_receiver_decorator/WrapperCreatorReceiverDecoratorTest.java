@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_processing.wrapper_creator_receiver_decorator;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
@@ -26,12 +26,12 @@ import static org.mockito.Mockito.*;
 
 
 public class WrapperCreatorReceiverDecoratorTest extends PluginsLoadingTestBase {
-    private IResolutionStrategy wrapperResolutionStrategyMock;
-    private IResolutionStrategy wrapperResolutionStrategyResolutionStrategyMock;
+    private IResolveDependencyStrategy wrapperResolutionStrategyMock;
+    private IResolveDependencyStrategy wrapperResolutionStrategyResolutionStrategyMock;
     private IMessageProcessor messageProcessorMock;
     private IMessageProcessingSequence sequenceMock;
     private IObject envMock, wrapperMock, stepConfMock, wrapperConfMock;
-    private Map<Object, IResolutionStrategy> map;
+    private Map<Object, IResolveDependencyStrategy> map;
     private IMessageReceiver receiverMock;
 
     @Override
@@ -45,8 +45,8 @@ public class WrapperCreatorReceiverDecoratorTest extends PluginsLoadingTestBase 
 
     @Override
     protected void registerMocks() throws Exception {
-        wrapperResolutionStrategyMock = mock(IResolutionStrategy.class);
-        wrapperResolutionStrategyResolutionStrategyMock = mock(IResolutionStrategy.class);
+        wrapperResolutionStrategyMock = mock(IResolveDependencyStrategy.class);
+        wrapperResolutionStrategyResolutionStrategyMock = mock(IResolveDependencyStrategy.class);
         messageProcessorMock = mock(IMessageProcessor.class);
         sequenceMock = mock(IMessageProcessingSequence.class);
         envMock = mock(IObject.class);
@@ -59,7 +59,7 @@ public class WrapperCreatorReceiverDecoratorTest extends PluginsLoadingTestBase 
 
         when(wrapperResolutionStrategyResolutionStrategyMock.resolve(same(wrapperConfMock)))
                 .thenReturn(wrapperResolutionStrategyMock)
-                .thenThrow(ResolutionStrategyException.class);
+                .thenThrow(ResolveDependencyStrategyException.class);
 
         when(messageProcessorMock.getEnvironment()).thenReturn(envMock);
         when(messageProcessorMock.getSequence()).thenReturn(sequenceMock);
@@ -106,7 +106,7 @@ public class WrapperCreatorReceiverDecoratorTest extends PluginsLoadingTestBase 
                 receiverMock, map, "the wrapper resolution strategy resolution strategy");
 
         when(wrapperResolutionStrategyResolutionStrategyMock.resolve(any()))
-                .thenThrow(ResolutionStrategyException.class);
+                .thenThrow(ResolveDependencyStrategyException.class);
 
         decorator.receive(messageProcessorMock);
     }

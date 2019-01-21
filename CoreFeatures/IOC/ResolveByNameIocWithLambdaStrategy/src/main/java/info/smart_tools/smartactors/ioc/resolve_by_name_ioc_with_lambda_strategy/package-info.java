@@ -1,6 +1,6 @@
 /**
  * Package contains implementation
- * of {@link info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy}
+ * of {@link info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy}
  * <pre>
  * This strategy allows to storage instances of {@link info.smart_tools.smartactors.core.ikey.IKey}
  * </pre>

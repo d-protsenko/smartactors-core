@@ -2,9 +2,10 @@ package info.smart_tools.smartactors.message_processing.receiver_chain;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
@@ -58,7 +59,7 @@ import java.util.List;
  *     }
  * </pre>
  */
-public class ImmutableReceiverChainResolutionStrategy implements IResolutionStrategy {
+public class ImmutableReceiverChainResolutionStrategy implements IResolveDependencyStrategy {
     private static final int CHAIN_ID_ARG_INDEX = 0;
     private static final int DESCRIPTION_ARG_INDEX = 1;
     private static final int ROUTER_ARG_INDEX = 2;
@@ -66,7 +67,7 @@ public class ImmutableReceiverChainResolutionStrategy implements IResolutionStra
     private static final int MODULE_ARG_INDEX = 4;
 
     @Override
-    public <T> T resolve(final Object... args) throws ResolutionStrategyException {
+    public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
         try {
             Object chainId = args[CHAIN_ID_ARG_INDEX];
             IObject description = (IObject) args[DESCRIPTION_ARG_INDEX];
@@ -117,7 +118,7 @@ public class ImmutableReceiverChainResolutionStrategy implements IResolutionStra
             return (T) new ImmutableReceiverChain(String.valueOf(chainId), description, receivers, arguments, exceptionalChainNamesMap, scope, module);
         } catch (ClassNotFoundException | ResolutionException | ReadValueException |
                 RouteNotFoundException | ChangeValueException | InvalidArgumentException e) {
-            throw new ResolutionStrategyException(e);
+            throw new ResolveDependencyStrategyException(e);
         }
     }
 }

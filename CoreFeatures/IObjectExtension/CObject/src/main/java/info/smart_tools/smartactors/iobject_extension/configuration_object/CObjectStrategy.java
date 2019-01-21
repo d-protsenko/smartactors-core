@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.iobject_extension.configuration_object;
 
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.IRegistrationStrategy;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.exception.RegistrationStrategyException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.IRegistrationStrategy;
+import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.exception.RegistrationStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -13,16 +13,16 @@ import java.util.Map;
 /**
  *
  */
-public class CObjectStrategy implements IResolutionStrategy, IRegistrationStrategy {
+public class CObjectStrategy implements IResolveDependencyStrategy, IRegistrationStrategy {
 
-    private final Map<Object, List<IResolutionStrategy>> strategyStorage = new HashMap<>();
+    private final Map<Object, List<IResolveDependencyStrategy>> strategyStorage = new HashMap<>();
 
     @Override
     public <T> T resolve(Object... args)
-            throws ResolutionStrategyException {
+            throws ResolveDependencyStrategyException {
         char[] symbols = args[0].toString().toCharArray();
         String defaultKey = "default";
-        List<IResolutionStrategy> strategies = null;
+        List<IResolveDependencyStrategy> strategies = null;
         StringBuilder key = new StringBuilder();
         for (char c : symbols) {
             key.append(c);
@@ -37,7 +37,7 @@ public class CObjectStrategy implements IResolutionStrategy, IRegistrationStrate
         }
         if (null != strategies) {
             for (Object strategy : strategies) {
-                result = ((IResolutionStrategy) strategy).resolve(args);
+                result = ((IResolveDependencyStrategy) strategy).resolve(args);
                 args[1] = result;
             }
         }
@@ -46,7 +46,7 @@ public class CObjectStrategy implements IResolutionStrategy, IRegistrationStrate
     }
 
     @Override
-    public void register(Object arg, IResolutionStrategy value)
+    public void register(Object arg, IResolveDependencyStrategy value)
             throws RegistrationStrategyException {
         List strategies = this.strategyStorage.computeIfAbsent(arg, k -> new LinkedList());
         strategies.add(value);

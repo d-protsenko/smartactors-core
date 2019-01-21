@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_processing.chain_modifications;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
@@ -22,8 +22,8 @@ import static org.mockito.Mockito.*;
  * Test for {@link ReplaceReceiversChainModificationStrategy}.
  */
 public class ReplaceReceiversChainModificationStrategyTest extends PluginsLoadingTestBase {
-    private IResolutionStrategy replaceStrategy1;
-    private IResolutionStrategy replaceStrategy2;
+    private IResolveDependencyStrategy replaceStrategy1;
+    private IResolveDependencyStrategy replaceStrategy2;
     private IReceiverChain originalChainMock;
 
     private IMessageReceiver[] receivers = new IMessageReceiver[] {
@@ -42,9 +42,9 @@ public class ReplaceReceiversChainModificationStrategyTest extends PluginsLoadin
 
     @Override
     protected void registerMocks() throws Exception {
-        replaceStrategy1 = mock(IResolutionStrategy.class);
+        replaceStrategy1 = mock(IResolveDependencyStrategy.class);
         IOC.register(Keys.resolveByName("replacement 1 strategy"), replaceStrategy1);
-        replaceStrategy2 = mock(IResolutionStrategy.class);
+        replaceStrategy2 = mock(IResolveDependencyStrategy.class);
         IOC.register(Keys.resolveByName("replacement 2 strategy"), replaceStrategy2);
         originalChainMock = mock(IReceiverChain.class);
     }
@@ -103,11 +103,11 @@ public class ReplaceReceiversChainModificationStrategyTest extends PluginsLoadin
 
         when(replaceStrategy1.resolve(same(receivers[0]), eq("args1")))
                 .thenReturn(receivers[3])
-                .thenThrow(ResolutionStrategyException.class);
+                .thenThrow(ResolveDependencyStrategyException.class);
 
         when(replaceStrategy2.resolve(same(null), eq("42")))
                 .thenReturn(receivers[4])
-                .thenThrow(ResolutionStrategyException.class);
+                .thenThrow(ResolveDependencyStrategyException.class);
 
         IReceiverChain decorated = new ReplaceReceiversChainModificationStrategy().resolve(originalChainMock, modDesc);
 
@@ -118,7 +118,7 @@ public class ReplaceReceiversChainModificationStrategyTest extends PluginsLoadin
         assertNull(decorated.get(4));
     }
 
-    @Test(expected = ResolutionStrategyException.class)
+    @Test(expected = ResolveDependencyStrategyException.class)
     public void Should_throwWhenReplacementStepIndexIsTooLarge()
             throws Exception {
         IObject modDesc = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),

@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.message_processing.receiver_generator;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
@@ -9,9 +9,9 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 
 public class CustomActor_doSomeWork_receiver implements IMessageReceiver {
     private CustomActor usersObject;
-    private IResolutionStrategy strategy;
+    private IResolveDependencyStrategy strategy;
 
-    public CustomActor_doSomeWork_receiver(CustomActor object, IResolutionStrategy strategy)  {
+    public CustomActor_doSomeWork_receiver(CustomActor object, IResolveDependencyStrategy strategy)  {
         this.usersObject = object;
         this.strategy = strategy;
 

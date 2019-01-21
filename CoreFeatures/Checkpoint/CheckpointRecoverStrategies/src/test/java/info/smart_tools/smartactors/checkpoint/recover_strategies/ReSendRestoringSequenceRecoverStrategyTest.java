@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.checkpoint.recover_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -45,7 +45,7 @@ public class ReSendRestoringSequenceRecoverStrategyTest extends PluginsLoadingTe
         IObject dumpMock = mock(IObject.class);
         IMessageProcessor processorMock = mock(IMessageProcessor.class);
         IMessageProcessingSequence sequenceMock = mock(IMessageProcessingSequence.class);
-        IResolutionStrategy makeDumpStrategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy makeDumpStrategy = mock(IResolveDependencyStrategy.class);
 
         IOC.register(Keys.resolveByName("make dump"), makeDumpStrategy);
 
@@ -71,8 +71,8 @@ public class ReSendRestoringSequenceRecoverStrategyTest extends PluginsLoadingTe
                         "'message':{'is-a-message':true}" +
                         "}").replace('\'','"'));
 
-        IResolutionStrategy recoverSequenceStrategy = mock(IResolutionStrategy.class);
-        IResolutionStrategy messageProcessorStrategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy recoverSequenceStrategy = mock(IResolveDependencyStrategy.class);
+        IResolveDependencyStrategy messageProcessorStrategy = mock(IResolveDependencyStrategy.class);
         IMessageProcessingSequence sequenceMock = mock(IMessageProcessingSequence.class);
         IMessageProcessor processorMock = mock(IMessageProcessor.class);
         Object taskQueue = new Object();

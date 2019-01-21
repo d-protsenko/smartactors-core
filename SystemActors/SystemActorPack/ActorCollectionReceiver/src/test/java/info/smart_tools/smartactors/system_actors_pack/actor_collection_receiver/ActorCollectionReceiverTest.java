@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.system_actors_pack.actor_collection_receive
 
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.*;
  * Tests for {@link ActorCollectionReceiver}.
  */
 public class ActorCollectionReceiverTest extends PluginsLoadingTestBase {
-    private IResolutionStrategy fullCreatorResolutionStrategy;
+    private IResolveDependencyStrategy fullCreatorResolutionStrategy;
     private IReceiverObjectCreator[] creatorMocks;
     private IMessageProcessor[] processorMocks;
     private IObject[] childObjectConfigMocks;
@@ -47,7 +47,7 @@ public class ActorCollectionReceiverTest extends PluginsLoadingTestBase {
 
     @Override
     protected void registerMocks() throws Exception {
-        fullCreatorResolutionStrategy = mock(IResolutionStrategy.class);
+        fullCreatorResolutionStrategy = mock(IResolveDependencyStrategy.class);
 
         processorMocks = new IMessageProcessor[3];
 

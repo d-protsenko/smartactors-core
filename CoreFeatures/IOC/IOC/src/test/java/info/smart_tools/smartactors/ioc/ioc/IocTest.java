@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc.ioc;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.ioc.iioccontainer.IContainer;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import org.junit.After;
@@ -47,7 +47,7 @@ public class IocTest {
     public void checkRegistration()
             throws Exception {
         IKey key = mock(IKey.class);
-        IResolutionStrategy strategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
         doNothing().when(container).register(key, strategy);
         IOC.register(key, strategy);
         verify(container, times(1)).register(key, strategy);

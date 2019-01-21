@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.scheduler.actor.impl;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -43,7 +43,7 @@ public class EntryStorageRefresherTest extends PluginsLoadingTestBase {
     private ITimerTask timerTaskMock;
     private EntryStorage storageMock;
     private IRemoteEntryStorage remoteStorageMock;
-    private IResolutionStrategy restoreEntryStrategy;
+    private IResolveDependencyStrategy restoreEntryStrategy;
     private ArgumentCaptor<ITask> taskArgumentCaptor;
     private ArgumentCaptor<Long> timeArgumentCaptor;
     private ISchedulerEntryFilter filterMock;
@@ -68,7 +68,7 @@ public class EntryStorageRefresherTest extends PluginsLoadingTestBase {
         timerTaskMock = mock(ITimerTask.class);
         storageMock = mock(EntryStorage.class);
         remoteStorageMock = mock(IRemoteEntryStorage.class);
-        restoreEntryStrategy = mock(IResolutionStrategy.class);
+        restoreEntryStrategy = mock(IResolveDependencyStrategy.class);
         filterMock = mock(ISchedulerEntryFilter.class);
 
         when(filterMock.testRestore(any())).thenReturn(true);

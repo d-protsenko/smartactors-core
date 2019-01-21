@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.message_processing.actor_receiver_creator;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield.IField;
@@ -70,7 +70,7 @@ public class ActorReceiverCreatorTest {
         );
 
         // register wrapper generator
-        IResolutionStrategy wgs = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy wgs = mock(IResolveDependencyStrategy.class);
         IWrapperGenerator wg = mock(IWrapperGenerator.class);
         IOC.register(Keys.resolveByName(IWrapperGenerator.class.getCanonicalName()), wgs);
         when(wgs.resolve()).thenReturn(wg);
@@ -103,17 +103,17 @@ public class ActorReceiverCreatorTest {
                 )
         );
         // register receiver generator
-        IResolutionStrategy rgs = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy rgs = mock(IResolveDependencyStrategy.class);
         IReceiverGenerator rg = mock(IReceiverGenerator.class);
         IOC.register(Keys.resolveByName(IReceiverGenerator.class.getCanonicalName()), rgs);
         when(rgs.resolve()).thenReturn(rg);
         IMessageReceiver mr = mock(IMessageReceiver.class);
-        when(rg.generate(any(CustomActor.class), any(IResolutionStrategy.class), any(String.class))).thenReturn(mr);
+        when(rg.generate(any(CustomActor.class), any(IResolveDependencyStrategy.class), any(String.class))).thenReturn(mr);
 
         IObject objectSection = mock(IObject.class);
         when(objectSection.getValue(new FieldName("name"))).thenReturn("actorID");
         when(objectSection.getValue(new FieldName("dependency"))).thenReturn("createSampleActorStrategy");
-        IResolutionStrategy createSampleActorStrategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy createSampleActorStrategy = mock(IResolveDependencyStrategy.class);
         IOC.register(Keys.resolveByName("createSampleActorStrategy"), createSampleActorStrategy);
         ConstructorWrapperImpl wrapperImpl = new ConstructorWrapperImpl();
         CustomActor a = new CustomActor(wrapperImpl);
@@ -145,7 +145,7 @@ public class ActorReceiverCreatorTest {
         verify(createSampleActorStrategy, times(1)).resolve(objectSection);
         verify(rg, times(1)).generate(
                 any(CustomActor.class),
-                any(IResolutionStrategy.class),
+                any(IResolveDependencyStrategy.class),
                 any(String.class)
         );
         verify(objectSection, times(1)).getValue(new FieldName("name"));

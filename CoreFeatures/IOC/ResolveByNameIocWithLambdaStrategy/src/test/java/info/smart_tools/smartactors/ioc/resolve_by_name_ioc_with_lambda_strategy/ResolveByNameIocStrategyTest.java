@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -16,7 +16,7 @@ public class ResolveByNameIocStrategyTest {
     @Test
     public void checkStrategyCreation()
             throws InvalidArgumentException {
-        IResolutionStrategy strategy = new ResolveByNameIocStrategy(
+        IResolveDependencyStrategy strategy = new ResolveByNameIocStrategy(
                 (args)-> {
                     return null;
                 }
@@ -28,7 +28,7 @@ public class ResolveByNameIocStrategyTest {
     public void checkStrategyResolutionCallInternalStrategy()
             throws Exception {
         Counter counter = new Counter();
-        IResolutionStrategy strategy = new ResolveByNameIocStrategy(
+        IResolveDependencyStrategy strategy = new ResolveByNameIocStrategy(
                 (args)-> {
                     ++counter.times;
                     return "";
@@ -43,7 +43,7 @@ public class ResolveByNameIocStrategyTest {
             throws Exception {
         Counter counter = new Counter();
         Object o = new Object();
-        IResolutionStrategy strategy = new ResolveByNameIocStrategy(
+        IResolveDependencyStrategy strategy = new ResolveByNameIocStrategy(
                 (args)-> {
                     ++counter.times;
                     return o;
@@ -61,7 +61,7 @@ public class ResolveByNameIocStrategyTest {
         new ResolveByNameIocStrategy(null);
     }
 
-    @Test (expected = ResolutionStrategyException.class)
+    @Test (expected = ResolveDependencyStrategyException.class)
     public void checkStrategyResolutionException()
             throws Exception {
         new ResolveByNameIocStrategy((args)-> null).resolve("key");

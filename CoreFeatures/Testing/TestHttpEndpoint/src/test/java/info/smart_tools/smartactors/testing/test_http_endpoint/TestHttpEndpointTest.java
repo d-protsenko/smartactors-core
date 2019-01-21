@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.testing.test_http_endpoint;
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.iasync_service.IAsyncService;
@@ -246,7 +246,7 @@ public class TestHttpEndpointTest {
     public void checkInitializeExceptionOnNotInitializedIOC()
             throws Exception {
         IEnvironmentHandler handler = mock(IEnvironmentHandler.class);
-        IResolutionStrategy strategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
         IOC.register(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), strategy);
         doThrow(Exception.class).when(strategy).resolve(any());
         ISource<IObject, IObject> source = mock(ISource.class);
@@ -354,7 +354,7 @@ public class TestHttpEndpointTest {
         initFiledNameStrategy();
         initIObjectStrategy();
         IChannelHandler channelHandler = mock(IChannelHandler.class);
-        IResolutionStrategy strategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
         IOC.register(
                 IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), TestChannelHandler.class.getCanonicalName()),
                 strategy

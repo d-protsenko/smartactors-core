@@ -1,13 +1,13 @@
 package info.smart_tools.smartactors.base.strategy.strategy_storage_with_cache_strategy;
 
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.IRegistrationStrategy;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.exception.RegistrationStrategyException;
+import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.IRegistrationStrategy;
+import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.exception.RegistrationStrategyException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.icacheable.ICacheable;
 import info.smart_tools.smartactors.base.interfaces.icacheable.exception.CacheDropException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +29,7 @@ public class StrategyStorageWithCacheStrategyTest {
     public void checkInstanceCreation()
             throws Exception {
 
-        IResolutionStrategy sscs = new StrategyStorageWithCacheStrategy(a -> a, (c, a) -> a);
+        IResolveDependencyStrategy sscs = new StrategyStorageWithCacheStrategy(a -> a, (c, a) -> a);
         assertNotNull(sscs);
     }
 
@@ -39,11 +39,11 @@ public class StrategyStorageWithCacheStrategyTest {
         count.put("count", 0);
         IFunction argToKey = arg -> arg.getClass();
         IFunctionTwoArgs findValueByArgument = (map, arg) -> {
-            IResolutionStrategy strategy = null;
+            IResolveDependencyStrategy strategy = null;
             Integer tmp = count.get("count");
             tmp ++;
             count.put("count", tmp);
-            for (Map.Entry<Class, IResolutionStrategy> entry : ((Map<Class, IResolutionStrategy>) map).entrySet()) {
+            for (Map.Entry<Class, IResolveDependencyStrategy> entry : ((Map<Class, IResolveDependencyStrategy>) map).entrySet()) {
                 if (entry.getKey().isInstance(arg)) {
                     strategy = entry.getValue();
 
@@ -53,11 +53,11 @@ public class StrategyStorageWithCacheStrategyTest {
             return strategy;
         };
 
-        IResolutionStrategy cachedStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
-        IResolutionStrategy intToString = new ApplyFunctionToArgumentsStrategy(
+        IResolveDependencyStrategy cachedStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
+        IResolveDependencyStrategy intToString = new ApplyFunctionToArgumentsStrategy(
                 args -> Integer.toString((Integer) args[0])
         );
-        IResolutionStrategy floatToString = new ApplyFunctionToArgumentsStrategy(
+        IResolveDependencyStrategy floatToString = new ApplyFunctionToArgumentsStrategy(
                 args -> Float.toString((Float) args[0])
         );
         ((IRegistrationStrategy)cachedStrategy).register(Integer.class, intToString);
@@ -81,11 +81,11 @@ public class StrategyStorageWithCacheStrategyTest {
         count.put("count", 0);
         IFunction argToKey = arg -> arg.getClass();
         IFunctionTwoArgs findValueByArgument = (map, arg) -> {
-            IResolutionStrategy strategy = null;
+            IResolveDependencyStrategy strategy = null;
             Integer tmp = count.get("count");
             tmp ++;
             count.put("count", tmp);
-            for (Map.Entry<Class, IResolutionStrategy> entry : ((Map<Class, IResolutionStrategy>) map).entrySet()) {
+            for (Map.Entry<Class, IResolveDependencyStrategy> entry : ((Map<Class, IResolveDependencyStrategy>) map).entrySet()) {
                 if (entry.getKey().isInstance(arg)) {
                     strategy = entry.getValue();
 
@@ -95,8 +95,8 @@ public class StrategyStorageWithCacheStrategyTest {
             return strategy;
         };
 
-        IResolutionStrategy cachedStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
-        IResolutionStrategy floatToString = new ApplyFunctionToArgumentsStrategy(
+        IResolveDependencyStrategy cachedStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
+        IResolveDependencyStrategy floatToString = new ApplyFunctionToArgumentsStrategy(
                 args -> Float.toString((Float) args[0])
         );
         ((IRegistrationStrategy)cachedStrategy).register(Float.class, floatToString);
@@ -116,13 +116,13 @@ public class StrategyStorageWithCacheStrategyTest {
         assertEquals((int) count.get("count"), 1);
     }
 
-    @Test (expected = ResolutionStrategyException.class)
+    @Test (expected = ResolveDependencyStrategyException.class)
     public void checkOnRemove()
             throws Exception {
         IFunction argToKey = arg -> arg.getClass();
         IFunctionTwoArgs findValueByArgument = (map, arg) -> {
-            IResolutionStrategy strategy = null;
-            for (Map.Entry<Class, IResolutionStrategy> entry : ((Map<Class, IResolutionStrategy>) map).entrySet()) {
+            IResolveDependencyStrategy strategy = null;
+            for (Map.Entry<Class, IResolveDependencyStrategy> entry : ((Map<Class, IResolveDependencyStrategy>) map).entrySet()) {
                 if (entry.getKey().isInstance(arg)) {
                     strategy = entry.getValue();
 
@@ -132,8 +132,8 @@ public class StrategyStorageWithCacheStrategyTest {
             return strategy;
         };
 
-        IResolutionStrategy cachedStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
-        IResolutionStrategy floatToString = new ApplyFunctionToArgumentsStrategy(
+        IResolveDependencyStrategy cachedStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
+        IResolveDependencyStrategy floatToString = new ApplyFunctionToArgumentsStrategy(
                 args -> Float.toString((Float) args[0])
         );
         ((IRegistrationStrategy)cachedStrategy).register(Float.class, floatToString);
@@ -149,21 +149,21 @@ public class StrategyStorageWithCacheStrategyTest {
     @Test (expected = CacheDropException.class)
     public void checkExceptionOnDropCache()
             throws Exception {
-        IResolutionStrategy cachedStrategy = new StrategyStorageWithCacheStrategy(null, null);
+        IResolveDependencyStrategy cachedStrategy = new StrategyStorageWithCacheStrategy(null, null);
         ((ICacheable) cachedStrategy).dropCacheFor(null);
     }
 
     @Test (expected = RegistrationStrategyException.class)
     public void checkExceptionOnRegister()
             throws Exception {
-        IResolutionStrategy cachedStrategy = new StrategyStorageWithCacheStrategy(null, null);
+        IResolveDependencyStrategy cachedStrategy = new StrategyStorageWithCacheStrategy(null, null);
         ((IRegistrationStrategy) cachedStrategy).register(null, null);
     }
 
     @Test (expected = RegistrationStrategyException.class)
     public void checkExceptionOnRemove()
             throws Exception {
-        IResolutionStrategy cachedStrategy = new StrategyStorageWithCacheStrategy(null, null);
+        IResolveDependencyStrategy cachedStrategy = new StrategyStorageWithCacheStrategy(null, null);
         ((IRegistrationStrategy) cachedStrategy).unregister(null);
     }
 }

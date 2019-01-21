@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_standard_types_strategies.to_list_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,18 +9,18 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class ObjectArrayToListResolutionStrategyTest {
+public class ObjectArrayToListResolveDependencyStrategyTest {
 
-    private ObjectArrayToListResolutionStrategy strategy;
+    private ObjectArrayToListResolveDependencyStrategy strategy;
 
     @Before
     public void setUp() {
 
-        strategy = new ObjectArrayToListResolutionStrategy();
+        strategy = new ObjectArrayToListResolveDependencyStrategy();
     }
 
     @Test
-    public void ShouldConvertObjectArrayToList() throws ResolutionStrategyException {
+    public void ShouldConvertObjectArrayToList() throws ResolveDependencyStrategyException {
 
         Object object = new Object();
         Object[] array = new Object[] {1L, "string", object};
@@ -32,7 +32,7 @@ public class ObjectArrayToListResolutionStrategyTest {
     }
 
     @Test
-    public void ShouldConvertConcreteTypeArrayToList() throws ResolutionStrategyException {
+    public void ShouldConvertConcreteTypeArrayToList() throws ResolveDependencyStrategyException {
 
         Integer[] array = new Integer[] {new Integer(1), new Integer(143)};
         List<Short> result = strategy.resolve(array);
@@ -41,8 +41,8 @@ public class ObjectArrayToListResolutionStrategyTest {
         assertEquals(result.get(1), new Integer(143));
     }
 
-    @Test(expected = ResolutionStrategyException.class)
-    public void ShouldThrowException_When_ErrorIsOccurred() throws ResolutionStrategyException {
+    @Test(expected = ResolveDependencyStrategyException.class)
+    public void ShouldThrowException_When_ErrorIsOccurred() throws ResolveDependencyStrategyException {
 
         strategy.resolve(null);
         fail();

@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.message_processing_plugins.object_creation_
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
@@ -161,7 +161,7 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
     })
     public void registerWrapperResolutionStrategies()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IResolutionStrategy newInstanceWrapperStrategy = new ApplyFunctionToArgumentsStrategy(args -> {
+        IResolveDependencyStrategy newInstanceWrapperStrategy = new ApplyFunctionToArgumentsStrategy(args -> {
             Class<?> clazz = (Class) args[0];
 
             try {
@@ -181,7 +181,7 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
             }
         });
 
-        IResolutionStrategy singletonWrapperStrategy = new ApplyFunctionToArgumentsStrategy(args -> {
+        IResolveDependencyStrategy singletonWrapperStrategy = new ApplyFunctionToArgumentsStrategy(args -> {
             Class<?> clazz = (Class) args[0];
 
             try {

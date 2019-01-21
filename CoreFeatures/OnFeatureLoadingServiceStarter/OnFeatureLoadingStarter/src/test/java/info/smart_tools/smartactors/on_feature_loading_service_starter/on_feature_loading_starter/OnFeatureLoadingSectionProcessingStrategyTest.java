@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.on_feature_loading_service_starter.on_feature_loading_starter;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
@@ -38,8 +38,8 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
 
     private IQueue<ITask> taskQueue;
     private IChainStorage chainStorage;
-    private IResolutionStrategy sequenceResolveStrategy;
-    private IResolutionStrategy chainMapIdResolveStrategy;
+    private IResolveDependencyStrategy sequenceResolveStrategy;
+    private IResolveDependencyStrategy chainMapIdResolveStrategy;
     private IMessageProcessingSequence sequence;
     private IMessageProcessor messageProcessor;
     private int stackDepth;
@@ -160,7 +160,7 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
         IObject message31 = ((List<IObject>)onFeatureLoadingConfigSection.get(2).getValue(new FieldName("messages"))).get(0);
         IObject message32 = ((List<IObject>)onFeatureLoadingConfigSection.get(2).getValue(new FieldName("messages"))).get(1);
 
-        this.chainMapIdResolveStrategy = mock(IResolutionStrategy.class);
+        this.chainMapIdResolveStrategy = mock(IResolveDependencyStrategy.class);
         Object mapId1 = mock(Object.class);
         Object mapId2 = mock(Object.class);
         Object mapId3 = mock(Object.class);
@@ -179,7 +179,7 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
         when(this.chainStorage.resolve(mapId2)).thenReturn(chain2);
         when(this.chainStorage.resolve(mapId3)).thenReturn(chain3);
 
-        this.sequenceResolveStrategy = mock(IResolutionStrategy.class);
+        this.sequenceResolveStrategy = mock(IResolveDependencyStrategy.class);
         IKey sequenceKey = Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence");
         this.sequence = mock(IMessageProcessingSequence.class);
         IOC.register(sequenceKey, this.sequenceResolveStrategy);

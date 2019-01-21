@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.plugin.get_first_not_null_rule;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
@@ -33,7 +33,7 @@ public class GetFirstNotNullRulePlugin implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.resolve(
-                                    Keys.resolveByName(IResolutionStrategy.class.getCanonicalName()),
+                                    Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName()),
                                     "getFirstNotNullRule",
                                     new GetFirstNotNullRule()
                             );

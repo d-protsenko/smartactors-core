@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.message_processing.receiver_chain;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -136,7 +136,7 @@ public class ImmutableReceiverChainResolutionStrategyTest {
         assertSame(chain.getModule(), module);
     }
 
-    @Test(expected = ResolutionStrategyException.class)
+    @Test(expected = ResolveDependencyStrategyException.class)
     public void Should_wrapExceptions()
             throws Exception {
         IObject description = mock(IObject.class);

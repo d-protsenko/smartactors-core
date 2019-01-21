@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.plugin.get_first_not_null_rule;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -62,7 +62,7 @@ public class GetFirstNotNullRulePluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey strategyKey = mock(IKey.class);
-        when(Keys.resolveByName(IResolutionStrategy.class.getCanonicalName())).thenReturn(strategyKey);
+        when(Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName())).thenReturn(strategyKey);
 
         GetFirstNotNullRule targetObject = mock(GetFirstNotNullRule.class);
         whenNew(GetFirstNotNullRule.class).withNoArguments().thenReturn(targetObject);
@@ -70,7 +70,7 @@ public class GetFirstNotNullRulePluginTest {
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.resolveByName(IResolutionStrategy.class.getCanonicalName());
+        Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName());
 
         verifyNew(GetFirstNotNullRule.class).withNoArguments();
 

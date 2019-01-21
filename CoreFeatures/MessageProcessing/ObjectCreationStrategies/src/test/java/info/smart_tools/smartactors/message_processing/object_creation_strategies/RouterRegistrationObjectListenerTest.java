@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.message_processing.object_creation_strategies;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 public class RouterRegistrationObjectListenerTest extends PluginsLoadingTestBase {
     private IRouter routerMock;
     private IMessageReceiver[] receiverMocks;
-    private IResolutionStrategy routerStrategy;
+    private IResolveDependencyStrategy routerStrategy;
 
     @Override
     protected void loadPlugins() throws Exception {
@@ -40,7 +40,7 @@ public class RouterRegistrationObjectListenerTest extends PluginsLoadingTestBase
     @Override
     protected void registerMocks() throws Exception {
         routerMock = mock(IRouter.class);
-        routerStrategy = mock(IResolutionStrategy.class);
+        routerStrategy = mock(IResolveDependencyStrategy.class);
 
         when(routerStrategy.resolve()).thenReturn(routerMock);
 
@@ -86,7 +86,7 @@ public class RouterRegistrationObjectListenerTest extends PluginsLoadingTestBase
     @Test(expected = ReceiverObjectListenerException.class)
     public void Should_throwWhenRouterResolutionFails()
             throws Exception {
-        when(routerStrategy.resolve()).thenThrow(ResolutionStrategyException.class);
+        when(routerStrategy.resolve()).thenThrow(ResolveDependencyStrategyException.class);
         new RouterRegistrationObjectListener().acceptItem("idx", receiverMocks[0]);
     }
 }

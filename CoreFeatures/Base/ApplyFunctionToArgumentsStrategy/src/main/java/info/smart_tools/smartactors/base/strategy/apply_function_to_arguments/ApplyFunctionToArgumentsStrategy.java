@@ -2,18 +2,18 @@ package info.smart_tools.smartactors.base.strategy.apply_function_to_arguments;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 
 /**
- * Implementation of {@link IResolutionStrategy}
+ * Implementation of {@link IResolveDependencyStrategy}
  * <pre>
  * Strategy apply function to incoming arguments
  * </pre>
  *
  * @since 1.8
  */
-public class ApplyFunctionToArgumentsStrategy implements IResolutionStrategy {
+public class ApplyFunctionToArgumentsStrategy implements IResolveDependencyStrategy {
     /**
      * Local function for applying to arguments
      */
@@ -38,14 +38,14 @@ public class ApplyFunctionToArgumentsStrategy implements IResolutionStrategy {
      * @param <T> type of object
      * @param args needed parameters for resolve dependency
      * @return instance of object
-     * @throws ResolutionStrategyException if any errors occurred
+     * @throws ResolveDependencyStrategyException if any errors occurred
      */
     public <T> T resolve(final Object ... args)
-            throws ResolutionStrategyException {
+            throws ResolveDependencyStrategyException {
         try {
             return (T) function.execute(args);
         } catch (Exception e) {
-            throw new ResolutionStrategyException("Object resolution failed.", e);
+            throw new ResolveDependencyStrategyException("Object resolution failed.", e);
         }
     }
 }

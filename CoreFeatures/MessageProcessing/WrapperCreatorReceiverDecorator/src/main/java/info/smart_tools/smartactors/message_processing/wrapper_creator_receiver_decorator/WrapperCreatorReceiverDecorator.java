@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.message_processing.wrapper_creator_receiver_decorator;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -24,7 +24,7 @@ import java.util.Map;
 public class WrapperCreatorReceiverDecorator implements IMessageReceiver {
     private final IMessageReceiver underlyingReceiver;
     private final IFieldName wrapperFieldName;
-    private final Map<Object, IResolutionStrategy> wrapperStrategies;
+    private final Map<Object, IResolveDependencyStrategy> wrapperStrategies;
     private final IKey strategyDependencyKey;
 
     /**
@@ -37,7 +37,7 @@ public class WrapperCreatorReceiverDecorator implements IMessageReceiver {
      */
     public WrapperCreatorReceiverDecorator(
             final IMessageReceiver underlyingReceiver,
-            final Map<Object, IResolutionStrategy> wrapperStrategiesMap,
+            final Map<Object, IResolveDependencyStrategy> wrapperStrategiesMap,
             final String strategyDependencyName)
             throws ResolutionException {
         this.underlyingReceiver = underlyingReceiver;
@@ -59,7 +59,7 @@ public class WrapperCreatorReceiverDecorator implements IMessageReceiver {
                 // stepArgs object is used as key for strategy cache as if the wrapperConfigObject was used the entry would not be ever
                 // garbage-collected (even if wrapperStrategies stores keys by weak references): wrapper resolution strategy has a strong
                 // reference to configuration object
-                IResolutionStrategy conf = wrapperStrategies.get(stepArgs);
+                IResolveDependencyStrategy conf = wrapperStrategies.get(stepArgs);
 
                 if (null == conf) {
                     conf = IOC.resolve(strategyDependencyKey, wrapperConfigObject);
@@ -70,7 +70,7 @@ public class WrapperCreatorReceiverDecorator implements IMessageReceiver {
             }
 
             underlyingReceiver.receive(processor);
-        } catch (ReadValueException | InvalidArgumentException | ResolutionException | ResolutionStrategyException e) {
+        } catch (ReadValueException | InvalidArgumentException | ResolutionException | ResolveDependencyStrategyException e) {
             throw new MessageReceiveException(e);
         }
     }

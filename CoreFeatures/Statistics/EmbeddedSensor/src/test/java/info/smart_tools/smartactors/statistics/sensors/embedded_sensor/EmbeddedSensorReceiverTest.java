@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.statistics.sensors.embedded_sensor;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -36,7 +36,7 @@ public class EmbeddedSensorReceiverTest extends PluginsLoadingTestBase {
     private ITime timeMock;
     private ITimer timerMock;
     private IEmbeddedSensorStrategy<?> sensorStrategyMock;
-    private IResolutionStrategy periodStrategyMock;
+    private IResolveDependencyStrategy periodStrategyMock;
     private IEmbeddedSensorObservationPeriod periods[];
     private IMessageProcessor processors[];
     private IMessageBusHandler messageBusHandlerMock;
@@ -67,7 +67,7 @@ public class EmbeddedSensorReceiverTest extends PluginsLoadingTestBase {
                 mock(IEmbeddedSensorObservationPeriod.class),
         };
 
-        periodStrategyMock = mock(IResolutionStrategy.class);
+        periodStrategyMock = mock(IResolveDependencyStrategy.class);
         IOC.register(Keys.resolveByName(IEmbeddedSensorObservationPeriod.class.getCanonicalName()), periodStrategyMock);
         when(periodStrategyMock.resolve(any(), any(), any(), any())).thenReturn(periods[0]);
 
@@ -79,9 +79,9 @@ public class EmbeddedSensorReceiverTest extends PluginsLoadingTestBase {
         messageBusHandlerMock = mock(IMessageBusHandler.class);
         ScopeProvider.getCurrentScope().setValue(MessageBus.getMessageBusKey(), messageBusHandlerMock);
 
-        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), new IResolutionStrategy() {
+        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), new IResolveDependencyStrategy() {
             @Override
-            public <T> T resolve(Object... args) throws ResolutionStrategyException {
+            public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
                 return (T) String.valueOf(args[0]).concat("__0");
             }
         });

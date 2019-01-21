@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.ioc.resolve_by_name_ioc_strategy;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
 
@@ -9,12 +9,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Implementation of {@link IResolutionStrategy}
+ * Implementation of {@link IResolveDependencyStrategy}
  * <pre>
  * Strategy allows to storage instances of {@link info.smart_tools.smartactors.ioc.ikey.IKey}
  * </pre>
  */
-public class ResolveByNameIocStrategy implements IResolutionStrategy {
+public class ResolveByNameIocStrategy implements IResolveDependencyStrategy {
 
     /**
      * Local {@link info.smart_tools.smartactors.ioc.ikey.IKey} instance storage
@@ -33,11 +33,11 @@ public class ResolveByNameIocStrategy implements IResolutionStrategy {
      * @param <T> type of object
      * @param args needed parameters for resolve dependency
      * @return instance of object
-     * @throws ResolutionStrategyException if any errors occurred
+     * @throws ResolveDependencyStrategyException if any errors occurred
      */
     @Override
     public <T> T resolve(final Object... args)
-            throws ResolutionStrategyException {
+            throws ResolveDependencyStrategyException {
         try {
             IKey result = storage.get((String) args[0]);
             if (null == result) {
@@ -46,7 +46,7 @@ public class ResolveByNameIocStrategy implements IResolutionStrategy {
             }
             return (T) result;
         } catch (Exception e) {
-            throw new ResolutionStrategyException("Object resolution failed.", e);
+            throw new ResolveDependencyStrategyException("Object resolution failed.", e);
         }
     }
 }

@@ -6,9 +6,9 @@
 It's a common design principle, and SmartActors, as many other popular frameworks, has it's own IoC container.
 
 The access to IoC is done through static [service locator](https://en.wikipedia.org/wiki/Service_locator_pattern) called [`IOC`](../apidocs/info/smart_tools/smartactors/core/ioc/IOC.html)
-The main methods are `void IOC.register(IKey key, IResolutionStrategy strategy)` and `T IOC.resolve(IKey<T> key, Object... args)`.
+The main methods are `void IOC.register(IKey key, IResolveDependencyStrategy strategy)` and `T IOC.resolve(IKey<T> key, Object... args)`.
 The container resolves objects by the [`IKey`](../apidocs/info/smart_tools/smartactors/core/ikey/IKey.html).
-The object resolving is delegated to a [`IResolutionStrategy`](../apidocs/info/smart_tools/smartactors/core/iresolution_strategy/IResolutionStrategy.html).
+The object resolving is delegated to a [`IResolveDependencyStrategy`](../apidocs/info/smart_tools/smartactors/core/iresolve_dependency_strategy/IResolveDependencyStrategy.html).
 There are a couple of predefined strategies.
 
 ## Key

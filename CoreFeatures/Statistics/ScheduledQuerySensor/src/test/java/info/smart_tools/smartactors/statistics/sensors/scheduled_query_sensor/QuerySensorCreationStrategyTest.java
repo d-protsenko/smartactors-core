@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.statistics.sensors.scheduled_query_sensor;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 public class QuerySensorCreationStrategyTest extends PluginsLoadingTestBase {
     private Object entryStorage = new Object();
     private ISchedulerEntry entryMock;
-    private IResolutionStrategy newEntryStrategyMock;
+    private IResolveDependencyStrategy newEntryStrategyMock;
 
     @Override
     protected void loadPlugins() throws Exception {
@@ -42,7 +42,7 @@ public class QuerySensorCreationStrategyTest extends PluginsLoadingTestBase {
     protected void registerMocks() throws Exception {
         IOC.register(Keys.resolveByName("query sensors scheduler storage"), new SingletonStrategy(entryStorage));
 
-        newEntryStrategyMock = mock(IResolutionStrategy.class);
+        newEntryStrategyMock = mock(IResolveDependencyStrategy.class);
         IOC.register(Keys.resolveByName("new scheduler entry"), newEntryStrategyMock);
     }
 

@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.scheduler.actor.impl.actions;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -48,7 +48,7 @@ public class BlockingMessageSchedulerActionTest extends PluginsLoadingTestBase {
     private IQueue queueMock;
     private IObject entryState;
 
-    private IResolutionStrategy sequenceStrategy, processorStrategy;
+    private IResolveDependencyStrategy sequenceStrategy, processorStrategy;
 
     private ISchedulerAction action;
 
@@ -74,15 +74,15 @@ public class BlockingMessageSchedulerActionTest extends PluginsLoadingTestBase {
 
         when(schedulerEntryMock.getState()).thenReturn(entryState);
 
-        sequenceStrategy = mock(IResolutionStrategy.class);
+        sequenceStrategy = mock(IResolveDependencyStrategy.class);
         when(sequenceStrategy.resolve(any(), same(receiverChainMock)))
                 .thenReturn(messageProcessingSequenceMock)
-                .thenThrow(ResolutionStrategyException.class);
+                .thenThrow(ResolveDependencyStrategyException.class);
         IOC.register(Keys.resolveByName(IMessageProcessingSequence.class.getCanonicalName()), sequenceStrategy);
-        processorStrategy = mock(IResolutionStrategy.class);
+        processorStrategy = mock(IResolveDependencyStrategy.class);
         when(processorStrategy.resolve(same(queueMock), same(messageProcessingSequenceMock)))
                 .thenReturn(messageProcessorMock)
-                .thenThrow(ResolutionStrategyException.class);
+                .thenThrow(ResolveDependencyStrategyException.class);
         IOC.register(Keys.resolveByName(IMessageProcessor.class.getCanonicalName()), processorStrategy);
 
         when(schedulerEntryMock.getId()).thenReturn(UUID.randomUUID().toString());
@@ -91,9 +91,9 @@ public class BlockingMessageSchedulerActionTest extends PluginsLoadingTestBase {
         IOC.register(Keys.resolveByName("default_stack_depth"), new SingletonStrategy(321));
         IOC.register(Keys.resolveByName("task_queue"), new SingletonStrategy(queueMock));
 
-        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), new IResolutionStrategy() {
+        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), new IResolveDependencyStrategy() {
             @Override
-            public <T> T resolve(Object... args) throws ResolutionStrategyException {
+            public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
                 return (T) (String.valueOf(args[0]) + "__id");
             }
         });

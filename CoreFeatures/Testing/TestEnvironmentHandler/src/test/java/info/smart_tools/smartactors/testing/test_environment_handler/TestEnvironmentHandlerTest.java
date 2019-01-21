@@ -3,8 +3,9 @@ package info.smart_tools.smartactors.testing.test_environment_handler;
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.exception.EnvironmentHandleException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -16,6 +17,7 @@ import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
@@ -46,11 +48,11 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
     private IMessageProcessingSequence sequenceMock;
     private IAction<Throwable> callbackMock;
 
-    private IResolutionStrategy mainTestChainStrategyMock;
-    private IResolutionStrategy sequenceStrategyMock;
-    private IResolutionStrategy mpStrategyMock;
-    private IResolutionStrategy createAssertCheckerStrategyMock;
-    private IResolutionStrategy createInterceptCheckerStrategyMock;
+    private IResolveDependencyStrategy mainTestChainStrategyMock;
+    private IResolveDependencyStrategy sequenceStrategyMock;
+    private IResolveDependencyStrategy mpStrategyMock;
+    private IResolveDependencyStrategy createAssertCheckerStrategyMock;
+    private IResolveDependencyStrategy createInterceptCheckerStrategyMock;
     private IResultChecker assertChecker;
     private IResultChecker interceptChecker;
 
@@ -77,17 +79,17 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
         mainTestChainMock = mock(MainTestChain.class);
         sequenceMock = mock(IMessageProcessingSequence.class);
         callbackMock = mock(IAction.class);
-        createAssertCheckerStrategyMock = mock(IResolutionStrategy.class);
-        createInterceptCheckerStrategyMock = mock(IResolutionStrategy.class);
+        createAssertCheckerStrategyMock = mock(IResolveDependencyStrategy.class);
+        createInterceptCheckerStrategyMock = mock(IResolveDependencyStrategy.class);
         assertChecker = mock(IResultChecker.class);
         interceptChecker = mock(IResultChecker.class);
         chainNameMock = mock(Object.class);
 
         when(messageProcessorMock.getSequence()).thenReturn(sequenceMock);
 
-        mainTestChainStrategyMock = mock(IResolutionStrategy.class);
-        sequenceStrategyMock = mock(IResolutionStrategy.class);
-        mpStrategyMock = mock(IResolutionStrategy.class);
+        mainTestChainStrategyMock = mock(IResolveDependencyStrategy.class);
+        sequenceStrategyMock = mock(IResolveDependencyStrategy.class);
+        mpStrategyMock = mock(IResolveDependencyStrategy.class);
 
         when(mpStrategyMock.resolve(same(taskQueueMock), same(sequenceMock))).thenReturn(messageProcessorMock);
         when(sequenceStrategyMock.resolve(any(), same(mainTestChainMock))).thenReturn(sequenceMock);
@@ -240,7 +242,7 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
     @Test (expected = InitializationException.class)
     public void Should_throwWhenIOCNotInitialized()
             throws Exception {
-        IResolutionStrategy strategy = mock(IResolutionStrategy.class);
+        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
         IOC.register(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), strategy);
         doThrow(Exception.class).when(strategy).resolve(any());
         new TestEnvironmentHandler().handle(mock(IObject.class), chainNameMock, callbackMock);

@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.iobject_extension.wds_object;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -36,7 +36,7 @@ public class WDSObjectField implements IField {
     private FieldName args;
     private FieldName strategyName;
     private List<IObject> rules;
-    private HashMap<String, IResolutionStrategy> strategies = new HashMap<>();
+    private HashMap<String, IResolveDependencyStrategy> strategies = new HashMap<>();
     private HashMap<String, IFunction<StrategyAndArgs, Object>> strategyExecutors = new HashMap<>();
     private HashMap<String, IFunction<Arg, Object>> argumentsResolvers = new HashMap<>();
 
@@ -62,7 +62,7 @@ public class WDSObjectField implements IField {
                 strategies.put(
                         name,
                         null == this.strategyExecutors.get(name) ?
-                                IOC.resolve(Keys.resolveByName(IResolutionStrategy.class.getCanonicalName()), name) :
+                                IOC.resolve(Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName()), name) :
                                 null
                 );
             }
@@ -284,7 +284,7 @@ public class WDSObjectField implements IField {
  * Support class for pack some arguments to single
  */
 class StrategyAndArgs {
-    private IResolutionStrategy strategy;
+    private IResolveDependencyStrategy strategy;
     private List<String> args;
     private IObject env;
     private Object localValue;
@@ -292,13 +292,13 @@ class StrategyAndArgs {
     /**
      * Constructor.
      * Creates new instance of {@link StrategyAndArgs} by follow params
-     * @param strategy instance of {@link IResolutionStrategy}
+     * @param strategy instance of {@link IResolveDependencyStrategy}
      * @param env the environment object
      * @param args unresolved strategy arguments
      * @param localValue the result of last transformation rule execution or argument of {@code out} method
      */
     StrategyAndArgs(
-            final IResolutionStrategy strategy,
+            final IResolveDependencyStrategy strategy,
             final IObject env,
             final List<String> args, final Object localValue
     ) {
@@ -308,7 +308,7 @@ class StrategyAndArgs {
         this.localValue = localValue;
     }
 
-    IResolutionStrategy getStrategy() {
+    IResolveDependencyStrategy getStrategy() {
         return this.strategy;
     }
 

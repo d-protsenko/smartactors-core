@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.message_processing.condition_chain_choice_strategy;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -24,7 +25,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class ConditionChainChoiceStrategyTest extends PluginsLoadingTestBase {
-    private IResolutionStrategy chainIdStrategy;
+    private IResolveDependencyStrategy chainIdStrategy;
     private IMessageProcessor messageProcessorMock;
     private IMessageProcessingSequence messageProcessingSequenceMock;
     private Object trueId = new Object();
@@ -44,7 +45,7 @@ public class ConditionChainChoiceStrategyTest extends PluginsLoadingTestBase {
     @Override
     protected void registerMocks()
             throws Exception {
-        chainIdStrategy = mock(IResolutionStrategy.class);
+        chainIdStrategy = mock(IResolveDependencyStrategy.class);
         messageProcessorMock = mock(IMessageProcessor.class);
         messageProcessingSequenceMock = mock(IMessageProcessingSequence.class);
         IObject args = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'trueChain':'trueChainId', 'falseChain':'falseChainId'}".replace('\'', '"'));

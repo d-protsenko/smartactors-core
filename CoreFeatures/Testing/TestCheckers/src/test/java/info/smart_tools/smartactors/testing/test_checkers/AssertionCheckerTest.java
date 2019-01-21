@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.testing.test_checkers;
 
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.IRegistrationStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.IRegistrationStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
@@ -91,7 +91,7 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
         IObject a1desc = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'type': 'atype1', 'name': 'Nope'}".replace('\'', '"'));
 
-        IResolutionStrategy strategy = new ApplyFunctionToArgumentsStrategy(
+        IResolveDependencyStrategy strategy = new ApplyFunctionToArgumentsStrategy(
                 (a) -> {
                     try {
                         String name = (String) a[0];

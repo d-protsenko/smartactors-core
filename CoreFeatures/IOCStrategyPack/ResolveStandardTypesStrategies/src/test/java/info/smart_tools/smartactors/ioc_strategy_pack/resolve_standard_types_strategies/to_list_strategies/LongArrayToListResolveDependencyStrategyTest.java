@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_standard_types_strategies.to_list_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,18 +9,18 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class LongArrayToListResolutionStrategyTest {
+public class LongArrayToListResolveDependencyStrategyTest {
 
-    private LongArrayToListResolutionStrategy strategy;
+    private LongArrayToListResolveDependencyStrategy strategy;
 
     @Before
     public void setUp() {
 
-        strategy = new LongArrayToListResolutionStrategy();
+        strategy = new LongArrayToListResolveDependencyStrategy();
     }
 
     @Test
-    public void ShouldConvertLongArrayToList() throws ResolutionStrategyException {
+    public void ShouldConvertLongArrayToList() throws ResolveDependencyStrategyException {
 
         long[] array = new long[] {1, 2L, 5, Long.MIN_VALUE};
         List<Long> result = strategy.resolve(array);
@@ -31,8 +31,8 @@ public class LongArrayToListResolutionStrategyTest {
         assertEquals(result.get(3), new Long(Long.MIN_VALUE));
     }
 
-    @Test(expected = ResolutionStrategyException.class)
-    public void ShouldThrowException_When_ErrorIsOccurred() throws ResolutionStrategyException {
+    @Test(expected = ResolveDependencyStrategyException.class)
+    public void ShouldThrowException_When_ErrorIsOccurred() throws ResolveDependencyStrategyException {
 
         Long[] array = new Long[] {1L, 2L};
         strategy.resolve(array);

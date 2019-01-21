@@ -1,13 +1,13 @@
 package info.smart_tools.smartactors.base.strategy.create_new_instance_strategy;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 
 import java.util.function.Function;
 
 /**
- * Implementation of {@link IResolutionStrategy}
+ * Implementation of {@link IResolveDependencyStrategy}
  * <pre>
  * Strategy allows to create new instances of specified classes
  * </pre>
@@ -15,7 +15,7 @@ import java.util.function.Function;
  * @since 1.8
  */
 @Deprecated
-public class CreateNewInstanceStrategy implements IResolutionStrategy {
+public class CreateNewInstanceStrategy implements IResolveDependencyStrategy {
 
     /**
      * Local function for creation new instances of classes
@@ -41,14 +41,14 @@ public class CreateNewInstanceStrategy implements IResolutionStrategy {
      * @param <T> type of object
      * @param args needed parameters for resolve dependency
      * @return instance of object
-     * @throws ResolutionStrategyException if any errors occurred
+     * @throws ResolveDependencyStrategyException if any errors occurred
      */
     public <T> T resolve(final Object ... args)
-            throws ResolutionStrategyException {
+            throws ResolveDependencyStrategyException {
         try {
             return (T) creationFunction.apply(args);
         } catch (Exception e) {
-            throw new ResolutionStrategyException("Object resolution failed.", e);
+            throw new ResolveDependencyStrategyException("Object resolution failed.", e);
         }
     }
 }
