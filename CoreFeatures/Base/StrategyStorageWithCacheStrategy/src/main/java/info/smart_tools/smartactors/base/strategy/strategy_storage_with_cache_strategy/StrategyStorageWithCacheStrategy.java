@@ -8,8 +8,8 @@ import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.icacheable.ICacheable;
 import info.smart_tools.smartactors.base.interfaces.icacheable.exception.CacheDropException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -18,13 +18,13 @@ import java.util.concurrent.ConcurrentMap;
  * Strategy to strategyStorage some specific strategies united by a common purpose. Supports cache.
  */
 
-public class StrategyStorageWithCacheStrategy implements IResolutionStrategy, IRegistrationStrategy, ICacheable {
+public class StrategyStorageWithCacheStrategy implements IStrategy, IRegistrationStrategy, ICacheable {
 
     /**
      * Specific strategies for resolve
      */
-    private ConcurrentMap<Object, IResolutionStrategy> strategyStorage;
-    private ConcurrentMap<Object, IResolutionStrategy> cacheStrategiesMap;
+    private ConcurrentMap<Object, IStrategy> strategyStorage;
+    private ConcurrentMap<Object, IStrategy> cacheStrategiesMap;
     private IFunction argToKeyFunction;
     private IFunctionTwoArgs findValueByArgumentFunction;
 
@@ -44,30 +44,30 @@ public class StrategyStorageWithCacheStrategy implements IResolutionStrategy, IR
 
     @Override
     public <T> T resolve(Object... args)
-            throws ResolutionStrategyException {
+            throws StrategyException {
         try {
             Object key = this.argToKeyFunction.execute(args[0]);
-            IResolutionStrategy strategy = this.cacheStrategiesMap.get(key);
+            IStrategy strategy = this.cacheStrategiesMap.get(key);
             if (null != strategy) {
                 return strategy.resolve(args[0]);
             }
 
-            strategy = (IResolutionStrategy) this.findValueByArgumentFunction.execute(this.strategyStorage, args[0]);
+            strategy = (IStrategy) this.findValueByArgumentFunction.execute(this.strategyStorage, args[0]);
 
             if (null == strategy) {
-                throw new ResolutionStrategyException("No strategy found for " + args[0]);
+                throw new StrategyException("No strategy found for " + args[0]);
             }
 
             this.cacheStrategiesMap.put(key, strategy);
 
             return strategy.resolve(args[0]);
         } catch (RuntimeException | FunctionExecutionException | InvalidArgumentException e) {
-            throw new ResolutionStrategyException(e);
+            throw new StrategyException(e);
         }
     }
 
     @Override
-    public void register(Object key, IResolutionStrategy value)
+    public void register(Object key, IStrategy value)
             throws RegistrationStrategyException {
         try {
             this.dropCacheFor(key);

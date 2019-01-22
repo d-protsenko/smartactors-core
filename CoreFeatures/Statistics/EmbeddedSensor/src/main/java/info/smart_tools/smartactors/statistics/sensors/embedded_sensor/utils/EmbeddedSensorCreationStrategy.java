@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.statistics.sensors.embedded_sensor.utils;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
@@ -42,7 +42,7 @@ import java.util.List;
  *     }
  * </pre>
  */
-public class EmbeddedSensorCreationStrategy implements IResolutionStrategy {
+public class EmbeddedSensorCreationStrategy implements IStrategy {
     private static final int CHAIN_ID_STRATEGY_ARGUMENT_INDEX = 0;
     private static final int CONFIG_STRATEGY_ARGUMENT_INDEX = 1;
 
@@ -77,7 +77,7 @@ public class EmbeddedSensorCreationStrategy implements IResolutionStrategy {
     }
 
     @Override
-    public <T> T resolve(final Object... args) throws ResolutionStrategyException {
+    public <T> T resolve(final Object... args) throws StrategyException {
         try {
             Object statisticsChainName = args[CHAIN_ID_STRATEGY_ARGUMENT_INDEX];
             IObject conf = (IObject) args[CONFIG_STRATEGY_ARGUMENT_INDEX];
@@ -125,7 +125,7 @@ public class EmbeddedSensorCreationStrategy implements IResolutionStrategy {
             return (T) new EmbeddedSensorHandle(chainStorage, targetChainId, modId);
         } catch (ReadValueException | ChangeValueException | InvalidArgumentException | ResolutionException | ChainNotFoundException
                 | ChainModificationException e) {
-            throw new ResolutionStrategyException(e);
+            throw new StrategyException(e);
         }
     }
 }

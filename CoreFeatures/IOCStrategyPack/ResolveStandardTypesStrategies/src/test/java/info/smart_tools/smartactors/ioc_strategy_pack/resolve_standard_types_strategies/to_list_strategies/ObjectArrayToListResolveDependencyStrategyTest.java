@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_standard_types_strategies.to_list_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,16 +11,16 @@ import static org.junit.Assert.fail;
 
 public class ObjectArrayToListResolutionStrategyTest {
 
-    private ObjectArrayToListResolutionStrategy strategy;
+    private ObjectArrayToListStrategy strategy;
 
     @Before
     public void setUp() {
 
-        strategy = new ObjectArrayToListResolutionStrategy();
+        strategy = new ObjectArrayToListStrategy();
     }
 
     @Test
-    public void ShouldConvertObjectArrayToList() throws ResolutionStrategyException {
+    public void ShouldConvertObjectArrayToList() throws StrategyException {
 
         Object object = new Object();
         Object[] array = new Object[] {1L, "string", object};
@@ -32,7 +32,7 @@ public class ObjectArrayToListResolutionStrategyTest {
     }
 
     @Test
-    public void ShouldConvertConcreteTypeArrayToList() throws ResolutionStrategyException {
+    public void ShouldConvertConcreteTypeArrayToList() throws StrategyException {
 
         Integer[] array = new Integer[] {new Integer(1), new Integer(143)};
         List<Short> result = strategy.resolve(array);
@@ -41,8 +41,8 @@ public class ObjectArrayToListResolutionStrategyTest {
         assertEquals(result.get(1), new Integer(143));
     }
 
-    @Test(expected = ResolutionStrategyException.class)
-    public void ShouldThrowException_When_ErrorIsOccurred() throws ResolutionStrategyException {
+    @Test(expected = StrategyException.class)
+    public void ShouldThrowException_When_ErrorIsOccurred() throws StrategyException {
 
         strategy.resolve(null);
         fail();

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.ioc.ioc_container_simple;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.ioc.iioccontainer.IContainer;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Container implements IContainer {
 
-    private final Map<IKey, IResolutionStrategy> storage = new ConcurrentHashMap<>();
+    private final Map<IKey, IStrategy> storage = new ConcurrentHashMap<>();
 
     private final IKey keyForKeyByNameResolveStrategy;
 
@@ -81,7 +81,7 @@ public class Container implements IContainer {
         if (key == null) {
             throw new ResolutionException("Key can't be null");
         }
-        IResolutionStrategy strategy = storage.get(key);
+        IStrategy strategy = storage.get(key);
         if (strategy == null) {
             throw new ResolutionException("Strategy for key " + key + " not found");
         }
@@ -97,11 +97,11 @@ public class Container implements IContainer {
      * Register new dependency by instance of {@link IKey}
      *
      * @param key      instance of {@link IKey}
-     * @param strategy instance of {@link IResolutionStrategy}
+     * @param strategy instance of {@link IStrategy}
      * @throws RegistrationException when registration is impossible because of any error
      */
     @Override
-    public void register(final IKey key, final IResolutionStrategy strategy)
+    public void register(final IKey key, final IStrategy strategy)
             throws RegistrationException {
         if (key == null) {
             throw new RegistrationException("Key can't be null");

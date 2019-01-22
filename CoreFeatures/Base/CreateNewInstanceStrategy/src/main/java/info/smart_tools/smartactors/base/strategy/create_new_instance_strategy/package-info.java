@@ -1,6 +1,6 @@
 /**
  * Package contains implementation
- * of {@link info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy}
+ * of {@link info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy}
  * <pre>
  * This strategy allows to create new instances of specified classes
  * </pre>

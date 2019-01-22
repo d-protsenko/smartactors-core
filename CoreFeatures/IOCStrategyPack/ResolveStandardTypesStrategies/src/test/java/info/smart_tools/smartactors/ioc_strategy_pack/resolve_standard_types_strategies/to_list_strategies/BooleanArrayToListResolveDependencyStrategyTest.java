@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_standard_types_strategies.to_list_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,16 +11,16 @@ import static org.junit.Assert.fail;
 
 public class BooleanArrayToListResolutionStrategyTest {
 
-    private BooleanArrayToListResolutionStrategy strategy;
+    private BooleanArrayToListStrategy strategy;
 
     @Before
     public void setUp() {
 
-        strategy = new BooleanArrayToListResolutionStrategy();
+        strategy = new BooleanArrayToListStrategy();
     }
 
     @Test
-    public void ShouldConvertBooleanArrayToList() throws ResolutionStrategyException {
+    public void ShouldConvertBooleanArrayToList() throws StrategyException {
 
         boolean[] array = new boolean[] {true, false};
         List<Boolean> result = strategy.resolve(array);
@@ -29,8 +29,8 @@ public class BooleanArrayToListResolutionStrategyTest {
         assertEquals(result.get(1), false);
     }
 
-    @Test(expected = ResolutionStrategyException.class)
-    public void ShouldThrowException_When_ErrorIsOccurred() throws ResolutionStrategyException {
+    @Test(expected = StrategyException.class)
+    public void ShouldThrowException_When_ErrorIsOccurred() throws StrategyException {
 
         boolean var = false;
         strategy.resolve(var);

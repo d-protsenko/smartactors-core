@@ -200,13 +200,13 @@ The short name "target" is expanded into built-in "wds_target_strategy".
     
 ## How to write your own transformation strategy
     
-The transformation strategy or rule is a class implementing [IResolutionStrategy](../apidocs/info/smart_tools/smartactors/core/iresolution_strategy/IResolutionStrategy.html).
+The transformation strategy or rule is a class implementing [IStrategy](../apidocs/info/smart_tools/smartactors/core/istrategy/IStrategy.html).
 It takes some Object arguments and returns some value.
 You can define it as an anonymous class.
 
-    IResolutionStrategy strategy = new IResolutionStrategy() {
+    IStrategy strategy = new IStrategy() {
         @Override
-        public <T> T resolve(final Object... args) throws ResolutionStrategyException {
+        public <T> T resolve(final Object... args) throws StrategyException {
             String result = Arrays.stream(args).map(String::valueOf).collect(Collectors.joining());
             return (T) result;
         }
@@ -215,7 +215,7 @@ You can define it as an anonymous class.
 Then you need to register it in IOC.
 Because in this case IOC should resolve the strategy, the key is constructed from the interface canonical name.
 
-    IKey key = Keys.resolveByName(IResolutionStrategy.class.getCanonicalName());
+    IKey key = Keys.resolveByName(IStrategy.class.getCanonicalName());
     
 And you need the unique name for your strategy.
     

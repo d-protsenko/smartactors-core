@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.ioc.recursive_strategy_container;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
@@ -30,7 +30,7 @@ public class StrategyContainerScopeTest {
 
     private IScope parentScope;
     private IScope childScope;
-    private IResolutionStrategy resolveByNameStrategy = mock(IResolutionStrategy.class);
+    private IStrategy resolveByNameStrategy = mock(IStrategy.class);
 
     @Before
     public void setUp() throws ScopeProviderException, InvalidArgumentException, RegistrationException {

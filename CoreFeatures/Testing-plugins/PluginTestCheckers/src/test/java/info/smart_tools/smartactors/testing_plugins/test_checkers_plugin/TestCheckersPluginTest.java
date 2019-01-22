@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.testing_plugins.test_checkers_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
@@ -109,9 +109,9 @@ public class TestCheckersPluginTest {
         );
         IRouter routerMock = mock(IRouter.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IRouter.class.getCanonicalName()), new IResolutionStrategy() {
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IRouter.class.getCanonicalName()), new IStrategy() {
             @Override
-            public <T> T resolve(Object... args) throws ResolutionStrategyException {
+            public <T> T resolve(Object... args) throws StrategyException {
                 return (T) routerMock;
             }
         });

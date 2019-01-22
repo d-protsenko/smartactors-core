@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.statistics.statistics_manager;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
@@ -38,7 +38,7 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
     private StatisticsManagerActor actor;
 
     private IConfigurationManager configurationManagerMock;
-    private IResolutionStrategy[] srs = new IResolutionStrategy[1];
+    private IStrategy[] srs = new IStrategy[1];
     private ISensorHandle[] shs = new ISensorHandle[srs.length];
 
     @Override
@@ -56,28 +56,28 @@ public class StatisticsManagerActorTest extends PluginsLoadingTestBase {
         IOC.register(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()), new SingletonStrategy(configurationManagerMock));
 
         for (int i = 0; i < srs.length; i++) {
-            srs[i] = mock(IResolutionStrategy.class);
+            srs[i] = mock(IStrategy.class);
             shs[i] = mock(ISensorHandle.class);
             IOC.register(Keys.resolveByName(MessageFormat.format("sensor type {0}", i)), srs[i]);
             when(srs[i].resolve(any(), any())).thenReturn(shs[i]);
         }
 
-        IOC.register(Keys.resolveByName("configuration object"), new IResolutionStrategy() {
+        IOC.register(Keys.resolveByName("configuration object"), new IStrategy() {
             @Override
-            public <T> T resolve(Object... args) throws ResolutionStrategyException {
+            public <T> T resolve(Object... args) throws StrategyException {
                 try {
                     IObject obj = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"), args);
                     obj.setValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "__is_config"), "1");
                     return (T) obj;
                 } catch (ResolutionException | InvalidArgumentException | ChangeValueException e) {
-                    throw new ResolutionStrategyException(e);
+                    throw new StrategyException(e);
                 }
             }
         });
 
-        IOC.register(Keys.resolveByName("chain_id_from_map_name"), new IResolutionStrategy() {
+        IOC.register(Keys.resolveByName("chain_id_from_map_name"), new IStrategy() {
             @Override
-            public <T> T resolve(Object... args) throws ResolutionStrategyException {
+            public <T> T resolve(Object... args) throws StrategyException {
                 return (T) String.valueOf(args[0]).concat("__0");
             }
         });

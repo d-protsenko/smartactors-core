@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.message_processing.object_creation_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
@@ -19,11 +19,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Test for {@link FullObjectCreatorResolutionStrategy}.
+ * Test for {@link FullObjectCreatorStrategy}.
  */
 public class FullObjectCreatorResolutionStrategyTest extends PluginsLoadingTestBase {
-    private IResolutionStrategy creator1ResolutionStrategyMock;
-    private IResolutionStrategy creator2ResolutionStrategyMock;
+    private IStrategy creator1ResolutionStrategyMock;
+    private IStrategy creator2ResolutionStrategyMock;
     private IReceiverObjectCreator creator1Mock;
     private IReceiverObjectCreator creator2Mock;
 
@@ -38,8 +38,8 @@ public class FullObjectCreatorResolutionStrategyTest extends PluginsLoadingTestB
 
     @Override
     protected void registerMocks() throws Exception {
-        creator1ResolutionStrategyMock = mock(IResolutionStrategy.class);
-        creator2ResolutionStrategyMock = mock(IResolutionStrategy.class);
+        creator1ResolutionStrategyMock = mock(IStrategy.class);
+        creator2ResolutionStrategyMock = mock(IStrategy.class);
         creator1Mock = mock(IReceiverObjectCreator.class);
         creator2Mock = mock(IReceiverObjectCreator.class);
 
@@ -65,7 +65,7 @@ public class FullObjectCreatorResolutionStrategyTest extends PluginsLoadingTestB
                  "  ]" +
                  "}").replace('\'','"'));
 
-        IReceiverObjectCreator result = new FullObjectCreatorResolutionStrategy().resolve(objectConfig);
+        IReceiverObjectCreator result = new FullObjectCreatorStrategy().resolve(objectConfig);
 
         assertSame(creator2Mock, result);
     }

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.statistics.sensors.embedded_sensor.utils;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 
 /**
@@ -12,9 +12,9 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
  *     This strategy is meant to be used with "chain modification: replace receivers" strategy.
  * </p>
  */
-public class PrependSensorReceiverStrategy implements IResolutionStrategy {
+public class PrependSensorReceiverStrategy implements IStrategy {
     @Override
-    public <T> T resolve(final Object... args) throws ResolutionStrategyException {
+    public <T> T resolve(final Object... args) throws StrategyException {
         final IMessageReceiver originalReceiver = (IMessageReceiver) args[0];
         final IMessageReceiver sensorReceiver = (IMessageReceiver) args[1];
 

@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.testing.test_checkers;
 
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
@@ -27,7 +27,7 @@ import org.mockito.Mockito;
  * Test for {@link ExceptionInterceptor}.
  */
 public class ExceptionInterceptorTest extends PluginsLoadingTestBase {
-    private IResolutionStrategy receiverIdStrategyMock;
+    private IStrategy receiverIdStrategyMock;
     private IRouter routerMock;
     private IMessageReceiver expectedReceiverMock;
     private IMessageReceiver unexpectedReceiverMock;
@@ -46,7 +46,7 @@ public class ExceptionInterceptorTest extends PluginsLoadingTestBase {
     @Override
     protected void registerMocks()
             throws Exception {
-        receiverIdStrategyMock = Mockito.mock(IResolutionStrategy.class);
+        receiverIdStrategyMock = Mockito.mock(IStrategy.class);
         routerMock = Mockito.mock(IRouter.class);
         expectedReceiverMock = Mockito.mock(IMessageReceiver.class);
         unexpectedReceiverMock = Mockito.mock(IMessageReceiver.class);
@@ -56,9 +56,9 @@ public class ExceptionInterceptorTest extends PluginsLoadingTestBase {
         Mockito.when(messageProcessorMock.getSequence()).thenReturn(sequenceMock);
 
         IOC.register(Keys.resolveByName("receiver_id_from_iobject"), receiverIdStrategyMock);
-        IOC.register(Keys.resolveByName(IRouter.class.getCanonicalName()), new IResolutionStrategy() {
+        IOC.register(Keys.resolveByName(IRouter.class.getCanonicalName()), new IStrategy() {
             @Override
-            public <T> T resolve(Object... args) throws ResolutionStrategyException {
+            public <T> T resolve(Object... args) throws StrategyException {
                 return (T)routerMock;
             }
         });
@@ -142,7 +142,7 @@ public class ExceptionInterceptorTest extends PluginsLoadingTestBase {
         Mockito.when(sequenceMock.getCurrentReceiver()).thenReturn(unexpectedReceiverMock);
         IObject unexpectedId = Mockito.mock(IObject.class);
         Mockito.when(sequenceMock.getCurrentReceiverArguments()).thenReturn(unexpectedId);
-        Mockito.when(receiverIdStrategyMock.resolve(Matchers.same(unexpectedId))).thenThrow(ResolutionStrategyException.class);
+        Mockito.when(receiverIdStrategyMock.resolve(Matchers.same(unexpectedId))).thenThrow(StrategyException.class);
 
         createCorrect().check(messageProcessorMock, new Exception(new IllegalStateException(new NullPointerException())));
     }

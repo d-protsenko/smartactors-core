@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_processing.object_creation_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
@@ -30,7 +30,7 @@ public class TopLevelObjectCreatorTest extends PluginsLoadingTestBase {
     private IObject configMock;
     private IObject contextMock;
     private IReceiverObjectListener listenerMock;
-    private IResolutionStrategy objectResolutionStrategy;
+    private IStrategy objectResolutionStrategy;
     private Object object = new Object();
 
     @Override
@@ -47,7 +47,7 @@ public class TopLevelObjectCreatorTest extends PluginsLoadingTestBase {
         configMock = mock(IObject.class);
         contextMock = mock(IObject.class);
         listenerMock = mock(IReceiverObjectListener.class);
-        objectResolutionStrategy = mock(IResolutionStrategy.class);
+        objectResolutionStrategy = mock(IStrategy.class);
 
         IOC.register(Keys.resolveByName("the object dependency"), objectResolutionStrategy);
 
@@ -83,7 +83,7 @@ public class TopLevelObjectCreatorTest extends PluginsLoadingTestBase {
             throws Exception {
         IReceiverObjectCreator creator = new TopLevelObjectCreator();
 
-        when(objectResolutionStrategy.resolve(any())).thenThrow(ResolutionStrategyException.class);
+        when(objectResolutionStrategy.resolve(any())).thenThrow(StrategyException.class);
 
         creator.create(listenerMock, configMock, contextMock);
     }

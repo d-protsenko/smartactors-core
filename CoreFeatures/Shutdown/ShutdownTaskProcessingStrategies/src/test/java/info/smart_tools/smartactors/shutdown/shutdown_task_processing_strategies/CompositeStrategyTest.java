@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.shutdown.shutdown_task_processing_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
  * Test for {@link CompositeStrategy}.
  */
 public class CompositeStrategyTest extends PluginsLoadingTestBase {
-    private IResolutionStrategy strategyStrategy;
+    private IStrategy strategyStrategy;
     private ITaskProcessStrategy defaultStrategyMock, customStrategyMock;
     private IKey strategyStrategyKey;
     private ITaskExecutionState taskExecutionState;
@@ -41,7 +41,7 @@ public class CompositeStrategyTest extends PluginsLoadingTestBase {
 
     @Override
     protected void registerMocks() throws Exception {
-        strategyStrategy = mock(IResolutionStrategy.class);
+        strategyStrategy = mock(IStrategy.class);
         defaultStrategyMock = mock(ITaskProcessStrategy.class);
         customStrategyMock = mock(ITaskProcessStrategy.class);
         strategyStrategyKey = Keys.resolveByName("key");
@@ -55,7 +55,7 @@ public class CompositeStrategyTest extends PluginsLoadingTestBase {
             throws Exception {
         when(taskExecutionState.getTaskClass()).thenReturn((Class) ATaskSubclass.class);
         when(strategyStrategy.resolve(same(ATaskSubclass.class)))
-                .thenThrow(ResolutionStrategyException.class);
+                .thenThrow(StrategyException.class);
         ITaskProcessStrategy strategy = new CompositeStrategy(strategyStrategyKey, defaultStrategyMock);
 
         strategy.process(taskExecutionState);

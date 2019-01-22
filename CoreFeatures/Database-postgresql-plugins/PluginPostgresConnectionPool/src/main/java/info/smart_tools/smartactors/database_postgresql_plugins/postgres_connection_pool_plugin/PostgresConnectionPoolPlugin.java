@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.database_postgresql_plugins.postgres_connec
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.pool.Pool;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
@@ -54,7 +54,7 @@ public class PostgresConnectionPoolPlugin implements IPlugin {
                 .before("CreateCachedCollectionPlugin")
                 .process(() -> {
                     try {
-                        IResolutionStrategy poolStrategy = new ApplyFunctionToArgumentsStrategy(
+                        IStrategy poolStrategy = new ApplyFunctionToArgumentsStrategy(
                                 (args) -> {
                                     ConnectionOptions connectionOptions = (ConnectionOptions) args[0];
 

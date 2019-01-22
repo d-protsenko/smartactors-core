@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
@@ -56,8 +56,8 @@ public class PluginScheduler extends BootstrapPlugin {
     @Item("scheduler_default_action")
     public void registerDefaultAction()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IResolutionStrategy nonBlockingMessageActionS = new SingletonStrategy(new DefaultSchedulerAction());
-        IResolutionStrategy blockingMessageActionS = new SingletonStrategy(new BlockingMessageSchedulerAction());
+        IStrategy nonBlockingMessageActionS = new SingletonStrategy(new DefaultSchedulerAction());
+        IStrategy blockingMessageActionS = new SingletonStrategy(new BlockingMessageSchedulerAction());
 
         IOC.register(
                 Keys.resolveByName("blocking message scheduler action"),

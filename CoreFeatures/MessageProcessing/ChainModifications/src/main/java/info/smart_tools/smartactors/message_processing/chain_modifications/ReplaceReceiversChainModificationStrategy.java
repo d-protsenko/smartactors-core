@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.message_processing.chain_modifications;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -127,7 +127,7 @@ class ReceiverReplacingChainDecorator implements IReceiverChain {
  *     }
  * </pre>
  */
-public class ReplaceReceiversChainModificationStrategy implements IResolutionStrategy {
+public class ReplaceReceiversChainModificationStrategy implements IStrategy {
     private static final int CHAIN_ARGUMENT_INDEX = 0;
     private static final int MODIFICATION_DESCRIPTION_ARGUMENT_INDEX = 1;
 
@@ -150,7 +150,7 @@ public class ReplaceReceiversChainModificationStrategy implements IResolutionStr
     }
 
     @Override
-    public <T> T resolve(final Object... args) throws ResolutionStrategyException {
+    public <T> T resolve(final Object... args) throws StrategyException {
         try {
             IReceiverChain originalChain = (IReceiverChain) args[CHAIN_ARGUMENT_INDEX];
             IObject modificationDescription = (IObject) args[MODIFICATION_DESCRIPTION_ARGUMENT_INDEX];
@@ -171,7 +171,7 @@ public class ReplaceReceiversChainModificationStrategy implements IResolutionStr
 
             return (T) new ReceiverReplacingChainDecorator(originalChain, replacementMap);
         } catch (ClassCastException | ReadValueException | InvalidArgumentException | ResolutionException e) {
-            throw new ResolutionStrategyException(e);
+            throw new StrategyException(e);
         }
     }
 }

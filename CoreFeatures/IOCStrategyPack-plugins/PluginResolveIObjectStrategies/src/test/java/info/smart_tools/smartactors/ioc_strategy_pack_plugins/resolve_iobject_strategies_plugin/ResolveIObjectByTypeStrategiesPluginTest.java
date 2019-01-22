@@ -13,8 +13,8 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.key_tools.Keys;
-import info.smart_tools.smartactors.ioc_strategy_pack.resolve_iobject_strategies.MapToIObjectResolutionStrategy;
-import info.smart_tools.smartactors.ioc_strategy_pack.resolve_iobject_strategies.StringToIObjectResolutionStrategy;
+import info.smart_tools.smartactors.ioc_strategy_pack.resolve_iobject_strategies.MapToIObjectStrategy;
+import info.smart_tools.smartactors.ioc_strategy_pack.resolve_iobject_strategies.StringToIObjectStrategy;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -82,8 +82,8 @@ public class ResolveIObjectByTypeStrategiesPluginTest {
         PowerMockito.verifyStatic();
         IOC.register(eq(strategyKey), eq(strategy));
 
-        Mockito.verify(strategy).register(eq(Map.class), any(MapToIObjectResolutionStrategy.class));
-        Mockito.verify(strategy).register(eq(String.class), any(StringToIObjectResolutionStrategy.class));
+        Mockito.verify(strategy).register(eq(Map.class), any(MapToIObjectStrategy.class));
+        Mockito.verify(strategy).register(eq(String.class), any(StringToIObjectStrategy.class));
 
         ArgumentCaptor<IActionNoArgs> iActionNoArgsArgumentCaptor1 = ArgumentCaptor.forClass(IActionNoArgs.class);
         Mockito.verify(item).revertProcess(iActionNoArgsArgumentCaptor1.capture());

@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core.proof_of_assumption;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
@@ -235,13 +235,13 @@ public class MessageProcessingTest {
         final IFieldName targetNameFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "target");
 
         IOC.register(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "receiver_id_from_iobject"),
-                new IResolutionStrategy() {
+                new IStrategy() {
                     @Override
-                    public <T> T resolve(Object... args) throws ResolutionStrategyException {
+                    public <T> T resolve(Object... args) throws StrategyException {
                         try {
                             return (T)String.valueOf(((IObject)args[0]).getValue(targetNameFieldName));
                         } catch (ReadValueException | InvalidArgumentException e) {
-                            throw new ResolutionStrategyException(e);
+                            throw new StrategyException(e);
                         }
                     }
                 });

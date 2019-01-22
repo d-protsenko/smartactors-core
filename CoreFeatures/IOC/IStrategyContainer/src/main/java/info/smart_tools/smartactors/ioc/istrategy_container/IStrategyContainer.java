@@ -1,36 +1,36 @@
 package info.smart_tools.smartactors.ioc.istrategy_container;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.ioc.istrategy_container.exception.StrategyContainerException;
 
 /**
  * StrategyContainer interface
  * Provides methods for resolve and register dependency
- * {@link IResolutionStrategy}
+ * {@link IStrategy}
  * by object unique identifier
  */
 public interface IStrategyContainer {
 
     /**
-     * Resolve dependency of {@link IResolutionStrategy} by unique object identifier
+     * Resolve dependency of {@link IStrategy} by unique object identifier
      * @param key unique object identifier
-     * @return instance of {@link IResolutionStrategy}
+     * @return instance of {@link IStrategy}
      * @throws StrategyContainerException if any error occurred
      */
-    IResolutionStrategy resolve(final Object key)
+    IStrategy resolve(final Object key)
             throws StrategyContainerException;
 
     /**
-     * Register new dependency of {@link IResolutionStrategy} by unique object identifier
+     * Register new dependency of {@link IStrategy} by unique object identifier
      * @param key unique object identifier
-     * @param strategy instance of {@link IResolutionStrategy}
+     * @param strategy instance of {@link IStrategy}
      * @throws StrategyContainerException  if any error occurred
      */
-    void register(final Object key, final IResolutionStrategy strategy)
+    void register(final Object key, final IStrategy strategy)
             throws StrategyContainerException;
 
     /**
-     * Remove existing dependency of {@link IResolutionStrategy} by unique object identifier
+     * Remove existing dependency of {@link IStrategy} by unique object identifier
      * @param key unique object identifier
      * @throws StrategyContainerException  if any error occurred
      */

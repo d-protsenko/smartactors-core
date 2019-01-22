@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.statistics.sensors.scheduled_query_sensor.q
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.interfaces.ipool.exception.GettingFromPoolException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
@@ -30,9 +30,9 @@ import static org.mockito.Mockito.*;
  * Test for {@link DatabaseCountQueryExecutor}.
  */
 public class DatabaseCountQueryExecutorTest extends PluginsLoadingTestBase {
-    private IResolutionStrategy connectionOptionsStrategyMock;
-    private IResolutionStrategy connectionPoolStrategyMock;
-    private IResolutionStrategy taskStrategyMock;
+    private IStrategy connectionOptionsStrategyMock;
+    private IStrategy connectionPoolStrategyMock;
+    private IStrategy taskStrategyMock;
     private IPool poolMock;
     private final Object connectionMock = new Object(), connectionOptionsMock = new Object();
     private ISchedulerEntry entryMock;
@@ -49,19 +49,19 @@ public class DatabaseCountQueryExecutorTest extends PluginsLoadingTestBase {
 
     @Override
     protected void registerMocks() throws Exception {
-        connectionOptionsStrategyMock = mock(IResolutionStrategy.class);
+        connectionOptionsStrategyMock = mock(IStrategy.class);
         when(connectionOptionsStrategyMock.resolve()).thenReturn(connectionOptionsMock);
         IOC.register(Keys.resolveByName("the connection options"), connectionOptionsStrategyMock);
 
         poolMock = mock(IPool.class);
-        connectionPoolStrategyMock = mock(IResolutionStrategy.class);
+        connectionPoolStrategyMock = mock(IStrategy.class);
         when(connectionPoolStrategyMock.resolve(same(connectionOptionsMock))).thenReturn(poolMock);
         IOC.register(Keys.resolveByName("the connection pool"), connectionPoolStrategyMock);
         when(poolMock.get()).thenReturn(connectionMock).thenThrow(GettingFromPoolException.class);
 
         taskMock = mock(ITask.class);
 
-        taskStrategyMock = mock(IResolutionStrategy.class);
+        taskStrategyMock = mock(IStrategy.class);
         IOC.register(Keys.resolveByName("db.collection.count"), taskStrategyMock);
 
         entryMock = mock(ISchedulerEntry.class);

@@ -657,12 +657,12 @@
   "rawName" : "IResourceSource",
   "version" : "0.5.0"
 }, {
-  "artifactId" : "base.interfaces.iresolution-strategy",
+  "artifactId" : "base.interfaces.istrategy",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
-  "rawName" : "IResolutionStrategy",
+  "rawName" : "IStrategy",
   "version" : "0.5.0"
 }, {
   "artifactId" : "base.interfaces.iresolve-dependency-strategy",

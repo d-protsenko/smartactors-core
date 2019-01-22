@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_processing.receiver_generator;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.FromStringClassGenerator;
 import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.class_builder.ClassBuilder;
 import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.class_builder.Modifiers;
@@ -40,7 +40,7 @@ public class ReceiverGenerator implements IReceiverGenerator {
     @Override
     public IMessageReceiver generate(
             final Object objInstance,
-            final IResolutionStrategy wrapperResolutionStrategy,
+            final IStrategy wrapperResolutionStrategy,
             final String methodName
     ) throws InvalidArgumentException, ReceiverGeneratorException {
         if (
@@ -69,7 +69,7 @@ public class ReceiverGenerator implements IReceiverGenerator {
                     methodName
             );
             return clazz.getConstructor(
-                    new Class[]{objInstance.getClass(), IResolutionStrategy.class}
+                    new Class[]{objInstance.getClass(), IStrategy.class}
             )
                     .newInstance(new Object[]{objInstance, wrapperResolutionStrategy});
         } catch (Throwable e) {
@@ -97,7 +97,7 @@ public class ReceiverGenerator implements IReceiverGenerator {
                 .addImport(IMessageReceiver.class.getCanonicalName())
                 .addImport(AsynchronousOperationException.class.getCanonicalName())
                 .addImport(MessageReceiveException.class.getCanonicalName())
-                .addImport(IResolutionStrategy.class.getCanonicalName())
+                .addImport(IStrategy.class.getCanonicalName())
                 .addImport(IObjectWrapper.class.getCanonicalName());
 
         // Add class header
@@ -116,7 +116,7 @@ public class ReceiverGenerator implements IReceiverGenerator {
                         .next()
                 .addField()
                         .setModifier(Modifiers.PRIVATE)
-                        .setType(IResolutionStrategy.class.getSimpleName())
+                        .setType(IStrategy.class.getSimpleName())
                         .setName("strategy")
                 ;
 
@@ -129,7 +129,7 @@ public class ReceiverGenerator implements IReceiverGenerator {
                         .setName("object")
                         .next()
                 .setParameters()
-                        .setType(IResolutionStrategy.class.getSimpleName())
+                        .setType(IStrategy.class.getSimpleName())
                         .setName("strategy")
                         .next()
                 .addStringToBody("\tthis.usersObject = object;")

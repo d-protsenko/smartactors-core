@@ -4,8 +4,8 @@ import info.smart_tools.smartactors.actors.SampleDBActor;
 import info.smart_tools.smartactors.actors.exception.SampleDBException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrapper.ConnectionOptions;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -47,9 +47,9 @@ public class SampleDBActorPlugin implements IPlugin {
             item
                 .process(() -> {
                 try {
-                    IOC.register(Keys.resolveByName("PostgresConnectionOptions"), new IResolutionStrategy() {
+                    IOC.register(Keys.resolveByName("PostgresConnectionOptions"), new IStrategy() {
                         @Override
-                        public ConnectionOptions resolve(Object... args) throws ResolutionStrategyException {
+                        public ConnectionOptions resolve(Object... args) throws StrategyException {
                             Properties connectionProperties = new Properties();
                             try {
                                 connectionProperties.load(new FileReader("db_connection.properties"));
@@ -84,17 +84,17 @@ public class SampleDBActorPlugin implements IPlugin {
                                     }
                                 };
                             } catch (IOException e) {
-                                throw new ResolutionStrategyException("Cannot read db_connection.properties", e);
+                                throw new StrategyException("Cannot read db_connection.properties", e);
                             }
                         }
                     });
-                    IOC.register(Keys.resolveByName("SampleDBActor"), new IResolutionStrategy() {
+                    IOC.register(Keys.resolveByName("SampleDBActor"), new IStrategy() {
                         @Override
-                        public SampleDBActor resolve(Object... args) throws ResolutionStrategyException {
+                        public SampleDBActor resolve(Object... args) throws StrategyException {
                             try {
                                 return new SampleDBActor();
                             } catch (SampleDBException e) {
-                                throw new ResolutionStrategyException(e);
+                                throw new StrategyException(e);
                             }
                         }
                     });

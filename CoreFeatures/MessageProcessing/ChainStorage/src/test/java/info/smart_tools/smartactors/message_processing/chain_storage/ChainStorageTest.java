@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_processing.chain_storage;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -31,8 +31,8 @@ import static org.mockito.Mockito.*;
  * Test for {@link ChainStorage}.
  */
 public class ChainStorageTest extends PluginsLoadingTestBase {
-    private IResolutionStrategy receiverChainStrategyMock;
-    private IResolutionStrategy chainStateStrategyMock;
+    private IStrategy receiverChainStrategyMock;
+    private IStrategy chainStateStrategyMock;
     private IRouter routerMock;
 
     private IChainState[] stateMocks;
@@ -55,8 +55,8 @@ public class ChainStorageTest extends PluginsLoadingTestBase {
 
         routerMock = mock(IRouter.class);
 
-        receiverChainStrategyMock = mock(IResolutionStrategy.class);
-        chainStateStrategyMock = mock(IResolutionStrategy.class);
+        receiverChainStrategyMock = mock(IStrategy.class);
+        chainStateStrategyMock = mock(IStrategy.class);
 
         IOC.register(Keys.resolveByName(IReceiverChain.class.getCanonicalName()), receiverChainStrategyMock);
         IOC.register(Keys.resolveByName(IChainState.class.getCanonicalName()), chainStateStrategyMock);

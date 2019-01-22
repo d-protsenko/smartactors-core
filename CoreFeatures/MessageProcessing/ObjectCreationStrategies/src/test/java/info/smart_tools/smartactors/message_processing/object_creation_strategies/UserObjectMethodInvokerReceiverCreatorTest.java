@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.message_processing.object_creation_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
@@ -40,7 +40,7 @@ public class UserObjectMethodInvokerReceiverCreatorTest extends PluginsLoadingTe
     private IReceiverObjectListener listenerMock;
     private AObject object = new AObject();
     private IMessageReceiver[] invokerMocks;
-    private IResolutionStrategy invokerResolutionStrategy;
+    private IStrategy invokerResolutionStrategy;
 
     @Override
     protected void loadPlugins() throws Exception {
@@ -62,7 +62,7 @@ public class UserObjectMethodInvokerReceiverCreatorTest extends PluginsLoadingTe
             mock(IMessageReceiver.class),
             mock(IMessageReceiver.class),
         };
-        invokerResolutionStrategy = mock(IResolutionStrategy.class);
+        invokerResolutionStrategy = mock(IStrategy.class);
 
         IOC.register(Keys.resolveByName("method invoker receiver"), invokerResolutionStrategy);
 

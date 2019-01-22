@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_iobject_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import org.junit.Before;
@@ -19,12 +19,12 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PrepareForTest(String.class)
 public class StringToIObjectResolutionStrategyTest {
 
-    private StringToIObjectResolutionStrategy strategy;
+    private StringToIObjectStrategy strategy;
 
     @Before
     public void setUp() throws Exception {
 
-        strategy = new StringToIObjectResolutionStrategy();
+        strategy = new StringToIObjectStrategy();
     }
 
     @Test
@@ -40,7 +40,7 @@ public class StringToIObjectResolutionStrategyTest {
         assertEquals(result.getValue(new FieldName("key2")), "value");
     }
 
-    @Test(expected = ResolutionStrategyException.class)
+    @Test(expected = StrategyException.class)
     public void ShouldThrowException_When_StringIsIncorrect() throws Exception {
 
         String invalid = "invalid";
@@ -48,7 +48,7 @@ public class StringToIObjectResolutionStrategyTest {
         fail();
     }
 
-    @Test(expected = ResolutionStrategyException.class)
+    @Test(expected = StrategyException.class)
     public void ShouldThrowException_When_AnyErrorIsOccurred() throws Exception {
 
         mockStatic(String.class);
@@ -58,7 +58,7 @@ public class StringToIObjectResolutionStrategyTest {
         fail();
     }
 
-    @Test(expected = ResolutionStrategyException.class)
+    @Test(expected = StrategyException.class)
     public void ShouldThrowException_When_NullIsPassed() throws Exception {
 
         strategy.resolve(null);

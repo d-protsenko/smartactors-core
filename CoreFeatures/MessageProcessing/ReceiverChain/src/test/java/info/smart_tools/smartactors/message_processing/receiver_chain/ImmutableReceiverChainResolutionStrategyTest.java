@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.message_processing.receiver_chain;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 /**
- * Tests for {@link ImmutableReceiverChainResolutionStrategy}.
+ * Tests for {@link ImmutableReceiverChainStrategy}.
  */
 @PrepareForTest(IOC.class)
 @RunWith(PowerMockRunner.class)
@@ -128,7 +128,7 @@ public class ImmutableReceiverChainResolutionStrategyTest {
         when(routerMock.route("rec1")).thenReturn(receiver1);
         when(routerMock.route("rec2")).thenReturn(receiver2);
 
-        IReceiverChain chain = new ImmutableReceiverChainResolutionStrategy().resolve(chainId, description, routerMock, scope, module);
+        IReceiverChain chain = new ImmutableReceiverChainStrategy().resolve(chainId, description, routerMock, scope, module);
 
         assertNotNull(chain);
         assertSame(chain.getName(), chainName);
@@ -136,13 +136,13 @@ public class ImmutableReceiverChainResolutionStrategyTest {
         assertSame(chain.getModule(), module);
     }
 
-    @Test(expected = ResolutionStrategyException.class)
+    @Test(expected = StrategyException.class)
     public void Should_wrapExceptions()
             throws Exception {
         IObject description = mock(IObject.class);
 
         when(description.getValue(any())).thenThrow(ReadValueException.class);
 
-        new ImmutableReceiverChainResolutionStrategy().resolve("chain", description, routerMock, null, null);
+        new ImmutableReceiverChainStrategy().resolve("chain", description, routerMock, null, null);
     }
 }

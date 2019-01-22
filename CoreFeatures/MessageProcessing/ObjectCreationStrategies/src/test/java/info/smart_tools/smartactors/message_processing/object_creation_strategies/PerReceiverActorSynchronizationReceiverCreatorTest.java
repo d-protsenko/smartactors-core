@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.message_processing.object_creation_strategies;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
@@ -30,7 +30,7 @@ public class PerReceiverActorSynchronizationReceiverCreatorTest extends PluginsL
     private IReceiverObjectListener listenerMock;
     private IReceiverObjectCreator creatorMock;
     private IMessageReceiver[] receiverMocks;
-    private IResolutionStrategy actorReceiverResolutionStrategy;
+    private IStrategy actorReceiverResolutionStrategy;
     private IObject filterConfig, objectConfig, context;
 
     @Override
@@ -55,7 +55,7 @@ public class PerReceiverActorSynchronizationReceiverCreatorTest extends PluginsL
             mock(IMessageReceiver.class),
         };
 
-        actorReceiverResolutionStrategy = mock(IResolutionStrategy.class);
+        actorReceiverResolutionStrategy = mock(IStrategy.class);
         IOC.register(Keys.resolveByName("create actor synchronization receiver"), actorReceiverResolutionStrategy);
 
         when(actorReceiverResolutionStrategy.resolve(same(receiverMocks[0]))).thenReturn(receiverMocks[1]);
@@ -117,7 +117,7 @@ public class PerReceiverActorSynchronizationReceiverCreatorTest extends PluginsL
     @Test(expected = ReceiverObjectListenerException.class)
     public void Should_throwWhenActorReceiverCreationStrategyThrows()
             throws Exception {
-        when(actorReceiverResolutionStrategy.resolve(same(receiverMocks[0]))).thenThrow(ResolutionStrategyException.class);
+        when(actorReceiverResolutionStrategy.resolve(same(receiverMocks[0]))).thenThrow(StrategyException.class);
 
         IReceiverObjectCreator creator = new PerReceiverActorSynchronizationReceiverCreator(creatorMock, filterConfig, objectConfig);
 

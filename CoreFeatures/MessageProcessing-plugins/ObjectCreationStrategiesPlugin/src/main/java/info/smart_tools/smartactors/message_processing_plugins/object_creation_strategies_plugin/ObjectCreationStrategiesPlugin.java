@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.message_processing_plugins.object_creation_
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
@@ -14,8 +14,8 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing.actor_receiver.ActorReceiver;
 import info.smart_tools.smartactors.message_processing.handler_routing_receiver.HandlerRoutingReceiver;
-import info.smart_tools.smartactors.message_processing.object_creation_strategies.FullObjectCreatorResolutionStrategy;
-import info.smart_tools.smartactors.message_processing.object_creation_strategies.MethodInvokerReceiverResolutionStrategy;
+import info.smart_tools.smartactors.message_processing.object_creation_strategies.FullObjectCreatorStrategy;
+import info.smart_tools.smartactors.message_processing.object_creation_strategies.MethodInvokerReceiverStrategy;
 import info.smart_tools.smartactors.message_processing.object_creation_strategies.RouterRegistrationObjectListener;
 import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_generator.exception.WrapperGeneratorException;
@@ -60,7 +60,7 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
         } catch (ResolutionException e) { }
     }
 
-    @Item("full_object_creator_resolution_strategy")
+    @Item("full_object_creator_strategy")
     @After({
             "IOC",
     })
@@ -71,16 +71,16 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
                 Keys.resolveByName("full receiver object creator"),
-                new FullObjectCreatorResolutionStrategy()
+                new FullObjectCreatorStrategy()
         );
     }
 
-    @ItemRevert("full_object_creator_resolution_strategy")
+    @ItemRevert("full_object_creator_strategy")
     public void unregisterFullCreatorStrategy() {
         try {
             IOC.remove(Keys.resolveByName("full receiver object creator"));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \"full receiver object creator\" has failed while reverting \"full_object_creator_resolution_strategy\" plugin.");
+            System.out.println("[WARNING] Deregistration of \"full receiver object creator\" has failed while reverting \"full_object_creator_strategy\" plugin.");
         } catch (ResolutionException e) { }
     }
 
@@ -161,7 +161,7 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
     })
     public void registerWrapperResolutionStrategies()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IResolutionStrategy newInstanceWrapperStrategy = new ApplyFunctionToArgumentsStrategy(args -> {
+        IStrategy newInstanceWrapperStrategy = new ApplyFunctionToArgumentsStrategy(args -> {
             Class<?> clazz = (Class) args[0];
 
             try {
@@ -181,7 +181,7 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
             }
         });
 
-        IResolutionStrategy singletonWrapperStrategy = new ApplyFunctionToArgumentsStrategy(args -> {
+        IStrategy singletonWrapperStrategy = new ApplyFunctionToArgumentsStrategy(args -> {
             Class<?> clazz = (Class) args[0];
 
             try {
@@ -251,7 +251,7 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
                 Keys.resolveByName("method invoker receiver"),
-                new MethodInvokerReceiverResolutionStrategy()
+                new MethodInvokerReceiverStrategy()
         );
     }
 

@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.base.interfaces.iregistration_strategy.exception;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 
 /**
- * Exception for error in {@link IResolutionStrategy} methods
+ * Exception for error in {@link IStrategy} methods
  */
 public class RegistrationStrategyException extends Exception {
 

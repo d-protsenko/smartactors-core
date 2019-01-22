@@ -12,7 +12,7 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationExce
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.key_tools.Keys;
-import info.smart_tools.smartactors.message_processing.receiver_chain.ImmutableReceiverChainResolutionStrategy;
+import info.smart_tools.smartactors.message_processing.receiver_chain.ImmutableReceiverChainStrategy;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 
 /**
@@ -41,7 +41,7 @@ public class PluginReceiverChain implements IPlugin {
                         try {
                             IOC.register(
                                     Keys.resolveByName(IReceiverChain.class.getCanonicalName()),
-                                    new ImmutableReceiverChainResolutionStrategy());
+                                    new ImmutableReceiverChainStrategy());
                         } catch (ResolutionException e) {
                             throw new ActionExecutionException("ReceiverChain plugin can't load: can't get ReceiverChain key", e);
                         } catch (RegistrationException e) {

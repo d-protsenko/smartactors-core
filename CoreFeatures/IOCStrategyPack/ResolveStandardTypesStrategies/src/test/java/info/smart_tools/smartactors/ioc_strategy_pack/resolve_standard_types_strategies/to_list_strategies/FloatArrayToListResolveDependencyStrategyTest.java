@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_standard_types_strategies.to_list_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,16 +11,16 @@ import static org.junit.Assert.fail;
 
 public class FloatArrayToListResolutionStrategyTest {
 
-    private FloatArrayToListResolutionStrategy strategy;
+    private FloatArrayToListStrategy strategy;
 
     @Before
     public void setUp() {
 
-        strategy = new FloatArrayToListResolutionStrategy();
+        strategy = new FloatArrayToListStrategy();
     }
 
     @Test
-    public void ShouldConvertFloatArrayToList() throws ResolutionStrategyException {
+    public void ShouldConvertFloatArrayToList() throws StrategyException {
 
         float[] array = new float[] {(float) 12.0, (float) 5.7};
         List<Float> result = strategy.resolve(array);
@@ -29,8 +29,8 @@ public class FloatArrayToListResolutionStrategyTest {
         assertEquals(result.get(1), new Float(5.7));
     }
 
-    @Test(expected = ResolutionStrategyException.class)
-    public void ShouldThrowException_When_ErrorIsOccurred() throws ResolutionStrategyException {
+    @Test(expected = StrategyException.class)
+    public void ShouldThrowException_When_ErrorIsOccurred() throws StrategyException {
 
         Float[] array = new Float[] {new Float(1.0)};
         strategy.resolve(array);

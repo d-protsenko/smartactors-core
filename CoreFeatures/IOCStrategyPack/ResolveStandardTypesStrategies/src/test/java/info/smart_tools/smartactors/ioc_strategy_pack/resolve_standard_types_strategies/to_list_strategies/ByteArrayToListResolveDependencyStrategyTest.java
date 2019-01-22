@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_standard_types_strategies.to_list_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,16 +11,16 @@ import static org.junit.Assert.fail;
 
 public class ByteArrayToListResolutionStrategyTest {
 
-    private ByteArrayToListResolutionStrategy strategy;
+    private ByteArrayToListStrategy strategy;
 
     @Before
     public void setUp() {
 
-        strategy = new ByteArrayToListResolutionStrategy();
+        strategy = new ByteArrayToListStrategy();
     }
 
     @Test
-    public void ShouldConvertByteArrayToList() throws ResolutionStrategyException {
+    public void ShouldConvertByteArrayToList() throws StrategyException {
 
         byte[] array = new byte[] {(byte)0xba, (byte)0x8a};
         List<Byte> result = strategy.resolve(array);
@@ -29,8 +29,8 @@ public class ByteArrayToListResolutionStrategyTest {
         assertEquals(result.get(1), new Byte((byte) 0x8a));
     }
 
-    @Test(expected = ResolutionStrategyException.class)
-    public void ShouldThrowException_When_ErrorIsOccurred() throws ResolutionStrategyException {
+    @Test(expected = StrategyException.class)
+    public void ShouldThrowException_When_ErrorIsOccurred() throws StrategyException {
 
         String invalid = "invalid";
         strategy.resolve(invalid);

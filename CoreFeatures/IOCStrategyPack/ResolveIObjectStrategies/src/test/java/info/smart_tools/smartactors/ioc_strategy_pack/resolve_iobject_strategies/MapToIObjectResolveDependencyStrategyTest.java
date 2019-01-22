@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_iobject_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
@@ -27,7 +27,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 @PrepareForTest({IOC.class, Keys.class})
 public class MapToIObjectResolutionStrategyTest {
 
-    private MapToIObjectResolutionStrategy strategy;
+    private MapToIObjectStrategy strategy;
 
     @Before
     public void setUp() throws Exception {
@@ -35,7 +35,7 @@ public class MapToIObjectResolutionStrategyTest {
         mockStatic(IOC.class);
         mockStatic(Keys.class);
 
-        strategy = new MapToIObjectResolutionStrategy();
+        strategy = new MapToIObjectStrategy();
     }
 
     @Test
@@ -58,7 +58,7 @@ public class MapToIObjectResolutionStrategyTest {
         assertEquals(result.getValue(fieldName2), "value");
     }
 
-    @Test(expected = ResolutionStrategyException.class)
+    @Test(expected = StrategyException.class)
     public void ShouldThrowException_When_AnyErrorIsOccurred() throws Exception {
 
         when(IOC.resolve(any(IKey.class), anyString())).thenThrow(new ResolutionException(""));
@@ -69,7 +69,7 @@ public class MapToIObjectResolutionStrategyTest {
         fail();
     }
 
-    @Test(expected = ResolutionStrategyException.class)
+    @Test(expected = StrategyException.class)
     public void ShouldThrowException_When_NullIsPassed() throws Exception {
 
         strategy.resolve(null);

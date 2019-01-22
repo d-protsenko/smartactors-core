@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core_service_starter.core_starter;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
@@ -38,7 +38,7 @@ public class ObjectsSectionProcessingStrategyTest extends PluginsLoadingTestBase
     private IReceiverObjectCreator[] creatorMocks;
     private IObject[] objectConfigMocks;
     private IObject configMock;
-    private IResolutionStrategy fullCreatorResolutionStrategy;
+    private IStrategy fullCreatorResolutionStrategy;
     private IKey fieldNameKey = mock(IKey.class);
     private IFieldName objectsFieldName;
 
@@ -56,7 +56,7 @@ public class ObjectsSectionProcessingStrategyTest extends PluginsLoadingTestBase
     protected void registerMocks() throws Exception {
         configMock = mock(IObject.class);
         listenerMock = mock(IReceiverObjectListener.class);
-        fullCreatorResolutionStrategy = mock(IResolutionStrategy.class);
+        fullCreatorResolutionStrategy = mock(IStrategy.class);
 
         creatorMocks = new IReceiverObjectCreator[3];
         objectConfigMocks = new IObject[creatorMocks.length];

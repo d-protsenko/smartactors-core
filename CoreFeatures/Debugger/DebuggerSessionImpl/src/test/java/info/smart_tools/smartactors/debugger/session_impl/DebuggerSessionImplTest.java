@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.debugger.session_impl;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerBreakpointsStorage;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSequence;
@@ -42,10 +42,10 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
     private IDebuggerSequence debuggerSequenceMock;
     private IMessageProcessor messageProcessorMock;
     private IDebuggerBreakpointsStorage breakpointsStorageMock;
-    private IResolutionStrategy sequenceStrategyMock;
-    private IResolutionStrategy debuggerSequenceStrategyMock;
-    private IResolutionStrategy processorStrategyMock;
-    private IResolutionStrategy sequenceDumpStrategyMock;
+    private IStrategy sequenceStrategyMock;
+    private IStrategy debuggerSequenceStrategyMock;
+    private IStrategy processorStrategyMock;
+    private IStrategy sequenceDumpStrategyMock;
     private Object taskQueue = new Object();
 
     private IDebuggerSession session;
@@ -63,9 +63,9 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
 
     @Override
     protected void registerMocks() throws Exception {
-        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), new IResolutionStrategy() {
+        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), new IStrategy() {
             @Override
-            public <T> T resolve(Object... args) throws ResolutionStrategyException {
+            public <T> T resolve(Object... args) throws StrategyException {
                 return (T) args[0].toString().concat("__id");
             }
         });
@@ -79,23 +79,23 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
 
         breakpointsStorageMock = mock(IDebuggerBreakpointsStorage.class);
 
-        sequenceStrategyMock = mock(IResolutionStrategy.class);
-        debuggerSequenceStrategyMock = mock(IResolutionStrategy.class);
-        processorStrategyMock = mock(IResolutionStrategy.class);
-        sequenceDumpStrategyMock = mock(IResolutionStrategy.class);
+        sequenceStrategyMock = mock(IStrategy.class);
+        debuggerSequenceStrategyMock = mock(IStrategy.class);
+        processorStrategyMock = mock(IStrategy.class);
+        sequenceDumpStrategyMock = mock(IStrategy.class);
         message = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'a':'foo','b':'bar'}".replace('\'', '"'));
 
 
         when(sequenceStrategyMock.resolve(eq(12), eq("the-chain"), eq(message)))
                 .thenReturn(innerSequenceMock)
-                .thenThrow(ResolutionStrategyException.class);
+                .thenThrow(StrategyException.class);
         when(debuggerSequenceStrategyMock.resolve(same(innerSequenceMock), same(debuggerAddress)))
                 .thenReturn(debuggerSequenceMock)
-                .thenThrow(ResolutionStrategyException.class);
+                .thenThrow(StrategyException.class);
         when(processorStrategyMock.resolve(same(taskQueue), same(debuggerSequenceMock)))
                 .thenReturn(messageProcessorMock)
-                .thenThrow(ResolutionStrategyException.class);
+                .thenThrow(StrategyException.class);
         IOC.register(Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), sequenceStrategyMock);
         IOC.register(Keys.resolveByName("new debugger sequence"), debuggerSequenceStrategyMock);
         IOC.register(Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), processorStrategyMock);
@@ -103,9 +103,9 @@ public class DebuggerSessionImplTest extends PluginsLoadingTestBase {
         IOC.register(Keys.resolveByName("make dump"), sequenceDumpStrategyMock);
         IOC.register(Keys.resolveByName(IDebuggerBreakpointsStorage.class.getCanonicalName()), new SingletonStrategy(breakpointsStorageMock));
 
-        IOC.register(Keys.resolveByName("value_dependency"), new IResolutionStrategy() {
+        IOC.register(Keys.resolveByName("value_dependency"), new IStrategy() {
             @Override
-            public <T> T resolve(Object... args) throws ResolutionStrategyException {
+            public <T> T resolve(Object... args) throws StrategyException {
                 return (T) args[0].toString().concat("_value");
             }
         });

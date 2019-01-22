@@ -1,15 +1,15 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_by_composite_name_ioc_with_lambda_strategy;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 
 /**
- * Implementation of {@link IResolutionStrategy}
+ * Implementation of {@link IStrategy}
  * <pre>
  * Strategy looks for needed object inside cache by key, which it constructs
  * from string representations of resolve arguments. If object wouldn't found,
@@ -18,7 +18,7 @@ import java.util.function.Function;
  *
  * @since 1.8
  */
-public class ResolveByCompositeNameIOCStrategy implements IResolutionStrategy {
+public class ResolveByCompositeNameIOCStrategy implements IStrategy {
 
     /**
      * Storage of created instances
@@ -48,10 +48,10 @@ public class ResolveByCompositeNameIOCStrategy implements IResolutionStrategy {
      * @param args array of needed parameters for resolve dependency
      * @param <T> type of object
      * @return object instance
-     * @throws ResolutionStrategyException
+     * @throws StrategyException
      */
     @Override
-    public <T> T resolve(final Object... args) throws ResolutionStrategyException {
+    public <T> T resolve(final Object... args) throws StrategyException {
 
         try {
             StringBuilder builder = new StringBuilder();
@@ -66,7 +66,7 @@ public class ResolveByCompositeNameIOCStrategy implements IResolutionStrategy {
             }
             return (T) result;
         } catch (Exception e) {
-            throw new ResolutionStrategyException("Object resolution failed.", e);
+            throw new StrategyException("Object resolution failed.", e);
         }
     }
 }

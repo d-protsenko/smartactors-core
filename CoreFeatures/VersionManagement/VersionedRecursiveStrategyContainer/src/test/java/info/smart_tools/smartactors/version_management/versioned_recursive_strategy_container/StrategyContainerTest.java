@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.version_management.versioned_recursive_strategy_container;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
 import info.smart_tools.smartactors.ioc.istrategy_container.exception.StrategyContainerException;
@@ -20,10 +20,10 @@ public class StrategyContainerTest {
             throws Exception {
         ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
         IStrategyContainer container = new StrategyContainer(null);
-        IResolutionStrategy strategy = mock(IResolutionStrategy.class);
+        IStrategy strategy = mock(IStrategy.class);
         Object key = new Object();
         container.register(key, strategy);
-        IResolutionStrategy result = container.resolve(key);
+        IStrategy result = container.resolve(key);
         assertEquals(result, strategy);
         container.remove(key);
         result = container.resolve(key);
@@ -38,8 +38,8 @@ public class StrategyContainerTest {
         IStrategyContainer child = new StrategyContainer(parent);
 
         Object key = new Object();
-        IResolutionStrategy parentStrategy = mock(IResolutionStrategy.class);
-        IResolutionStrategy childStrategy = mock(IResolutionStrategy.class);
+        IStrategy parentStrategy = mock(IStrategy.class);
+        IStrategy childStrategy = mock(IStrategy.class);
 
         assertNull(parent.resolve(key));
         assertNull(child.resolve(key));

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.endpoint.response_strategy;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.endpoint.interfaces.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse.IResponse;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_content_strategy.IResponseContentStrategy;
@@ -64,19 +64,19 @@ public class EndpointResponseStrategyTest extends PluginsLoadingTestBase {
 
         request = mock(Object.class);
 
-        IResolutionStrategy strategy = mock(IResolutionStrategy.class);
-        when(strategy.resolve()).thenReturn(response).thenThrow(ResolutionStrategyException.class);
+        IStrategy strategy = mock(IStrategy.class);
+        when(strategy.resolve()).thenReturn(response).thenThrow(StrategyException.class);
         IOC.register(Keys.resolveByName(IResponse.class.getCanonicalName()), strategy);
 
-        strategy = mock(IResolutionStrategy.class);
+        strategy = mock(IStrategy.class);
         when(strategy.resolve(same(environment))).thenReturn(responseContentStrategy);
         IOC.register(Keys.resolveByName(IResponseContentStrategy.class.getCanonicalName()), strategy);
 
-        strategy = mock(IResolutionStrategy.class);
+        strategy = mock(IStrategy.class);
         when(strategy.resolve(same(request), eq("theEpName"))).thenReturn(responseSender);
         IOC.register(Keys.resolveByName(IResponseSender.class.getCanonicalName()), strategy);
 
-        strategy = mock(IResolutionStrategy.class);
+        strategy = mock(IStrategy.class);
         when(strategy.resolve(same(environment))).thenReturn(request);
         IOC.register(Keys.resolveByName("http_request_key_for_response_sender"), strategy);
     }

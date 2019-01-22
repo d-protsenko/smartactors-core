@@ -6,8 +6,8 @@ import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.excep
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -15,12 +15,12 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Strategy to storage some specific strategies united by a common purpose
  */
-public class StrategyStorageStrategy implements IResolutionStrategy, IRegistrationStrategy {
+public class StrategyStorageStrategy implements IStrategy, IRegistrationStrategy {
 
     /**
      * Strategy storage
      */
-    private ConcurrentMap<Object, IResolutionStrategy> strategyStorage;
+    private ConcurrentMap<Object, IStrategy> strategyStorage;
     private IFunction argToKeyFunction;
     private IFunctionTwoArgs findValueByArgumentFunction;
 
@@ -36,18 +36,18 @@ public class StrategyStorageStrategy implements IResolutionStrategy, IRegistrati
     }
 
     @Override
-    public <T> T resolve(Object... args) throws ResolutionStrategyException {
+    public <T> T resolve(Object... args) throws StrategyException {
         try {
-            IResolutionStrategy strategy = (IResolutionStrategy) this.findValueByArgumentFunction.execute(this.strategyStorage, args[0]);
+            IStrategy strategy = (IStrategy) this.findValueByArgumentFunction.execute(this.strategyStorage, args[0]);
 
             return null == strategy ? null : strategy.resolve(args);
         } catch (Exception e) {
-            throw new ResolutionStrategyException("Object resolution failed.", e);
+            throw new StrategyException("Object resolution failed.", e);
         }
     }
 
     @Override
-    public void register(Object arg, IResolutionStrategy value)
+    public void register(Object arg, IStrategy value)
             throws RegistrationStrategyException {
         try {
             this.strategyStorage.put(this.argToKeyFunction.execute(arg), value);

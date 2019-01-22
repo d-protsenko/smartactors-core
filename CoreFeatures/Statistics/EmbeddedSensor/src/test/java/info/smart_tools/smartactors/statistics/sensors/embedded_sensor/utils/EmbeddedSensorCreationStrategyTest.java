@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.statistics.sensors.embedded_sensor.utils;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -68,9 +68,9 @@ public class EmbeddedSensorCreationStrategyTest extends PluginsLoadingTestBase {
             return modId;
         });
 
-        IOC.register(Keys.resolveByName("chain_id_from_map_name"), new IResolutionStrategy() {
+        IOC.register(Keys.resolveByName("chain_id_from_map_name"), new IStrategy() {
             @Override
-            public <T> T resolve(Object... args) throws ResolutionStrategyException {
+            public <T> T resolve(Object... args) throws StrategyException {
                 return (T) String.valueOf(args[0]).concat("__0");
             }
         });

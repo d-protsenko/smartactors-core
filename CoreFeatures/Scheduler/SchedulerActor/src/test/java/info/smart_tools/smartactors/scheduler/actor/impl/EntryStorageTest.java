@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.scheduler.actor.impl;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
@@ -41,7 +41,7 @@ import static org.mockito.Mockito.*;
  */
 public class EntryStorageTest extends PluginsLoadingTestBase {
     private IPool connectionPool;
-    private IResolutionStrategy restoreEntryStrategy;
+    private IStrategy restoreEntryStrategy;
     private IObject[] saved;
     private ISchedulerEntry[] entries;
     private IRemoteEntryStorage remoteEntryStorage;
@@ -113,7 +113,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
             remoteEntryStorage = new DatabaseRemoteStorage(connectionPool, "scheduler_collection");
         }
 
-        restoreEntryStrategy = mock(IResolutionStrategy.class);
+        restoreEntryStrategy = mock(IStrategy.class);
         when(restoreEntryStrategy.resolve(any(), any())).thenReturn(entries[0], Arrays.copyOfRange(entries, 1, entries.length));
         IOC.register(Keys.resolveByName("restore scheduler entry"), restoreEntryStrategy);
 

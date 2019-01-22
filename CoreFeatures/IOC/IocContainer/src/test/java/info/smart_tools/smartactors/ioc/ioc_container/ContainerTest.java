@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.ioc.ioc_container;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.ioc.iioccontainer.IContainer;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
@@ -50,7 +50,7 @@ public class ContainerTest {
         Object[] param = new Object[]{};
         ScopeProvider.setCurrentScope(scope);
         IStrategyContainer strategyContainer = mock(IStrategyContainer.class);
-        IResolutionStrategy strategy = mock(IResolutionStrategy.class);
+        IStrategy strategy = mock(IStrategy.class);
         when(scope.getValue(container.getIocKey())).thenReturn(strategyContainer);
         when(strategyContainer.resolve(strategyKey)).thenReturn(strategy);
         when(strategy.resolve(param)).thenReturn(value);
@@ -81,7 +81,7 @@ public class ContainerTest {
             throws Exception {
         IContainer container = new Container();
         IKey key = mock(IKey.class);
-        IResolutionStrategy strategy = mock(IResolutionStrategy.class);
+        IStrategy strategy = mock(IStrategy.class);
         IStrategyContainer strategyContainer = mock(IStrategyContainer.class);
         IScope scope = mock(IScope.class);
         ScopeProvider.setCurrentScope(scope);

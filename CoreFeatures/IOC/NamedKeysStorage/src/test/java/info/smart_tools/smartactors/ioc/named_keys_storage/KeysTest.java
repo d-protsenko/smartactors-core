@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc.named_keys_storage;
 
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.scope.iscope.IScope;
@@ -23,7 +23,7 @@ public class KeysTest {
     public void checkGetOrAdd()
             throws Exception {
         IStrategyContainer strategyContainer = mock(IStrategyContainer.class);
-        IResolutionStrategy strategy = mock(IResolutionStrategy.class);
+        IStrategy strategy = mock(IStrategy.class);
         IKey key = mock(IKey.class);
         ScopeProvider.subscribeOnCreationNewScope(
                 scope -> {

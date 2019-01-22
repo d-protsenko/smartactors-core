@@ -33,9 +33,9 @@ public class ChainSequenceRecoverStrategyTest extends PluginsLoadingTestBase {
     @Override
     protected void registerMocks() throws Exception {
         /*
-        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), new IResolutionStrategy() {
+        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), new IStrategy() {
             @Override
-            public <T> T resolve(Object... args) throws ResolutionStrategyException {
+            public <T> T resolve(Object... args) throws StrategyException {
                 return (T) args[0].toString().concat("__1");
             }
         });

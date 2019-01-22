@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.message_processing.object_creation_strategies;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
@@ -36,7 +36,7 @@ public class HandlerRouterReceiverCreatorTest extends PluginsLoadingTestBase {
     private IReceiverObjectListener listenerMock;
     private IReceiverObjectCreator creatorMock;
     private IMessageReceiver[] receiverMocks;
-    private IResolutionStrategy handlerRouterReceiverResolutionStrategy;
+    private IStrategy handlerRouterReceiverResolutionStrategy;
     private IObject filterConfig, objectConfig, context;
 
     @Override
@@ -62,7 +62,7 @@ public class HandlerRouterReceiverCreatorTest extends PluginsLoadingTestBase {
                 mock(IMessageReceiver.class),
         };
 
-        handlerRouterReceiverResolutionStrategy = mock(IResolutionStrategy.class);
+        handlerRouterReceiverResolutionStrategy = mock(IStrategy.class);
         IOC.register(Keys.resolveByName("create handler router receiver"), handlerRouterReceiverResolutionStrategy);
 
         when(handlerRouterReceiverResolutionStrategy.resolve(any())).thenReturn(receiverMocks[0]);
@@ -113,7 +113,7 @@ public class HandlerRouterReceiverCreatorTest extends PluginsLoadingTestBase {
     @Test(expected = ReceiverObjectListenerException.class)
     public void Should_throwWhenRouterCreationStrategyThrows()
             throws Exception {
-        when(handlerRouterReceiverResolutionStrategy.resolve(any())).thenThrow(ResolutionStrategyException.class);
+        when(handlerRouterReceiverResolutionStrategy.resolve(any())).thenThrow(StrategyException.class);
 
         IReceiverObjectCreator creator = new HandlerRouterReceiverCreator(creatorMock, filterConfig, objectConfig);
 

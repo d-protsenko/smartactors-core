@@ -25,7 +25,7 @@
         <module>Pool</module>
         <module>InitializationException</module>
         <module>InvalidArgumentException</module>
-        <module>IResolutionStrategy</module>
+        <module>IStrategy</module>
         <module>IResolveDependencyStrategy</module>
         <module>IResourceSource</module>
         <module>IPool</module>

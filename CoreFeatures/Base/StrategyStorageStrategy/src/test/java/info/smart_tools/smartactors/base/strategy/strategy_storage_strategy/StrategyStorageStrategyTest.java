@@ -4,8 +4,8 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.IRegistrationStrategy;
 import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.exception.RegistrationStrategyException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import org.junit.Test;
 
 import java.util.Map;
@@ -20,7 +20,7 @@ public class StrategyStorageStrategyTest {
     @Test
     public void checkInstanceCreation()
             throws Exception {
-        IResolutionStrategy sss = new StrategyStorageStrategy((a) -> a, (c, a) -> a);
+        IStrategy sss = new StrategyStorageStrategy((a) -> a, (c, a) -> a);
         assertNotNull(sss);
     }
 
@@ -30,9 +30,9 @@ public class StrategyStorageStrategyTest {
         String value1 = "result1";
         String value2 = "result2";
         String defaultValue = "default";
-        IResolutionStrategy innerStrategy1 = mock(IResolutionStrategy.class);
-        IResolutionStrategy innerStrategy2 = mock(IResolutionStrategy.class);
-        IResolutionStrategy defaultStrategy = mock(IResolutionStrategy.class);
+        IStrategy innerStrategy1 = mock(IStrategy.class);
+        IStrategy innerStrategy2 = mock(IStrategy.class);
+        IStrategy defaultStrategy = mock(IStrategy.class);
         when(innerStrategy1.resolve(new Object[] {"in_something", "arg"})).thenReturn(value1);
         when(innerStrategy2.resolve(new Object[] {"out_something", "arg"})).thenReturn(value2);
         when(defaultStrategy.resolve(new Object[] {"something", "arg"})).thenReturn(defaultValue);
@@ -41,18 +41,18 @@ public class StrategyStorageStrategyTest {
         IFunctionTwoArgs findValueByArgument = (map, arg) -> {
             char[] symbols = arg.toString().toCharArray();
             String defaultKey = "default";
-            IResolutionStrategy strategy = null;
+            IStrategy strategy = null;
             StringBuilder key = new StringBuilder();
             for (char c : symbols) {
                 key.append(c);
-                strategy = ((Map<String, IResolutionStrategy>)map).get(key.toString());
+                strategy = ((Map<String, IStrategy>)map).get(key.toString());
                 if (null != strategy) {
                     break;
                 }
             }
-            return null != strategy ? strategy : ((Map<String, IResolutionStrategy>)map).get(defaultKey);
+            return null != strategy ? strategy : ((Map<String, IStrategy>)map).get(defaultKey);
         };
-        IResolutionStrategy sss = new StrategyStorageStrategy((a) -> a, findValueByArgument);
+        IStrategy sss = new StrategyStorageStrategy((a) -> a, findValueByArgument);
         ((IRegistrationStrategy) sss).register("in_", innerStrategy1);
         ((IRegistrationStrategy) sss).register("out_", innerStrategy2);
         ((IRegistrationStrategy) sss).register("default", defaultStrategy);
@@ -71,17 +71,17 @@ public class StrategyStorageStrategyTest {
         assertEquals(defaultValue, result);
     }
 
-    @Test (expected = ResolutionStrategyException.class)
+    @Test (expected = StrategyException.class)
     public void checkResolutionException()
             throws Exception {
-        IResolutionStrategy sss = new StrategyStorageStrategy(null, null);
+        IStrategy sss = new StrategyStorageStrategy(null, null);
         sss.resolve(null);
     }
 
     @Test (expected = RegistrationStrategyException.class)
     public void checkExceptionOnRegister()
             throws Exception {
-        IResolutionStrategy strategy = new StrategyStorageStrategy(
+        IStrategy strategy = new StrategyStorageStrategy(
                 (a) -> {
                     throw new InvalidArgumentException("");
                 },
@@ -93,7 +93,7 @@ public class StrategyStorageStrategyTest {
     @Test (expected = RegistrationStrategyException.class)
     public void checkExceptionOnRemove()
             throws Exception {
-        IResolutionStrategy strategy = new StrategyStorageStrategy(
+        IStrategy strategy = new StrategyStorageStrategy(
                 (a) -> {
                     throw new InvalidArgumentException("");
                 },

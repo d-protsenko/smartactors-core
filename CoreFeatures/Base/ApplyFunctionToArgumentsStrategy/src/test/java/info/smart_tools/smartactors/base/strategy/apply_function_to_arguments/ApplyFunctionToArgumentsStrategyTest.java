@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.base.strategy.apply_function_to_arguments;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -23,7 +23,7 @@ public class ApplyFunctionToArgumentsStrategyTest {
         Checker checker = new Checker();
         Object value = new Object();
 
-        IResolutionStrategy strategy = new ApplyFunctionToArgumentsStrategy(
+        IStrategy strategy = new ApplyFunctionToArgumentsStrategy(
                 (args) ->{
                     checker.wasCalled = true;
                     return value;
@@ -40,7 +40,7 @@ public class ApplyFunctionToArgumentsStrategyTest {
     public void checkStrategyCreationWithArgs()
             throws Exception {
         Checker checker = new Checker();
-        IResolutionStrategy strategy = new ApplyFunctionToArgumentsStrategy(
+        IStrategy strategy = new ApplyFunctionToArgumentsStrategy(
                 (args) -> {
                     checker.wasCalled = true;
                     assertEquals(2, args.length);
@@ -53,10 +53,10 @@ public class ApplyFunctionToArgumentsStrategyTest {
         strategy.resolve(1, "test");
     }
 
-    @Test (expected = ResolutionStrategyException.class)
-    public void checkResolutionStrategyExceptionOnWrongArgs()
+    @Test (expected = StrategyException.class)
+    public void checkStrategyExceptionOnWrongArgs()
             throws Exception {
-        IResolutionStrategy strategy = new ApplyFunctionToArgumentsStrategy(
+        IStrategy strategy = new ApplyFunctionToArgumentsStrategy(
                 (args) -> {
                     Integer a = (Integer) args[0];
                     return null;
