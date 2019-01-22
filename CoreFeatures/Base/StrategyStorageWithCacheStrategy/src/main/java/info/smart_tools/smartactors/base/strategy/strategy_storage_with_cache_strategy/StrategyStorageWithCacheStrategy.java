@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.base.strategy.strategy_storage_with_cache_strategy;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.IRegistrationStrategy;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.exception.RegistrationStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.IStrategyRegistration;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.exception.StrategyRegistrationException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentMap;
  * Strategy to strategyStorage some specific strategies united by a common purpose. Supports cache.
  */
 
-public class StrategyStorageWithCacheStrategy implements IStrategy, IRegistrationStrategy, ICacheable {
+public class StrategyStorageWithCacheStrategy implements IStrategy, IStrategyRegistration, ICacheable {
 
     /**
      * Specific strategies for resolve
@@ -68,23 +68,23 @@ public class StrategyStorageWithCacheStrategy implements IStrategy, IRegistratio
 
     @Override
     public void register(Object key, IStrategy value)
-            throws RegistrationStrategyException {
+            throws StrategyRegistrationException {
         try {
             this.dropCacheFor(key);
             this.strategyStorage.put(key, value);
         } catch (CacheDropException e) {
-            throw new RegistrationStrategyException(e);
+            throw new StrategyRegistrationException(e);
         }
     }
 
     @Override
     public void unregister(Object key)
-            throws RegistrationStrategyException {
+            throws StrategyRegistrationException {
         try {
             this.dropCacheFor(key);
             this.strategyStorage.remove(key);
         } catch (CacheDropException e) {
-            throw new RegistrationStrategyException(e);
+            throw new StrategyRegistrationException(e);
         }
     }
 

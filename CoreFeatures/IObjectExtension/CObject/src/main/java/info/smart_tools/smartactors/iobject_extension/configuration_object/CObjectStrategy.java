@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.iobject_extension.configuration_object;
 
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.IRegistrationStrategy;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.exception.RegistrationStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.IStrategyRegistration;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.exception.StrategyRegistrationException;
 import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 
@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  *
  */
-public class CObjectStrategy implements IStrategy, IRegistrationStrategy {
+public class CObjectStrategy implements IStrategy, IStrategyRegistration {
 
     private final Map<Object, List<IStrategy>> strategyStorage = new HashMap<>();
 
@@ -47,13 +47,13 @@ public class CObjectStrategy implements IStrategy, IRegistrationStrategy {
 
     @Override
     public void register(Object arg, IStrategy value)
-            throws RegistrationStrategyException {
+            throws StrategyRegistrationException {
         List strategies = this.strategyStorage.computeIfAbsent(arg, k -> new LinkedList());
         strategies.add(value);
     }
 
     @Override
     public void unregister(Object arg)
-            throws RegistrationStrategyException {
+            throws StrategyRegistrationException {
     }
 }

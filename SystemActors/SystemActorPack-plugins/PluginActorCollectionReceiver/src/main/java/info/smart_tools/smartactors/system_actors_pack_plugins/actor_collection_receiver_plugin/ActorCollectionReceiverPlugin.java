@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.system_actors_pack_plugins.actor_collection_receiver_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.IRegistrationStrategy;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.exception.RegistrationStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.IStrategyRegistration;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.exception.StrategyRegistrationException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
@@ -43,10 +43,10 @@ public class ActorCollectionReceiverPlugin extends BootstrapPlugin {
 
     @Item("actor_collection_receiver_config_canonization_strategies")
     public void registerConfigCanonizationStrategies()
-            throws ResolutionException, RegistrationException, InvalidArgumentException, RegistrationStrategyException {
+            throws ResolutionException, RegistrationException, InvalidArgumentException, StrategyRegistrationException {
         IFieldName kindFieldName = IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "kind");
 
-        IRegistrationStrategy strategy = IOC.resolve(Keys.resolveByName("expandable_strategy#resolve key for configuration object"));
+        IStrategyRegistration strategy = IOC.resolve(Keys.resolveByName("expandable_strategy#resolve key for configuration object"));
 
         strategy.register("new", new ApplyFunctionToArgumentsStrategy(args -> {
             try {

@@ -12,7 +12,7 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.interfaces.iregistration-strategy</artifactId>
+            <artifactId>base.interfaces.istrategy-registration</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>

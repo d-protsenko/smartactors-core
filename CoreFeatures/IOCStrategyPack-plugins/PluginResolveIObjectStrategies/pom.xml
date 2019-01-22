@@ -70,7 +70,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.interfaces.iregistration-strategy</artifactId>
+            <artifactId>base.interfaces.istrategy-registration</artifactId>
             <version>0.5.0</version>
             <scope>compile</scope>
         </dependency>

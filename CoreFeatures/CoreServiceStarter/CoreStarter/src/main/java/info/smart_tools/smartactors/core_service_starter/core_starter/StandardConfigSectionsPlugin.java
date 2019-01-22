@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.core_service_starter.core_starter;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.IRegistrationStrategy;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.exception.RegistrationStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.IStrategyRegistration;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.exception.StrategyRegistrationException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
@@ -89,7 +89,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                                     IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
 
                             configurationManager.addSectionStrategy(new MapsSectionProcessingStrategy());
-                            IRegistrationStrategy strategy = IOC.resolve(Keys.resolveByName("expandable_strategy#resolve key for configuration object"));
+                            IStrategyRegistration strategy = IOC.resolve(Keys.resolveByName("expandable_strategy#resolve key for configuration object"));
 
                             strategy.register("maps", new ApplyFunctionToArgumentsStrategy(
                                     (a) -> {
@@ -192,31 +192,31 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                                         }
                                     })
                             );
-                        } catch (ResolutionException | InvalidArgumentException | RegistrationStrategyException e) {
+                        } catch (ResolutionException | InvalidArgumentException | StrategyRegistrationException e) {
                             throw new ActionExecutionException(e);
                         }
                     })
                     .revertProcess(() -> {
                         try {
-                            IRegistrationStrategy strategy = IOC.resolve(Keys.resolveByName("expandable_strategy#resolve key for configuration object"));
+                            IStrategyRegistration strategy = IOC.resolve(Keys.resolveByName("expandable_strategy#resolve key for configuration object"));
                             try {
                                 strategy.unregister("exceptional");
-                            } catch (RegistrationStrategyException e) {
+                            } catch (StrategyRegistrationException e) {
                                 System.out.println("[WARNING] Deregistration of \"exceptional\" strategy has failed while reverting \"config_section:maps\" plugin.");
                             }
                             try {
                                 strategy.unregister("out_");
-                            } catch (RegistrationStrategyException e) {
+                            } catch (StrategyRegistrationException e) {
                                 System.out.println("[WARNING] Deregistration of \"out_\" strategy has failed while reverting \"config_section:maps\" plugin.");
                             }
                             try {
                                 strategy.unregister("in_");
-                            } catch (RegistrationStrategyException e) {
+                            } catch (StrategyRegistrationException e) {
                                 System.out.println("[WARNING] Deregistration of \"in_\" strategy has failed while reverting \"config_section:maps\" plugin.");
                             }
                             try {
                                 strategy.unregister("maps");
-                            } catch (RegistrationStrategyException e) {
+                            } catch (StrategyRegistrationException e) {
                                 System.out.println("[WARNING] Deregistration of \"maps\" strategy has failed while reverting \"config_section:maps\" plugin.");
                             }
                         } catch (ResolutionException e) { }

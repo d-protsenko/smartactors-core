@@ -2,8 +2,8 @@ package info.smart_tools.smartactors.http_endpoint_plugins.http_endpoint_plugin;
 
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.IRegistrationStrategy;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.exception.RegistrationStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.IStrategyRegistration;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.exception.StrategyRegistrationException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
@@ -198,7 +198,7 @@ public class HttpEndpointPlugin implements IPlugin {
                             throw new ActionExecutionException("EndpointCollection plugin can't load: can't get key", e);
                         } catch (InvalidArgumentException e) {
                             throw new ActionExecutionException("EndpointCollection plugin can't load: can't create strategy", e);
-                        } catch (RegistrationException | RegistrationStrategyException e) {
+                        } catch (RegistrationException | StrategyRegistrationException e) {
                             throw new ActionExecutionException("EndpointCollection plugin can't load: can't register new strategy", e);
                         }
                     })
@@ -353,8 +353,8 @@ public class HttpEndpointPlugin implements IPlugin {
     }
 
     private void registerResponseSenders() throws ResolutionException, InvalidArgumentException, RegistrationException,
-            RegistrationStrategyException {
-        IRegistrationStrategy responseSenderChooser =
+            StrategyRegistrationException {
+        IStrategyRegistration responseSenderChooser =
                 IOC.resolve(Keys.resolveByName("ResponseSenderChooser"));
 
         IOC.register(Keys.resolveByName("http_request_key_for_response_sender"), new ApplyFunctionToArgumentsStrategy(
@@ -380,9 +380,9 @@ public class HttpEndpointPlugin implements IPlugin {
     }
 
     private void registerCookiesSetter() throws ResolutionException, InvalidArgumentException,
-            RegistrationException, RegistrationStrategyException {
+            RegistrationException, StrategyRegistrationException {
 
-        IRegistrationStrategy cookiesSetterChooser =
+        IStrategyRegistration cookiesSetterChooser =
                 IOC.resolve(Keys.resolveByName("CookiesSetterChooser"));
 
         IOC.register(
@@ -394,8 +394,8 @@ public class HttpEndpointPlugin implements IPlugin {
     }
 
     private void registerHeadersExtractor() throws ResolutionException, InvalidArgumentException, RegistrationException,
-            RegistrationStrategyException {
-        IRegistrationStrategy cookiesSetterChooser =
+            StrategyRegistrationException {
+        IStrategyRegistration cookiesSetterChooser =
                 IOC.resolve(Keys.resolveByName("HeadersExtractorChooser"));
 
         IOC.register(Keys.resolveByName("key_for_headers_extractor"), new ApplyFunctionToArgumentsStrategy(
@@ -409,9 +409,9 @@ public class HttpEndpointPlugin implements IPlugin {
 
 
     private void registerResponseStatusExtractor() throws ResolutionException, InvalidArgumentException,
-            RegistrationException, RegistrationStrategyException {
+            RegistrationException, StrategyRegistrationException {
 
-        IRegistrationStrategy cookiesSetterChooser =
+        IStrategyRegistration cookiesSetterChooser =
                 IOC.resolve(Keys.resolveByName("ResponseStatusSetter"));
 
         IOC.register(
@@ -434,9 +434,9 @@ public class HttpEndpointPlugin implements IPlugin {
 
     @SuppressWarnings("unchecked")
     private void registerDeserializationStrategies() throws ResolutionException, InvalidArgumentException,
-            RegistrationException, RegistrationStrategyException {
+            RegistrationException, StrategyRegistrationException {
 
-        IRegistrationStrategy deserializationStrategyChooser =
+        IStrategyRegistration deserializationStrategyChooser =
                 IOC.resolve(Keys.resolveByName("DeserializationStrategyChooser"));
 
         IMessageMapper messageMapper = new MessageToBytesMapper();

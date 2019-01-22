@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.message_processing_plugins.object_creation_strategies_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.IRegistrationStrategy;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.exception.RegistrationStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.IStrategyRegistration;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.exception.StrategyRegistrationException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
@@ -42,7 +42,7 @@ public class ObjectCofigurationCanonizationStrategies extends BootstrapPlugin {
             "ConfigurationObject",
     })
     public void registerCanonizationStrategies()
-            throws ResolutionException, RegistrationException, InvalidArgumentException, RegistrationStrategyException {
+            throws ResolutionException, RegistrationException, InvalidArgumentException, StrategyRegistrationException {
         IOC.register(Keys.resolveByName("canonize objects configuration section item filters list"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     try {
@@ -83,7 +83,7 @@ public class ObjectCofigurationCanonizationStrategies extends BootstrapPlugin {
                     }
         }));
 
-        IRegistrationStrategy strategy = IOC.resolve(Keys.resolveByName("expandable_strategy#resolve key for configuration object"));
+        IStrategyRegistration strategy = IOC.resolve(Keys.resolveByName("expandable_strategy#resolve key for configuration object"));
 
         strategy.register("objects", new ApplyFunctionToArgumentsStrategy(args -> {
             try {

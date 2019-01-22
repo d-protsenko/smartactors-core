@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_by_type_strategy;
 
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.IRegistrationStrategy;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.exception.RegistrationStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.IStrategyRegistration;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.exception.StrategyRegistrationException;
 import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 
@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentMap;
  *
  */
 @Deprecated
-public class ResolveByTypeStrategy implements IStrategy, IRegistrationStrategy {
+public class ResolveByTypeStrategy implements IStrategy, IStrategyRegistration {
     /**
      * Specific strategies for resolve
      */
@@ -48,7 +48,7 @@ public class ResolveByTypeStrategy implements IStrategy, IRegistrationStrategy {
      * @param key the key for output type
      */
     @Override
-    public void unregister(final Object key) throws RegistrationStrategyException {
+    public void unregister(final Object key) throws StrategyRegistrationException {
         resolveStrategies.remove(key);
     }
 

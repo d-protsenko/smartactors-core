@@ -1,18 +1,18 @@
-package info.smart_tools.smartactors.base.interfaces.iregistration_strategy.exception;
+package info.smart_tools.smartactors.base.interfaces.istrategy_registration.exception;
 
 import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 
 /**
  * Exception for error in {@link IStrategy} methods
  */
-public class RegistrationStrategyException extends Exception {
+public class StrategyRegistrationException extends Exception {
 
     /**
      * Constructor with specific error message as argument
      *
      * @param message specific error message
      */
-    public RegistrationStrategyException(final String message) {
+    public StrategyRegistrationException(final String message) {
         super(message);
     }
 
@@ -23,7 +23,7 @@ public class RegistrationStrategyException extends Exception {
      * @param cause   specific cause
      */
 
-    public RegistrationStrategyException(final String message, final Throwable cause) {
+    public StrategyRegistrationException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
@@ -32,7 +32,7 @@ public class RegistrationStrategyException extends Exception {
      *
      * @param cause specific cause
      */
-    public RegistrationStrategyException(final Throwable cause) {
+    public StrategyRegistrationException(final Throwable cause) {
         super(cause);
     }
 }

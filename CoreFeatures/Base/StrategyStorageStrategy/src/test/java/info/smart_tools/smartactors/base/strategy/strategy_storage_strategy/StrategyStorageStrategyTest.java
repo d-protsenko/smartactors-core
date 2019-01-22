@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.base.strategy.strategy_storage_strategy;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.IRegistrationStrategy;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.exception.RegistrationStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.IStrategyRegistration;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.exception.StrategyRegistrationException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
@@ -53,9 +53,9 @@ public class StrategyStorageStrategyTest {
             return null != strategy ? strategy : ((Map<String, IStrategy>)map).get(defaultKey);
         };
         IStrategy sss = new StrategyStorageStrategy((a) -> a, findValueByArgument);
-        ((IRegistrationStrategy) sss).register("in_", innerStrategy1);
-        ((IRegistrationStrategy) sss).register("out_", innerStrategy2);
-        ((IRegistrationStrategy) sss).register("default", defaultStrategy);
+        ((IStrategyRegistration) sss).register("in_", innerStrategy1);
+        ((IStrategyRegistration) sss).register("out_", innerStrategy2);
+        ((IStrategyRegistration) sss).register("default", defaultStrategy);
 
 
         String result = sss.resolve("in_something", "arg");
@@ -65,7 +65,7 @@ public class StrategyStorageStrategyTest {
         result = sss.resolve("something", "arg");
         assertEquals(defaultValue, result);
 
-        ((IRegistrationStrategy) sss).unregister("in_");
+        ((IStrategyRegistration) sss).unregister("in_");
 
         result = sss.resolve("in_something", "arg");
         assertEquals(defaultValue, result);
@@ -78,7 +78,7 @@ public class StrategyStorageStrategyTest {
         sss.resolve(null);
     }
 
-    @Test (expected = RegistrationStrategyException.class)
+    @Test (expected = StrategyRegistrationException.class)
     public void checkExceptionOnRegister()
             throws Exception {
         IStrategy strategy = new StrategyStorageStrategy(
@@ -87,10 +87,10 @@ public class StrategyStorageStrategyTest {
                 },
                 null
         );
-        ((IRegistrationStrategy) strategy).register(null, null);
+        ((IStrategyRegistration) strategy).register(null, null);
     }
 
-    @Test (expected = RegistrationStrategyException.class)
+    @Test (expected = StrategyRegistrationException.class)
     public void checkExceptionOnRemove()
             throws Exception {
         IStrategy strategy = new StrategyStorageStrategy(
@@ -99,6 +99,6 @@ public class StrategyStorageStrategyTest {
                 },
                 null
         );
-        ((IRegistrationStrategy) strategy).unregister(null);
+        ((IStrategyRegistration) strategy).unregister(null);
     }
 }

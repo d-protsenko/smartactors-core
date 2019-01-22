@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.iobject_extension_plugins.configuration_object_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.IRegistrationStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.IStrategyRegistration;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
@@ -80,7 +80,7 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                         }
                                 );
                                 IStrategy strategy = new CObjectStrategy();
-                                ((IRegistrationStrategy) strategy).register("default", defaultStrategy);
+                                ((IStrategyRegistration) strategy).register("default", defaultStrategy);
                                 IOC.register(
                                         IOC.resolve(
                                                 IOC.getKeyForKeyByNameResolutionStrategy(), "resolve key for configuration object"

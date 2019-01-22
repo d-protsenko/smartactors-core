@@ -20,7 +20,7 @@
         <module>CreateNewInstanceStrategy</module>
         <module>PoolGuard</module>
         <module>Path</module>
-        <module>IRegistrationStrategy</module>
+        <module>IStrategyRegistration</module>
         <module>SingletonStrategy</module>
         <module>Pool</module>
         <module>InitializationException</module>

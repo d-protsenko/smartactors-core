@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.testing.test_checkers;
 
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.IRegistrationStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.IStrategyRegistration;
 import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
@@ -165,7 +165,7 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
     @Test
     public void Should_createWrapperDescription()
             throws Exception {
-        IRegistrationStrategy strategy = IOC.resolve(Keys.resolveByName("expandable_strategy#resolve key for configuration object"));
+        IStrategyRegistration strategy = IOC.resolve(Keys.resolveByName("expandable_strategy#resolve key for configuration object"));
         strategy.register("in_", new ApplyFunctionToArgumentsStrategy(
                 (a) -> {
                     try {

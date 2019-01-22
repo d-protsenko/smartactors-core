@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.base.strategy.strategy_storage_strategy;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.IRegistrationStrategy;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.exception.RegistrationStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.IStrategyRegistration;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.exception.StrategyRegistrationException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Strategy to storage some specific strategies united by a common purpose
  */
-public class StrategyStorageStrategy implements IStrategy, IRegistrationStrategy {
+public class StrategyStorageStrategy implements IStrategy, IStrategyRegistration {
 
     /**
      * Strategy storage
@@ -48,21 +48,21 @@ public class StrategyStorageStrategy implements IStrategy, IRegistrationStrategy
 
     @Override
     public void register(Object arg, IStrategy value)
-            throws RegistrationStrategyException {
+            throws StrategyRegistrationException {
         try {
             this.strategyStorage.put(this.argToKeyFunction.execute(arg), value);
         } catch (InvalidArgumentException | FunctionExecutionException e) {
-            throw new RegistrationStrategyException(e);
+            throw new StrategyRegistrationException(e);
         }
     }
 
     @Override
     public void unregister(Object arg)
-            throws RegistrationStrategyException {
+            throws StrategyRegistrationException {
         try {
             this.strategyStorage.remove(this.argToKeyFunction.execute(arg));
         } catch (FunctionExecutionException | InvalidArgumentException e) {
-            throw new RegistrationStrategyException(e);
+            throw new StrategyRegistrationException(e);
         }
     }
 }

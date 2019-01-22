@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.base.strategy.strategy_storage_with_cache_strategy;
 
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.IRegistrationStrategy;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.exception.RegistrationStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.IStrategyRegistration;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.exception.StrategyRegistrationException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.icacheable.ICacheable;
@@ -60,8 +60,8 @@ public class StrategyStorageWithCacheStrategyTest {
         IStrategy floatToString = new ApplyFunctionToArgumentsStrategy(
                 args -> Float.toString((Float) args[0])
         );
-        ((IRegistrationStrategy)cachedStrategy).register(Integer.class, intToString);
-        ((IRegistrationStrategy)cachedStrategy).register(Float.class, floatToString);
+        ((IStrategyRegistration)cachedStrategy).register(Integer.class, intToString);
+        ((IStrategyRegistration)cachedStrategy).register(Float.class, floatToString);
 
         String result = cachedStrategy.resolve(1);
         assertEquals("1", result);
@@ -99,7 +99,7 @@ public class StrategyStorageWithCacheStrategyTest {
         IStrategy floatToString = new ApplyFunctionToArgumentsStrategy(
                 args -> Float.toString((Float) args[0])
         );
-        ((IRegistrationStrategy)cachedStrategy).register(Float.class, floatToString);
+        ((IStrategyRegistration)cachedStrategy).register(Float.class, floatToString);
 
         String result = cachedStrategy.resolve(1f);
         assertEquals("1.0", result);
@@ -136,12 +136,12 @@ public class StrategyStorageWithCacheStrategyTest {
         IStrategy floatToString = new ApplyFunctionToArgumentsStrategy(
                 args -> Float.toString((Float) args[0])
         );
-        ((IRegistrationStrategy)cachedStrategy).register(Float.class, floatToString);
+        ((IStrategyRegistration)cachedStrategy).register(Float.class, floatToString);
 
         String result = cachedStrategy.resolve(2f);
         assertEquals("2.0", result);
 
-        ((IRegistrationStrategy) cachedStrategy).unregister(Float.class);
+        ((IStrategyRegistration) cachedStrategy).unregister(Float.class);
         cachedStrategy.resolve(2f);
         fail();
     }
@@ -153,17 +153,17 @@ public class StrategyStorageWithCacheStrategyTest {
         ((ICacheable) cachedStrategy).dropCacheFor(null);
     }
 
-    @Test (expected = RegistrationStrategyException.class)
+    @Test (expected = StrategyRegistrationException.class)
     public void checkExceptionOnRegister()
             throws Exception {
         IStrategy cachedStrategy = new StrategyStorageWithCacheStrategy(null, null);
-        ((IRegistrationStrategy) cachedStrategy).register(null, null);
+        ((IStrategyRegistration) cachedStrategy).register(null, null);
     }
 
-    @Test (expected = RegistrationStrategyException.class)
+    @Test (expected = StrategyRegistrationException.class)
     public void checkExceptionOnRemove()
             throws Exception {
         IStrategy cachedStrategy = new StrategyStorageWithCacheStrategy(null, null);
-        ((IRegistrationStrategy) cachedStrategy).unregister(null);
+        ((IStrategyRegistration) cachedStrategy).unregister(null);
     }
 }

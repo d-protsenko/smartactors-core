@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.iobject_extension.configuration_object;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.IRegistrationStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.IStrategyRegistration;
 import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
@@ -133,9 +133,9 @@ public class ConfigurationObjectTest {
                 }
         );
         IStrategy strategy = new CObjectStrategy();
-        ((IRegistrationStrategy) strategy).register("in_", inStrategy);
-        ((IRegistrationStrategy) strategy).register("out_", outStrategy);
-        ((IRegistrationStrategy) strategy).register("default", defaultStrategy);
+        ((IStrategyRegistration) strategy).register("in_", inStrategy);
+        ((IStrategyRegistration) strategy).register("out_", outStrategy);
+        ((IStrategyRegistration) strategy).register("default", defaultStrategy);
         IOC.register(
                 IOC.resolve(
                         IOC.getKeyForKeyByNameResolutionStrategy(), "resolve key for configuration object"
