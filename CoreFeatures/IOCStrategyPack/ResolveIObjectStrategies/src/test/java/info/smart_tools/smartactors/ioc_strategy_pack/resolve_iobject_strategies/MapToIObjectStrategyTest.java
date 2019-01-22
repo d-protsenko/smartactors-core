@@ -25,7 +25,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({IOC.class, Keys.class})
-public class MapToIObjectResolutionStrategyTest {
+public class MapToIObjectStrategyTest {
 
     private MapToIObjectStrategy strategy;
 

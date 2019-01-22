@@ -9,31 +9,32 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class ShortArrayToListResolutionStrategyTest {
+public class IntArrayToListStrategyTest {
 
-    private ShortArrayToListStrategy strategy;
+    private IntArrayToListStrategy strategy;
 
     @Before
     public void setUp() {
 
-        strategy = new ShortArrayToListStrategy();
+        strategy = new IntArrayToListStrategy();
     }
 
     @Test
-    public void ShouldConvertShortArrayToList() throws StrategyException {
+    public void ShouldConvertIntArrayToList() throws StrategyException {
 
-        short[] array = new short[] {1, 2, 3};
-        List<Short> result = strategy.resolve(array);
-        assertEquals(result.size(), 3);
-        assertEquals(result.get(0), new Short("1"));
-        assertEquals(result.get(1), new Short("2"));
-        assertEquals(result.get(2), new Short("3"));
+        int[] array = new int[] {1, 2, 5, 7};
+        List<Integer> result = strategy.resolve(array);
+        assertEquals(result.size(), 4);
+        assertEquals(result.get(0), new Integer(1));
+        assertEquals(result.get(1), new Integer(2));
+        assertEquals(result.get(2), new Integer(5));
+        assertEquals(result.get(3), new Integer(7));
     }
 
     @Test(expected = StrategyException.class)
     public void ShouldThrowException_When_ErrorIsOccurred() throws StrategyException {
 
-        Short[] array = new Short[] {1, 2};
+        Integer[] array = new Integer[] {1, 2};
         strategy.resolve(array);
         fail();
     }

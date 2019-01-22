@@ -9,32 +9,32 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class IntArrayToListResolutionStrategyTest {
+public class LongArrayToListStrategyTest {
 
-    private IntArrayToListStrategy strategy;
+    private LongArrayToListStrategy strategy;
 
     @Before
     public void setUp() {
 
-        strategy = new IntArrayToListStrategy();
+        strategy = new LongArrayToListStrategy();
     }
 
     @Test
-    public void ShouldConvertIntArrayToList() throws StrategyException {
+    public void ShouldConvertLongArrayToList() throws StrategyException {
 
-        int[] array = new int[] {1, 2, 5, 7};
-        List<Integer> result = strategy.resolve(array);
+        long[] array = new long[] {1, 2L, 5, Long.MIN_VALUE};
+        List<Long> result = strategy.resolve(array);
         assertEquals(result.size(), 4);
-        assertEquals(result.get(0), new Integer(1));
-        assertEquals(result.get(1), new Integer(2));
-        assertEquals(result.get(2), new Integer(5));
-        assertEquals(result.get(3), new Integer(7));
+        assertEquals(result.get(0), new Long(1));
+        assertEquals(result.get(1), new Long(2));
+        assertEquals(result.get(2), new Long(5));
+        assertEquals(result.get(3), new Long(Long.MIN_VALUE));
     }
 
     @Test(expected = StrategyException.class)
     public void ShouldThrowException_When_ErrorIsOccurred() throws StrategyException {
 
-        Integer[] array = new Integer[] {1, 2};
+        Long[] array = new Long[] {1L, 2L};
         strategy.resolve(array);
         fail();
     }

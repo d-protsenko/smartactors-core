@@ -15,28 +15,28 @@ public class PathTest {
 
     @Test
     public void Should_beCreatedFromString() {
-        IPath path = new Path("foo/bar");
-        assertEquals("foo/bar", path.getPath());
+        IPath path = new Path("foo"+File.separator+"bar");
+        assertEquals("foo"+File.separator+"bar", path.getPath());
     }
 
     @Test
     public void Should_beCreatedFromFile() {
-        File file = new File("foo/bar");
+        File file = new File("foo"+File.separator+"bar");
         IPath path = new Path(file);
-        assertEquals("foo/bar", path.getPath());
+        assertEquals("foo"+File.separator+"bar", path.getPath());
     }
 
     @Test
     public void Should_beCreatedFromNioPath() {
         java.nio.file.Path nioPath = Paths.get("foo", "bar");
         IPath path = new Path(nioPath);
-        assertEquals("foo/bar", path.getPath());
+        assertEquals("foo"+File.separator+"bar", path.getPath());
     }
 
     @Test
     public void Should_beEqualForTheSamePath() {
-        IPath path1 = new Path("foo/bar");
-        IPath path2 = new Path("foo/bar");
+        IPath path1 = new Path("foo"+File.separator+"bar");
+        IPath path2 = new Path("foo"+File.separator+"bar");
         assertEquals(path1, path2);
     }
 

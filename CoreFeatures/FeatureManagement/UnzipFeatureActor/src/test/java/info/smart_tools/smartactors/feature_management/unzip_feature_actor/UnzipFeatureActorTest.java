@@ -20,6 +20,7 @@ import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.HashSet;
 
 import static org.junit.Assert.assertNotNull;
@@ -97,8 +98,8 @@ public class UnzipFeatureActorTest {
         when(feature.getName()).thenReturn("test-feature");
         when(feature.getDependencies()).thenReturn(null);
         when(feature.getGroupId()).thenReturn("com.groupId");
-        String fileName = "target/test-classes/test-feature-VERSION.zip";
-        String directory = "target/test-classes/test-feature-VERSION";
+        String fileName = "target"+File.separator+"test-classes"+File.separator+"test-feature-VERSION.zip";
+        String directory = "target"+File.separator+"test-classes"+File.separator+"test-feature-VERSION";
         when(feature.getLocation()).thenReturn(
                 new Path(fileName)
         );

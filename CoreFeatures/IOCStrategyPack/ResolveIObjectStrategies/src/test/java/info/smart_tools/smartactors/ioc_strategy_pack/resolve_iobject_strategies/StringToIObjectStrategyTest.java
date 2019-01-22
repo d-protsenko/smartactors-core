@@ -17,7 +17,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(String.class)
-public class StringToIObjectResolutionStrategyTest {
+public class StringToIObjectStrategyTest {
 
     private StringToIObjectStrategy strategy;
 

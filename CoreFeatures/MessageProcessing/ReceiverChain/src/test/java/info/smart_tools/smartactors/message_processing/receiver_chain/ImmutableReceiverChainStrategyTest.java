@@ -34,7 +34,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
  */
 @PrepareForTest(IOC.class)
 @RunWith(PowerMockRunner.class)
-public class ImmutableReceiverChainResolutionStrategyTest {
+public class ImmutableReceiverChainStrategyTest {
     private IKey keyStorageKey;
     private IKey fieldNameKey;
     private IKey iobjectKey;

@@ -9,30 +9,31 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class FloatArrayToListResolutionStrategyTest {
+public class ShortArrayToListStrategyTest {
 
-    private FloatArrayToListStrategy strategy;
+    private ShortArrayToListStrategy strategy;
 
     @Before
     public void setUp() {
 
-        strategy = new FloatArrayToListStrategy();
+        strategy = new ShortArrayToListStrategy();
     }
 
     @Test
-    public void ShouldConvertFloatArrayToList() throws StrategyException {
+    public void ShouldConvertShortArrayToList() throws StrategyException {
 
-        float[] array = new float[] {(float) 12.0, (float) 5.7};
-        List<Float> result = strategy.resolve(array);
-        assertEquals(result.size(), 2);
-        assertEquals(result.get(0), new Float(12.0));
-        assertEquals(result.get(1), new Float(5.7));
+        short[] array = new short[] {1, 2, 3};
+        List<Short> result = strategy.resolve(array);
+        assertEquals(result.size(), 3);
+        assertEquals(result.get(0), new Short("1"));
+        assertEquals(result.get(1), new Short("2"));
+        assertEquals(result.get(2), new Short("3"));
     }
 
     @Test(expected = StrategyException.class)
     public void ShouldThrowException_When_ErrorIsOccurred() throws StrategyException {
 
-        Float[] array = new Float[] {new Float(1.0)};
+        Short[] array = new Short[] {1, 2};
         strategy.resolve(array);
         fail();
     }

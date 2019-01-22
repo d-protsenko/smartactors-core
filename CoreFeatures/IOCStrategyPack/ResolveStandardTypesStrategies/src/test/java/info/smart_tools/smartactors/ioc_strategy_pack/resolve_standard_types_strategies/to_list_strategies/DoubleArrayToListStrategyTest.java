@@ -9,31 +9,31 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class CharArrayToListResolutionStrategyTest {
+public class DoubleArrayToListStrategyTest {
 
-    private CharArrayToListStrategy strategy;
+    private DoubleArrayToListStrategy strategy;
 
     @Before
     public void setUp() {
 
-        strategy = new CharArrayToListStrategy();
+        strategy = new DoubleArrayToListStrategy();
     }
 
     @Test
-    public void ShouldConvertCharArrayToList() throws StrategyException {
+    public void ShouldConvertDoubleArrayToList() throws StrategyException {
 
-        char[] array = new char[] {'1', 'd', '+'};
-        List<Byte> result = strategy.resolve(array);
+        double[] array = new double[] {12.0, 5.7, 34.33};
+        List<Double> result = strategy.resolve(array);
         assertEquals(result.size(), 3);
-        assertEquals(result.get(0), new Character('1'));
-        assertEquals(result.get(1), new Character('d'));
-        assertEquals(result.get(2), new Character('+'));
+        assertEquals(result.get(0), new Double(12.0));
+        assertEquals(result.get(1), new Double(5.7));
+        assertEquals(result.get(2), new Double(34.33));
     }
 
     @Test(expected = StrategyException.class)
     public void ShouldThrowException_When_ErrorIsOccurred() throws StrategyException {
 
-        Character[] array = new Character[] {'1', '2'};
+        Double[] array = new Double[] {1.0, 2.6};
         strategy.resolve(array);
         fail();
     }

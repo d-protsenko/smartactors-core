@@ -9,31 +9,31 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class ByteArrayToListResolutionStrategyTest {
+public class FloatArrayToListStrategyTest {
 
-    private ByteArrayToListStrategy strategy;
+    private FloatArrayToListStrategy strategy;
 
     @Before
     public void setUp() {
 
-        strategy = new ByteArrayToListStrategy();
+        strategy = new FloatArrayToListStrategy();
     }
 
     @Test
-    public void ShouldConvertByteArrayToList() throws StrategyException {
+    public void ShouldConvertFloatArrayToList() throws StrategyException {
 
-        byte[] array = new byte[] {(byte)0xba, (byte)0x8a};
-        List<Byte> result = strategy.resolve(array);
+        float[] array = new float[] {(float) 12.0, (float) 5.7};
+        List<Float> result = strategy.resolve(array);
         assertEquals(result.size(), 2);
-        assertEquals(result.get(0), new Byte((byte) 0xba));
-        assertEquals(result.get(1), new Byte((byte) 0x8a));
+        assertEquals(result.get(0), new Float(12.0));
+        assertEquals(result.get(1), new Float(5.7));
     }
 
     @Test(expected = StrategyException.class)
     public void ShouldThrowException_When_ErrorIsOccurred() throws StrategyException {
 
-        String invalid = "invalid";
-        strategy.resolve(invalid);
+        Float[] array = new Float[] {new Float(1.0)};
+        strategy.resolve(array);
         fail();
     }
 }

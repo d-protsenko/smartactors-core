@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 /**
  * Test for {@link MethodInvokerReceiverStrategy}.
  */
-public class MethodInvokerReceiverResolutionStrategyTest extends PluginsLoadingTestBase {
+public class MethodInvokerReceiverStrategyTest extends PluginsLoadingTestBase {
     public class AObject {
         public void method1(Object o) {
         }

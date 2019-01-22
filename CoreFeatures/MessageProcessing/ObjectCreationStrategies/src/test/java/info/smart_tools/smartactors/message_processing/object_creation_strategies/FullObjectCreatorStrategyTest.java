@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 /**
  * Test for {@link FullObjectCreatorStrategy}.
  */
-public class FullObjectCreatorResolutionStrategyTest extends PluginsLoadingTestBase {
+public class FullObjectCreatorStrategyTest extends PluginsLoadingTestBase {
     private IStrategy creator1ResolutionStrategyMock;
     private IStrategy creator2ResolutionStrategyMock;
     private IReceiverObjectCreator creator1Mock;

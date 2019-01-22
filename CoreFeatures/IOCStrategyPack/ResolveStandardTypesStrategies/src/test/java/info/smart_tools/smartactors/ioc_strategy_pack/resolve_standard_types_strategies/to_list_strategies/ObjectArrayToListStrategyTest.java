@@ -9,7 +9,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class ObjectArrayToListResolutionStrategyTest {
+public class ObjectArrayToListStrategyTest {
 
     private ObjectArrayToListStrategy strategy;
 
