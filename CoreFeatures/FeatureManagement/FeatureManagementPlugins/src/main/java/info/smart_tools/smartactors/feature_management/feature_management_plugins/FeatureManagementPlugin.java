@@ -145,7 +145,7 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
 
         try {
             keyName = "FeatureCreatorActor";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
@@ -160,70 +160,70 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
 
         try {
             keyName = "DirectoryWatcherActor";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "LoadFeatureActor";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "UnzipFeatureActor";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "DownloadFeatureActor";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "feature group load completion task queue";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "FeatureManager";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "feature-repositories";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "plugin loader";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "plugin loader visitor";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "plugin creator";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }

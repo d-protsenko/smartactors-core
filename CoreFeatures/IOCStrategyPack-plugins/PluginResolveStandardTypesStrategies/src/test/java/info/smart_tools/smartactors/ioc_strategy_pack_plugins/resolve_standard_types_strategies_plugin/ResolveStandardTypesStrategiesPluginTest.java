@@ -120,21 +120,21 @@ public class ResolveStandardTypesStrategiesPluginTest {
         actionArgumentCaptor1.getValue().execute();
 
         verifyStatic();
-        IOC.remove(eq(stringConvertKey));
+        IOC.unregister(eq(stringConvertKey));
         verifyStatic();
-        IOC.remove(eq(integerConvertKey));
+        IOC.unregister(eq(integerConvertKey));
         verifyStatic();
-        IOC.remove(eq(bigDecimalConvertKey));
+        IOC.unregister(eq(bigDecimalConvertKey));
         verifyStatic();
-        IOC.remove(eq(localDateTimeConvertKey));
+        IOC.unregister(eq(localDateTimeConvertKey));
         verifyStatic();
-        IOC.remove(eq(listConvertKey));
+        IOC.unregister(eq(listConvertKey));
         verifyStatic();
-        IOC.remove(eq(intConvertKey));
+        IOC.unregister(eq(intConvertKey));
         verifyStatic();
-        IOC.remove(eq(booleanConvertKey));
+        IOC.unregister(eq(booleanConvertKey));
         verifyStatic();
-        IOC.remove(eq(characterConvertKey));
+        IOC.unregister(eq(characterConvertKey));
     }
 
     @Test
@@ -164,7 +164,7 @@ public class ResolveStandardTypesStrategiesPluginTest {
         when(Keys.resolveByName(int.class.getCanonicalName() + "convert")).thenReturn(intConvertKey);
 
         doThrow(new DeletionException("TestException")).when(IOC.class);
-        IOC.remove(any());
+        IOC.unregister(any());
 
         ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(bootstrapItem).revertProcess(actionArgumentCaptor.capture());

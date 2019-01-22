@@ -241,7 +241,7 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
     public void Should_throwWhenIOCNotInitialized()
             throws Exception {
         IStrategy strategy = mock(IStrategy.class);
-        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), strategy);
+        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), strategy);
         doThrow(Exception.class).when(strategy).resolve(any());
         new TestEnvironmentHandler().handle(mock(IObject.class), chainNameMock, callbackMock);
         fail();

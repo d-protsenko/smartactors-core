@@ -56,7 +56,7 @@ public class StrategyContainerScopeTest {
         childScope = ScopeProvider.getScope(childScopeKey);
 
         ScopeProvider.setCurrentScope(parentScope);
-        IOC.register(IOC.getKeyForKeyByNameResolutionStrategy(), new ResolveByNameIocStrategy(
+        IOC.register(IOC.getKeyForKeyByNameStrategy(), new ResolveByNameIocStrategy(
                 (a) -> {
                     try {
                         return new Key((String) a[0]);
@@ -105,7 +105,7 @@ public class StrategyContainerScopeTest {
         assertSame(childObject, IOC.resolve(key));
 
         ScopeProvider.setCurrentScope(childScope);
-        IOC.remove(key);
+        IOC.unregister(key);
 
         ScopeProvider.setCurrentScope(parentScope);
         assertSame(parentObject, IOC.resolve(key));
@@ -113,7 +113,7 @@ public class StrategyContainerScopeTest {
         assertSame(parentObject, IOC.resolve(key));
 
         ScopeProvider.setCurrentScope(parentScope);
-        IOC.remove(key);
+        IOC.unregister(key);
 
         ScopeProvider.setCurrentScope(parentScope);
         try {

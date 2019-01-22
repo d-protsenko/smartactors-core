@@ -355,7 +355,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
             Object value = args.getValue(fieldValueFieldName);
 
             if (dependencyName != null) {
-                value = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), dependencyName), value);
+                value = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), dependencyName), value);
             }
 
             message.setValue(fieldName, value);

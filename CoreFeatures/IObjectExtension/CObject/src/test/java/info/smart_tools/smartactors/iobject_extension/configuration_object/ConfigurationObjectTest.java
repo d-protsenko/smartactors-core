@@ -39,7 +39,7 @@ public class ConfigurationObjectTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -52,7 +52,7 @@ public class ConfigurationObjectTest {
 
         IOC.register(
                 IOC.resolve(
-                        IOC.getKeyForKeyByNameResolutionStrategy(), "configuration object"
+                        IOC.getKeyForKeyByNameStrategy(), "configuration object"
                 ),
                 new ApplyFunctionToArgumentsStrategy(
                         (a) -> {
@@ -138,7 +138,7 @@ public class ConfigurationObjectTest {
         ((IStrategyRegistration) strategy).register("default", defaultStrategy);
         IOC.register(
                 IOC.resolve(
-                        IOC.getKeyForKeyByNameResolutionStrategy(), "resolve key for configuration object"
+                        IOC.getKeyForKeyByNameStrategy(), "resolve key for configuration object"
                 ),
                 strategy
         );

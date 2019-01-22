@@ -107,7 +107,7 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
             }
 
             IRecoverStrategy recoverStrategy = IOC.resolve(IOC.resolve(
-                    IOC.getKeyForKeyByNameResolutionStrategy(),
+                    IOC.getKeyForKeyByNameStrategy(),
                     entry.getState().getValue(recoverStrategyFieldName)
             ));
 

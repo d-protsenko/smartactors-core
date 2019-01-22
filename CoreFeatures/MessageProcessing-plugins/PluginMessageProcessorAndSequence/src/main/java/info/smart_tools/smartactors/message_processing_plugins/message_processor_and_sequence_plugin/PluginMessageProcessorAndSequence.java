@@ -61,15 +61,15 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                 mps.goTo(currentLevel - 1, repeatStep);
                             };
                             IOC.register(
-                                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "afterExceptionAction#break"),
+                                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "afterExceptionAction#break"),
                                     new SingletonStrategy(breakAction)
                             );
                             IOC.register(
-                                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "afterExceptionAction#continue"),
+                                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "afterExceptionAction#continue"),
                                     new SingletonStrategy(continueAction)
                             );
                             IOC.register(
-                                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "afterExceptionAction#repeat"),
+                                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "afterExceptionAction#repeat"),
                                     new SingletonStrategy(repeatAction)
                             );
                         } catch (ResolutionException e) {
@@ -86,21 +86,21 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
 
                         try {
                             keyName = "afterExceptionAction#break";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "afterExceptionAction#continue";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "afterExceptionAction#repeat";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
@@ -164,14 +164,14 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
 
                         try {
                             keyName = "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "final task";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
@@ -209,7 +209,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                         String itemName = "message_processing_sequence";
                         String keyName = "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence";
                         try {
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
@@ -236,7 +236,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                         String itemName = "message_processing_sequence_dump_recovery";
                         String keyName = "recover message processing sequence";
                         try {
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

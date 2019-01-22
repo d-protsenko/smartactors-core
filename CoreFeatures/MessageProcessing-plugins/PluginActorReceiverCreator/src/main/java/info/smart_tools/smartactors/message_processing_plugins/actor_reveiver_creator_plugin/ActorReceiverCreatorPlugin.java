@@ -86,21 +86,21 @@ public class ActorReceiverCreatorPlugin  implements IPlugin {
 
                         try {
                             keyName = IRoutedObjectCreator.class.getCanonicalName() + "#actor";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "actor_receiver_busyness_flag";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "actor_receiver_queue";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

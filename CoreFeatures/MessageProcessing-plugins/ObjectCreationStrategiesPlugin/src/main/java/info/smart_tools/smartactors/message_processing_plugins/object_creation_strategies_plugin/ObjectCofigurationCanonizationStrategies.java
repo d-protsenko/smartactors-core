@@ -116,7 +116,7 @@ public class ObjectCofigurationCanonizationStrategies extends BootstrapPlugin {
         String keyName = "canonize objects configuration section item filters list";
 
         try {
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }

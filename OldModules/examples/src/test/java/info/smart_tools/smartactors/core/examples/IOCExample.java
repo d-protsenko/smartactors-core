@@ -31,7 +31,7 @@ public class IOCExample {
         IScope scope = ScopeProvider.getScope(scopeKey);
         ScopeProvider.setCurrentScope(scope);
         scope.setValue(IOC.getIocKey(), new StrategyContainer());
-        IOC.register(IOC.getKeyForKeyByNameResolutionStrategy(), new ResolveByNameIocStrategy(
+        IOC.register(IOC.getKeyForKeyByNameStrategy(), new ResolveByNameIocStrategy(
                 (a) -> {
                     try {
                         return new Key((String) a[0]);
@@ -44,7 +44,7 @@ public class IOCExample {
     
     @Test
     public void keyExample() throws ResolutionException, InvalidArgumentException {
-        IKey resolveKey = IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "sample");
+        IKey resolveKey = IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "sample");
         IKey key = Keys.resolveByName("sample");
         IKey newKey = new Key("sample");
         assertEquals("resolve differs from got from Keys", resolveKey, key);

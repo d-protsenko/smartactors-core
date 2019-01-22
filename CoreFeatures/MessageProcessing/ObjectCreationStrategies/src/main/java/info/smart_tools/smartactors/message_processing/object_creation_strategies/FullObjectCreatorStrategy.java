@@ -60,7 +60,7 @@ public class FullObjectCreatorStrategy implements IStrategy {
             for (IObject fDesc : filtersList) {
                 creator = IOC.resolve(
                         IOC.resolve(
-                                IOC.getKeyForKeyByNameResolutionStrategy(),
+                                IOC.getKeyForKeyByNameStrategy(),
                                 fDesc.getValue(dependencyFieldName)
                         ),
                         creator,

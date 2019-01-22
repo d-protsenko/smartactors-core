@@ -58,7 +58,7 @@ public class CheckpointFailureActionSectionStrategy implements ISectionStrategy 
                 actionKeyName = "default configurable checkpoint failure action";
             }
 
-            IAction<IObject> action = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), actionKeyName), section);
+            IAction<IObject> action = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), actionKeyName), section);
 
             IOC.register(Keys.resolveByName("checkpoint failure action"),
                     new SingletonStrategy(action));
@@ -70,7 +70,7 @@ public class CheckpointFailureActionSectionStrategy implements ISectionStrategy 
     @Override
     public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
         try {
-            IOC.remove(Keys.resolveByName("checkpoint failure action"));
+            IOC.unregister(Keys.resolveByName("checkpoint failure action"));
         } catch(DeletionException e) {
             throw new ConfigurationProcessingException("Error occurred while reverting checkpoint_failure_action section.", e);
         } catch (ResolutionException e) { }

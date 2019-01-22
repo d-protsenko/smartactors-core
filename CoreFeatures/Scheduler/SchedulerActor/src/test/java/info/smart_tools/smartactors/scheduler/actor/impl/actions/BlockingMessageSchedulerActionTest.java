@@ -156,7 +156,7 @@ public class BlockingMessageSchedulerActionTest extends PluginsLoadingTestBase {
     @Test(expected = SchedulerActionInitializationException.class)
     public void Should_throwWhenErrorOccursResolvingDependency()
             throws Exception {
-        IOC.remove(Keys.resolveByName("default_stack_depth"));
+        IOC.unregister(Keys.resolveByName("default_stack_depth"));
         IObject args = IOC.resolve(Keys.resolveByName(IObject.class.getCanonicalName()),
                 ("{" +
                         "'message': {'a':'asd'}," +

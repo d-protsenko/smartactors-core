@@ -49,7 +49,7 @@ public class RemoteManagementPlugin extends BootstrapPlugin {
 
         try {
             keyName = "FeatureLoadStarterActor";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }

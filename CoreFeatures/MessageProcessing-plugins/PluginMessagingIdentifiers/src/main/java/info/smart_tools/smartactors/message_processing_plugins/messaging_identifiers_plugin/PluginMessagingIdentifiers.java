@@ -82,28 +82,28 @@ public class PluginMessagingIdentifiers implements IPlugin {
 
                         try {
                             keyName = "route_from_object_name";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "chain_id_from_map_name";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "chain_id_from_map_name_and_message";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
 
                         try {
                             keyName = "receiver_id_from_iobject";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

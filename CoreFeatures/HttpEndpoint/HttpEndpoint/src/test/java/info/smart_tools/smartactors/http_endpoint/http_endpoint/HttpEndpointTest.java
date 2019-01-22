@@ -83,7 +83,7 @@ public class HttpEndpointTest {
         ScopeProvider.setCurrentScope(mainScope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
         IKey keyMessageProcessingSequence = Keys.resolveByName(MessageProcessingSequence.class.getCanonicalName());

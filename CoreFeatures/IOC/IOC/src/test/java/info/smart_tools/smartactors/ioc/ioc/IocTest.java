@@ -57,9 +57,9 @@ public class IocTest {
     public void checkDeletion()
             throws Exception {
         IKey key = mock(IKey.class);
-        doNothing().when(container).remove(key);
-        IOC.remove(key);
-        verify(container, times(1)).remove(key);
+        doNothing().when(container).unregister(key);
+        IOC.unregister(key);
+        verify(container, times(1)).unregister(key);
     }
 
     @Test
@@ -71,10 +71,10 @@ public class IocTest {
     }
 
     @Test
-    public void checkgetKeyForKeyByNameResolutionStrategy()
+    public void checkgetKeyForKeyByNameStrategy()
             throws Exception {
-        when(container.getKeyForKeyByNameResolutionStrategy()).thenReturn(mock(IKey.class));
-        IKey key = IOC.getKeyForKeyByNameResolutionStrategy();
+        when(container.getKeyForKeyByNameStrategy()).thenReturn(mock(IKey.class));
+        IKey key = IOC.getKeyForKeyByNameStrategy();
         assertNotNull(key);
     }
 

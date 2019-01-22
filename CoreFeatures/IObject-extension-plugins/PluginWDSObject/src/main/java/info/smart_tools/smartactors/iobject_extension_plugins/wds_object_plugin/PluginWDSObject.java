@@ -59,14 +59,14 @@ public class PluginWDSObject extends BootstrapPlugin {
 
         keyName = "WDSObject field set thread safe map";
         try {
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         keyName = "WDSObject field set non thread safe map";
         try {
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
@@ -90,7 +90,7 @@ public class PluginWDSObject extends BootstrapPlugin {
 
         try {
             keyName = IStrategy.class.getCanonicalName();
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
@@ -136,14 +136,14 @@ public class PluginWDSObject extends BootstrapPlugin {
 
         keyName = "thread safe wrapper configuration";
         try {
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         keyName = "non thread safe wrapper configuration";
         try {
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
@@ -183,14 +183,14 @@ public class PluginWDSObject extends BootstrapPlugin {
 
         try {
             keyName = WDSObject.class.getCanonicalName();
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         keyName = "non thread safe wrapper configuration";
         try {
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }

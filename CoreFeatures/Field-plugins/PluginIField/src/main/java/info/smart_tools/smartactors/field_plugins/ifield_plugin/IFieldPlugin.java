@@ -63,7 +63,7 @@ public class IFieldPlugin implements IPlugin {
                     String itemName = "IFieldPlugin";
                     String keyName = IField.class.getCanonicalName();
                     try {
-                        IOC.remove(Keys.resolveByName(keyName));
+                        IOC.unregister(Keys.resolveByName(keyName));
                     } catch(DeletionException e) {
                         System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                     } catch (ResolutionException e) { }

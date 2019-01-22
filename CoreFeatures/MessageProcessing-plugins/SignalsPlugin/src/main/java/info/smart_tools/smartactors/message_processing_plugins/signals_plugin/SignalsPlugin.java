@@ -44,14 +44,14 @@ public class SignalsPlugin extends BootstrapPlugin {
 
         try {
             keyName = "shutdown signal";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "abort signal";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }

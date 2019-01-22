@@ -48,7 +48,7 @@ public class ClientSectionProcessingStrategy implements ISectionStrategy {
     public void onLoadConfig(final IObject config) throws ConfigurationProcessingException {
         try {
             IObject clientObject = (IObject) config.getValue(name);
-            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(),
+            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(),
                     IChainStorage.class.getCanonicalName()));
             IQueue<ITask> queue = IOC.resolve(Keys.resolveByName("task_queue"));
             clientObject.setValue(queueFieldName, queue);
@@ -67,7 +67,7 @@ public class ClientSectionProcessingStrategy implements ISectionStrategy {
     @Override
     public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
         try {
-            IOC.remove(Keys.resolveByName("responseHandlerConfiguration"));
+            IOC.unregister(Keys.resolveByName("responseHandlerConfiguration"));
         } catch (DeletionException | ResolutionException e) {
             throw new ConfigurationProcessingException("Error occurred while reverting \"client\" configuration section.", e);
         }

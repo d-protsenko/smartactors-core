@@ -62,7 +62,7 @@ public class PluginDSObject implements IPlugin {
                     })
                     .revertProcess(() -> {
                         try {
-                            IOC.remove(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                            IOC.unregister(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \"info.smart_tools.smartactors.iobject.iobject.IObject\" has failed while reverting \"iobject\" plugin.");
                         } catch (ResolutionException e) { }

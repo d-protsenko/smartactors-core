@@ -208,98 +208,98 @@ public class HttpEndpointPlugin implements IPlugin {
 
                         try {
                             keyName = "info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "EmptyIObject";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "http_request_key_for_response_sender";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = IParseTree.class.getCanonicalName();
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "http_request_key_for_deserialize";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "http_endpoint";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = IEnvironmentHandler.class.getCanonicalName();
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "HttpShuttingDownException";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "HttpInternalException";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "HttpRequestParametersToIObjectException";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "HttpPostParametersToIObjectException";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "key_for_response_status_setter";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "key_for_headers_extractor";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "key_for_cookies_extractor";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException ignored) { }
@@ -314,39 +314,39 @@ public class HttpEndpointPlugin implements IPlugin {
     private void initializeFieldNames() throws ResolutionException {
         portFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "port"
                 );
         startChainNameFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "startChain"
                 );
         stackDepthFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "stackDepth"
                 );
         maxContentLengthFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "maxContentLength"
                 );
         endpointNameFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "name"
                 );
 
         queueFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "queue"
                 );
 
         templatesFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "templates"
                 );
         scopeSwitchingFieldName = FieldNames.resolveByName("scopeSwitching");

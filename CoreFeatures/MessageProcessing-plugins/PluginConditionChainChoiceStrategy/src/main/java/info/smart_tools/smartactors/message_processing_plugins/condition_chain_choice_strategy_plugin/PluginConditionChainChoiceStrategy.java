@@ -47,7 +47,7 @@ public class PluginConditionChainChoiceStrategy extends BootstrapPlugin {
         String itemName = "condition_chain_choice_strategy";
         String keyName = "condition chain choice strategy";
         try {
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }

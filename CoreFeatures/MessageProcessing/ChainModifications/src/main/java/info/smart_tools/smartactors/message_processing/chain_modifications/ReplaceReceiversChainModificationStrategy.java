@@ -162,7 +162,7 @@ public class ReplaceReceiversChainModificationStrategy implements IStrategy {
             for (IObject replacement : replacements) {
                 int step = ((Number) replacement.getValue(stepFN)).intValue();
                 IMessageReceiver receiver = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), replacement.getValue(dependencyFN)),
+                        IOC.resolve(IOC.getKeyForKeyByNameStrategy(), replacement.getValue(dependencyFN)),
                         originalChain.get(step), replacement.getValue(argsFN)
                 );
 

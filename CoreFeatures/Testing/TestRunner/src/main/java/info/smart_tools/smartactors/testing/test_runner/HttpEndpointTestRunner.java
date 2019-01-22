@@ -9,9 +9,6 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.testing.interfaces.isource.ISource;
 import info.smart_tools.smartactors.testing.interfaces.isource.exception.SourceExtractionException;
 import info.smart_tools.smartactors.testing.interfaces.itest_runner.ITestRunner;
@@ -107,13 +104,13 @@ public class HttpEndpointTestRunner implements ITestRunner {
             throws InitializationException {
         try {
             this.contentFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "content"
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "content"
             );
             this.chainNameFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainName"
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainName"
             );
             this.callbackFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "callback"
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "callback"
             );
         } catch (ResolutionException e) {
             throw new InitializationException("Could not create new instance of HttpEndpointTestRunner.", e);
@@ -141,7 +138,7 @@ public class HttpEndpointTestRunner implements ITestRunner {
 
         try {
             IObject sourceObject = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject")
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject")
             );
             Object chainName = description.getValue(this.chainNameFieldName);
 
@@ -149,7 +146,7 @@ public class HttpEndpointTestRunner implements ITestRunner {
             sourceObject.setValue(this.callbackFieldName, callback);
             sourceObject.setValue(this.chainNameFieldName, chainName);
             ISource<IObject, IObject> source = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "test_data_source")
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "test_data_source")
             );
             source.setSource(sourceObject);
         } catch (ReadValueException | ChangeValueException | ResolutionException | SourceExtractionException e) {

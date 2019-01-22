@@ -67,7 +67,7 @@ public class HttpResponseSenderTest {
         ScopeProvider.setCurrentScope(mainScope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
         IKey keyFieldName = Keys.resolveByName(IFieldName.class.getCanonicalName());

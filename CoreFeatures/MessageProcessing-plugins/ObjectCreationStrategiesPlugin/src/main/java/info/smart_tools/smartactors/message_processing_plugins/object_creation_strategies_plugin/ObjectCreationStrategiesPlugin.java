@@ -54,7 +54,7 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
     @ItemRevert("global_router_registration_receiver_object_listener")
     public void unregisterRouterListener() {
         try {
-            IOC.remove(Keys.resolveByName("global router registration receiver object listener"));
+            IOC.unregister(Keys.resolveByName("global router registration receiver object listener"));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \"global router registration receiver object listener\" has failed while reverting \"global_router_registration_receiver_object_listener\" plugin.");
         } catch (ResolutionException e) { }
@@ -78,7 +78,7 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
     @ItemRevert("full_object_creator_strategy")
     public void unregisterFullCreatorStrategy() {
         try {
-            IOC.remove(Keys.resolveByName("full receiver object creator"));
+            IOC.unregister(Keys.resolveByName("full receiver object creator"));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \"full receiver object creator\" has failed while reverting \"full_object_creator_strategy\" plugin.");
         } catch (ResolutionException e) { }
@@ -128,28 +128,28 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
 
         try {
             keyName = "actor_receiver_queue";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "actor_receiver_busyness_flag";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "create actor synchronization receiver";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "create handler router receiver";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
@@ -218,21 +218,21 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
 
         try {
             keyName = "singleton wrapper resolution strategy";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "new instance wrapper resolution strategy";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "default wrapper resolution strategy dependency for invoker receiver";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
@@ -262,7 +262,7 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
 
         try {
             keyName = "method invoker receiver";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }

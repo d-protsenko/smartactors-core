@@ -26,13 +26,13 @@ public class ContainerTest {
         IContainer container = new Container();
         assertNotNull(container);
         IKey key1 = container.getIocKey();
-        IKey key2 = container.getKeyForKeyByNameResolutionStrategy();
+        IKey key2 = container.getKeyForKeyByNameStrategy();
         assertNotNull(key1);
         assertNotNull(key2);
         assertNotEquals(key1, key2);
         IContainer otherContainer = new Container();
         IKey otherKey1 = otherContainer.getIocKey();
-        IKey otherKey2 = otherContainer.getKeyForKeyByNameResolutionStrategy();
+        IKey otherKey2 = otherContainer.getKeyForKeyByNameStrategy();
         assertNotNull(otherKey1);
         assertNotNull(otherKey2);
         assertNotEquals(otherKey1, otherKey2);
@@ -114,14 +114,14 @@ public class ContainerTest {
     }
 
     @Test
-    public void checkgetKeyForKeyByNameResolutionStrategy()
+    public void checkgetKeyForKeyByNameStrategy()
             throws InvalidArgumentException {
         IContainer container = new Container();
-        assertNotNull(container.getKeyForKeyByNameResolutionStrategy());
-        assertNotNull(container.getKeyForKeyByNameResolutionStrategy().toString());
+        assertNotNull(container.getKeyForKeyByNameStrategy());
+        assertNotNull(container.getKeyForKeyByNameStrategy().toString());
         IContainer container1 = new Container();
-        assertNotEquals(container.getKeyForKeyByNameResolutionStrategy(), container1.getKeyForKeyByNameResolutionStrategy());
-        assertNotEquals(container.getKeyForKeyByNameResolutionStrategy().toString(), container1.getKeyForKeyByNameResolutionStrategy().toString());
+        assertNotEquals(container.getKeyForKeyByNameStrategy(), container1.getKeyForKeyByNameStrategy());
+        assertNotEquals(container.getKeyForKeyByNameStrategy().toString(), container1.getKeyForKeyByNameStrategy().toString());
     }
 
     @Test
@@ -133,12 +133,12 @@ public class ContainerTest {
         ScopeProvider.setCurrentScope(scope);
         IStrategyContainer strategyContainer = mock(IStrategyContainer.class);
         when(scope.getValue(container.getIocKey())).thenReturn(strategyContainer);
-        doNothing().when(strategyContainer).remove(strategyKey);
+        doNothing().when(strategyContainer).unregister(strategyKey);
 
-        container.remove(strategyKey);
+        container.unregister(strategyKey);
 
         verify(scope, times(1)).getValue(container.getIocKey());
-        verify(strategyContainer, times(1)).remove(strategyKey);
+        verify(strategyContainer, times(1)).unregister(strategyKey);
         reset(scope);
         reset(strategyKey);
         reset(strategyContainer);
@@ -147,6 +147,6 @@ public class ContainerTest {
     @Test (expected = DeletionException.class)
     public void checkDeletionException() throws Exception {
         IContainer container = new Container();
-        container.remove(null);
+        container.unregister(null);
     }
 }

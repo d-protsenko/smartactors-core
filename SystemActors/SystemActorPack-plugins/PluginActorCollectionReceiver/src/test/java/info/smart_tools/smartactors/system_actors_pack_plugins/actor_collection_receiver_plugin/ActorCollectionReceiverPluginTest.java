@@ -87,14 +87,14 @@ public class ActorCollectionReceiverPluginTest {
                 item.executeProcess();
             }
         }
-        IMessageReceiver receiver = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "ActorCollection"));
+        IMessageReceiver receiver = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "ActorCollection"));
         assertNotNull(receiver);
     }
 
     private void registerKeyStorage()
             throws Exception {
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -109,7 +109,7 @@ public class ActorCollectionReceiverPluginTest {
     private void registerBrokenKeyStorage()
             throws Exception {
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy((a) -> null)
         );
     }
@@ -117,7 +117,7 @@ public class ActorCollectionReceiverPluginTest {
     private void registerIFieldNameStrategy()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -133,7 +133,7 @@ public class ActorCollectionReceiverPluginTest {
     private void registerBrokenIFieldNameStrategy()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy((a) -> null)
         );
     }

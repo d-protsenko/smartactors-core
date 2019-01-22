@@ -49,7 +49,7 @@ public class StrategyContainer implements IStrategyContainer {
      * @param key unique object identifier
      * @throws StrategyContainerException if any error occurred
      */
-    public void remove(final Object key)
+    public void unregister(final Object key)
             throws StrategyContainerException {
         strategyStorage.remove(key);
     }

@@ -58,7 +58,7 @@ public class TestHttpEndpointTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -247,7 +247,7 @@ public class TestHttpEndpointTest {
             throws Exception {
         IEnvironmentHandler handler = mock(IEnvironmentHandler.class);
         IStrategy strategy = mock(IStrategy.class);
-        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), strategy);
+        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), strategy);
         doThrow(Exception.class).when(strategy).resolve(any());
         ISource<IObject, IObject> source = mock(ISource.class);
         IAsyncService endpoint = new TestHttpEndpoint(source, ScopeProvider.getCurrentScope(), handler, 0L, null);
@@ -356,7 +356,7 @@ public class TestHttpEndpointTest {
         IChannelHandler channelHandler = mock(IChannelHandler.class);
         IStrategy strategy = mock(IStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), TestChannelHandler.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), TestChannelHandler.class.getCanonicalName()),
                 strategy
         );
         when(strategy.resolve()).thenThrow(ResolutionException.class).thenReturn(channelHandler);
@@ -388,7 +388,7 @@ public class TestHttpEndpointTest {
     private void initFiledNameStrategy()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy((a)-> {
                     try {
                         return new FieldName((String) a[0]);
@@ -402,7 +402,7 @@ public class TestHttpEndpointTest {
     private void initIObjectStrategy()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new ApplyFunctionToArgumentsStrategy((a)-> {
                     try {
                         return new DSObject();
@@ -417,7 +417,7 @@ public class TestHttpEndpointTest {
             throws Exception {
         IChannelHandler channelHandler = mock(IChannelHandler.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), TestChannelHandler.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), TestChannelHandler.class.getCanonicalName()),
                 new SingletonStrategy(channelHandler)
         );
     }

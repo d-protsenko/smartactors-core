@@ -77,7 +77,7 @@ public class DatabaseSectionStrategy implements ISectionStrategy {
             ListIterator<IObject> sectionIterator = databaseObjects.listIterator(databaseObjects.size());
             while (sectionIterator.hasPrevious()) {
                 IObject databaseObj = sectionIterator.previous();
-                IOC.remove(Keys.resolveByName((String) databaseObj.getValue(keyFN)));
+                IOC.unregister(Keys.resolveByName((String) databaseObj.getValue(keyFN)));
             }
         } catch (DeletionException | ReadValueException | InvalidArgumentException | ResolutionException e) {
             throw new ConfigurationProcessingException("Error occurred reverting \"database\" configuration section.", e);

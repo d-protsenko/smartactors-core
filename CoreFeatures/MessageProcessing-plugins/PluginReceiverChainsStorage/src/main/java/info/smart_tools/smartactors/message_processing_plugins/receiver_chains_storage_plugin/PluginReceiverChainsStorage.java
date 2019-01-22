@@ -69,7 +69,7 @@ public class PluginReceiverChainsStorage implements IPlugin {
 
                         try {
                             keyName = IChainState.class.getCanonicalName();
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Unregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
@@ -105,7 +105,7 @@ public class PluginReceiverChainsStorage implements IPlugin {
 
                         try {
                             keyName = IChainStorage.class.getCanonicalName();
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Unregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

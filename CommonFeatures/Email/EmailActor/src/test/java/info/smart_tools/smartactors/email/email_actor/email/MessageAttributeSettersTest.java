@@ -43,7 +43,7 @@ public class MessageAttributeSettersTest {
         ScopeProvider.setCurrentScope(mainScope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
         IKey keyIField = Keys.resolveByName(IField.class.getCanonicalName());

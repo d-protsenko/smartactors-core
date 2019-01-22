@@ -41,7 +41,7 @@ public class IObjectSimpleImplPluginTest {
 
         IKey keyGeneral = mock(IKey.class);
         IKey keyPlugin = mock(IKey.class);
-        when(IOC.getKeyForKeyByNameResolutionStrategy()).thenReturn(keyGeneral);
+        when(IOC.getKeyForKeyByNameStrategy()).thenReturn(keyGeneral);
         when(IOC.resolve(eq(keyGeneral), eq("IObjectSimpleImplPlugin"))).thenReturn(keyPlugin);
 
         bootstrap = mock(IBootstrap.class);
@@ -82,7 +82,7 @@ public class IObjectSimpleImplPluginTest {
         actionArgumentCaptor2.getValue().execute();
 
         verifyStatic();
-        IOC.remove(eq(IObjectKey));
+        IOC.unregister(eq(IObjectKey));
     }
 
     @Test(expected = PluginException.class)
@@ -120,7 +120,7 @@ public class IObjectSimpleImplPluginTest {
     public void ShouldThrowRuntimeException_When_revertThrowsException() throws Exception {
 
         doThrow(new DeletionException("TestException")).when(IOC.class);
-        IOC.remove(any());
+        IOC.unregister(any());
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("IObjectSimpleImplPlugin").thenReturn(bootstrapItem);

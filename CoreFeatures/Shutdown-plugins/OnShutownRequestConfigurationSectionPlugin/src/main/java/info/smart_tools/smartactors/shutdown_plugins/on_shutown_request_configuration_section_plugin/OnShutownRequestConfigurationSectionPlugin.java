@@ -59,7 +59,7 @@ public class OnShutownRequestConfigurationSectionPlugin extends BootstrapPlugin 
                 IFieldName modeFieldName = (null == arg.getValue(modeFieldFN)) ? null :
                         IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), arg.getValue(modeFieldFN));
 
-                IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(),
+                IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(),
                         IChainStorage.class.getCanonicalName()));
                 IQueue<ITask> queue = IOC.resolve(Keys.resolveByName("task_queue"));
 
@@ -79,13 +79,13 @@ public class OnShutownRequestConfigurationSectionPlugin extends BootstrapPlugin 
                                 message.setValue(modeFieldName, mode);
                             }
                             IMessageProcessingSequence processingSequence = IOC.resolve(
-                                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                                     stackDepth,
                                     chainName,
                                     message
                             );
                             IMessageProcessor messageProcessor = IOC.resolve(
-                                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+                                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                                     queue,
                                     processingSequence
                             );

@@ -19,17 +19,10 @@ public interface IContainer {
     IKey getIocKey();
 
     /**
-     * Return specific instance of {@link IKey} for resolve dependencies from key storage
-     * @return instance of {@link IKey}
-     */
-    @Deprecated
-    IKey getKeyForKeyStorage();
-
-    /**
      * Return specific instance of {@link IKey} for strategy of resolving key by name
      * @return instance of {@link IKey}
      */
-    IKey getKeyForKeyByNameResolutionStrategy();
+    IKey getKeyForKeyByNameStrategy();
 
     /**
      * Resolve dependency by given given {@link IKey} instance and args
@@ -52,10 +45,10 @@ public interface IContainer {
             throws RegistrationException;
 
     /**
-     * Remove dependency with given key
+     * Unregister dependency with given key
      * @param key instance of {@link IKey}
      * @throws DeletionException if any errors occurred
      */
-    void remove(final IKey key)
+    void unregister(final IKey key)
             throws DeletionException;
 }

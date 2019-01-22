@@ -54,7 +54,7 @@ public class MethodInvokerReceiverStrategy implements IStrategy {
             }
 
             IStrategy wrapperResolutionStrategy = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), wrapperResolutionStrategyDependency),
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), wrapperResolutionStrategyDependency),
                     method.getParameterTypes()[0]
             );
 

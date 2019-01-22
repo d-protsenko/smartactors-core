@@ -80,7 +80,7 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
         IObject a1desc = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'type': 'atype1', 'name': 'Nope'}".replace('\'', '"'));
 
-        IOC.remove(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"));
+        IOC.unregister(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"));
 
         new AssertionChecker(Collections.singletonList(a1desc));
     }
@@ -105,7 +105,7 @@ public class AssertionCheckerTest extends PluginsLoadingTestBase {
                 }
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 strategy
         );
 

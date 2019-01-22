@@ -54,7 +54,7 @@ public class MainTestChainTest {
 
         ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -65,11 +65,11 @@ public class MainTestChainTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new ApplyFunctionToArgumentsStrategy((args) -> new DSObject())
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ApplyFunctionToArgumentsStrategy((args) -> new FieldName((String) args[0]))
         );
     }
@@ -100,7 +100,7 @@ public class MainTestChainTest {
     public void Should_constructorThrowInitializationExceptionWhenIOCNotInitialized()
             throws Exception {
         IStrategy strategy = mock(IStrategy.class);
-        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"), strategy);
+        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"), strategy);
         doThrow(Exception.class).when(strategy).resolve();
         assertNotNull(new MainTestChain(this.testingChainName, this.completionCallbackMock, this.successArgumentsMock,
                 ScopeProvider.getCurrentScope(),

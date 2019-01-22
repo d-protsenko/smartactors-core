@@ -88,7 +88,7 @@ public class MessageProcessingTest {
 
         ScopeProvider.setCurrentScope(ScopeProvider.getScope(ScopeProvider.createScope(null)));
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new CreateNewInstanceStrategy(objects -> {
                     try {
                         return new Key(objects[0].toString());
@@ -98,10 +98,10 @@ public class MessageProcessingTest {
                 })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new CreateNewInstanceStrategy(objects -> new DSObject()));
 
-        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(objects -> {
                     try {
                         return new FieldName(String.valueOf(objects[0]));
@@ -229,12 +229,12 @@ public class MessageProcessingTest {
         final AtomicBoolean done = new AtomicBoolean(false);
         ConcurrentMap<Long, Long> threadUseCount = new ConcurrentHashMap<>();
 
-        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "chain_id_from_map_name"),
+        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "chain_id_from_map_name"),
                 new ResolveByNameIocStrategy(objects -> String.valueOf(objects[0])));
 
-        final IFieldName targetNameFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "target");
+        final IFieldName targetNameFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "target");
 
-        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "receiver_id_from_iobject"),
+        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "receiver_id_from_iobject"),
                 new IStrategy() {
                     @Override
                     public <T> T resolve(Object... args) throws StrategyException {
@@ -246,10 +246,10 @@ public class MessageProcessingTest {
                     }
                 });
 
-        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IReceiverChain.class.toString()),
+        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), IReceiverChain.class.toString()),
                 new ImmutableReceiverChainResolutionStrategy());
 
-        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IObject.class),
+        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), IObject.class),
                 new CreateNewInstanceStrategy(objects -> new DSObject()));
 
         IObject prepareTarget = new DSObject("{\"target\":\"prepare\"}");
@@ -266,8 +266,8 @@ public class MessageProcessingTest {
         IObject payloadChainDesc = new DSObject();
         IObject innerPayloadChainDesc = new DSObject();
 
-        IFieldName exceptionalFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "exceptional");
-        IFieldName pathFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "steps");
+        IFieldName exceptionalFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "exceptional");
+        IFieldName pathFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "steps");
 
         // Main chain
         mainChainDesc.setValue(exceptionalFieldName, new ArrayList<>());

@@ -97,7 +97,7 @@ public class FieldNamePluginTest {
         iActionNoArgsArgumentCaptor2.getValue().execute();
 
         verifyStatic();
-        IOC.remove(eq(fieldNameKey));
+        IOC.unregister(eq(fieldNameKey));
     }
 
     @Test
@@ -397,7 +397,7 @@ public class FieldNamePluginTest {
         verify(bootstrap).add(item);
 
         doThrow(new DeletionException("TestException")).when(IOC.class);
-        IOC.remove(any());
+        IOC.unregister(any());
 
         iActionNoArgsArgumentCaptor.getValue().execute();
     }

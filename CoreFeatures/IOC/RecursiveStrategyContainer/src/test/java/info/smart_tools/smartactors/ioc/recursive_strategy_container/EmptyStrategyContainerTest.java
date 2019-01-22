@@ -33,7 +33,7 @@ public class EmptyStrategyContainerTest {
 
     @Test(expected = StrategyContainerException.class)
     public void testRemove() throws StrategyContainerException {
-        container.remove(new Object());
+        container.unregister(new Object());
     }
 
 }

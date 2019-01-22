@@ -86,7 +86,7 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
 
         keyName = "filter creator#" + typeName;
         try {
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
@@ -102,7 +102,7 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
 
             keyName = "named filter config#" + typeName;
             try {
-                IOC.remove(Keys.resolveByName(keyName));
+                IOC.unregister(Keys.resolveByName(keyName));
             } catch(DeletionException e) {
                 System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
             } catch (ResolutionException e) { }
@@ -177,14 +177,14 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
 
         keyName = "named filter config#non-thread-safe wrapper creator";
         try {
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         keyName = "named filter config#thread-safe wrapper creator";
         try {
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
@@ -244,21 +244,21 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
 
         try {
             keyName = "object kind filter sequence#raw";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "object kind filter sequence#stateless_actor";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
 
         try {
             keyName = "object kind filter sequence#actor";
-            IOC.remove(Keys.resolveByName(keyName));
+            IOC.unregister(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }

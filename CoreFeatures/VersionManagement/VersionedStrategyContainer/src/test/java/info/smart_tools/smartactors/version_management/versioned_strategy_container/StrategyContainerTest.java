@@ -25,7 +25,7 @@ public class StrategyContainerTest {
         container.register(key, strategy);
         IStrategy result = container.resolve(key);
         assertEquals(result, strategy);
-        container.remove(key);
+        container.unregister(key);
         result = container.resolve(key);
         assertNull(result);
         reset(strategy);

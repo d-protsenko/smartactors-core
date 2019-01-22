@@ -24,7 +24,7 @@ public final class Keys {
      */
     public static IKey resolveByName(final String keyName)
             throws ResolutionException {
-        return (IKey) IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), keyName);
+        return (IKey) IOC.resolve(IOC.getKeyForKeyByNameStrategy(), keyName);
     }
 
     /**
@@ -38,7 +38,7 @@ public final class Keys {
 
         for(String keyName : keyNames) {
             try {
-                IOC.remove(Keys.resolveByName(keyName));
+                IOC.unregister(Keys.resolveByName(keyName));
             } catch (ResolutionException e) {
                 exception.addSuppressed(new ResolutionException(keyName));
             } catch(DeletionException e) {

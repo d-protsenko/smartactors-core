@@ -74,7 +74,7 @@ public class HandlerRoutingReceiverCreatorPlugin implements IPlugin {
 
                         try {
                             keyName = IRoutedObjectCreator.class.getCanonicalName() + "#stateless_actor";
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

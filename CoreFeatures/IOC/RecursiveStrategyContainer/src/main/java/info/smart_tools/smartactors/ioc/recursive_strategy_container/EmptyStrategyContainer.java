@@ -36,14 +36,14 @@ class EmptyStrategyContainer implements IStrategyContainer {
     }
 
     /**
-     * Always thorw exception because this container cannot remove any strategy.
+     * Always throw exception because this container cannot unregister any strategy.
      * @param key unique object identifier
      * @throws StrategyContainerException always
      */
     @Override
-    public void remove(final Object key) throws StrategyContainerException {
+    public void unregister(final Object key) throws StrategyContainerException {
         throw new StrategyContainerException(
-                String.format("Cannot remove the strategy for %s from EmptyStrategyContainer", String.valueOf(key)));
+                String.format("Cannot unregister the strategy for %s from EmptyStrategyContainer", String.valueOf(key)));
     }
 
 }

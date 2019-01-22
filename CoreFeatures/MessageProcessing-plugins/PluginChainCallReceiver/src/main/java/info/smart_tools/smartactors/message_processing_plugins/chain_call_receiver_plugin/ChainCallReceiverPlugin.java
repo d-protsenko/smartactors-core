@@ -54,7 +54,7 @@ public class ChainCallReceiverPlugin implements IPlugin {
                         try {
                             IOC.register(
                                     IOC.resolve(
-                                            IOC.getKeyForKeyByNameResolutionStrategy(),
+                                            IOC.getKeyForKeyByNameStrategy(),
                                             ChainCallReceiver.class.getCanonicalName()
                                     ),
                                     new ApplyFunctionToArgumentsStrategy(
@@ -62,14 +62,14 @@ public class ChainCallReceiverPlugin implements IPlugin {
                                                 try {
                                                     IFieldName fieldName = IOC.resolve(
                                                             IOC.resolve(
-                                                                    IOC.getKeyForKeyByNameResolutionStrategy(),
+                                                                    IOC.getKeyForKeyByNameStrategy(),
                                                                     "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"
                                                             ),
                                                             "strategyDependency"
                                                     );
                                                     IChainChoiceStrategy strategy = IOC.resolve(
                                                             IOC.resolve(
-                                                                    IOC.getKeyForKeyByNameResolutionStrategy(),
+                                                                    IOC.getKeyForKeyByNameStrategy(),
                                                                     ((IObject) args[0]).getValue(fieldName)
                                                             )
                                                     );
@@ -91,7 +91,7 @@ public class ChainCallReceiverPlugin implements IPlugin {
                         String keyName = ChainCallReceiver.class.getCanonicalName();
 
                         try {
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

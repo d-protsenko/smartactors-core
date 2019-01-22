@@ -111,22 +111,22 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
             exception.addSuppressed(e);
         }
         try {
-            IOC.remove(Keys.resolveByName("default_stack_depth"));
+            IOC.unregister(Keys.resolveByName("default_stack_depth"));
         } catch(ResolutionException | DeletionException e) {
             exception.addSuppressed(e);
         }
         try {
-            IOC.remove(Keys.resolveByName("thread_pool"));
+            IOC.unregister(Keys.resolveByName("thread_pool"));
         } catch(ResolutionException | DeletionException e) {
             exception.addSuppressed(e);
         }
         try {
-            IOC.remove(Keys.resolveByName("task_queue"));
+            IOC.unregister(Keys.resolveByName("task_queue"));
         } catch(ResolutionException | DeletionException e) {
             exception.addSuppressed(e);
         }
         try {
-            IOC.remove(Keys.resolveByName("task_dispatcher"));
+            IOC.unregister(Keys.resolveByName("task_dispatcher"));
         } catch(ResolutionException | DeletionException e) {
             exception.addSuppressed(e);
         }

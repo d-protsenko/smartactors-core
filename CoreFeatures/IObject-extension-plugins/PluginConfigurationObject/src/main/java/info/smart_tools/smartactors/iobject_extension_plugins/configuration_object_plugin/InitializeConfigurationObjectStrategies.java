@@ -50,7 +50,7 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                             try {
                                 IOC.register(
                                         IOC.resolve(
-                                                IOC.getKeyForKeyByNameResolutionStrategy(), "configuration object"
+                                                IOC.getKeyForKeyByNameStrategy(), "configuration object"
                                         ),
                                         new ApplyFunctionToArgumentsStrategy(
                                                 (a) -> {
@@ -83,13 +83,13 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                 ((IStrategyRegistration) strategy).register("default", defaultStrategy);
                                 IOC.register(
                                         IOC.resolve(
-                                                IOC.getKeyForKeyByNameResolutionStrategy(), "resolve key for configuration object"
+                                                IOC.getKeyForKeyByNameStrategy(), "resolve key for configuration object"
                                         ),
                                         strategy
                                 );
                                 IOC.register(
                                         IOC.resolve(
-                                                IOC.getKeyForKeyByNameResolutionStrategy(), "expandable_strategy#resolve key for configuration object"
+                                                IOC.getKeyForKeyByNameStrategy(), "expandable_strategy#resolve key for configuration object"
                                         ),
                                         new SingletonStrategy(strategy)
                                 );
@@ -105,21 +105,21 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
 
                             try {
                                 keyName = "expandable_strategy#resolve key for configuration object";
-                                IOC.remove(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), keyName));
+                                IOC.unregister(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), keyName));
                             } catch(DeletionException e) {
                                 System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                             } catch (ResolutionException e) { }
 
                             try {
                                 keyName = "resolve key for configuration object";
-                                IOC.remove(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), keyName));
+                                IOC.unregister(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), keyName));
                             } catch(DeletionException e) {
                                 System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                             } catch (ResolutionException e) { }
 
                             try {
                                 keyName = "configuration object";
-                                IOC.remove(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), keyName));
+                                IOC.unregister(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), keyName));
                             } catch(DeletionException e) {
                                 System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                             } catch (ResolutionException e) { }

@@ -101,7 +101,7 @@ public class EmbeddedSensorCreationStrategy implements IStrategy {
                 itemArgs.setValue(statisticsChainFieldName, statisticsChainName);
 
                 IMessageReceiver sensor = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(),
+                        IOC.resolve(IOC.getKeyForKeyByNameStrategy(),
                                 (itemDependency == null) ? DEFAULT_RECEIVER_DEPENDENCY : itemDependency),
                             itemArgs
                         );

@@ -37,7 +37,7 @@ public class PluginIOCKeys implements IPlugin {
                     .before("IOC")
                     .process(() -> {
                         try {
-                            IOC.register(IOC.getKeyForKeyByNameResolutionStrategy(), new ResolveByNameIocStrategy());
+                            IOC.register(IOC.getKeyForKeyByNameStrategy(), new ResolveByNameIocStrategy());
                         } catch (RegistrationException e) {
                             throw new ActionExecutionException("IOCKeys plugin can't load: can't register new strategy", e);
                         }
@@ -48,7 +48,7 @@ public class PluginIOCKeys implements IPlugin {
 
                         try {
                             keyName = "IOC key for key by name resolution strategy";
-                            IOC.remove(IOC.getKeyForKeyByNameResolutionStrategy());
+                            IOC.unregister(IOC.getKeyForKeyByNameStrategy());
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         }

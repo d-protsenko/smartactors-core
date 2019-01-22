@@ -58,7 +58,7 @@ public class Field implements IField {
         }
         try {
             return IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), type.getCanonicalName() + "convert"),
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), type.getCanonicalName() + "convert"),
                     value
             );
         } catch (Throwable e) {

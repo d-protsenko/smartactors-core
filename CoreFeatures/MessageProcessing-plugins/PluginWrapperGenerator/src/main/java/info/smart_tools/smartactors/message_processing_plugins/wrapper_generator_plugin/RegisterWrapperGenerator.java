@@ -49,7 +49,7 @@ public class RegisterWrapperGenerator implements IPlugin {
                                     IWrapperGenerator rg = new WrapperGenerator();
                                     IOC.register(
                                             IOC.resolve(
-                                                    IOC.getKeyForKeyByNameResolutionStrategy(),
+                                                    IOC.getKeyForKeyByNameStrategy(),
                                                     IWrapperGenerator.class.getCanonicalName()
                                             ),
                                             new SingletonStrategy(rg)
@@ -68,7 +68,7 @@ public class RegisterWrapperGenerator implements IPlugin {
 
                         try {
                             keyName = IWrapperGenerator.class.getCanonicalName();
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

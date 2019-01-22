@@ -51,7 +51,7 @@ public class ChainChoiceStrategyPlugin implements IPlugin {
                             IFieldName messageMapIdFieldName =
                                     IOC.resolve(
                                             IOC.resolve(
-                                                    IOC.getKeyForKeyByNameResolutionStrategy(),
+                                                    IOC.getKeyForKeyByNameStrategy(),
                                                     "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"
                                             ),
                                             "messageMapId"
@@ -65,7 +65,7 @@ public class ChainChoiceStrategyPlugin implements IPlugin {
                             };
 
                             IOC.register(
-                                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "chain choice strategy"),
+                                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "chain choice strategy"),
                                     new SingletonStrategy(strategy));
                         } catch (Exception e) {
                             throw new RuntimeException(
@@ -77,7 +77,7 @@ public class ChainChoiceStrategyPlugin implements IPlugin {
                         String itemName = "ChainChoiceStrategy";
                         String keyName = "chain choice strategy";
                         try {
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

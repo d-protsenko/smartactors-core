@@ -54,7 +54,7 @@ public class PluginResponse implements IPlugin {
                         String keyName = IResponse.class.getCanonicalName();
 
                         try {
-                            IOC.remove(Keys.resolveByName(keyName));
+                            IOC.unregister(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }

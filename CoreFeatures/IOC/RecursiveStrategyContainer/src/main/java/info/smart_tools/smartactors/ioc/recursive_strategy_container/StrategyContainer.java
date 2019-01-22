@@ -68,12 +68,12 @@ public class StrategyContainer implements IStrategyContainer {
 
     /**
      * Remove existing dependency of {@link IStrategy} by unique object identifier.
-     * Note remove is done only for this container,
+     * Note unregister is done only for this container,
      * the following call to {@link #resolve(Object)} may return the strategy from the parent container.
      * @param key unique object identifier
      * @throws StrategyContainerException  if any error occurred
      */
-    public void remove(final Object key)
+    public void unregister(final Object key)
             throws StrategyContainerException {
         strategyStorage.remove(key);
     }

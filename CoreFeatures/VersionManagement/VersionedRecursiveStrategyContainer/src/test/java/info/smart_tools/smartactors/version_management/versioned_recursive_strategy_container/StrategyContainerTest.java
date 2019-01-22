@@ -25,7 +25,7 @@ public class StrategyContainerTest {
         container.register(key, strategy);
         IStrategy result = container.resolve(key);
         assertEquals(result, strategy);
-        container.remove(key);
+        container.unregister(key);
         result = container.resolve(key);
         assertNull(result);
         reset(strategy);
@@ -52,11 +52,11 @@ public class StrategyContainerTest {
         assertSame(parentStrategy, parent.resolve(key));
         assertSame(childStrategy, child.resolve(key));
 
-        child.remove(key);
+        child.unregister(key);
         assertSame(parentStrategy, parent.resolve(key));
         assertSame(parentStrategy, child.resolve(key));
 
-        parent.remove(key);
+        parent.unregister(key);
         assertNull(parent.resolve(key));
         assertNull(child.resolve(key));
     }

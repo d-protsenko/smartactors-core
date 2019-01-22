@@ -112,7 +112,7 @@ public class ResolveIObjectByTypeStrategiesPluginTest {
         Mockito.verify(item).revertProcess(iActionNoArgsArgumentCaptor.capture());
 
         doThrow(new DeletionException("TestException")).when(IOC.class);
-        IOC.remove(any());
+        IOC.unregister(any());
         iActionNoArgsArgumentCaptor.getValue().execute();
     }
 

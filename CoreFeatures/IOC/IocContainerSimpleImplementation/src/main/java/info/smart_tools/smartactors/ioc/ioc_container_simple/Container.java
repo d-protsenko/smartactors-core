@@ -47,21 +47,11 @@ public class Container implements IContainer {
     }
 
     /**
-     * Return specific instance of {@link IKey} for resolve dependencies from key storage
-     * @return instance of {@link IKey}
-     */
-    @Override
-    @Deprecated
-    public IKey getKeyForKeyStorage() {
-        return keyForKeyByNameResolveStrategy;
-    }
-
-    /**
      * Return specific instance of {@link IKey} for strategy of resolving key by name
      * @return instance of {@link IKey}
      */
     @Override
-    public IKey getKeyForKeyByNameResolutionStrategy() {
+    public IKey getKeyForKeyByNameStrategy() {
         return keyForKeyByNameResolveStrategy;
     }
 
@@ -124,7 +114,7 @@ public class Container implements IContainer {
      * @throws DeletionException if any errors occurred
      */
     @Override
-    public void remove(final IKey key)
+    public void unregister(final IKey key)
             throws DeletionException {
         if (key == null) {
             throw new DeletionException("Key can't be null");

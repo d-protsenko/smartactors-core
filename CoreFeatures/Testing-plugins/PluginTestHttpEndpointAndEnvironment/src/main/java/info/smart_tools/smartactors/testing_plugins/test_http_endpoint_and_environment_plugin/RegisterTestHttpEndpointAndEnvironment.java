@@ -63,27 +63,27 @@ public class RegisterTestHttpEndpointAndEnvironment implements IPlugin {
                                     // Creates and registers test data source
                                     ISource<IObject, IObject> source = new IObjectDataSource();
                                     IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "test_data_source"),
+                                            IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "test_data_source"),
                                             new SingletonStrategy(source)
                                     );
 
                                     // Creates and register object with test responses
                                     List<Object> responses = new ArrayList<Object>();
                                     IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "test_responses"),
+                                            IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "test_responses"),
                                             new SingletonStrategy(responses)
                                     );
 
                                     // Creates and registers test channel handler
                                     IChannelHandler channelHandler = new TestChannelHandler(responses);
                                     IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), TestChannelHandler.class.getCanonicalName()),
+                                            IOC.resolve(IOC.getKeyForKeyByNameStrategy(), TestChannelHandler.class.getCanonicalName()),
                                             new SingletonStrategy(channelHandler)
                                     );
 
                                     // Creates and registers test http endpoint
                                     IEnvironmentHandler handler = IOC.resolve(
-                                            IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "test environment handler")
+                                            IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "test environment handler")
                                     );
                                     IAsyncService endpoint = new TestHttpEndpoint(
                                             source,
@@ -93,7 +93,7 @@ public class RegisterTestHttpEndpointAndEnvironment implements IPlugin {
                                             null
                                     );
                                     IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "test_http_endpoint"),
+                                            IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "test_http_endpoint"),
                                             new SingletonStrategy(endpoint)
                                     );
                                     endpoint.start();

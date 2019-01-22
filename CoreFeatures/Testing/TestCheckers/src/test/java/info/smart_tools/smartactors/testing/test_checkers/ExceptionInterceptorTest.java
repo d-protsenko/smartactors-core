@@ -94,7 +94,7 @@ public class ExceptionInterceptorTest extends PluginsLoadingTestBase {
         IObject desc = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'class': 'java.lang.NullPointerException'}".replace('\'', '"'));
 
-        IOC.remove(Keys.resolveByName("receiver_id_from_iobject"));
+        IOC.unregister(Keys.resolveByName("receiver_id_from_iobject"));
 
         new ExceptionInterceptor(desc);
     }

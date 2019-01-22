@@ -23,7 +23,7 @@ public class ContainerTest {
         IContainer container = new Container();
         assertNotNull(container);
         IKey key1 = container.getIocKey();
-        IKey key2 = container.getKeyForKeyByNameResolutionStrategy();
+        IKey key2 = container.getKeyForKeyByNameStrategy();
         assertNull(key1);
         assertNotNull(key2);
     }
@@ -44,7 +44,7 @@ public class ContainerTest {
         verify(strategy, times(1)).resolve(param);
         assertSame(result, value);
 
-        container.remove(strategyKey);
+        container.unregister(strategyKey);
         result = container.resolve(strategyKey);
         fail();
     }
@@ -69,7 +69,7 @@ public class ContainerTest {
     public void checkDeletionException()
             throws Exception {
         IContainer container = new Container();
-        container.remove(null);
+        container.unregister(null);
         fail();
     }
 }

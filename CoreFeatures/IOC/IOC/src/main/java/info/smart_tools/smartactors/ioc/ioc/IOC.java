@@ -56,14 +56,23 @@ public final class IOC {
      * @return instance of {@link IKey}
      */
     @Deprecated
-    public static IKey getKeyForKeyStorage() { return container.getKeyForKeyByNameResolutionStrategy(); }
+    public static IKey getKeyForKeyStorage() { return container.getKeyForKeyByNameStrategy(); }
 
     /**
      * Return specific instance of {@link IKey} for strategy of resolving key by name
      * @return instance of {@link IKey}
      */
+    @Deprecated
     public static IKey getKeyForKeyByNameResolutionStrategy() {
-        return container.getKeyForKeyByNameResolutionStrategy();
+        return container.getKeyForKeyByNameStrategy();
+    }
+
+    /**
+     * Return specific instance of {@link IKey} for strategy of resolving key by name
+     * @return instance of {@link IKey}
+     */
+    public static IKey getKeyForKeyByNameStrategy() {
+        return container.getKeyForKeyByNameStrategy();
     }
 
     /**
@@ -95,8 +104,19 @@ public final class IOC {
      * @param key instance of {@link IKey}
      * @throws DeletionException if any errors occurred
      */
+    @Deprecated
     public static void remove(final IKey key)
             throws DeletionException {
-        container.remove(key);
+        container.unregister(key);
+    }
+
+    /**
+     * Remove dependency with given key
+     * @param key instance of {@link IKey}
+     * @throws DeletionException if any errors occurred
+     */
+    public static void unregister(final IKey key)
+            throws DeletionException {
+        container.unregister(key);
     }
 }

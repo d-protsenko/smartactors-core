@@ -34,6 +34,6 @@ public interface IStrategyContainer {
      * @param key unique object identifier
      * @throws StrategyContainerException  if any error occurred
      */
-    void remove(final Object key)
+    void unregister(final Object key)
             throws StrategyContainerException;
 }

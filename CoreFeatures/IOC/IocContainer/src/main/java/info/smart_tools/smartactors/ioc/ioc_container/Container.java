@@ -22,7 +22,7 @@ public class Container implements IContainer {
     /** Key for getting instance of {@link IStrategyContainer} from current scope */
     private IKey strategyContainerKey;
     /** */
-    private IKey keyForKeyByNameResolveStrategy;
+    private IKey keyByNameStrategyKey;
 
     /**
      * Default constructor
@@ -30,7 +30,7 @@ public class Container implements IContainer {
     public Container() {
         try {
             strategyContainerKey = new Key(java.util.UUID.randomUUID().toString());
-            keyForKeyByNameResolveStrategy = new Key(java.util.UUID.randomUUID().toString());
+            keyByNameStrategyKey = new Key(java.util.UUID.randomUUID().toString());
         } catch (Exception e) {
             throw new RuntimeException("Initialization of IOC container has been failed.");
         }
@@ -50,18 +50,8 @@ public class Container implements IContainer {
      * @return instance of {@link IKey}
      */
     @Override
-    @Deprecated
-    public IKey getKeyForKeyStorage() {
-        return this.keyForKeyByNameResolveStrategy;
-    }
-
-    /**
-     * Return specific instance of {@link IKey} for resolve dependencies from key storage
-     * @return instance of {@link IKey}
-     */
-    @Override
-    public IKey getKeyForKeyByNameResolutionStrategy() {
-        return this.keyForKeyByNameResolveStrategy;
+    public IKey getKeyForKeyByNameStrategy() {
+        return this.keyByNameStrategyKey;
     }
 
     /**
@@ -103,16 +93,16 @@ public class Container implements IContainer {
 
     /**
      *
-     * Remove dependency with given key
+     * Unregister dependency with given key
      * @param key instance of {@link IKey}
      * @throws DeletionException if any errors occurred
      */
     @Override
-    public void remove(final IKey key)
+    public void unregister(final IKey key)
             throws DeletionException {
         try {
             IStrategyContainer strategyContainer = (IStrategyContainer) ScopeProvider.getCurrentScope().getValue(strategyContainerKey);
-            strategyContainer.remove(key);
+            strategyContainer.unregister(key);
         } catch (Throwable e) {
             throw new DeletionException("Deletion of dependency failed for key " + key, e);
         }
