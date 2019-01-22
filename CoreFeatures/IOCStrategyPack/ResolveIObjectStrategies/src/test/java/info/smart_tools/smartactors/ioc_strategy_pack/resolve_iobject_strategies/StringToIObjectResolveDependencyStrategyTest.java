@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_iobject_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import org.junit.Before;
@@ -17,14 +17,14 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(String.class)
-public class StringToIObjectResolveDependencyStrategyTest {
+public class StringToIObjectResolutionStrategyTest {
 
-    private StringToIObjectResolveDependencyStrategy strategy;
+    private StringToIObjectResolutionStrategy strategy;
 
     @Before
     public void setUp() throws Exception {
 
-        strategy = new StringToIObjectResolveDependencyStrategy();
+        strategy = new StringToIObjectResolutionStrategy();
     }
 
     @Test
@@ -40,7 +40,7 @@ public class StringToIObjectResolveDependencyStrategyTest {
         assertEquals(result.getValue(new FieldName("key2")), "value");
     }
 
-    @Test(expected = ResolveDependencyStrategyException.class)
+    @Test(expected = ResolutionStrategyException.class)
     public void ShouldThrowException_When_StringIsIncorrect() throws Exception {
 
         String invalid = "invalid";
@@ -48,7 +48,7 @@ public class StringToIObjectResolveDependencyStrategyTest {
         fail();
     }
 
-    @Test(expected = ResolveDependencyStrategyException.class)
+    @Test(expected = ResolutionStrategyException.class)
     public void ShouldThrowException_When_AnyErrorIsOccurred() throws Exception {
 
         mockStatic(String.class);
@@ -58,7 +58,7 @@ public class StringToIObjectResolveDependencyStrategyTest {
         fail();
     }
 
-    @Test(expected = ResolveDependencyStrategyException.class)
+    @Test(expected = ResolutionStrategyException.class)
     public void ShouldThrowException_When_NullIsPassed() throws Exception {
 
         strategy.resolve(null);

@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.base.exception.initialization_exception.Init
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
@@ -99,7 +99,7 @@ public class MainTestChainTest {
     @Test(expected = InitializationException.class)
     public void Should_constructorThrowInitializationExceptionWhenIOCNotInitialized()
             throws Exception {
-        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+        IResolutionStrategy strategy = mock(IResolutionStrategy.class);
         IOC.register(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"), strategy);
         doThrow(Exception.class).when(strategy).resolve();
         assertNotNull(new MainTestChain(this.testingChainName, this.completionCallbackMock, this.successArgumentsMock,

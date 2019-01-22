@@ -3,7 +3,7 @@
  *
  * <pre>
  * This implementation has follow specific features:
- * - key-{@link info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy} storage;
+ * - key-{@link info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy} storage;
  * - this implementation should be used from main manager thread
  * </pre>
  */

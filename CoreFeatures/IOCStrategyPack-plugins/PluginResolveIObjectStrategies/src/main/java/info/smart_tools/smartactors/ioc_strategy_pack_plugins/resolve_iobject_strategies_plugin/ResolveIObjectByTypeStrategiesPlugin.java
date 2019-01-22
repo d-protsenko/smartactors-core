@@ -1,12 +1,12 @@
 package info.smart_tools.smartactors.ioc_strategy_pack_plugins.resolve_iobject_strategies_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.IRegistrationStrategy;
-import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.exception.RegistrationStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.IRegistrationStrategy;
+import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.exception.RegistrationStrategyException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.base.strategy.strategy_storage_with_cache_strategy.StrategyStorageWithCacheStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
@@ -20,8 +20,8 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.key_tools.Keys;
-import info.smart_tools.smartactors.ioc_strategy_pack.resolve_iobject_strategies.MapToIObjectResolveDependencyStrategy;
-import info.smart_tools.smartactors.ioc_strategy_pack.resolve_iobject_strategies.StringToIObjectResolveDependencyStrategy;
+import info.smart_tools.smartactors.ioc_strategy_pack.resolve_iobject_strategies.MapToIObjectResolutionStrategy;
+import info.smart_tools.smartactors.ioc_strategy_pack.resolve_iobject_strategies.StringToIObjectResolutionStrategy;
 
 import java.util.Map;
 
@@ -55,8 +55,8 @@ public class ResolveIObjectByTypeStrategiesPlugin implements IPlugin {
                     try {
                         IFunction argToKey = arg -> arg.getClass();
                         IFunctionTwoArgs findValueByArgument = (map, arg) -> {
-                            IResolveDependencyStrategy strategy = null;
-                            for (Map.Entry<Class, IResolveDependencyStrategy> entry : ((Map<Class, IResolveDependencyStrategy>) map).entrySet()) {
+                            IResolutionStrategy strategy = null;
+                            for (Map.Entry<Class, IResolutionStrategy> entry : ((Map<Class, IResolutionStrategy>) map).entrySet()) {
                                 if (entry.getKey().isInstance(arg)) {
                                     strategy = entry.getValue();
 
@@ -68,9 +68,9 @@ public class ResolveIObjectByTypeStrategiesPlugin implements IPlugin {
 
                         IKey typeStrategy = Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject" + "convert");
                         IKey expandableTypeStrategy = Keys.resolveByName("expandable_strategy#" + "info.smart_tools.smartactors.iobject.iobject.IObject");
-                        IResolveDependencyStrategy resolveStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
-                        ((IRegistrationStrategy) resolveStrategy).register(Map.class, new MapToIObjectResolveDependencyStrategy());
-                        ((IRegistrationStrategy) resolveStrategy).register(String.class, new StringToIObjectResolveDependencyStrategy());
+                        IResolutionStrategy resolveStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
+                        ((IRegistrationStrategy) resolveStrategy).register(Map.class, new MapToIObjectResolutionStrategy());
+                        ((IRegistrationStrategy) resolveStrategy).register(String.class, new StringToIObjectResolutionStrategy());
                         IOC.register(typeStrategy, resolveStrategy);
                         IOC.register(expandableTypeStrategy, new SingletonStrategy(resolveStrategy));
                     } catch (ResolutionException e) {

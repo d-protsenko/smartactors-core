@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.transformation_rules.get_first_not_null;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 public class GetFirstNotNullRuleTest {
 
     @Test
-    public void MustCorrectReturnFirstNotNull() throws ResolveDependencyStrategyException {
+    public void MustCorrectReturnFirstNotNull() throws ResolutionStrategyException {
         Object[] args = new Object[10];
 
         Object targetObject = new Object();
@@ -27,8 +27,8 @@ public class GetFirstNotNullRuleTest {
         assertTrue(targetObject == new GetFirstNotNullRule().resolve(args));
     }
 
-    @Test(expected = ResolveDependencyStrategyException.class)
-    public void MustInCorrectReturnFirstNotNullWhenAllNull() throws ResolveDependencyStrategyException {
+    @Test(expected = ResolutionStrategyException.class)
+    public void MustInCorrectReturnFirstNotNullWhenAllNull() throws ResolutionStrategyException {
         Object[] args = new Object[10];
 
         new GetFirstNotNullRule().resolve(args);

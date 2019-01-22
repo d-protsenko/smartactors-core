@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_standard_types_strategies.to_list_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,18 +9,18 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class BooleanArrayToListResolveDependencyStrategyTest {
+public class BooleanArrayToListResolutionStrategyTest {
 
-    private BooleanArrayToListResolveDependencyStrategy strategy;
+    private BooleanArrayToListResolutionStrategy strategy;
 
     @Before
     public void setUp() {
 
-        strategy = new BooleanArrayToListResolveDependencyStrategy();
+        strategy = new BooleanArrayToListResolutionStrategy();
     }
 
     @Test
-    public void ShouldConvertBooleanArrayToList() throws ResolveDependencyStrategyException {
+    public void ShouldConvertBooleanArrayToList() throws ResolutionStrategyException {
 
         boolean[] array = new boolean[] {true, false};
         List<Boolean> result = strategy.resolve(array);
@@ -29,8 +29,8 @@ public class BooleanArrayToListResolveDependencyStrategyTest {
         assertEquals(result.get(1), false);
     }
 
-    @Test(expected = ResolveDependencyStrategyException.class)
-    public void ShouldThrowException_When_ErrorIsOccurred() throws ResolveDependencyStrategyException {
+    @Test(expected = ResolutionStrategyException.class)
+    public void ShouldThrowException_When_ErrorIsOccurred() throws ResolutionStrategyException {
 
         boolean var = false;
         strategy.resolve(var);

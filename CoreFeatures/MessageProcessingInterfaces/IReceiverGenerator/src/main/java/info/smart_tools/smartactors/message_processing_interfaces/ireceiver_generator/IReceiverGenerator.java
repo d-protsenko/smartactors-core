@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_processing_interfaces.ireceiver_generator;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.message_processing_interfaces.ireceiver_generator.exception.ReceiverGeneratorException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 
@@ -21,7 +21,7 @@ public interface IReceiverGenerator {
      */
     IMessageReceiver generate(
             Object instance,
-            IResolveDependencyStrategy wrapperResolutionStrategy,
+            IResolutionStrategy wrapperResolutionStrategy,
             String methodName
     )
             throws InvalidArgumentException, ReceiverGeneratorException;

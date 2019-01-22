@@ -1,15 +1,15 @@
 package info.smart_tools.smartactors.base.strategy.strategy_storage_with_cache_strategy;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.IRegistrationStrategy;
-import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.exception.RegistrationStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.IRegistrationStrategy;
+import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.exception.RegistrationStrategyException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.icacheable.ICacheable;
 import info.smart_tools.smartactors.base.interfaces.icacheable.exception.CacheDropException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -18,13 +18,13 @@ import java.util.concurrent.ConcurrentMap;
  * Strategy to strategyStorage some specific strategies united by a common purpose. Supports cache.
  */
 
-public class StrategyStorageWithCacheStrategy implements IResolveDependencyStrategy, IRegistrationStrategy, ICacheable {
+public class StrategyStorageWithCacheStrategy implements IResolutionStrategy, IRegistrationStrategy, ICacheable {
 
     /**
      * Specific strategies for resolve
      */
-    private ConcurrentMap<Object, IResolveDependencyStrategy> strategyStorage;
-    private ConcurrentMap<Object, IResolveDependencyStrategy> cacheStrategiesMap;
+    private ConcurrentMap<Object, IResolutionStrategy> strategyStorage;
+    private ConcurrentMap<Object, IResolutionStrategy> cacheStrategiesMap;
     private IFunction argToKeyFunction;
     private IFunctionTwoArgs findValueByArgumentFunction;
 
@@ -44,30 +44,30 @@ public class StrategyStorageWithCacheStrategy implements IResolveDependencyStrat
 
     @Override
     public <T> T resolve(Object... args)
-            throws ResolveDependencyStrategyException {
+            throws ResolutionStrategyException {
         try {
             Object key = this.argToKeyFunction.execute(args[0]);
-            IResolveDependencyStrategy strategy = this.cacheStrategiesMap.get(key);
+            IResolutionStrategy strategy = this.cacheStrategiesMap.get(key);
             if (null != strategy) {
                 return strategy.resolve(args[0]);
             }
 
-            strategy = (IResolveDependencyStrategy) this.findValueByArgumentFunction.execute(this.strategyStorage, args[0]);
+            strategy = (IResolutionStrategy) this.findValueByArgumentFunction.execute(this.strategyStorage, args[0]);
 
             if (null == strategy) {
-                throw new ResolveDependencyStrategyException("No strategy found for " + args[0]);
+                throw new ResolutionStrategyException("No strategy found for " + args[0]);
             }
 
             this.cacheStrategiesMap.put(key, strategy);
 
             return strategy.resolve(args[0]);
         } catch (RuntimeException | FunctionExecutionException | InvalidArgumentException e) {
-            throw new ResolveDependencyStrategyException(e);
+            throw new ResolutionStrategyException(e);
         }
     }
 
     @Override
-    public void register(Object key, IResolveDependencyStrategy value)
+    public void register(Object key, IResolutionStrategy value)
             throws RegistrationStrategyException {
         try {
             this.dropCacheFor(key);

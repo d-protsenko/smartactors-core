@@ -2,8 +2,8 @@ package info.smart_tools.smartactors.message_processing_plugins.messaging_identi
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
@@ -47,21 +47,21 @@ public class PluginMessagingIdentifiers implements IPlugin {
                             IFieldName targetFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "target");
 
                             // Just use strings as identifiers for chains and receivers
-                            IResolveDependencyStrategy toStringStrategy = new IResolveDependencyStrategy() {
+                            IResolutionStrategy toStringStrategy = new IResolutionStrategy() {
                                 @Override
-                                public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
+                                public <T> T resolve(final Object... args) throws ResolutionStrategyException {
                                     return (T) String.valueOf(args[0]);
                                 }
                             };
 
                             // To get receiver id from chain step IObject -- read its "target" field and cast to string
-                            IResolveDependencyStrategy targetToStringStrategy = new IResolveDependencyStrategy() {
+                            IResolutionStrategy targetToStringStrategy = new IResolutionStrategy() {
                                 @Override
-                                public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
+                                public <T> T resolve(final Object... args) throws ResolutionStrategyException {
                                     try {
                                         return (T) String.valueOf(((IObject) args[0]).getValue(targetFieldName));
                                     } catch (ReadValueException | InvalidArgumentException | ClassCastException e) {
-                                        throw new ResolveDependencyStrategyException(e);
+                                        throw new ResolutionStrategyException(e);
                                     }
                                 }
                             };

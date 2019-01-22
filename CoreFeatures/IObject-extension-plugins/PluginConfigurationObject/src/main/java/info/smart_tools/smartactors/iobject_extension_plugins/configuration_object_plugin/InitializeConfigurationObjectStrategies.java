@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.iobject_extension_plugins.configuration_object_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.IRegistrationStrategy;
+import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.IRegistrationStrategy;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
@@ -68,7 +68,7 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                                 }
                                         )
                                 );
-                                IResolveDependencyStrategy defaultStrategy = new ApplyFunctionToArgumentsStrategy(
+                                IResolutionStrategy defaultStrategy = new ApplyFunctionToArgumentsStrategy(
                                         (a) -> {
                                             try {
                                                 return a[1];
@@ -79,7 +79,7 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                                             }
                                         }
                                 );
-                                IResolveDependencyStrategy strategy = new CObjectStrategy();
+                                IResolutionStrategy strategy = new CObjectStrategy();
                                 ((IRegistrationStrategy) strategy).register("default", defaultStrategy);
                                 IOC.register(
                                         IOC.resolve(

@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.message_processing.object_creation_strategies;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -39,7 +39,7 @@ import java.util.List;
  *     <li>Configuration object</li>
  * </ul>
  */
-public class FullObjectCreatorResolutionStrategy implements IResolveDependencyStrategy {
+public class FullObjectCreatorResolutionStrategy implements IResolutionStrategy {
     private final IFieldName filtersFieldName;
     private final IFieldName dependencyFieldName;
 
@@ -50,7 +50,7 @@ public class FullObjectCreatorResolutionStrategy implements IResolveDependencySt
     }
 
     @Override
-    public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
+    public <T> T resolve(Object... args) throws ResolutionStrategyException {
         IObject config = (IObject) args[0];
 
         try {
@@ -71,7 +71,7 @@ public class FullObjectCreatorResolutionStrategy implements IResolveDependencySt
 
             return (T) creator;
         } catch (InvalidArgumentException | ReadValueException | ResolutionException e) {
-            throw new ResolveDependencyStrategyException(e);
+            throw new ResolutionStrategyException(e);
         }
     }
 }

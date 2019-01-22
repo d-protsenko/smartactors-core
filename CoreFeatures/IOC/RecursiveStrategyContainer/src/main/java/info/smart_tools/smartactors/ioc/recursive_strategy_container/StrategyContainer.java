@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc.recursive_strategy_container;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
 import info.smart_tools.smartactors.ioc.istrategy_container.exception.StrategyContainerException;
 
@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Simple key-value storage
  * <ul>
  *     <li>key is a unique object identifier</li>
- *     <li>value is a instance of {@link IResolveDependencyStrategy}</li>
+ *     <li>value is a instance of {@link IResolutionStrategy}</li>
  * </ul>
  * </p>
  * <p>
@@ -27,7 +27,7 @@ public class StrategyContainer implements IStrategyContainer {
     /**
      * Local storage
      */
-    private Map<Object, IResolveDependencyStrategy> strategyStorage = new ConcurrentHashMap<Object, IResolveDependencyStrategy>();
+    private Map<Object, IResolutionStrategy> strategyStorage = new ConcurrentHashMap<Object, IResolutionStrategy>();
 
     /**
      *  Constructs the container.
@@ -40,15 +40,15 @@ public class StrategyContainer implements IStrategyContainer {
     }
 
     /**
-     * Resolve {@link IResolveDependencyStrategy} by given unique object identifier.
+     * Resolve {@link IResolutionStrategy} by given unique object identifier.
      * Asks parent strategy if this container doesn't have a strategy for the key.
      * @param key unique object identifier
-     * @return instance of {@link IResolveDependencyStrategy}
+     * @return instance of {@link IResolutionStrategy}
      * @throws StrategyContainerException if any errors occurred
      */
-    public IResolveDependencyStrategy resolve(final Object key)
+    public IResolutionStrategy resolve(final Object key)
             throws StrategyContainerException {
-        IResolveDependencyStrategy strategy = strategyStorage.get(key);
+        IResolutionStrategy strategy = strategyStorage.get(key);
         if (strategy == null) {
             strategy = parentContainer.resolve(key);    // ask parent ONLY AFTER local resolution failed
         }
@@ -56,18 +56,18 @@ public class StrategyContainer implements IStrategyContainer {
     }
 
     /**
-     * Register new dependency of {@link IResolveDependencyStrategy} instance by unique object identifier
+     * Register new dependency of {@link IResolutionStrategy} instance by unique object identifier
      * @param key unique object identifier
-     * @param strategy instance of {@link IResolveDependencyStrategy}
+     * @param strategy instance of {@link IResolutionStrategy}
      * @throws StrategyContainerException if any error occurred
      */
-    public void register(final Object key, final IResolveDependencyStrategy strategy)
+    public void register(final Object key, final IResolutionStrategy strategy)
             throws StrategyContainerException {
         strategyStorage.put(key, strategy);
     }
 
     /**
-     * Remove existing dependency of {@link IResolveDependencyStrategy} by unique object identifier.
+     * Remove existing dependency of {@link IResolutionStrategy} by unique object identifier.
      * Note remove is done only for this container,
      * the following call to {@link #resolve(Object)} may return the strategy from the parent container.
      * @param key unique object identifier

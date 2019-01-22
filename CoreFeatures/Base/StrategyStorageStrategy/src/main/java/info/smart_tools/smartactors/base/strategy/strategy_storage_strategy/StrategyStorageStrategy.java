@@ -1,13 +1,13 @@
 package info.smart_tools.smartactors.base.strategy.strategy_storage_strategy;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.IRegistrationStrategy;
-import info.smart_tools.smartactors.base.interfaces.i_registration_strategy.exception.RegistrationStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.IRegistrationStrategy;
+import info.smart_tools.smartactors.base.interfaces.iregistration_strategy.exception.RegistrationStrategyException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -15,12 +15,12 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Strategy to storage some specific strategies united by a common purpose
  */
-public class StrategyStorageStrategy implements IResolveDependencyStrategy, IRegistrationStrategy {
+public class StrategyStorageStrategy implements IResolutionStrategy, IRegistrationStrategy {
 
     /**
      * Strategy storage
      */
-    private ConcurrentMap<Object, IResolveDependencyStrategy> strategyStorage;
+    private ConcurrentMap<Object, IResolutionStrategy> strategyStorage;
     private IFunction argToKeyFunction;
     private IFunctionTwoArgs findValueByArgumentFunction;
 
@@ -36,18 +36,18 @@ public class StrategyStorageStrategy implements IResolveDependencyStrategy, IReg
     }
 
     @Override
-    public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
+    public <T> T resolve(Object... args) throws ResolutionStrategyException {
         try {
-            IResolveDependencyStrategy strategy = (IResolveDependencyStrategy) this.findValueByArgumentFunction.execute(this.strategyStorage, args[0]);
+            IResolutionStrategy strategy = (IResolutionStrategy) this.findValueByArgumentFunction.execute(this.strategyStorage, args[0]);
 
             return null == strategy ? null : strategy.resolve(args);
         } catch (Exception e) {
-            throw new ResolveDependencyStrategyException("Object resolution failed.", e);
+            throw new ResolutionStrategyException("Object resolution failed.", e);
         }
     }
 
     @Override
-    public void register(Object arg, IResolveDependencyStrategy value)
+    public void register(Object arg, IResolutionStrategy value)
             throws RegistrationStrategyException {
         try {
             this.strategyStorage.put(this.argToKeyFunction.execute(arg), value);

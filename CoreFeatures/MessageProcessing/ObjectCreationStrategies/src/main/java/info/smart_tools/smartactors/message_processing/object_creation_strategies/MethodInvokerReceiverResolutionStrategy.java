@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.message_processing.object_creation_strategies;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
 /**
  * Strategy that creates a invoker receiver.
  */
-public class MethodInvokerReceiverResolutionStrategy implements IResolveDependencyStrategy {
+public class MethodInvokerReceiverResolutionStrategy implements IResolutionStrategy {
     private final IFieldName wrapperResolutionStrategyDependencyFieldName;
     private final IReceiverGenerator receiverGenerator;
 
@@ -35,13 +35,13 @@ public class MethodInvokerReceiverResolutionStrategy implements IResolveDependen
     }
 
     @Override
-    public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
+    public <T> T resolve(final Object... args) throws ResolutionStrategyException {
         Object targetObject = args[0];
         Method method = (Method) args[1];
         IObject invokerConfig = (IObject) args[2];
 
         if (method.getParameterCount() != 1) {
-            throw new ResolveDependencyStrategyException(
+            throw new ResolutionStrategyException(
                     String.format("Unexpected amount of arguments in method %s of class %s.",
                             method.getName(), method.getDeclaringClass().getCanonicalName()));
         }
@@ -53,14 +53,14 @@ public class MethodInvokerReceiverResolutionStrategy implements IResolveDependen
                 wrapperResolutionStrategyDependency = "default wrapper resolution strategy dependency for invoker receiver";
             }
 
-            IResolveDependencyStrategy wrapperResolutionStrategy = IOC.resolve(
+            IResolutionStrategy wrapperResolutionStrategy = IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), wrapperResolutionStrategyDependency),
                     method.getParameterTypes()[0]
             );
 
             return (T) receiverGenerator.generate(targetObject, wrapperResolutionStrategy, method.getName());
         } catch (ReadValueException | InvalidArgumentException | ResolutionException | ReceiverGeneratorException e) {
-            throw new ResolveDependencyStrategyException(e);
+            throw new ResolutionStrategyException(e);
         }
     }
 }

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.base.strategy.singleton_strategy;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -14,7 +14,7 @@ public class SingletonStrategyTest {
     @Test (expected = InvalidArgumentException.class)
     public void checkSingletonStrategyCreation()
             throws Exception {
-        IResolveDependencyStrategy strategy = new SingletonStrategy();
+        IResolutionStrategy strategy = new SingletonStrategy();
         assertNotNull(strategy);
         fail();
     }
@@ -24,7 +24,7 @@ public class SingletonStrategyTest {
             throws Exception {
         Object value = new String("a");
         Object other = new String("a");
-        IResolveDependencyStrategy strategy = new SingletonStrategy(value);
+        IResolutionStrategy strategy = new SingletonStrategy(value);
         Object result = strategy.resolve();
 
         assertNotSame(value, other);

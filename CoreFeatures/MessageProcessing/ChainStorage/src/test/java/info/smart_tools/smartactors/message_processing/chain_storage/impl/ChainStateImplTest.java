@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_processing.chain_storage.impl;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
  */
 public class ChainStateImplTest extends PluginsLoadingTestBase {
     private IReceiverChain[] chainMocks;
-    private IResolveDependencyStrategy[] modStrategyMocks;
+    private IResolutionStrategy[] modStrategyMocks;
     private IObject[] modArgMocks;
 
     @Override
@@ -46,11 +46,11 @@ public class ChainStateImplTest extends PluginsLoadingTestBase {
             chainMocks[i] = mock(IReceiverChain.class);
         }
 
-        modStrategyMocks = new IResolveDependencyStrategy[2];
+        modStrategyMocks = new IResolutionStrategy[2];
         modArgMocks = new IObject[modStrategyMocks.length];
 
         for (int i = 0; i < modStrategyMocks.length; i++) {
-            modStrategyMocks[i] = mock(IResolveDependencyStrategy.class);
+            modStrategyMocks[i] = mock(IResolutionStrategy.class);
             modArgMocks[i] = mock(IObject.class);
 
             String mk = MessageFormat.format("mod-{0}", i);

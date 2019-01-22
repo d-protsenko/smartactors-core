@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_processing.object_creation_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -36,14 +36,14 @@ public class MethodInvokerReceiverResolutionStrategyTest extends PluginsLoadingT
 
     private AObject object = new AObject();
 
-    private IResolveDependencyStrategy strategy;
+    private IResolutionStrategy strategy;
 
     private IObject configMock;
     private IReceiverGenerator receiverGeneratorMock;
-    private IResolveDependencyStrategy defaultWrapperResolutionStrategyMock;
-    private IResolveDependencyStrategy specialWrapperResolutionStrategyMock;
-    private IResolveDependencyStrategy defaultWrapperResolutionStrategyResolutionStrategyMock;
-    private IResolveDependencyStrategy specialWrapperResolutionStrategyResolutionStrategyMock;
+    private IResolutionStrategy defaultWrapperResolutionStrategyMock;
+    private IResolutionStrategy specialWrapperResolutionStrategyMock;
+    private IResolutionStrategy defaultWrapperResolutionStrategyResolutionStrategyMock;
+    private IResolutionStrategy specialWrapperResolutionStrategyResolutionStrategyMock;
     private IMessageReceiver receiverMock1;
     private IMessageReceiver receiverMock2;
 
@@ -57,10 +57,10 @@ public class MethodInvokerReceiverResolutionStrategyTest extends PluginsLoadingT
 
         strategy = new MethodInvokerReceiverResolutionStrategy();
 
-        defaultWrapperResolutionStrategyMock = mock(IResolveDependencyStrategy.class);
-        specialWrapperResolutionStrategyMock = mock(IResolveDependencyStrategy.class);
-        defaultWrapperResolutionStrategyResolutionStrategyMock = mock(IResolveDependencyStrategy.class);
-        specialWrapperResolutionStrategyResolutionStrategyMock = mock(IResolveDependencyStrategy.class);
+        defaultWrapperResolutionStrategyMock = mock(IResolutionStrategy.class);
+        specialWrapperResolutionStrategyMock = mock(IResolutionStrategy.class);
+        defaultWrapperResolutionStrategyResolutionStrategyMock = mock(IResolutionStrategy.class);
+        specialWrapperResolutionStrategyResolutionStrategyMock = mock(IResolutionStrategy.class);
         receiverMock1 = mock(IMessageReceiver.class);
         receiverMock2 = mock(IMessageReceiver.class);
 
@@ -89,7 +89,7 @@ public class MethodInvokerReceiverResolutionStrategyTest extends PluginsLoadingT
         load(IFieldNamePlugin.class);
     }
 
-    @Test(expected = ResolveDependencyStrategyException.class)
+    @Test(expected = ResolutionStrategyException.class)
     public void Should_throwWhenMethodHasTooMuchArguments()
             throws Exception {
         strategy.resolve(

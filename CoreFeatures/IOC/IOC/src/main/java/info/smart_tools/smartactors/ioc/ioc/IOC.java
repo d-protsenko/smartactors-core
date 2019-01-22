@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc.ioc;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.ioc.iioccontainer.IContainer;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
@@ -82,10 +82,10 @@ public final class IOC {
     /**
      * Register new dependency by instance of {@link IKey}
      * @param key instance of {@link IKey}
-     * @param strategy instance of {@link IResolveDependencyStrategy}
+     * @param strategy instance of {@link IResolutionStrategy}
      * @throws RegistrationException when registration is impossible because of any error
      */
-    public static void register(final IKey key, final IResolveDependencyStrategy strategy)
+    public static void register(final IKey key, final IResolutionStrategy strategy)
             throws RegistrationException {
         container.register(key, strategy);
     }

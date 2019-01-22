@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.ioc.iioccontainer;
 
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
@@ -45,10 +45,10 @@ public interface IContainer {
     /**
      * Register new dependency by instance of {@link IKey}
      * @param key instance of {@link IKey}
-     * @param strategy instance of {@link IResolveDependencyStrategy}
+     * @param strategy instance of {@link IResolutionStrategy}
      * @throws RegistrationException when registration is impossible because of any error
      */
-    void register(final IKey key, final IResolveDependencyStrategy strategy)
+    void register(final IKey key, final IResolutionStrategy strategy)
             throws RegistrationException;
 
     /**

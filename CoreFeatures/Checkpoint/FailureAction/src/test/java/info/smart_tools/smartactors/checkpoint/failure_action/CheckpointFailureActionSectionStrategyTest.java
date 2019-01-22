@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.checkpoint.failure_action;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
@@ -23,8 +23,8 @@ import static org.mockito.Mockito.when;
  * Test for {@link CheckpointFailureActionSectionStrategy}.
  */
 public class CheckpointFailureActionSectionStrategyTest extends PluginsLoadingTestBase {
-    private IResolveDependencyStrategy actionStrategyMock;
-    private IResolveDependencyStrategy defaultActionStrategyMock;
+    private IResolutionStrategy actionStrategyMock;
+    private IResolutionStrategy defaultActionStrategyMock;
     private IAction<IObject> actionMock;
 
     @Override
@@ -38,10 +38,10 @@ public class CheckpointFailureActionSectionStrategyTest extends PluginsLoadingTe
 
     @Override
     protected void registerMocks() throws Exception {
-        actionStrategyMock = mock(IResolveDependencyStrategy.class);
+        actionStrategyMock = mock(IResolutionStrategy.class);
         IOC.register(Keys.resolveByName("that checkpoint failure action"), actionStrategyMock);
 
-        defaultActionStrategyMock = mock(IResolveDependencyStrategy.class);
+        defaultActionStrategyMock = mock(IResolutionStrategy.class);
         IOC.register(Keys.resolveByName("default configurable checkpoint failure action"), defaultActionStrategyMock);
 
         actionMock = mock(IAction.class);

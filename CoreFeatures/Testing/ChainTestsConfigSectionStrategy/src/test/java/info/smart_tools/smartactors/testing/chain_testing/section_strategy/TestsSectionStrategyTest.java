@@ -49,7 +49,7 @@ public class TestsSectionStrategyTest extends PluginsLoadingTestBase {
 
         IOC.register(Keys.resolveByName(ITestRunner.class.getCanonicalName() + "#assert"),
                 new SingletonStrategy(testRunnerMock));
-//        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+//        IResolutionStrategy strategy = mock(IResolutionStrategy.class);
 //        IOC.register(
 //                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), ITestRunner.class.getCanonicalName() + "#" + "assert"),
 //                strategy

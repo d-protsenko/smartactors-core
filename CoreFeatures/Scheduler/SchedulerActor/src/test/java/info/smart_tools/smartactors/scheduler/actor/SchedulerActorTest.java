@@ -4,8 +4,8 @@ import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStopException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
@@ -51,7 +51,7 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
     private AddEntryQueryListMessage addListEntryQueryMessage;
     private ListEntriesQueryMessage listEntriesQueryMessage;
     private DeleteEntryQueryMessage deleteEntryQueryMessage;
-    private IResolveDependencyStrategy newEntryStrategy;
+    private IResolutionStrategy newEntryStrategy;
     private ISchedulerEntry entryMock;
     private IQueue taskQueueMock;
     private ISchedulerEntryFilter preShutdownModeEntryFilterMock;
@@ -76,15 +76,15 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
         service = mock(ISchedulerService.class);
         activationAction = mock(IAction.class);
 
-        IResolveDependencyStrategy poolStrategy = mock(IResolveDependencyStrategy.class);
-        IResolveDependencyStrategy serviceStrategy = mock(IResolveDependencyStrategy.class);
-        IResolveDependencyStrategy actionStrategy = mock(IResolveDependencyStrategy.class);
+        IResolutionStrategy poolStrategy = mock(IResolutionStrategy.class);
+        IResolutionStrategy serviceStrategy = mock(IResolutionStrategy.class);
+        IResolutionStrategy actionStrategy = mock(IResolutionStrategy.class);
 
         when(service.getEntryStorage()).thenReturn(storage);
         when(poolStrategy.resolve(same(connectionOptions))).thenReturn(pool);
         when(serviceStrategy.resolve(same(pool), eq("the_collection_name")))
                 .thenReturn(service)
-                .thenThrow(ResolveDependencyStrategyException.class);
+                .thenThrow(ResolutionStrategyException.class);
         when(actionStrategy.resolve()).thenReturn(activationAction);
 
         IOC.register(Keys.resolveByName("the connection options dependency"), new SingletonStrategy(connectionOptions));
@@ -117,7 +117,7 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
         when(entryMock.getState()).thenReturn(mock(IObject.class));
         when(entryMock.getId()).thenReturn("id");
 
-        newEntryStrategy = mock(IResolveDependencyStrategy.class);
+        newEntryStrategy = mock(IResolutionStrategy.class);
         when(newEntryStrategy.resolve(any(), any())).thenReturn(entryMock);
         IOC.register(Keys.resolveByName("new scheduler entry"), newEntryStrategy);
 

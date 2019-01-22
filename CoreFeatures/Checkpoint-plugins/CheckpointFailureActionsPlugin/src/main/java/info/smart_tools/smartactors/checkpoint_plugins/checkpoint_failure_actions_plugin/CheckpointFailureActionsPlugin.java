@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.checkpoint_plugins.checkpoint_failure_actio
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.checkpoint.failure_action.SendEnvelopeFailureAction;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
@@ -41,7 +41,7 @@ public class CheckpointFailureActionsPlugin extends BootstrapPlugin {
     @Before({"checkpoint_actor"})
     public void registerSendEnvelopeAction()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IResolveDependencyStrategy strategy = new ApplyFunctionToArgumentsStrategy(args -> {
+        IResolutionStrategy strategy = new ApplyFunctionToArgumentsStrategy(args -> {
             try {
                 IObject config = (IObject) args[0];
 

@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_standard_types_strategies.to_list_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,18 +9,18 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class ByteArrayToListResolveDependencyStrategyTest {
+public class ByteArrayToListResolutionStrategyTest {
 
-    private ByteArrayToListResolveDependencyStrategy strategy;
+    private ByteArrayToListResolutionStrategy strategy;
 
     @Before
     public void setUp() {
 
-        strategy = new ByteArrayToListResolveDependencyStrategy();
+        strategy = new ByteArrayToListResolutionStrategy();
     }
 
     @Test
-    public void ShouldConvertByteArrayToList() throws ResolveDependencyStrategyException {
+    public void ShouldConvertByteArrayToList() throws ResolutionStrategyException {
 
         byte[] array = new byte[] {(byte)0xba, (byte)0x8a};
         List<Byte> result = strategy.resolve(array);
@@ -29,8 +29,8 @@ public class ByteArrayToListResolveDependencyStrategyTest {
         assertEquals(result.get(1), new Byte((byte) 0x8a));
     }
 
-    @Test(expected = ResolveDependencyStrategyException.class)
-    public void ShouldThrowException_When_ErrorIsOccurred() throws ResolveDependencyStrategyException {
+    @Test(expected = ResolutionStrategyException.class)
+    public void ShouldThrowException_When_ErrorIsOccurred() throws ResolutionStrategyException {
 
         String invalid = "invalid";
         strategy.resolve(invalid);

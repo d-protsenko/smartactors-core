@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.version_management.chain_version_manager;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.IResolutionStrategy;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 import java.util.Collections;
@@ -10,7 +10,7 @@ import java.util.List;
 
 class ChainVersionStrategies {
     private Object mapName;
-    private List<IResolveDependencyStrategy> versionResolutionStrategies;
+    private List<IResolutionStrategy> versionResolutionStrategies;
     private List<Comparable> versions;
 
     ChainVersionStrategies(Object mapName) {
@@ -19,7 +19,7 @@ class ChainVersionStrategies {
         this.versions = Collections.synchronizedList(new LinkedList<>());
     }
 
-    void registerVersionResolutionStrategy(Comparable version, IResolveDependencyStrategy strategy) {
+    void registerVersionResolutionStrategy(Comparable version, IResolutionStrategy strategy) {
         int idx, order;
         for (idx = 0; idx < versions.size(); idx++) {
             order = versions.get(idx).compareTo(version);
@@ -38,10 +38,10 @@ class ChainVersionStrategies {
     }
 
     Comparable resolveVersion(IObject message)
-            throws ResolveDependencyStrategyException {
+            throws ResolutionStrategyException {
 
         Comparable version = null;
-        for(IResolveDependencyStrategy strategy : versionResolutionStrategies) {
+        for(IResolutionStrategy strategy : versionResolutionStrategies) {
             if (strategy != null) {
                 try {
                     version = strategy.resolve(message);

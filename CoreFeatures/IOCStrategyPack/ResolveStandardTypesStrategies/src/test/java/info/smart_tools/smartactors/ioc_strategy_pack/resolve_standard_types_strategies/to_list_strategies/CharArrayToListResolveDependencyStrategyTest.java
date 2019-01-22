@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_standard_types_strategies.to_list_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,18 +9,18 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class CharArrayToListResolveDependencyStrategyTest {
+public class CharArrayToListResolutionStrategyTest {
 
-    private CharArrayToListResolveDependencyStrategy strategy;
+    private CharArrayToListResolutionStrategy strategy;
 
     @Before
     public void setUp() {
 
-        strategy = new CharArrayToListResolveDependencyStrategy();
+        strategy = new CharArrayToListResolutionStrategy();
     }
 
     @Test
-    public void ShouldConvertCharArrayToList() throws ResolveDependencyStrategyException {
+    public void ShouldConvertCharArrayToList() throws ResolutionStrategyException {
 
         char[] array = new char[] {'1', 'd', '+'};
         List<Byte> result = strategy.resolve(array);
@@ -30,8 +30,8 @@ public class CharArrayToListResolveDependencyStrategyTest {
         assertEquals(result.get(2), new Character('+'));
     }
 
-    @Test(expected = ResolveDependencyStrategyException.class)
-    public void ShouldThrowException_When_ErrorIsOccurred() throws ResolveDependencyStrategyException {
+    @Test(expected = ResolutionStrategyException.class)
+    public void ShouldThrowException_When_ErrorIsOccurred() throws ResolutionStrategyException {
 
         Character[] array = new Character[] {'1', '2'};
         strategy.resolve(array);

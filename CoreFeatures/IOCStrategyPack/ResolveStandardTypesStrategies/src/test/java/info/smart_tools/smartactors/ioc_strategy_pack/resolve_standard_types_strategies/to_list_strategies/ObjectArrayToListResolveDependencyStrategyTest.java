@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_standard_types_strategies.to_list_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iresolution_strategy.exception.ResolutionStrategyException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,18 +9,18 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class ObjectArrayToListResolveDependencyStrategyTest {
+public class ObjectArrayToListResolutionStrategyTest {
 
-    private ObjectArrayToListResolveDependencyStrategy strategy;
+    private ObjectArrayToListResolutionStrategy strategy;
 
     @Before
     public void setUp() {
 
-        strategy = new ObjectArrayToListResolveDependencyStrategy();
+        strategy = new ObjectArrayToListResolutionStrategy();
     }
 
     @Test
-    public void ShouldConvertObjectArrayToList() throws ResolveDependencyStrategyException {
+    public void ShouldConvertObjectArrayToList() throws ResolutionStrategyException {
 
         Object object = new Object();
         Object[] array = new Object[] {1L, "string", object};
@@ -32,7 +32,7 @@ public class ObjectArrayToListResolveDependencyStrategyTest {
     }
 
     @Test
-    public void ShouldConvertConcreteTypeArrayToList() throws ResolveDependencyStrategyException {
+    public void ShouldConvertConcreteTypeArrayToList() throws ResolutionStrategyException {
 
         Integer[] array = new Integer[] {new Integer(1), new Integer(143)};
         List<Short> result = strategy.resolve(array);
@@ -41,8 +41,8 @@ public class ObjectArrayToListResolveDependencyStrategyTest {
         assertEquals(result.get(1), new Integer(143));
     }
 
-    @Test(expected = ResolveDependencyStrategyException.class)
-    public void ShouldThrowException_When_ErrorIsOccurred() throws ResolveDependencyStrategyException {
+    @Test(expected = ResolutionStrategyException.class)
+    public void ShouldThrowException_When_ErrorIsOccurred() throws ResolutionStrategyException {
 
         strategy.resolve(null);
         fail();
