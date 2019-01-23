@@ -45,12 +45,7 @@ public class PluginRetryingToTakeResourceExceptionHandler extends BootstrapPlugi
      */
     @BootstrapPlugin.ItemRevert("PluginRetryingToTakeResourceExceptionHandler")
     public void revertItem() {
-        String itemName = "PluginRetryingToTakeResourceExceptionHandler";
-        String keyName = "RetryingToTakeResourceExceptionHandler";
-        try {
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] keyNames = { "RetryingToTakeResourceExceptionHandler" };
+        Keys.unregisterByNames(keyNames);
     }
 }

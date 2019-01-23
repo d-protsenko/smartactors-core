@@ -49,16 +49,8 @@ public class PluginReceiverChain implements IPlugin {
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "receiver_chain";
-                        String keyName = "";
-
-                        try {
-                            keyName = IReceiverChain.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
+                        String[] keyNames = { IReceiverChain.class.getCanonicalName() };
+                        Keys.unregisterByNames(keyNames);
                     });
 
             bootstrap.add(receiverChainItem);

@@ -77,36 +77,13 @@ public class PluginMessagingIdentifiers implements IPlugin {
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "messaging_identifiers";
-                        String keyName = "";
-
-                        try {
-                            keyName = "route_from_object_name";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "chain_id_from_map_name";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "chain_id_from_map_name_and_message";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "receiver_id_from_iobject";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] keyNames = {
+                                "receiver_id_from_iobject",
+                                "chain_id_from_map_name",
+                                "chain_id_from_map_name_and_message",
+                                "route_from_object_name"
+                        };
+                        Keys.unregisterByNames(keyNames);
                     });
 
             bootstrap.add(strategiesItem);

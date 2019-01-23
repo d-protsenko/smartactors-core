@@ -81,29 +81,12 @@ public class ActorReceiverCreatorPlugin  implements IPlugin {
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "ActorReceiverCreator";
-                        String keyName = "";
-
-                        try {
-                            keyName = IRoutedObjectCreator.class.getCanonicalName() + "#actor";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "actor_receiver_busyness_flag";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "actor_receiver_queue";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] keyNames = {
+                                IRoutedObjectCreator.class.getCanonicalName() + "#actor",
+                                "actor_receiver_busyness_flag",
+                                "actor_receiver_queue"
+                        };
+                        Keys.unregisterByNames(keyNames);
                     });
             this.bootstrap.add(item);
         } catch (Throwable e) {

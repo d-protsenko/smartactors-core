@@ -28,25 +28,16 @@ public final class Keys {
     }
 
     /**
-     * Remove dependencies of {@link IKey}s by given names
+     * Unregister dependencies of {@link IKey}s by given names to use in bootstrap reverting procedures
      * @param keyNames array of names of instances of {@link IKey}
-     * @throws DeletionException if dependency deletion or resolution has failed
      */
-    public static void removeByNames(final String[] keyNames)
-            throws DeletionException {
-        DeletionException exception = new DeletionException("Deletion of key(s) has failed.");
-
+    public static void unregisterByNames(final String[] keyNames) {
         for(String keyName : keyNames) {
             try {
                 IOC.unregister(Keys.resolveByName(keyName));
-            } catch (ResolutionException e) {
-                exception.addSuppressed(new ResolutionException(keyName));
-            } catch(DeletionException e) {
-                exception.addSuppressed(new DeletionException(keyName));
-            }
-        }
-        if (exception.getSuppressed().length > 0) {
-            throw exception;
+            } catch (DeletionException e) {
+                System.out.println("[WARNING] Deregistration of key '"+keyName+"' failed.");
+            } catch (ResolutionException e) { }
         }
     }
 }

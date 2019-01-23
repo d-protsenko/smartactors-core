@@ -48,14 +48,8 @@ public class PluginTimer implements IPlugin {
                 }
             })
             .revertProcess(() -> {
-                String itemName = "timer";
-                String keyName = "timer";
-
-                try {
-                    IOC.unregister(Keys.resolveByName(keyName));
-                } catch(DeletionException e) {
-                    System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                } catch (ResolutionException e) { }
+                String[] itemNames = { "timer" };
+                Keys.unregisterByNames(itemNames);
             });
 
             bootstrap.add(item);
@@ -70,14 +64,8 @@ public class PluginTimer implements IPlugin {
                 }
             })
             .revertProcess(() -> {
-                String itemName = "time";
-                String keyName = "time";
-
-                try {
-                    IOC.unregister(Keys.resolveByName(keyName));
-                } catch(DeletionException e) {
-                    System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                } catch (ResolutionException e) { }
+                String[] itemNames = { "time" };
+                Keys.unregisterByNames(itemNames);
             });
 
             bootstrap.add(item);

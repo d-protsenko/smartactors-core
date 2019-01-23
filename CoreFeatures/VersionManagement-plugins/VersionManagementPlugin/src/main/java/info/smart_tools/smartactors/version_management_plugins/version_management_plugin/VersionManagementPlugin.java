@@ -5,7 +5,6 @@ import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExec
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -102,46 +101,18 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
     @ItemRevert("versioned_chain_id_from_map_name_strategy")
     public void unregisterChainIdFromMapNameStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-
-        String itemName = "versioned_chain_id_from_map_name_strategy";
-        String keyName;
-
-        keyName = "register_message_version_strategy";
-        try {
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
-
-        keyName = "chain_id_from_map_name";
-        try {
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
-
-        keyName = "chain_id_from_map_name_and_message";
-        try {
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] itemNames = {  "register_message_version_strategy",
+                                "chain_id_from_map_name",
+                                "chain_id_from_map_name_and_message"  };
+        Keys.unregisterByNames(itemNames);
     }
 
     // ToDo: fix rollback to setup previous strategies
     @ItemRevert("versioned_router")
     public void unregisterVersionedRouterStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-
-        String itemName = "versioned_router";
-        String keyName;
-
-        keyName = IRouter.class.getCanonicalName();
-        try {
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] itemNames = { IRouter.class.getCanonicalName() };
+        Keys.unregisterByNames(itemNames);
     }
 
     @ItemRevert("versioned_strategy_container_for_scope")

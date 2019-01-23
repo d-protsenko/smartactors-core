@@ -31,13 +31,7 @@ public class NullResponseStrategyPlugin extends BootstrapPlugin {
 
     @ItemRevert("null_response_strategy")
     public void unregisterNullResponseStrategy() {
-        String itemName = "null_response_strategy";
-        String keyName = "null response strategy";
-
-        try {
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] itemNames = { "null response strategy" };
+        Keys.unregisterByNames(itemNames);
     }
 }

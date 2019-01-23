@@ -74,13 +74,8 @@ public class ChainChoiceStrategyPlugin implements IPlugin {
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "ChainChoiceStrategy";
-                        String keyName = "chain choice strategy";
-                        try {
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] keyNames = { "chain choice strategy" };
+                        Keys.unregisterByNames(keyNames);
                     });
             this.bootstrap.add(item);
         } catch (Throwable e) {

@@ -35,13 +35,7 @@ public class EndpointResponseStrategyPlugin extends BootstrapPlugin {
 
     @ItemRevert("http_response_strategy")
     public void unregisterHttpResponseStrategy() {
-        String itemName = "http_response_strategy";
-        String keyName = "endpoint response strategy";
-
-        try {
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] keyNames = { "endpoint response strategy" };
+        Keys.unregisterByNames(keyNames);
     }
 }

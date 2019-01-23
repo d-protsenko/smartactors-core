@@ -52,15 +52,8 @@ public class PluginConfigurationManager implements IPlugin {
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "configuration_manager";
-                        String keyName = "";
-
-                        try {
-                            keyName = IConfigurationManager.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] keyNames = { IConfigurationManager.class.getCanonicalName() };
+                        Keys.unregisterByNames(keyNames);
                     });
 
             bootstrap.add(configurationManagerItem);

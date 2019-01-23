@@ -112,13 +112,7 @@ public class ObjectCofigurationCanonizationStrategies extends BootstrapPlugin {
 
     @ItemRevert("object_configuration_canonization_strategies")
     public void unregisterCanonizationStrategies() {
-        String itemName = "object_configuration_canonization_strategies";
-        String keyName = "canonize objects configuration section item filters list";
-
-        try {
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] keyNames = { "canonize objects configuration section item filters list" };
+        Keys.unregisterByNames(keyNames);
     }
 }

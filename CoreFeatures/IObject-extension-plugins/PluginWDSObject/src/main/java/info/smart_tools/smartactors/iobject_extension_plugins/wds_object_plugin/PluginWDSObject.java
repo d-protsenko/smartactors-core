@@ -54,22 +54,11 @@ public class PluginWDSObject extends BootstrapPlugin {
 
     @ItemRevert("wds_object_field_set_map_strategies")
     public void unregisterFieldSetDependencies() {
-        String itemName = "wds_object_field_set_map_strategies";
-        String keyName;
-
-        keyName = "WDSObject field set thread safe map";
-        try {
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
-
-        keyName = "WDSObject field set non thread safe map";
-        try {
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] keyNames = {
+                "WDSObject field set thread safe map",
+                "WDSObject field set non thread safe map"
+        };
+        Keys.unregisterByNames(keyNames);
     }
 
     @Item("wds_object_rules_strategy")
@@ -85,15 +74,8 @@ public class PluginWDSObject extends BootstrapPlugin {
 
     @ItemRevert("wds_object_rules_strategy")
     public void unregisterRulesStrategy() {
-        String itemName = "wds_object_rules_strategy";
-        String keyName = "";
-
-        try {
-            keyName = IStrategy.class.getCanonicalName();
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] keyNames = { IStrategy.class.getCanonicalName() };
+        Keys.unregisterByNames(keyNames);
     }
 
     @Item("wds_object_field_set_strategy")
@@ -131,22 +113,11 @@ public class PluginWDSObject extends BootstrapPlugin {
 
     @ItemRevert("wds_object_field_set_strategy")
     public void unregisterFieldSetCreationStrategy() {
-        String itemName = "wds_object_field_set_strategy";
-        String keyName;
-
-        keyName = "thread safe wrapper configuration";
-        try {
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
-
-        keyName = "non thread safe wrapper configuration";
-        try {
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] keyNames = {
+                "thread safe wrapper configuration",
+                "non thread safe wrapper configuration"
+        };
+        Keys.unregisterByNames(keyNames);
     }
 
     @Item("wds_object")
@@ -178,21 +149,10 @@ public class PluginWDSObject extends BootstrapPlugin {
 
     @ItemRevert("wds_object")
     public void unregisterWDSObjectCreationStrategy() {
-        String itemName = "wds_object";
-        String keyName = "";
-
-        try {
-            keyName = WDSObject.class.getCanonicalName();
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
-
-        keyName = "non thread safe wrapper configuration";
-        try {
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] keyNames = {
+                WDSObject.class.getCanonicalName(),
+                "non thread safe wrapper configuration"
+        };
+        Keys.unregisterByNames(keyNames);
     }
 }

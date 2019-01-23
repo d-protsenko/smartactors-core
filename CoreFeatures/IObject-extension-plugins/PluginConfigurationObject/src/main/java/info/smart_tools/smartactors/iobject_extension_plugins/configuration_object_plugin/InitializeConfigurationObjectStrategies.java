@@ -16,6 +16,7 @@ import info.smart_tools.smartactors.iobject_extension.configuration_object.Confi
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 /**
  * creates and register some strategies for correct work of
@@ -100,29 +101,12 @@ public class InitializeConfigurationObjectStrategies implements IPlugin {
                             }
                     })
                     .revertProcess( () -> {
-                            String itemName = "ConfigurationObject";
-                            String keyName = "";
-
-                            try {
-                                keyName = "expandable_strategy#resolve key for configuration object";
-                                IOC.unregister(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), keyName));
-                            } catch(DeletionException e) {
-                                System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                            } catch (ResolutionException e) { }
-
-                            try {
-                                keyName = "resolve key for configuration object";
-                                IOC.unregister(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), keyName));
-                            } catch(DeletionException e) {
-                                System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                            } catch (ResolutionException e) { }
-
-                            try {
-                                keyName = "configuration object";
-                                IOC.unregister(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), keyName));
-                            } catch(DeletionException e) {
-                                System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                            } catch (ResolutionException e) { }
+                            String[] itemNames = {
+                                    "expandable_strategy#resolve key for configuration object",
+                                    "resolve key for configuration object",
+                                    "configuration object"
+                            };
+                            Keys.unregisterByNames(itemNames);
                     });
             this.bootstrap.add(item);
         } catch (Throwable e) {

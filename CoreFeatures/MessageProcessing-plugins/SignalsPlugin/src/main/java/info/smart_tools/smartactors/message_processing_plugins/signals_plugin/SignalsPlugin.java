@@ -39,21 +39,10 @@ public class SignalsPlugin extends BootstrapPlugin {
 
     @ItemRevert("system_signal_classes")
     public void unregisterSystemSignals() {
-        String itemName = "system_signal_classes";
-        String keyName = "";
-
-        try {
-            keyName = "shutdown signal";
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
-
-        try {
-            keyName = "abort signal";
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] itemNames = {
+                "shutdown signal",
+                "abort signal"
+        };
+        Keys.unregisterByNames(itemNames);
     }
 }

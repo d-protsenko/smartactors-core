@@ -40,13 +40,7 @@ public class ChainModificationStrategiesPlugin extends BootstrapPlugin {
      */
     @ItemRevert("chain_modification_strategies:replace_receivers")
     public void unregisterReceiverReplaceModification() {
-        String itemName = "chain_modification_strategies:replace_receivers";
-        String keyName = "chain modification: replace receivers";
-
-        try {
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] keyNames = { "chain modification: replace receivers" };
+        Keys.unregisterByNames(keyNames);
     }
 }

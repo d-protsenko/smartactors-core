@@ -32,14 +32,8 @@ public class ResponseSenderReceiverPlugin extends BootstrapPlugin {
 
     @ItemRevert("send_response_action")
     public void unregisterResponseAction() {
-        String itemName = "send_response_action";
-        String keyName = "send response action";
-
-        try {
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] itemNames = { "send response action" };
+        Keys.unregisterByNames(itemNames);
     }
 
     @Item("response_sender_receiver")
@@ -51,13 +45,7 @@ public class ResponseSenderReceiverPlugin extends BootstrapPlugin {
 
     @ItemRevert("response_sender_receiver")
     public void unregisterResponseSenderReceiver() {
-        String itemName = "response_sender_receiver";
-        String keyName = "response sender receiver";
-
-        try {
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] itemNames = { "response sender receiver" };
+        Keys.unregisterByNames(itemNames);
     }
 }

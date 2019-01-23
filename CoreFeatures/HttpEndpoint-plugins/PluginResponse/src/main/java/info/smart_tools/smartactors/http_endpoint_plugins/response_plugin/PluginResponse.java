@@ -50,14 +50,8 @@ public class PluginResponse implements IPlugin {
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "response";
-                        String keyName = IResponse.class.getCanonicalName();
-
-                        try {
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] itemNames = { IResponse.class.getCanonicalName() };
+                        Keys.unregisterByNames(itemNames);
                     });
 
             bootstrap.add(item);

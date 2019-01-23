@@ -182,78 +182,19 @@ public class HttpClientPlugin implements IPlugin {
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "CreateHttpClient";
-                        String keyName = "";
-
-                        try {
-                            keyName = "cancelTimerOnRequest";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
-
-                        try {
-                            keyName = "createTimerOnRequest";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
-
-                        try {
-                            keyName = "getHttpClient";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
-
-                        try {
-                            keyName = "sendHttpRequest";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
-
-                        try {
-                            keyName = MessageToBytesMapper.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
-
-                        try {
-                            keyName = IRequestMaker.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
-
-                        try {
-                            keyName = IResponseHandler.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
-
-                        try {
-                            keyName = "EmptyIObject";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
-
-                        try {
-                            keyName = "httpResponseResolver";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
-
-                        try {
-                            keyName = URI.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
+                        String[] keyNames = {
+                                "cancelTimerOnRequest",
+                                "createTimerOnRequest",
+                                "getHttpClient",
+                                "sendHttpRequest",
+                                MessageToBytesMapper.class.getCanonicalName(),
+                                IRequestMaker.class.getCanonicalName(),
+                                IResponseHandler.class.getCanonicalName(),
+                                "EmptyIObject",
+                                "httpResponseResolver",
+                                URI.class.getCanonicalName()
+                        };
+                        Keys.unregisterByNames(keyNames);
                     });
             bootstrap.add(item);
 

@@ -39,12 +39,7 @@ public class PluginConstantChainChoiceStrategy extends BootstrapPlugin {
      */
     @ItemRevert("constant_chain_choice_strategy")
     public void revertItem() {
-        String itemName = "constant_chain_choice_strategy";
-        String keyName = "constant chain choice strategy";
-        try {
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] keyNames = { "constant chain choice strategy" };
+        Keys.unregisterByNames(keyNames);
     }
 }

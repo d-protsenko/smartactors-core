@@ -69,15 +69,8 @@ public class HandlerRoutingReceiverCreatorPlugin implements IPlugin {
                             }
                     )
                     .revertProcess(() -> {
-                        String itemName = "HandlerRoutingReceiverCreator";
-                        String keyName = "";
-
-                        try {
-                            keyName = IRoutedObjectCreator.class.getCanonicalName() + "#stateless_actor";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] keyNames = { IRoutedObjectCreator.class.getCanonicalName() + "#stateless_actor" };
+                        Keys.unregisterByNames(keyNames);
                     });
             this.bootstrap.add(item);
         } catch (Throwable e) {

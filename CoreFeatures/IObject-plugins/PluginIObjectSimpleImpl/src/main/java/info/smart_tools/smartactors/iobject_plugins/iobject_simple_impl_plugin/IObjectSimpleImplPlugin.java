@@ -52,15 +52,8 @@ public class IObjectSimpleImplPlugin implements IPlugin {
                     }
                 })
                 .revertProcess(() -> {
-                    String itemName = "IObjectSimpleImplPlugin";
-                    String keyName = "";
-
-                    try {
-                        keyName = IObjectImpl.class.getCanonicalName();
-                        IOC.unregister(Keys.resolveByName(keyName));
-                    } catch(DeletionException e) {
-                        System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                    } catch (ResolutionException e) { }
+                    String[] keyNames = { IObjectImpl.class.getCanonicalName() };
+                    Keys.unregisterByNames(keyNames);
                 });
             bootstrap.add(item);
         } catch (InvalidArgumentException e) {

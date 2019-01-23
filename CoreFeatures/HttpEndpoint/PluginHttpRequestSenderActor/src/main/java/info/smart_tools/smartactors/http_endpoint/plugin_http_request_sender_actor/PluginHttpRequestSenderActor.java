@@ -54,14 +54,8 @@ public class PluginHttpRequestSenderActor implements IPlugin {
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "actor:http_request_sender";
-                        String keyName = "HttpRequestSenderActor";
-
-                        try {
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] keyNames = { "HttpRequestSenderActor" };
+                        Keys.unregisterByNames(keyNames);
                     });
 
             bootstrap.add(requestSenderItem);

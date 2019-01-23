@@ -57,15 +57,8 @@ public class PluginNonBlockingQueue implements IPlugin {
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "queue";
-                        String keyName = "";
-
-                        try {
-                            keyName = IQueue.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] itemNames = { IQueue.class.getCanonicalName() };
+                        Keys.unregisterByNames(itemNames);
                     });
 
             bootstrap.add(item);

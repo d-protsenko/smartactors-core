@@ -115,78 +115,19 @@ public class EndpointPlugin implements IPlugin {
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "EndpointPlugin";
-                        String keyName = "";
-
-                        try {
-                            keyName = IResponseStatusExtractor.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "ResponseStatusSetter";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = IHeadersExtractor.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "HeadersExtractorChooser";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = ICookiesSetter.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "CookiesSetterChooser";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = IResponseSender.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "ResponseSenderChooser";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "DeserializationStrategyChooser";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] keyNames = {
+                                IResponseStatusExtractor.class.getCanonicalName(),
+                                "ResponseStatusSetter",
+                                IHeadersExtractor.class.getCanonicalName(),
+                                "HeadersExtractorChooser",
+                                ICookiesSetter.class.getCanonicalName(),
+                                "CookiesSetterChooser",
+                                IResponseSender.class.getCanonicalName(),
+                                "ResponseSenderChooser",
+                                "info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy",
+                                "DeserializationStrategyChooser"
+                        };
+                        Keys.unregisterByNames(keyNames);
                     });
 
             bootstrap.add(item);

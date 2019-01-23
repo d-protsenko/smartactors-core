@@ -203,106 +203,23 @@ public class HttpEndpointPlugin implements IPlugin {
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "CreateHttpEndpoint";
-                        String keyName = "";
-
-                        try {
-                            keyName = "info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
-
-                        try {
-                            keyName = "EmptyIObject";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
-
-                        try {
-                            keyName = "http_request_key_for_response_sender";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
-
-                        try {
-                            keyName = IParseTree.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
-
-                        try {
-                            keyName = "http_request_key_for_deserialize";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
-
-                        try {
-                            keyName = "http_endpoint";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
-
-                        try {
-                            keyName = IEnvironmentHandler.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
-
-                        try {
-                            keyName = "HttpShuttingDownException";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
-
-                        try {
-                            keyName = "HttpInternalException";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
-
-                        try {
-                            keyName = "HttpRequestParametersToIObjectException";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
-
-                        try {
-                            keyName = "HttpPostParametersToIObjectException";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
-
-                        try {
-                            keyName = "key_for_response_status_setter";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
-
-                        try {
-                            keyName = "key_for_headers_extractor";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
-
-                        try {
-                            keyName = "key_for_cookies_extractor";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException ignored) { }
+                        String[] keyNames = {
+                                "info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty",
+                                "EmptyIObject",
+                                "http_request_key_for_response_sender",
+                                IParseTree.class.getCanonicalName(),
+                                "http_request_key_for_deserialize",
+                                "http_endpoint",
+                                IEnvironmentHandler.class.getCanonicalName(),
+                                "HttpShuttingDownException",
+                                "HttpInternalException",
+                                "HttpRequestParametersToIObjectException",
+                                "HttpPostParametersToIObjectException",
+                                "key_for_response_status_setter",
+                                "key_for_headers_extractor",
+                                "key_for_cookies_extractor"
+                        };
+                        Keys.unregisterByNames(keyNames);
                     });
 
             bootstrap.add(item);

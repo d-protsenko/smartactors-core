@@ -85,57 +85,16 @@ public class ShutdownTaskProcessingStrategiesPlugin extends BootstrapPlugin {
 
     @ItemRevert("shutdown_task_process_strategies")
     public void unregisterStrategies() {
-        String itemName = "shutdown_task_process_strategies";
-        String keyName = "";
-
-        try {
-            keyName = "task processing strategy for shutdown mode";
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
-
-        try {
-            keyName = "expandable_strategy#shutdown mode task processing strategy by task class";
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
-
-        try {
-            keyName = "shutdown mode task processing strategy by task class";
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
-
-        try {
-            keyName = "limit trials task processing strategy";
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
-
-        try {
-            keyName = "notify task processing strategy";
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
-
-        try {
-            keyName = "execute task processing strategy";
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
-
-        try {
-            keyName = "ignore task processing strategy";
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] itemNames = {
+                "task processing strategy for shutdown mode",
+                "expandable_strategy#shutdown mode task processing strategy by task class",
+                "shutdown mode task processing strategy by task class",
+                "limit trials task processing strategy",
+                "notify task processing strategy",
+                "execute task processing strategy",
+                "ignore task processing strategy"
+        };
+        Keys.unregisterByNames(itemNames);
     }
 
     @Item("task_dispatcher_pre_shutdown_mode_callbacks")

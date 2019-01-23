@@ -71,15 +71,8 @@ public class IFieldNamePlugin implements IPlugin {
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "IFieldNamePlugin";
-                        String keyName = "";
-
-                        try {
-                            keyName = "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] keyNames = { "info.smart_tools.smartactors.iobject.ifield_name.IFieldName" };
+                        Keys.unregisterByNames(keyNames);
                     });
             bootstrap.add(item);
         } catch (InvalidArgumentException e) {

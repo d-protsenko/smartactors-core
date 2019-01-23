@@ -46,15 +46,8 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
      */
     @ItemRevert("root_upcounter")
     public void unregisterRootUpcounter() {
-        String itemName = "root_upcounter";
-        String keyName = "";
-
-        try {
-            keyName = "root upcounter";
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] itemNames = { "root upcounter" };
+        Keys.unregisterByNames(itemNames);
     }
 
     /**
@@ -88,15 +81,8 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
      */
     @ItemRevert("new_upcounter_creation_strategy")
     public void unregisterNewUpcounterCreationStrategy() {
-        String itemName = "new_upcounter_creation_strategy";
-        String keyName;
-
-        keyName = "new upcounter";
-        try {
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] itemNames = { "new upcounter" };
+        Keys.unregisterByNames(itemNames);
     }
 
     /**

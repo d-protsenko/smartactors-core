@@ -57,14 +57,8 @@ public class PluginStandardObjectCreators implements IPlugin {
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "standard_object_creators";
-                        String keyName = IRoutedObjectCreator.class.getCanonicalName() + "#raw";
-
-                        try {
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] itemNames = { IRoutedObjectCreator.class.getCanonicalName() + "#raw" };
+                        Keys.unregisterByNames(itemNames);
                     });
 
             bootstrap.add(creatorsItem);

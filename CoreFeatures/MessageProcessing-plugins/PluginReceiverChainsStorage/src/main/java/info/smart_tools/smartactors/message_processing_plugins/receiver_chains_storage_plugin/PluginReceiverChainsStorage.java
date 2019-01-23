@@ -10,7 +10,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -64,16 +63,8 @@ public class PluginReceiverChainsStorage implements IPlugin {
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "receiver_chains_storage_chain_state";
-                        String keyName = "";
-
-                        try {
-                            keyName = IChainState.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Unregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
+                        String[] itemNames = { "receiver_chains_storage_chain_state" };
+                        Keys.unregisterByNames(itemNames);
                     });
 
             bootstrap.add(chainsStorageChainStateItem);
@@ -100,15 +91,8 @@ public class PluginReceiverChainsStorage implements IPlugin {
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "receiver_chains_storage";
-                        String keyName = "";
-
-                        try {
-                            keyName = IChainStorage.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Unregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] itemNames = { "receiver_chains_storage" };
+                        Keys.unregisterByNames(itemNames);
                     });
 
             bootstrap.add(chainsStorageItem);

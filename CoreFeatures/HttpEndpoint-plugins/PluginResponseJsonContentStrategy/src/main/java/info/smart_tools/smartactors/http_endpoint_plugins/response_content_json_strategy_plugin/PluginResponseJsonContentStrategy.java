@@ -51,14 +51,8 @@ public class PluginResponseJsonContentStrategy implements IPlugin {
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "response_content_strategy";
-                        String keyName = IResponseContentStrategy.class.getCanonicalName();
-
-                        try {
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] itemNames = { IResponseContentStrategy.class.getCanonicalName() };
+                        Keys.unregisterByNames(itemNames);
                     });
 
             bootstrap.add(item);

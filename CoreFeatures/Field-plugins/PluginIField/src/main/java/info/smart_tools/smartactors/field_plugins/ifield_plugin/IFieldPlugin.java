@@ -60,13 +60,8 @@ public class IFieldPlugin implements IPlugin {
                     }
                 })
                 .revertProcess(() -> {
-                    String itemName = "IFieldPlugin";
-                    String keyName = IField.class.getCanonicalName();
-                    try {
-                        IOC.unregister(Keys.resolveByName(keyName));
-                    } catch(DeletionException e) {
-                        System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                    } catch (ResolutionException e) { }
+                    String[] keyNames = { IField.class.getCanonicalName() };
+                    Keys.unregisterByNames(keyNames);
                 });
             bootstrap.add(item);
         } catch (InvalidArgumentException e) {

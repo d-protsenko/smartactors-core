@@ -45,17 +45,11 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
 
     @ItemRevert("wrapper_creator_receiver_decorator_map_strategies")
     public void unregisterMapStrategies() {
-        try {
-            IOC.unregister(Keys.resolveByName("wrapper creator receiver decorator non thread safe map"));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \"wrapper creator receiver decorator non thread safe map\" has failed while reverting \"wrapper_creator_receiver_decorator_map_strategies\" plugin.");
-        } catch (ResolutionException e) { }
-
-        try {
-            IOC.unregister(Keys.resolveByName("wrapper creator receiver decorator thread safe map"));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \"wrapper creator receiver decorator thread safe map\" has failed while reverting \"wrapper_creator_receiver_decorator_map_strategies\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] itemNames = {
+                "wrapper creator receiver decorator non thread safe map",
+                "wrapper creator receiver decorator thread safe map"
+        };
+        Keys.unregisterByNames(itemNames);
     }
 
     @Item("wrapper_creator_receiver_decorator_wrapper_resolution_strategies")
@@ -118,22 +112,11 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
 
     @ItemRevert("wrapper_creator_receiver_decorator_wrapper_resolution_strategies")
     public void unregisterWrapperCreationStrategies() {
-        String itemName = "wrapper_creator_receiver_decorator_wrapper_resolution_strategies";
-        String keyName;
-
-        keyName = "thread safe environment wrapper creation strategy";
-        try {
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
-
-        keyName = "non thread safe environment wrapper creation strategy";
-        try {
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] itemNames = {
+                "thread safe environment wrapper creation strategy",
+                "non thread safe environment wrapper creation strategy"
+        };
+        Keys.unregisterByNames(itemNames);
     }
 
     @Item("wrapper_creator_receiver_decorator")
@@ -160,22 +143,11 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
 
     @ItemRevert("wrapper_creator_receiver_decorator")
     public void unregisterDecoratorCreationStrategy() {
-        String itemName = "wrapper_creator_receiver_decorator";
-        String keyName;
-
-        keyName = "thread safe wrapper creator receiver decorator";
-        try {
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
-
-        keyName = "non thread safe wrapper creator receiver decorator";
-        try {
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] itemNames = {
+                "thread safe wrapper creator receiver decorator",
+                "non thread safe wrapper creator receiver decorator"
+        };
+        Keys.unregisterByNames(itemNames);
     }
 
     private static IStrategy wrapperCreatorDecoratorStrategy(

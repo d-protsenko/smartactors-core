@@ -63,15 +63,8 @@ public class RegisterWrapperGenerator implements IPlugin {
                                 }
                     })
                     .revertProcess(() -> {
-                        String itemName = "InitializeWrapperGenerator";
-                        String keyName = "";
-
-                        try {
-                            keyName = IWrapperGenerator.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] itemNames = { IWrapperGenerator.class.getCanonicalName() };
+                        Keys.unregisterByNames(itemNames);
                     });
             this.bootstrap.add(item);
         } catch (Throwable e) {

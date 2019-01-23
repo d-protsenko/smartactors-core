@@ -44,15 +44,7 @@ public class RemoteManagementPlugin extends BootstrapPlugin {
 
     @ItemRevert("remote_management")
     public void unregister() {
-        String itemName = "remote_management";
-        String keyName = "";
-
-        try {
-            keyName = "FeatureLoadStarterActor";
-            IOC.unregister(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
-
+        String[] itemNames = { "FeatureLoadStarterActor" };
+        Keys.unregisterByNames(itemNames);
     }
 }

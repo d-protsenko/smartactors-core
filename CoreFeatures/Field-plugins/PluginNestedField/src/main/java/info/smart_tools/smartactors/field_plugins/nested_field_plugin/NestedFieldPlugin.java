@@ -58,14 +58,8 @@ public class NestedFieldPlugin implements IPlugin {
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "NestedFieldPlugin";
-                        String keyName = NestedField.class.getCanonicalName();
-
-                        try {
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] keyNames = { NestedField.class.getCanonicalName() };
+                        Keys.unregisterByNames(keyNames);
                     });
             bootstrap.add(item);
         } catch (InvalidArgumentException e) {

@@ -250,120 +250,25 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "ResolveStandardTypesStrategiesPlugin";
-                        String keyName = "";
-
-                        try {
-                            keyName = "expandable_strategy#" + int.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = int.class.getCanonicalName() + "convert";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "expandable_strategy#" + List.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = List.class.getCanonicalName() + "convert";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "expandable_strategy#" + LocalDateTime.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = LocalDateTime.class.getCanonicalName() + "convert";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "expandable_strategy#" + BigDecimal.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = BigDecimal.class.getCanonicalName() + "convert";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "expandable_strategy#" + Integer.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = Integer.class.getCanonicalName() + "convert";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "expandable_strategy#" + boolean.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = boolean.class.getCanonicalName() + "convert";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "expandable_strategy#" + Character.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = Character.class.getCanonicalName() + "convert";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "expandable_strategy#" + String.class.getCanonicalName();
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = String.class.getCanonicalName() + "convert";
-                            IOC.unregister(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] keyNames = {
+                                "expandable_strategy#" + int.class.getCanonicalName(),
+                                int.class.getCanonicalName() + "convert",
+                                "expandable_strategy#" + List.class.getCanonicalName(),
+                                List.class.getCanonicalName() + "convert",
+                                "expandable_strategy#" + LocalDateTime.class.getCanonicalName(),
+                                LocalDateTime.class.getCanonicalName() + "convert",
+                                "expandable_strategy#" + BigDecimal.class.getCanonicalName(),
+                                BigDecimal.class.getCanonicalName() + "convert",
+                                "expandable_strategy#" + Integer.class.getCanonicalName(),
+                                Integer.class.getCanonicalName() + "convert",
+                                "expandable_strategy#" + boolean.class.getCanonicalName(),
+                                boolean.class.getCanonicalName() + "convert",
+                                "expandable_strategy#" + Character.class.getCanonicalName(),
+                                Character.class.getCanonicalName() + "convert",
+                                "expandable_strategy#" + String.class.getCanonicalName(),
+                                String.class.getCanonicalName() + "convert"
+                        };
+                        Keys.unregisterByNames(keyNames);
                     });
 
             bootstrap.add(item);

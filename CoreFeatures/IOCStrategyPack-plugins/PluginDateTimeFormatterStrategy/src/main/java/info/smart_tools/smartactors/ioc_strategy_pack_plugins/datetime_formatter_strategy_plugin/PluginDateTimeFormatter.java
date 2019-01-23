@@ -54,15 +54,8 @@ public class PluginDateTimeFormatter implements IPlugin {
                     }
                 })
                 .revertProcess(() -> {
-                    String itemName = "datetime_formatter_plugin";
-                    String keyName = "";
-
-                    try {
-                        keyName = "datetime_formatter";
-                        IOC.unregister(Keys.resolveByName(keyName));
-                    } catch(DeletionException e) {
-                        System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                    } catch (ResolutionException e) { }
+                    String[] keyNames = { "datetime_formatter" };
+                    Keys.unregisterByNames(keyNames);
                 });
             bootstrap.add(bootstrapItem);
         } catch (InvalidArgumentException e) {
