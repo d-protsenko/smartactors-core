@@ -5,10 +5,10 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>core-service-starter</artifactId>
-        <version>0.5.0</version>
+        <version>0.6.0</version>
     </parent>
     <artifactId>core-service-starter.core-starter</artifactId>
-    <version>0.5.0</version>
+    <version>0.6.0</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
@@ -203,30 +203,30 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.interfaces.istrategy-registration</artifactId>
-            <version>0.5.0</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.strategy.apply-function-to-arguments</artifactId>
-            <version>0.5.0</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.field-name</artifactId>
-            <version>0.5.0</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject-extension.configuration-object</artifactId>
-            <version>0.5.0</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>message-processing-plugins.map-router-plugin</artifactId>
-            <version>0.5.0</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -258,7 +258,7 @@
                             <inherited>false</inherited>
                             <configuration>
                                 <generatePom>true</generatePom>
-                                <file>target/core-service-starter.core-starter-0.5.0.jar</file>
+                                <file>target/core-service-starter.core-starter-0.6.0.jar</file>
                                 <url>${module.rurl}</url>
                                 <repositoryId>${module.rid}</repositoryId>
                                 <groupId>${project.groupId}</groupId>

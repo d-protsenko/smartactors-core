@@ -5,11 +5,11 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>database-postgresql-create-collection-if-not-exists</artifactId>
-        <version>0.5.0</version>
+        <version>0.6.0</version>
     </parent>
 
     <artifactId>database-postgresql-create-collection-if-not-exists.create-collection-actor-plugin</artifactId>
-    <version>0.5.0</version>
+    <version>0.6.0</version>
 
     <dependencies>
         <dependency>

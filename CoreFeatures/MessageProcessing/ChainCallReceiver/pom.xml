@@ -5,10 +5,10 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>message-processing</artifactId>
-        <version>0.5.1</version>
+        <version>0.6.0</version>
     </parent>
     <artifactId>message-processing.chain-call-receiver</artifactId>
-    <version>0.5.1</version>
+    <version>0.6.0</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
@@ -75,7 +75,7 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>class-management.module-manager</artifactId>
-            <version>0.5.0</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

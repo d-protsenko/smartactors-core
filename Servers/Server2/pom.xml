@@ -12,7 +12,7 @@
     </modules>
 
     <groupId>info.smart_tools.smartactors</groupId>
-    <version>0.5.1</version>
+    <version>0.6.0</version>
 
     <properties>
         <feature.rurl>http://archiva.smart-tools.info/repository/servers/</feature.rurl>

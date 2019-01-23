@@ -24,7 +24,7 @@ public class Container implements IContainer {
 
     private final Map<IKey, IStrategy> storage = new ConcurrentHashMap<>();
 
-    private final IKey keyForKeyByNameResolveStrategy;
+    private final IKey keyByNameStrategyKey;
 
     /**
      * The constructor.
@@ -33,7 +33,7 @@ public class Container implements IContainer {
      */
     public Container()
             throws InvalidArgumentException {
-        keyForKeyByNameResolveStrategy = new Key(UUID.randomUUID().toString());
+        keyByNameStrategyKey = new Key(UUID.randomUUID().toString());
     }
 
     /**
@@ -52,7 +52,7 @@ public class Container implements IContainer {
      */
     @Override
     public IKey getKeyForKeyByNameStrategy() {
-        return keyForKeyByNameResolveStrategy;
+        return keyByNameStrategyKey;
     }
 
     /**
