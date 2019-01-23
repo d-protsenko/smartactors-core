@@ -21,6 +21,7 @@ import org.mockito.ArgumentCaptor;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
@@ -81,8 +82,7 @@ public class IObjectSimpleImplPluginTest {
 
         actionArgumentCaptor2.getValue().execute();
 
-        verifyStatic();
-        IOC.unregister(eq(IObjectKey));
+        assertNull(IOC.unregister(eq(IObjectKey)));
     }
 
     @Test(expected = PluginException.class)

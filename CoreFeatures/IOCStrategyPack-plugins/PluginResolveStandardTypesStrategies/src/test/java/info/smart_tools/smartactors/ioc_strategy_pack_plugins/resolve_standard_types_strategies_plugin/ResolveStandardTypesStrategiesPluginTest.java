@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
@@ -119,22 +120,14 @@ public class ResolveStandardTypesStrategiesPluginTest {
 
         actionArgumentCaptor1.getValue().execute();
 
-        verifyStatic();
-        IOC.unregister(eq(stringConvertKey));
-        verifyStatic();
-        IOC.unregister(eq(integerConvertKey));
-        verifyStatic();
-        IOC.unregister(eq(bigDecimalConvertKey));
-        verifyStatic();
-        IOC.unregister(eq(localDateTimeConvertKey));
-        verifyStatic();
-        IOC.unregister(eq(listConvertKey));
-        verifyStatic();
-        IOC.unregister(eq(intConvertKey));
-        verifyStatic();
-        IOC.unregister(eq(booleanConvertKey));
-        verifyStatic();
-        IOC.unregister(eq(characterConvertKey));
+        assertNull(IOC.unregister(eq(stringConvertKey)));
+        assertNull(IOC.unregister(eq(integerConvertKey)));
+        assertNull(IOC.unregister(eq(bigDecimalConvertKey)));
+        assertNull(IOC.unregister(eq(localDateTimeConvertKey)));
+        assertNull(IOC.unregister(eq(listConvertKey)));
+        assertNull(IOC.unregister(eq(intConvertKey)));
+        assertNull(IOC.unregister(eq(booleanConvertKey)));
+        assertNull(IOC.unregister(eq(characterConvertKey)));
     }
 
     @Test

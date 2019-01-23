@@ -133,7 +133,7 @@ public class ContainerTest {
         ScopeProvider.setCurrentScope(scope);
         IStrategyContainer strategyContainer = mock(IStrategyContainer.class);
         when(scope.getValue(container.getIocKey())).thenReturn(strategyContainer);
-        doNothing().when(strategyContainer).unregister(strategyKey);
+        when(strategyContainer.unregister(strategyKey)).thenReturn(null);
 
         container.unregister(strategyKey);
 

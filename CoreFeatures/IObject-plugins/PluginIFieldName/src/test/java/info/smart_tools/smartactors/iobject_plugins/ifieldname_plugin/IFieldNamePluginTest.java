@@ -24,6 +24,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.function.Function;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
@@ -95,8 +96,7 @@ public class IFieldNamePluginTest {
 
         iActionNoArgsArgumentCaptor2.getValue().execute();
 
-        verifyStatic();
-        IOC.unregister(eq(iFieldNameKey));
+        assertNull(IOC.unregister(eq(iFieldNameKey)));
     }
 
     @Test

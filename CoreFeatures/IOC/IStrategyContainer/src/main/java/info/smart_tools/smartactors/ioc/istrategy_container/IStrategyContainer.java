@@ -30,10 +30,12 @@ public interface IStrategyContainer {
             throws StrategyContainerException;
 
     /**
-     * Remove existing dependency of {@link IStrategy} by unique object identifier
+     * Remove existing dependency of {@link IStrategy} by unique object identifier.
      * @param key unique object identifier
      * @throws StrategyContainerException  if any error occurred
+     * @return the previous instance of {@link IStrategy} associated with <tt>key</tt>,
+     *         or <tt>null</tt> if there was no association for <tt>key</tt>.
      */
-    void unregister(final Object key)
+    IStrategy unregister(final Object key)
             throws StrategyContainerException;
 }

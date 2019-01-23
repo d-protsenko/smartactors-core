@@ -41,7 +41,7 @@ class EmptyStrategyContainer implements IStrategyContainer {
      * @throws StrategyContainerException always
      */
     @Override
-    public void unregister(final Object key) throws StrategyContainerException {
+    public IStrategy unregister(final Object key) throws StrategyContainerException {
         throw new StrategyContainerException(
                 String.format("Cannot unregister the strategy for %s from EmptyStrategyContainer", String.valueOf(key)));
     }

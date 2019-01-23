@@ -48,7 +48,9 @@ public interface IContainer {
      * Unregister dependency with given key
      * @param key instance of {@link IKey}
      * @throws DeletionException if any errors occurred
+     * @return the previous instance of {@link IStrategy} associated with <tt>key</tt>,
+     *         or <tt>null</tt> if there was no association for <tt>key</tt>.
      */
-    void unregister(final IKey key)
+    IStrategy unregister(final IKey key)
             throws DeletionException;
 }

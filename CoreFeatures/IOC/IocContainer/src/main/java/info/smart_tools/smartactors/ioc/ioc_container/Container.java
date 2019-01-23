@@ -98,11 +98,11 @@ public class Container implements IContainer {
      * @throws DeletionException if any errors occurred
      */
     @Override
-    public void unregister(final IKey key)
+    public IStrategy unregister(final IKey key)
             throws DeletionException {
         try {
             IStrategyContainer strategyContainer = (IStrategyContainer) ScopeProvider.getCurrentScope().getValue(strategyContainerKey);
-            strategyContainer.unregister(key);
+            return strategyContainer.unregister(key);
         } catch (Throwable e) {
             throw new DeletionException("Deletion of dependency failed for key " + key, e);
         }

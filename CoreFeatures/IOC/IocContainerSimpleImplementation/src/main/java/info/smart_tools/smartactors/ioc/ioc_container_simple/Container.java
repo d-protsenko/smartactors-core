@@ -114,13 +114,13 @@ public class Container implements IContainer {
      * @throws DeletionException if any errors occurred
      */
     @Override
-    public void unregister(final IKey key)
+    public IStrategy unregister(final IKey key)
             throws DeletionException {
         if (key == null) {
             throw new DeletionException("Key can't be null");
         }
         try {
-            storage.remove(key);
+            return storage.remove(key);
         } catch (Exception e) {
             throw new DeletionException("Deletion of dependency failed for key " + key, e);
         }

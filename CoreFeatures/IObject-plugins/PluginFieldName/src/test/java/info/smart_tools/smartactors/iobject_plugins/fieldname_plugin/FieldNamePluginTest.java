@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.iobject_plugins.fieldname_plugin;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
@@ -23,6 +24,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.function.Function;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
@@ -96,8 +98,7 @@ public class FieldNamePluginTest {
 
         iActionNoArgsArgumentCaptor2.getValue().execute();
 
-        verifyStatic();
-        IOC.unregister(eq(fieldNameKey));
+        assertNull(IOC.unregister(eq(fieldNameKey)));
     }
 
     @Test

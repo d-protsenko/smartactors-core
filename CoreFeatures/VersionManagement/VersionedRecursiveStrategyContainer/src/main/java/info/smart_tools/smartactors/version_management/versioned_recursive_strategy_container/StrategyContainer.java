@@ -82,14 +82,16 @@ public class StrategyContainer implements IStrategyContainer {
      * @param key unique object identifier
      * @throws StrategyContainerException  if any error occurred
      */
-    public void unregister(final Object key)
+    public IStrategy unregister(final Object key)
             throws StrategyContainerException {
+        IStrategy strategy = null;
         Map<IModule, IStrategy> strategyVersions = strategyStorage.get(key);
         if (strategyVersions != null) {
-            ModuleManager.removeFromMap(strategyVersions);
+            strategy = ModuleManager.removeFromMap(strategyVersions);
             if (strategyVersions.size() == 0) {
                 strategyStorage.remove(key);
             }
         }
+        return strategy;
     }
 }

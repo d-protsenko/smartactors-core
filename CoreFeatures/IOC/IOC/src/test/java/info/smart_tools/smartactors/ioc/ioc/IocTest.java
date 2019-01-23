@@ -57,7 +57,7 @@ public class IocTest {
     public void checkDeletion()
             throws Exception {
         IKey key = mock(IKey.class);
-        doNothing().when(container).unregister(key);
+        when(container.unregister(key)).thenReturn(null);
         IOC.unregister(key);
         verify(container, times(1)).unregister(key);
     }
