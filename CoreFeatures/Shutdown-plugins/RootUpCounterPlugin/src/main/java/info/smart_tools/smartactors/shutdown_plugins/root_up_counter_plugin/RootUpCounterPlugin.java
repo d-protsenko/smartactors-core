@@ -120,6 +120,7 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
     @After({
         "root_upcounter"
     })
+    @Before({"read_initial_config"})
     public void setupDefaultShutdownCallbacks()
             throws ResolutionException, UpCounterCallbackExecutionException {
         IUpCounter upCounter = IOC.resolve(Keys.resolveByName("root upcounter"));

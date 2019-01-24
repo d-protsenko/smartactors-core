@@ -27,6 +27,7 @@ public class MessageProcessorShutdownPlugin extends BootstrapPlugin {
     @After({
             "shutdown_task_process_strategies",
     })
+    @Before({"read_initial_config"})
     public void registerMessageProcessorShutdownStrategies()
             throws ResolutionException, StrategyRegistrationException, InvalidArgumentException {
         IStrategyRegistration strategy = IOC.resolve(Keys.resolveByName(

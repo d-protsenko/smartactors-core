@@ -102,6 +102,7 @@ public class ShutdownTaskProcessingStrategiesPlugin extends BootstrapPlugin {
         "shutdown_task_process_strategies",
         "root_upcounter",
     })
+    @Before({"read_initial_config"})
     public void registerUpcounterCallbackForTaskDispatcherShutdown()
             throws ResolutionException, UpCounterCallbackExecutionException {
         IUpCounter upCounter = IOC.resolve(Keys.resolveByName("root upcounter"));
