@@ -47,16 +47,16 @@ public class CreateCollectionPluginTest {
 
     @Test
     public void testCreateTaskInitialized() throws ResolutionException {
-        assertTrue(IOC.resolve(Keys.resolveByName(CreateIfNotExistsCollectionMessage.class.getCanonicalName()), message)
+        assertTrue(IOC.resolve(Keys.getKeyByName(CreateIfNotExistsCollectionMessage.class.getCanonicalName()), message)
                 instanceof CreateIfNotExistsCollectionMessage);
         IObject options = mock(IObject.class);
-        assertTrue(IOC.resolve(Keys.resolveByName("db.collection.create-if-not-exists"), connection, collection, options)
+        assertTrue(IOC.resolve(Keys.getKeyByName("db.collection.create-if-not-exists"), connection, collection, options)
                 instanceof PostgresCreateIfNotExistsTask);
     }
 
     @Test
     public void testCreateTaskInitializedWithoutOptions() throws ResolutionException {
-        assertTrue(IOC.resolve(Keys.resolveByName("db.collection.create-if-not-exists"), connection, collection)
+        assertTrue(IOC.resolve(Keys.getKeyByName("db.collection.create-if-not-exists"), connection, collection)
                 instanceof PostgresCreateIfNotExistsTask);
     }
 }

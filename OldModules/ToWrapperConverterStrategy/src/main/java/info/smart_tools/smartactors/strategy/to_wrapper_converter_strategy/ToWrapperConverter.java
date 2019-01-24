@@ -22,8 +22,8 @@ public class ToWrapperConverter implements IStrategy {
         try {
             IObject obj = (IObject) args[0];
             T instance = null;
-            IWrapperGenerator wg = IOC.resolve(Keys.resolveByName(IWrapperGenerator.class.getCanonicalName()));
-            Object unknown = IOC.resolve(Keys.resolveByName((String) args[1]));
+            IWrapperGenerator wg = IOC.resolve(Keys.getKeyByName(IWrapperGenerator.class.getCanonicalName()));
+            Object unknown = IOC.resolve(Keys.getKeyByName((String) args[1]));
             if (unknown.getClass().isInterface()) {
                 instance = wg.generate((Class<T>) unknown);
             }

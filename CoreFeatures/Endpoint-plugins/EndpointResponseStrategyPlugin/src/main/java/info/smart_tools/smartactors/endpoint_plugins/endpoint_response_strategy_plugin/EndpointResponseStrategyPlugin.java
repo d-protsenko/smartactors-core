@@ -5,7 +5,6 @@ import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonSt
 import info.smart_tools.smartactors.endpoint.response_strategy.EndpointResponseStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -26,7 +25,7 @@ public class EndpointResponseStrategyPlugin extends BootstrapPlugin {
     public void registerHttpResponseStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
-                Keys.resolveByName("endpoint response strategy"),
+                Keys.getKeyByName("endpoint response strategy"),
                 new SingletonStrategy(
                         new EndpointResponseStrategy()
                 )

@@ -43,7 +43,7 @@ public class FieldNamesTest {
         when(strategyContainer.resolve(any())).thenReturn(strategy);
         when(strategy.resolve(IFieldName.class.getCanonicalName())).thenReturn(iFieldNameKey);
         when(strategy.resolve("test")).thenReturn(fieldName);
-        IFieldName result = FieldNames.resolveByName("test");
+        IFieldName result = FieldNames.getFieldNameByName("test");
         assertNotNull(result);
         assertEquals(result, fieldName);
     }

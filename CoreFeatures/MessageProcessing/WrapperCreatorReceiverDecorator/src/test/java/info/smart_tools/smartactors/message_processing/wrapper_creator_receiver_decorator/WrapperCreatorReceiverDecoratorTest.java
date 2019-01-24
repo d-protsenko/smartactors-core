@@ -54,7 +54,7 @@ public class WrapperCreatorReceiverDecoratorTest extends PluginsLoadingTestBase 
         stepConfMock = mock(IObject.class);
         wrapperConfMock = mock(IObject.class);
 
-        IOC.register(Keys.resolveByName("the wrapper resolution strategy resolution strategy"),
+        IOC.register(Keys.getKeyByName("the wrapper resolution strategy resolution strategy"),
                 wrapperResolutionStrategyResolutionStrategyMock);
 
         when(wrapperResolutionStrategyResolutionStrategyMock.resolve(same(wrapperConfMock)))
@@ -68,7 +68,7 @@ public class WrapperCreatorReceiverDecoratorTest extends PluginsLoadingTestBase 
                 .thenReturn(wrapperMock);
 
         when(sequenceMock.getCurrentReceiverArguments()).thenReturn(stepConfMock);
-        when(stepConfMock.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "wrapper"))).thenReturn(wrapperConfMock);
+        when(stepConfMock.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "wrapper"))).thenReturn(wrapperConfMock);
 
         receiverMock = mock(IMessageReceiver.class);
 

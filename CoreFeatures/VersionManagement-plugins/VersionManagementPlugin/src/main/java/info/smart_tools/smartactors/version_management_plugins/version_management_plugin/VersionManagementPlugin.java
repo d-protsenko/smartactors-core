@@ -39,9 +39,9 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
 
         ChainIdFromMapNameStrategy strategy = new ChainIdFromMapNameStrategy();
 
-        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), strategy.getResolveByMessageStrategy());
-        IOC.register(Keys.resolveByName("chain_id_from_map_name"), strategy.getResolveByModuleDependenciesStrategy());
-        IOC.register(Keys.resolveByName("register_message_version_strategy"), strategy.getRegisterMessageVersionStrategy());
+        IOC.register(Keys.getKeyByName("chain_id_from_map_name_and_message"), strategy.getResolveByMessageStrategy());
+        IOC.register(Keys.getKeyByName("chain_id_from_map_name"), strategy.getResolveByModuleDependenciesStrategy());
+        IOC.register(Keys.getKeyByName("register_message_version_strategy"), strategy.getRegisterMessageVersionStrategy());
     }
 
     @Item("versioned_router")
@@ -51,15 +51,15 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
             throws ResolutionException, RegistrationException, InvalidArgumentException {
 
         // alternative 1: realization using decorator pattern
-        IRouter router = IOC.resolve(Keys.resolveByName(IRouter.class.getCanonicalName()));
+        IRouter router = IOC.resolve(Keys.getKeyByName(IRouter.class.getCanonicalName()));
         IOC.register(
-                Keys.resolveByName(IRouter.class.getCanonicalName()),
+                Keys.getKeyByName(IRouter.class.getCanonicalName()),
                 new SingletonStrategy(new VersionedRouterDecorator(new ConcurrentHashMap<>(), router))
         );
         /*
         // alternative 2: more fast realization
         IOC.register(
-                Keys.resolveByName(IRouter.class.getCanonicalName()),
+                Keys.getKeyByName(IRouter.class.getCanonicalName()),
                 new SingletonStrategy(new VersionedMapRouter(new ConcurrentHashMap<>()))
         );
         */

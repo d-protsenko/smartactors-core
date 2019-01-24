@@ -38,7 +38,7 @@ public class HttpClientInitializerTest {
                 IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
-        IOC.register(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), new CreateNewInstanceStrategy(
+        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), new CreateNewInstanceStrategy(
                 (args) -> {
                     try {
                         return new FieldName((String) args[0]);

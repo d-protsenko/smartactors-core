@@ -48,7 +48,7 @@ public class WDSObjectFieldTest {
                         })
         );
         IOC.register(
-                Keys.resolveByName(IFieldName.class.getCanonicalName()),
+                Keys.getKeyByName(IFieldName.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -59,7 +59,7 @@ public class WDSObjectFieldTest {
                         })
         );
         IOC.register(
-                Keys.resolveByName(IStrategy.class.getCanonicalName()),
+                Keys.getKeyByName(IStrategy.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> a[1]
                 )
@@ -122,13 +122,13 @@ public class WDSObjectFieldTest {
             throws Exception {
         IStrategy strategy1 = mock(IStrategy.class);
         IOC.resolve(
-                Keys.resolveByName(IStrategy.class.getCanonicalName()),
+                Keys.getKeyByName(IStrategy.class.getCanonicalName()),
                 "GetValue",
                 strategy1
         );
         IStrategy strategy2 = mock(IStrategy.class);
         IOC.resolve(
-                Keys.resolveByName(IStrategy.class.getCanonicalName()),
+                Keys.getKeyByName(IStrategy.class.getCanonicalName()),
                 "Transform",
                 strategy2
         );
@@ -165,7 +165,7 @@ public class WDSObjectFieldTest {
             throws Exception {
         IStrategy strategy1 = mock(IStrategy.class);
         IOC.resolve(
-                Keys.resolveByName(IStrategy.class.getCanonicalName()),
+                Keys.getKeyByName(IStrategy.class.getCanonicalName()),
                 "GetValue",
                 strategy1
         );
@@ -184,13 +184,13 @@ public class WDSObjectFieldTest {
             throws Exception {
         IStrategy strategy1 = mock(IStrategy.class);
         IOC.resolve(
-                Keys.resolveByName(IStrategy.class.getCanonicalName()),
+                Keys.getKeyByName(IStrategy.class.getCanonicalName()),
                 "GetValue",
                 strategy1
         );
         IStrategy strategy2 = mock(IStrategy.class);
         IOC.resolve(
-                Keys.resolveByName(IStrategy.class.getCanonicalName()),
+                Keys.getKeyByName(IStrategy.class.getCanonicalName()),
                 "Transform",
                 strategy2
         );
@@ -232,7 +232,7 @@ public class WDSObjectFieldTest {
             throws Exception {
         IStrategy strategy1 = mock(IStrategy.class);
         IOC.resolve(
-                Keys.resolveByName(IStrategy.class.getCanonicalName()),
+                Keys.getKeyByName(IStrategy.class.getCanonicalName()),
                 "GetValue",
                 strategy1
         );

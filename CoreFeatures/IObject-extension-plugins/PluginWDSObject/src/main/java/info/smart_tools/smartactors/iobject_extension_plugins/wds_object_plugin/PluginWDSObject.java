@@ -11,7 +11,6 @@ import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_extension.wds_object.WDSObject;
 import info.smart_tools.smartactors.iobject_extension.wds_object.WDSObjectFieldSet;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -41,13 +40,13 @@ public class PluginWDSObject extends BootstrapPlugin {
     public void registerFieldSetDependencies()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
-                Keys.resolveByName("WDSObject field set thread safe map"),
+                Keys.getKeyByName("WDSObject field set thread safe map"),
                 // TODO:: Use some lock-free hash map
                 new ApplyFunctionToArgumentsStrategy(args -> new ConcurrentSkipListMap())
         );
 
         IOC.register(
-                Keys.resolveByName("WDSObject field set non thread safe map"),
+                Keys.getKeyByName("WDSObject field set non thread safe map"),
                 new ApplyFunctionToArgumentsStrategy(args -> new HashMap())
         );
     }
@@ -65,7 +64,7 @@ public class PluginWDSObject extends BootstrapPlugin {
     public void registerRulesStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
-                Keys.resolveByName(IStrategy.class.getCanonicalName()),
+                Keys.getKeyByName(IStrategy.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> a[1]
                 )
@@ -85,11 +84,11 @@ public class PluginWDSObject extends BootstrapPlugin {
     public void registerFieldSetCreationStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
-                Keys.resolveByName("thread safe wrapper configuration"),
+                Keys.getKeyByName("thread safe wrapper configuration"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     try {
-                        Map<IFieldName, IField> inMap = IOC.resolve(Keys.resolveByName("WDSObject field set thread safe map"));
-                        Map<IFieldName, IField[]> outMap = IOC.resolve(Keys.resolveByName("WDSObject field set thread safe map"));
+                        Map<IFieldName, IField> inMap = IOC.resolve(Keys.getKeyByName("WDSObject field set thread safe map"));
+                        Map<IFieldName, IField[]> outMap = IOC.resolve(Keys.getKeyByName("WDSObject field set thread safe map"));
                         return new WDSObjectFieldSet((IObject) args[0], inMap, outMap);
                     } catch (Exception e) {
                         throw new FunctionExecutionException(e);
@@ -98,11 +97,11 @@ public class PluginWDSObject extends BootstrapPlugin {
         );
 
         IOC.register(
-                Keys.resolveByName("non thread safe wrapper configuration"),
+                Keys.getKeyByName("non thread safe wrapper configuration"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     try {
-                        Map<IFieldName, IField> inMap = IOC.resolve(Keys.resolveByName("WDSObject field set non thread safe map"));
-                        Map<IFieldName, IField[]> outMap = IOC.resolve(Keys.resolveByName("WDSObject field set non thread safe map"));
+                        Map<IFieldName, IField> inMap = IOC.resolve(Keys.getKeyByName("WDSObject field set non thread safe map"));
+                        Map<IFieldName, IField[]> outMap = IOC.resolve(Keys.getKeyByName("WDSObject field set non thread safe map"));
                         return new WDSObjectFieldSet((IObject) args[0], inMap, outMap);
                     } catch (Exception e) {
                         throw new FunctionExecutionException(e);
@@ -129,7 +128,7 @@ public class PluginWDSObject extends BootstrapPlugin {
     public void registerWDSObjectCreationStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
-                Keys.resolveByName(WDSObject.class.getCanonicalName()),
+                Keys.getKeyByName(WDSObject.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     try {
                         if (args[0] instanceof IObject) {

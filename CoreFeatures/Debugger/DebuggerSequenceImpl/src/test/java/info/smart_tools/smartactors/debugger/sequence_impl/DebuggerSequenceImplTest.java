@@ -56,13 +56,13 @@ public class DebuggerSequenceImplTest extends PluginsLoadingTestBase {
         when(sequenceMock.getCurrentReceiverArguments()).thenReturn(sequenceArgumentsMock);
 
         routerMock = mock(IRouter.class);
-        IOC.register(Keys.resolveByName(IRouter.class.getCanonicalName()), new SingletonStrategy(routerMock));
+        IOC.register(Keys.getKeyByName(IRouter.class.getCanonicalName()), new SingletonStrategy(routerMock));
 
         debuggerReceiverMock = mock(IMessageReceiver.class);
         when(routerMock.route(same(debuggerAddress))).thenReturn(debuggerReceiverMock);
 
         dumpCreationStrategy = mock(IStrategy.class);
-        IOC.register(Keys.resolveByName("make dump"), dumpCreationStrategy);
+        IOC.register(Keys.getKeyByName("make dump"), dumpCreationStrategy);
     }
 
     @Test(expected = InvalidArgumentException.class)

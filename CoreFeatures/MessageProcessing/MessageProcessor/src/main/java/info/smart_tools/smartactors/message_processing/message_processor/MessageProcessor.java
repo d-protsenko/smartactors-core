@@ -130,11 +130,11 @@ public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask,
         sequenceFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sequence");
         argumentsFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "arguments");
         processorFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "processor");
-        finalActionsFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "finalActions");
+        finalActionsFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "finalActions");
 
         this.finalTask = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "final task"), this.rawEnvironment);
 
-        this.upCounter = IOC.resolve(Keys.resolveByName("root upcounter"));
+        this.upCounter = IOC.resolve(Keys.getKeyByName("root upcounter"));
     }
 
     @Override
@@ -227,7 +227,7 @@ public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask,
         }
 
         try {
-            Object signal = IOC.resolve(Keys.resolveByName(signalName));
+            Object signal = IOC.resolve(Keys.getKeyByName(signalName));
 
             if (!(signal instanceof Signal)) {
                 throw new InvalidArgumentException("Resolved signal is not a signal.");

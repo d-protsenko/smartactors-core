@@ -9,7 +9,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.http_endpoint.http_request_sender_actor.HttpRequestSenderActor;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -42,7 +41,7 @@ public class PluginHttpRequestSenderActor implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.resolveByName("HttpRequestSenderActor"),
+                                    Keys.getKeyByName("HttpRequestSenderActor"),
                                     // Response sender is stateless so it's safe to use singleton strategy.
                                     new SingletonStrategy(new HttpRequestSenderActor()));
                         } catch (ResolutionException e) {

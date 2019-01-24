@@ -9,7 +9,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.iobject.iobject_simple_implementation.IObjectImpl;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
@@ -39,7 +38,7 @@ public class IObjectSimpleImplPlugin implements IPlugin {
                 .after("IOC")
                 .process(() -> {
                     try {
-                        IKey fieldKey = Keys.resolveByName(IObjectImpl.class.getCanonicalName());
+                        IKey fieldKey = Keys.getKeyByName(IObjectImpl.class.getCanonicalName());
                         IOC.register(fieldKey, new CreateNewInstanceStrategy(
                                 (args) -> new IObjectImpl()
                         ));

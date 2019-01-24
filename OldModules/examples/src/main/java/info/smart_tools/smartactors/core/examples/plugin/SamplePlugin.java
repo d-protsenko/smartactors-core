@@ -36,7 +36,7 @@ public class SamplePlugin implements IPlugin {
             item.after("IOC");                                                  // dependency, we need IOC
             item.process(() -> {
                 try {
-                    IKey key = Keys.resolveByName("new SampleClass");
+                    IKey key = Keys.getKeyByName("new SampleClass");
                     IOC.register(
                             key,
                             // it's the initialization action of our plugin

@@ -56,11 +56,11 @@ public class EmbeddedSensorReceiverTest extends PluginsLoadingTestBase {
         timeMock = mock(ITime.class);
         timerMock = mock(ITimer.class);
 
-        IOC.register(Keys.resolveByName("time"), new SingletonStrategy(timeMock));
-        IOC.register(Keys.resolveByName("timer"), new SingletonStrategy(timerMock));
+        IOC.register(Keys.getKeyByName("time"), new SingletonStrategy(timeMock));
+        IOC.register(Keys.getKeyByName("timer"), new SingletonStrategy(timerMock));
 
         sensorStrategyMock = mock(IEmbeddedSensorStrategy.class);
-        IOC.register(Keys.resolveByName("the sensor strategy"), new SingletonStrategy(sensorStrategyMock));
+        IOC.register(Keys.getKeyByName("the sensor strategy"), new SingletonStrategy(sensorStrategyMock));
 
         periods = new IEmbeddedSensorObservationPeriod[] {
                 mock(IEmbeddedSensorObservationPeriod.class),
@@ -68,7 +68,7 @@ public class EmbeddedSensorReceiverTest extends PluginsLoadingTestBase {
         };
 
         periodStrategyMock = mock(IStrategy.class);
-        IOC.register(Keys.resolveByName(IEmbeddedSensorObservationPeriod.class.getCanonicalName()), periodStrategyMock);
+        IOC.register(Keys.getKeyByName(IEmbeddedSensorObservationPeriod.class.getCanonicalName()), periodStrategyMock);
         when(periodStrategyMock.resolve(any(), any(), any(), any())).thenReturn(periods[0]);
 
         processors = new IMessageProcessor[] {
@@ -79,7 +79,7 @@ public class EmbeddedSensorReceiverTest extends PluginsLoadingTestBase {
         messageBusHandlerMock = mock(IMessageBusHandler.class);
         ScopeProvider.getCurrentScope().setValue(MessageBus.getMessageBusKey(), messageBusHandlerMock);
 
-        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), new IStrategy() {
+        IOC.register(Keys.getKeyByName("chain_id_from_map_name_and_message"), new IStrategy() {
             @Override
             public <T> T resolve(Object... args) throws StrategyException {
                 return (T) String.valueOf(args[0]).concat("__0");
@@ -94,7 +94,7 @@ public class EmbeddedSensorReceiverTest extends PluginsLoadingTestBase {
             throws Exception {
         when(timeMock.currentTimeMillis()).thenReturn(1000L);
 
-        IObject args = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject args = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'period':'PT1M'," +
                         "'strategy':'the sensor strategy'," +

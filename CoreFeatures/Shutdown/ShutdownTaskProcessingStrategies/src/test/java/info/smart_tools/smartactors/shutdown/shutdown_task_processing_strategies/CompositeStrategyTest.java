@@ -44,7 +44,7 @@ public class CompositeStrategyTest extends PluginsLoadingTestBase {
         strategyStrategy = mock(IStrategy.class);
         defaultStrategyMock = mock(ITaskProcessStrategy.class);
         customStrategyMock = mock(ITaskProcessStrategy.class);
-        strategyStrategyKey = Keys.resolveByName("key");
+        strategyStrategyKey = Keys.getKeyByName("key");
         taskExecutionState = mock(ITaskExecutionState.class);
 
         IOC.register(strategyStrategyKey, strategyStrategy);

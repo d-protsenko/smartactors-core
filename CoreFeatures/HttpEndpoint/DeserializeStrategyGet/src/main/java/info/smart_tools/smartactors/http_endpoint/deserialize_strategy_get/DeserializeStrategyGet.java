@@ -28,7 +28,7 @@ public class DeserializeStrategyGet implements IAddRequestParametersToIObject {
      * @throws ResolutionException if there are IOC problems
      */
     public DeserializeStrategyGet(final List<String> templates) throws ResolutionException {
-        this.tree = IOC.resolve(Keys.resolveByName(IParseTree.class.getCanonicalName()));
+        this.tree = IOC.resolve(Keys.getKeyByName(IParseTree.class.getCanonicalName()));
         if (null == templates) {
             return;
         }
@@ -48,7 +48,7 @@ public class DeserializeStrategyGet implements IAddRequestParametersToIObject {
         decoder.parameters().forEach(
                 (k, v) -> {
                     try {
-                        IFieldName fieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), k);
+                        IFieldName fieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), k);
                         message.setValue(fieldName, v.get(0));
                     } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
                         throw new RuntimeException(e);
@@ -59,7 +59,7 @@ public class DeserializeStrategyGet implements IAddRequestParametersToIObject {
         parameters.forEach(
                 (k, v) -> {
                     try {
-                        IFieldName fieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), k);
+                        IFieldName fieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), k);
                         message.setValue(fieldName, v);
                     } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
                         throw new RuntimeException(e);

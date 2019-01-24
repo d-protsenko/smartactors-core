@@ -4,7 +4,6 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -27,7 +26,7 @@ public class ResponseSenderReceiverPlugin extends BootstrapPlugin {
     @After({"IOC", "IFieldNamePlugin"})
     public void registerResponseAction()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.resolveByName("send response action"), new SingletonStrategy(new ResponseSenderAction()));
+        IOC.register(Keys.getKeyByName("send response action"), new SingletonStrategy(new ResponseSenderAction()));
     }
 
     @ItemRevert("send_response_action")
@@ -40,7 +39,7 @@ public class ResponseSenderReceiverPlugin extends BootstrapPlugin {
     @After("send_response_action")
     public void registerResponseSenderReceiver()
         throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.resolveByName("response sender receiver"), new SingletonStrategy(new ResponseSenderReceiver()));
+        IOC.register(Keys.getKeyByName("response sender receiver"), new SingletonStrategy(new ResponseSenderReceiver()));
     }
 
     @ItemRevert("response_sender_receiver")

@@ -9,7 +9,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IP
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.field.field.Field;
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
@@ -41,12 +40,12 @@ public class IFieldPlugin implements IPlugin {
                 .after("IOC")
                 .process(() -> {
                     try {
-                        IKey fieldKey = Keys.resolveByName(IField.class.getCanonicalName());
+                        IKey fieldKey = Keys.getKeyByName(IField.class.getCanonicalName());
                         IOC.register(fieldKey, new ResolveByNameIocStrategy(
                             (args) -> {
                                 String fieldName = String.valueOf(args[0]);
                                 try {
-                                    return new Field(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), fieldName));
+                                    return new Field(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), fieldName));
                                 } catch (InvalidArgumentException | ResolutionException e) {
                                     throw new RuntimeException("Can't resolve IField: ", e);
                                 }

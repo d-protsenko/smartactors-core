@@ -40,7 +40,7 @@ public class GetQueryParameterRulePlugin implements IPlugin {
                         try {
                             //call IOC.resolve for put GetQueryParameterRule into cache of ResolveByNameDependency strategy
                             IOC.resolve(
-                                    Keys.resolveByName(IStrategy.class.getCanonicalName()),
+                                    Keys.getKeyByName(IStrategy.class.getCanonicalName()),
                                     "getQueryParameterFromRequestRule",
                                     new GetQueryParameterRule()
                             );

@@ -53,8 +53,8 @@ public class RawObjectCreatorTest {
         when(IOC.resolve(fieldNameKey, "dependency")).thenReturn(dependencyFieldName);
         when(IOC.resolve(fieldNameKey, "name")).thenReturn(nameFieldName);
 
-        when(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(fieldNameKey);
-        when(Keys.resolveByName("route_from_object_name")).thenReturn(routeFromObjectNameKey);
+        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(fieldNameKey);
+        when(Keys.getKeyByName("route_from_object_name")).thenReturn(routeFromObjectNameKey);
 
         routerMock = mock(IRouter.class);
         descriptionMock = mock(IObject.class);
@@ -82,7 +82,7 @@ public class RawObjectCreatorTest {
 
         when(descriptionMock.getValue(same(dependencyFieldName))).thenReturn("dependency_1");
         when(descriptionMock.getValue(same(nameFieldName))).thenReturn("name_1");
-        when(Keys.resolveByName("dependency_1")).thenReturn(dependencyKey);
+        when(Keys.getKeyByName("dependency_1")).thenReturn(dependencyKey);
         when(IOC.resolve(same(dependencyKey), same(descriptionMock))).thenReturn(receiverMock);
         when(IOC.resolve(same(routeFromObjectNameKey), eq("name_1"))).thenReturn("route_1");
 
@@ -99,7 +99,7 @@ public class RawObjectCreatorTest {
 
         when(descriptionMock.getValue(same(dependencyFieldName))).thenReturn("dependency_1");
         when(descriptionMock.getValue(same(nameFieldName))).thenReturn("name_1");
-        when(Keys.resolveByName("dependency_1")).thenReturn(dependencyKey);
+        when(Keys.getKeyByName("dependency_1")).thenReturn(dependencyKey);
         when(IOC.resolve(same(dependencyKey), same(descriptionMock))).thenReturn(notReceiverMock);
         when(IOC.resolve(same(routeFromObjectNameKey), eq("name_1"))).thenReturn("route_1");
 
@@ -114,7 +114,7 @@ public class RawObjectCreatorTest {
 
         when(descriptionMock.getValue(same(dependencyFieldName))).thenReturn("dependency_1");
         when(descriptionMock.getValue(same(nameFieldName))).thenReturn("name_1");
-        when(Keys.resolveByName("dependency_1")).thenReturn(dependencyKey);
+        when(Keys.getKeyByName("dependency_1")).thenReturn(dependencyKey);
         when(IOC.resolve(any(), any())).thenThrow(ResolutionException.class);
 
         creator.createObject(routerMock, descriptionMock);

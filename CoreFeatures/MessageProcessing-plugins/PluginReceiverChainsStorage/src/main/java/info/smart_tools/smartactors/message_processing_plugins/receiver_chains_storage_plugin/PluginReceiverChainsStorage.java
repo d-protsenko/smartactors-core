@@ -49,7 +49,7 @@ public class PluginReceiverChainsStorage implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.resolveByName(IChainState.class.getCanonicalName()),
+                                    Keys.getKeyByName(IChainState.class.getCanonicalName()),
                                     new ApplyFunctionToArgumentsStrategy(args -> {
                                         try {
                                             return new ChainStateImpl((IReceiverChain) args[0]);
@@ -77,10 +77,10 @@ public class PluginReceiverChainsStorage implements IPlugin {
                     .after("router")
                     .process(() -> {
                         try {
-                            IRouter router = IOC.resolve(Keys.resolveByName(IRouter.class.getCanonicalName()));
+                            IRouter router = IOC.resolve(Keys.getKeyByName(IRouter.class.getCanonicalName()));
 
                             IOC.register(
-                                    Keys.resolveByName(IChainStorage.class.getCanonicalName()),
+                                    Keys.getKeyByName(IChainStorage.class.getCanonicalName()),
                                     new SingletonStrategy(new ChainStorage(new ConcurrentHashMap<>(), router)));
                         } catch (ResolutionException e) {
                             throw new ActionExecutionException("ReceiverChainsStorage plugin can't load: can't get ReceiverChainsStorage key", e);

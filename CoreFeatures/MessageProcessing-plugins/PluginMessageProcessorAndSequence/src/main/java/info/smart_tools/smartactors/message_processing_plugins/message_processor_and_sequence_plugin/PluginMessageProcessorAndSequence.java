@@ -11,7 +11,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -101,7 +100,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.resolveByName("final task"),
+                                    Keys.getKeyByName("final task"),
                                     new CreateNewInstanceStrategy(args -> {
                                         try {
                                             return new FinalTask((IObject) args[0]);
@@ -111,7 +110,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                     })
                             );
                             IOC.register(
-                                    Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+                                    Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                                     new CreateNewInstanceStrategy(args -> {
                                         IQueue<ITask> taskQueue = (IQueue<ITask>) args[0];
                                         IMessageProcessingSequence sequence = (IMessageProcessingSequence) args[1];
@@ -121,7 +120,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                             config = (IObject) args[2];
                                         } else {
                                             try {
-                                                config = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                                                config = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
                                             } catch (ResolutionException e) {
                                                 throw new RuntimeException(e);
                                             }
@@ -160,7 +159,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                                    Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                                     new CreateNewInstanceStrategy(args -> {
                                         int stackDepth = ((Number) args[0]).intValue();
                                         Object mainChainName = args[1];
@@ -193,7 +192,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.resolveByName("recover message processing sequence"),
+                                    Keys.getKeyByName("recover message processing sequence"),
                                     new MessageProcessingSequenceRecoveryStrategy());
                         } catch (ResolutionException | RegistrationException e) {
                             throw new ActionExecutionException(e);

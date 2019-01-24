@@ -38,10 +38,10 @@ public class SchedulerAutoStartupPlugin extends BootstrapPlugin {
     @Item("scheduler_actor_delayed_startup_action")
     public void doSomeThing()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.resolveByName("scheduler service activation action for scheduler actor"),
+        IOC.register(Keys.getKeyByName("scheduler service activation action for scheduler actor"),
                 new SingletonStrategy((IAction<ISchedulerService>) service -> {
                     try {
-                        IQueue<ITask> featureLoadCompletionQueue = IOC.resolve(Keys.resolveByName("feature group load completion task queue"));
+                        IQueue<ITask> featureLoadCompletionQueue = IOC.resolve(Keys.getKeyByName("feature group load completion task queue"));
                         featureLoadCompletionQueue.put(() -> {
                             try {
                                 service.start();

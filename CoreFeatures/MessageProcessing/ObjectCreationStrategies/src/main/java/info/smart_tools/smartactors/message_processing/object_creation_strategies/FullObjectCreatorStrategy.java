@@ -45,8 +45,8 @@ public class FullObjectCreatorStrategy implements IStrategy {
 
     public FullObjectCreatorStrategy()
             throws ResolutionException {
-        filtersFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "filters");
-        dependencyFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
+        filtersFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "filters");
+        dependencyFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
     }
 
     @Override

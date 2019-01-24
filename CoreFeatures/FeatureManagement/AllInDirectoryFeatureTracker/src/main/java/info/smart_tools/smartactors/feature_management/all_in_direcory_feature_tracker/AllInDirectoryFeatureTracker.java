@@ -57,15 +57,15 @@ public class AllInDirectoryFeatureTracker {
      */
     public AllInDirectoryFeatureTracker()
             throws ResolutionException {
-        this.featureNameFN =    IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "featureName");
-        this.featureVersionFN = IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "featureVersion");
-        this.afterFeaturesFN =  IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "afterFeatures");
-        this.repositoriesFN =   IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "repositories");
-        this.featuresFN =       IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "features");
-        this.nameFN =           IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "name");
-        this.groupFN =          IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "group");
-        this.versionFN =        IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "version");
-        this.packageTypeFN =    IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "packageType");
+        this.featureNameFN =    IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "featureName");
+        this.featureVersionFN = IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "featureVersion");
+        this.afterFeaturesFN =  IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "afterFeatures");
+        this.repositoriesFN =   IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "repositories");
+        this.featuresFN =       IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "features");
+        this.nameFN =           IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "name");
+        this.groupFN =          IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "group");
+        this.versionFN =        IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "version");
+        this.packageTypeFN =    IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "packageType");
     }
 
     /**
@@ -113,7 +113,7 @@ public class AllInDirectoryFeatureTracker {
         }
 
         IObject jsonConfig = IOC.resolve(
-                Keys.resolveByName(IOBJECT_FACTORY_STRATEGY_NAME),
+                Keys.getKeyByName(IOBJECT_FACTORY_STRATEGY_NAME),
                 new Scanner(jsonFile).useDelimiter(END_OF_INPUT_DELIMITER).next()
         );
 
@@ -163,12 +163,12 @@ public class AllInDirectoryFeatureTracker {
         }
 
         IObject jsonConfig = IOC.resolve(
-                Keys.resolveByName(IOBJECT_FACTORY_STRATEGY_NAME),
+                Keys.getKeyByName(IOBJECT_FACTORY_STRATEGY_NAME),
                 new Scanner(jsonFile).useDelimiter(END_OF_INPUT_DELIMITER).next()
         );
 
         List<IObject> repositories = (List<IObject>) jsonConfig.getValue(this.repositoriesFN);
-        List<IObject> repositoryStorage = IOC.resolve(Keys.resolveByName(IOC_FEATURE_REPOSITORY_STORAGE_NAME));
+        List<IObject> repositoryStorage = IOC.resolve(Keys.getKeyByName(IOC_FEATURE_REPOSITORY_STORAGE_NAME));
 
         repositoryStorage.addAll(repositories);
         List<IObject> featuresFromJson = (List<IObject>) jsonConfig.getValue(this.featuresFN);

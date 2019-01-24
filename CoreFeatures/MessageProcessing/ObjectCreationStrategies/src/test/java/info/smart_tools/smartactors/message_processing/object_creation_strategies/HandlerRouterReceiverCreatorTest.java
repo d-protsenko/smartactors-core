@@ -63,7 +63,7 @@ public class HandlerRouterReceiverCreatorTest extends PluginsLoadingTestBase {
         };
 
         handlerRouterReceiverResolutionStrategy = mock(IStrategy.class);
-        IOC.register(Keys.resolveByName("create handler router receiver"), handlerRouterReceiverResolutionStrategy);
+        IOC.register(Keys.getKeyByName("create handler router receiver"), handlerRouterReceiverResolutionStrategy);
 
         when(handlerRouterReceiverResolutionStrategy.resolve(any())).thenReturn(receiverMocks[0]);
 

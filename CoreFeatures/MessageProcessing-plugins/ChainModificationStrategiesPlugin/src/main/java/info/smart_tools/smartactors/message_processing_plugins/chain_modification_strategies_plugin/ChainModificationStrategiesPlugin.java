@@ -2,7 +2,6 @@ package info.smart_tools.smartactors.message_processing_plugins.chain_modificati
 
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -32,7 +31,7 @@ public class ChainModificationStrategiesPlugin extends BootstrapPlugin {
     @After({"IFieldNamePlugin"})
     public void registerReceiverReplaceModification()
             throws ResolutionException, RegistrationException {
-        IOC.register(Keys.resolveByName("chain modification: replace receivers"), new ReplaceReceiversChainModificationStrategy());
+        IOC.register(Keys.getKeyByName("chain modification: replace receivers"), new ReplaceReceiversChainModificationStrategy());
     }
 
     /**

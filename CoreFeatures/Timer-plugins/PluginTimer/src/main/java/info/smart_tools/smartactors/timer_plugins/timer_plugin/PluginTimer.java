@@ -8,7 +8,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -41,7 +40,7 @@ public class PluginTimer implements IPlugin {
 
             item.process(() -> {
                 try {
-                    IOC.register(Keys.resolveByName("timer"), new SingletonStrategy(
+                    IOC.register(Keys.getKeyByName("timer"), new SingletonStrategy(
                             new TimerImpl(new Timer("Smart actors system timer", true))));
                 } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
                     throw new ActionExecutionException(e);
@@ -58,7 +57,7 @@ public class PluginTimer implements IPlugin {
 
             item.process(() -> {
                 try {
-                    IOC.register(Keys.resolveByName("time"), new SingletonStrategy(new SystemTimeImpl()));
+                    IOC.register(Keys.getKeyByName("time"), new SingletonStrategy(new SystemTimeImpl()));
                 } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
                     throw new ActionExecutionException(e);
                 }

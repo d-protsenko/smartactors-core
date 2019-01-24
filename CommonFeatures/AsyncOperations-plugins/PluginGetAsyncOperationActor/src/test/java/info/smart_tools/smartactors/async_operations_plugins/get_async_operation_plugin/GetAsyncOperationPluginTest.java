@@ -49,7 +49,7 @@ public class GetAsyncOperationPluginTest {
     @Test
     public void ShouldCorrectLoadPlugin() throws Exception {
         IKey actorKey = mock(IKey.class);
-        when(Keys.resolveByName(eq(GetAsyncOperationActor.class.getCanonicalName()))).thenReturn(actorKey);
+        when(Keys.getKeyByName(eq(GetAsyncOperationActor.class.getCanonicalName()))).thenReturn(actorKey);
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("CreateGetAsyncOperationActor").thenReturn(bootstrapItem);

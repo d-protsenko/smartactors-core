@@ -5,7 +5,6 @@ import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionEx
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -33,7 +32,7 @@ public class RemoteManagementPlugin extends BootstrapPlugin {
     public void register()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
 
-        IOC.register(Keys.resolveByName("FeatureLoadStarterActor"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.getKeyByName("FeatureLoadStarterActor"), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
                 return new FeatureLoadStarterActor();
             } catch (Exception e) {

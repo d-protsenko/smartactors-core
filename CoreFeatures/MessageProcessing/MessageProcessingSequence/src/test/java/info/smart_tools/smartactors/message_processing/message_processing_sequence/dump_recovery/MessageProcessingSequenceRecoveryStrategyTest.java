@@ -46,7 +46,7 @@ public class MessageProcessingSequenceRecoveryStrategyTest extends PluginsLoadin
 
     @Override
     protected void registerMocks() throws Exception {
-        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), new IStrategy() {
+        IOC.register(Keys.getKeyByName("chain_id_from_map_name_and_message"), new IStrategy() {
             @Override
             public <T> T resolve(Object... args) throws StrategyException {
                 return (T) String.valueOf(args[0]);
@@ -54,13 +54,13 @@ public class MessageProcessingSequenceRecoveryStrategyTest extends PluginsLoadin
         });
 
         chainResolutionStrategyMock = mock(IStrategy.class);
-        IOC.register(Keys.resolveByName(IReceiverChain.class.getCanonicalName()), chainResolutionStrategyMock);
+        IOC.register(Keys.getKeyByName(IReceiverChain.class.getCanonicalName()), chainResolutionStrategyMock);
 
         routerMock = mock(IRouter.class);
         chainStorageMock = mock(IChainStorage.class);
 
-        IOC.register(Keys.resolveByName(IRouter.class.getCanonicalName()), new SingletonStrategy(routerMock));
-        IOC.register(Keys.resolveByName(IChainStorage.class.getCanonicalName()), new SingletonStrategy(chainStorageMock));
+        IOC.register(Keys.getKeyByName(IRouter.class.getCanonicalName()), new SingletonStrategy(routerMock));
+        IOC.register(Keys.getKeyByName(IChainStorage.class.getCanonicalName()), new SingletonStrategy(chainStorageMock));
     }
 
     @Test
@@ -68,7 +68,7 @@ public class MessageProcessingSequenceRecoveryStrategyTest extends PluginsLoadin
             throws Exception {
         IReceiverChain chainA = mock(IReceiverChain.class), chainB = mock(IReceiverChain.class);
 
-        IObject seqDump = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject seqDump = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'maxDepth':4," +
                         "'chainsStack':['a','b','a']," +
@@ -84,8 +84,8 @@ public class MessageProcessingSequenceRecoveryStrategyTest extends PluginsLoadin
         when(chainResolutionStrategyMock.resolve(
                 eq("a"),
                 same(((IObject) seqDump
-                        .getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainsDump")))
-                        .getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "a"))),
+                        .getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainsDump")))
+                        .getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "a"))),
                 any(),
                 same(routerMock)
         )).thenReturn(chainA);

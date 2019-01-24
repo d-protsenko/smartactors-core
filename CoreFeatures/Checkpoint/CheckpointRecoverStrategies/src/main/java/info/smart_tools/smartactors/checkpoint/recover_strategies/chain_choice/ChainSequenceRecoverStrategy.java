@@ -39,8 +39,8 @@ public class ChainSequenceRecoverStrategy implements IRecoveryChainChoiceStrateg
      */
     public ChainSequenceRecoverStrategy()
             throws ResolutionException {
-        trialsFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "trials");
-        chainsFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chains");
+        trialsFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "trials");
+        chainsFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chains");
     }
 
     @Override
@@ -82,7 +82,7 @@ public class ChainSequenceRecoverStrategy implements IRecoveryChainChoiceStrateg
                     trials.set(0, t);
                 }
             }
-            // return IOC.resolve(Keys.resolveByName("chain_id_from_map_name_and_message"), chainName);
+            // return IOC.resolve(Keys.getKeyByName("chain_id_from_map_name_and_message"), chainName);
             return chainName;
         } catch (InvalidArgumentException | ReadValueException e) {
             throw new RecoverStrategyExecutionException("Error initializing recover strategy.", e);

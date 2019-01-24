@@ -44,7 +44,7 @@ public class ConstantsSectionStrategyTest {
             throws Exception {
         mockStatic(IOC.class, Keys.class);
 
-        when(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(fieldNameKey);
+        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(fieldNameKey);
         when(IOC.resolve(fieldNameKey, "const")).thenReturn(constFieldName);
         when(IOC.resolve(fieldNameKey, "name")).thenReturn(constNameFieldName);
         when(IOC.resolve(fieldNameKey, "value")).thenReturn(constValueFieldName);
@@ -65,7 +65,7 @@ public class ConstantsSectionStrategyTest {
 
         when(configMock.getValue(constFieldName)).thenReturn(Arrays.asList(const1ObjectMock, const2ObjectMock));
 
-        when(Keys.resolveByName("global constants")).thenReturn(globalConstantsObjectKey);
+        when(Keys.getKeyByName("global constants")).thenReturn(globalConstantsObjectKey);
         when(IOC.resolve(globalConstantsObjectKey)).thenReturn(globalConstantsObjectMock);
     }
 

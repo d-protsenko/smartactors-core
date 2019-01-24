@@ -54,9 +54,9 @@ public class PluginReadConfigFile implements IPlugin {
                             String configString = new String(rawConfig);
 
                             IConfigurationManager configurationManager = IOC.resolve(
-                                    Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
+                                    Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
 
-                            IObject cObject = IOC.resolve(Keys.resolveByName("configuration object"), configString);
+                            IObject cObject = IOC.resolve(Keys.getKeyByName("configuration object"), configString);
 
                             configurationManager.applyConfig(cObject);
                         } catch (FileNotFoundException e) {
@@ -78,9 +78,9 @@ public class PluginReadConfigFile implements IPlugin {
                             String configString = new String(rawConfig);
 
                             IConfigurationManager configurationManager = IOC.resolve(
-                                    Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
+                                    Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
 
-                            IObject cObject = IOC.resolve(Keys.resolveByName("configuration object"), configString);
+                            IObject cObject = IOC.resolve(Keys.getKeyByName("configuration object"), configString);
 
                             configurationManager.revertConfig(cObject);
                         } catch (FileNotFoundException e) {

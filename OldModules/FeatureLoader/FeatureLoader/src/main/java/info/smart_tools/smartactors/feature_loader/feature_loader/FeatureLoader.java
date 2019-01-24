@@ -71,13 +71,13 @@ public class FeatureLoader implements IFeatureLoader {
      */
     public FeatureLoader()
             throws ResolutionException {
-        featureNameFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureName");
-        afterFeaturesFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "afterFeatures");
-        pluginCreator = IOC.resolve(Keys.resolveByName("plugin creator"));
-        pluginLoaderVisitor = IOC.resolve(Keys.resolveByName("plugin loader visitor"));
-        configurationManager = IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
-        fs = IOC.resolve(Keys.resolveByName("filesystem facade"));
-        featureCompletionTaskQueue = IOC.resolve(Keys.resolveByName("feature group load completion task queue"));
+        featureNameFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureName");
+        afterFeaturesFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "afterFeatures");
+        pluginCreator = IOC.resolve(Keys.getKeyByName("plugin creator"));
+        pluginLoaderVisitor = IOC.resolve(Keys.getKeyByName("plugin loader visitor"));
+        configurationManager = IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
+        fs = IOC.resolve(Keys.getKeyByName("filesystem facade"));
+        featureCompletionTaskQueue = IOC.resolve(Keys.getKeyByName("feature group load completion task queue"));
     }
 
     @Override
@@ -108,7 +108,7 @@ public class FeatureLoader implements IFeatureLoader {
                 metaFeatureStatus.addDependency(dependencyStatus);
             }
 
-            metaFeatureStatus.init(groupPath, IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
+            metaFeatureStatus.init(groupPath, IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
 
             preStartProcess(metaFeatureStatus);
 
@@ -186,7 +186,7 @@ public class FeatureLoader implements IFeatureLoader {
         return statuses.computeIfAbsent(featureId, id -> {
             try {
                 return IOC.resolve(
-                        Keys.resolveByName(FeatureStatusImpl.class.getCanonicalName()),
+                        Keys.getKeyByName(FeatureStatusImpl.class.getCanonicalName()),
                         id,
                         (IActionTwoArgs<IObject, IPath>) this::loadPluginsAndConfig);
             } catch (ResolutionException e) {
@@ -208,7 +208,7 @@ public class FeatureLoader implements IFeatureLoader {
             throws FeatureLoadException {
         try {
             String configString = fs.readToString(fs.joinPaths(featurePath, new Path("config.json")));
-            return IOC.resolve(Keys.resolveByName("configuration object"), configString);
+            return IOC.resolve(Keys.getKeyByName("configuration object"), configString);
         } catch (IOException | ResolutionException | InvalidArgumentException e) {
             throw new FeatureLoadException("Error occurred reading feature configuration file.", e);
         }
@@ -243,7 +243,7 @@ public class FeatureLoader implements IFeatureLoader {
         };
 
         IPluginLoader<Collection<IPath>> pluginLoader = IOC.resolve(
-                Keys.resolveByName("plugin loader"),
+                Keys.getKeyByName("plugin loader"),
                 getClass().getClassLoader(),
                 classHandler,
                 pluginLoaderVisitor);

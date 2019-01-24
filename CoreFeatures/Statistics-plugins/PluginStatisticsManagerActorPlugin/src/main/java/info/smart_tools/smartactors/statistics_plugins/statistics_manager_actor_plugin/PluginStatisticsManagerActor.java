@@ -38,7 +38,7 @@ public class PluginStatisticsManagerActor extends BootstrapPlugin {
     @Item("statistics_manager_actor")
     public void registerActorCreationDependency()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.resolveByName("statistics manager actor"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.getKeyByName("statistics manager actor"), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
                 return new StatisticsManagerActor();
             } catch (ResolutionException e) {
@@ -57,7 +57,7 @@ public class PluginStatisticsManagerActor extends BootstrapPlugin {
     @Item("test_statistics_collector")
     public void registerTestStatisticsCollector()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.resolveByName("test statistics collector"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.getKeyByName("test statistics collector"), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
                 return new IMessageReceiver() {
                     @Override

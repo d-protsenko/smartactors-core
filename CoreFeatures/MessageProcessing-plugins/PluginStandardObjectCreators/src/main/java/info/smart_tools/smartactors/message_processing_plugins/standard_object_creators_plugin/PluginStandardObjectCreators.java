@@ -8,7 +8,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -46,7 +45,7 @@ public class PluginStandardObjectCreators implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.resolveByName(IRoutedObjectCreator.class.getCanonicalName() + "#raw"),
+                                    Keys.getKeyByName(IRoutedObjectCreator.class.getCanonicalName() + "#raw"),
                                     new SingletonStrategy(new RawObjectCreator()));
                         } catch (ResolutionException e) {
                             throw new ActionExecutionException("StandardObjectCreators plugin can't load: can't get StandardObjectCreators key", e);

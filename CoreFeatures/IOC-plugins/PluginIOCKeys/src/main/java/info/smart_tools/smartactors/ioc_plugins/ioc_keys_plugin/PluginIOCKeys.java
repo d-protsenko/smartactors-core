@@ -63,13 +63,13 @@ public class PluginIOCKeys implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.resolveByName("ioc unregister by names for bootstrap"),
+                                    Keys.getKeyByName("ioc unregister by names for bootstrap"),
                                     new ApplyFunctionToArgumentsStrategy(
                                             (args) -> {
                                                 for(Object arg : args) {
                                                     String keyName = (String)arg;
                                                     try {
-                                                        IOC.unregister(Keys.resolveByName(keyName));
+                                                        IOC.unregister(Keys.getKeyByName(keyName));
                                                     } catch (DeletionException e) {
                                                         System.out.println("[WARNING] Deregistration of key '"+keyName+"' failed.");
                                                     } catch (ResolutionException e) { }
@@ -84,7 +84,7 @@ public class PluginIOCKeys implements IPlugin {
                     .revertProcess(() -> {
                         try {
                             String[] itemNames = { "ioc unregister by names for bootstrap" };
-                            IOC.resolve(Keys.resolveByName("ioc unregister by names for bootstrap"), itemNames);
+                            IOC.resolve(Keys.getKeyByName("ioc unregister by names for bootstrap"), itemNames);
                         } catch(ResolutionException e) { }
                     });
 

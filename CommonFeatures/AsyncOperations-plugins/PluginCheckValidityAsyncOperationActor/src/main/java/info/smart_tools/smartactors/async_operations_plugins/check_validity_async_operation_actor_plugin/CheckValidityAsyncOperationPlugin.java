@@ -41,7 +41,7 @@ public class CheckValidityAsyncOperationPlugin implements IPlugin {
 //                    .before("starter")
                     .process(() -> {
                 try {
-                    IKey operationKey = Keys.resolveByName(CheckValidityAsyncOperationActor.class.getCanonicalName());
+                    IKey operationKey = Keys.getKeyByName(CheckValidityAsyncOperationActor.class.getCanonicalName());
                     IOC.register(operationKey, new ApplyFunctionToArgumentsStrategy(
                             (args) -> {
                                 return new CheckValidityAsyncOperationActor((IObject) args[0]);

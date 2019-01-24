@@ -9,7 +9,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IP
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -40,7 +39,7 @@ public class IFieldNamePlugin implements IPlugin {
                     .after("IOC")
                     .process(() -> {
                         try {
-                            IOC.register(Keys.resolveByName(IFieldName.class.getCanonicalName()),
+                            IOC.register(Keys.getKeyByName(IFieldName.class.getCanonicalName()),
                                     new ResolveByNameIocStrategy(
                                             (args) -> {
                                                 try {

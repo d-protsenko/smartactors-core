@@ -70,7 +70,7 @@ public class TimerImplTest {
         ScopeProvider.setCurrentScope(mock(IScope.class));
         ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
 
-        when(Keys.resolveByName(eq("task_queue"))).thenReturn(taskQueueKey);
+        when(Keys.getKeyByName(eq("task_queue"))).thenReturn(taskQueueKey);
         when(IOC.resolve(same(taskQueueKey))).thenReturn(taskQueueMock);
     }
 

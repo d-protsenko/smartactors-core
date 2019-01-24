@@ -54,7 +54,7 @@ public class ObjectsSectionProcessingStrategy implements ISectionStrategy {
      */
     public ObjectsSectionProcessingStrategy()
             throws ResolutionException {
-        this.name = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "objects");
+        this.name = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "objects");
     }
 
     @Override
@@ -63,9 +63,9 @@ public class ObjectsSectionProcessingStrategy implements ISectionStrategy {
             List<IObject> section = (List<IObject>) config.getValue(name);
 
             for (IObject objDesc : section) {
-                IReceiverObjectListener listener = IOC.resolve(Keys.resolveByName("global router registration receiver object listener"));
-                IReceiverObjectCreator creator = IOC.resolve(Keys.resolveByName("full receiver object creator"), objDesc);
-                IObject context = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                IReceiverObjectListener listener = IOC.resolve(Keys.getKeyByName("global router registration receiver object listener"));
+                IReceiverObjectCreator creator = IOC.resolve(Keys.getKeyByName("full receiver object creator"), objDesc);
+                IObject context = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
                 creator.create(listener, objDesc, context);
             }
         } catch (InvalidReceiverPipelineException | ResolutionException | InvalidArgumentException | ReadValueException
@@ -78,8 +78,8 @@ public class ObjectsSectionProcessingStrategy implements ISectionStrategy {
     public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
         ConfigurationProcessingException exception = new ConfigurationProcessingException("Error occurred reverting \"objects\" configuration section.");
         try {
-            IRouter router = IOC.resolve(Keys.resolveByName(IRouter.class.getCanonicalName()));
-            IFieldName objectNameFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+            IRouter router = IOC.resolve(Keys.getKeyByName(IRouter.class.getCanonicalName()));
+            IFieldName objectNameFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
             List<IObject> section = (List<IObject>) config.getValue(name);
             ListIterator<IObject> sectionIterator = section.listIterator(section.size());
             Object objectName;

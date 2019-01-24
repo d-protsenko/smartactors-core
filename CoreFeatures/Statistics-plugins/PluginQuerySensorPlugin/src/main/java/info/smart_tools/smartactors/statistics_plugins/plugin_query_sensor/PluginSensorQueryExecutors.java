@@ -34,6 +34,6 @@ public class PluginSensorQueryExecutors extends BootstrapPlugin {
     @Item("sensor_query_executor:database_count")
     public void registerDatabaseCountQueryExecutor()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.resolveByName("database count sensor query executor"), new SingletonStrategy(new DatabaseCountQueryExecutor()));
+        IOC.register(Keys.getKeyByName("database count sensor query executor"), new SingletonStrategy(new DatabaseCountQueryExecutor()));
     }
 }

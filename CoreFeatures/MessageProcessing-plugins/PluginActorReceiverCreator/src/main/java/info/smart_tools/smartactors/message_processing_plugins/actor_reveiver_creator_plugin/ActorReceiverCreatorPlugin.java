@@ -9,7 +9,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -58,16 +57,16 @@ public class ActorReceiverCreatorPlugin  implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.resolveByName("actor_receiver_queue"),
+                                    Keys.getKeyByName("actor_receiver_queue"),
                                     new CreateNewInstanceStrategy(args -> new ConcurrentLinkedQueue()));
 
                             IOC.register(
-                                    Keys.resolveByName("actor_receiver_busyness_flag"),
+                                    Keys.getKeyByName("actor_receiver_busyness_flag"),
                                     new CreateNewInstanceStrategy(args -> new AtomicBoolean(false)));
 
                             ActorReceiverCreator objectCreator = new ActorReceiverCreator();
                             IOC.register(
-                                    Keys.resolveByName(IRoutedObjectCreator.class.getCanonicalName() + "#actor"),
+                                    Keys.getKeyByName(IRoutedObjectCreator.class.getCanonicalName() + "#actor"),
                                     new SingletonStrategy(objectCreator)
                             );
                         } catch (ResolutionException e) {

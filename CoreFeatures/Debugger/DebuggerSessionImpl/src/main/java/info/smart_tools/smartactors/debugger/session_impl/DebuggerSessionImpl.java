@@ -68,9 +68,9 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         this.id = id;
         this.debuggerAddress = debuggerAddress;
 
-        this.breakpointsStorage = IOC.resolve(Keys.resolveByName(IDebuggerBreakpointsStorage.class.getCanonicalName()));
+        this.breakpointsStorage = IOC.resolve(Keys.getKeyByName(IDebuggerBreakpointsStorage.class.getCanonicalName()));
 
-        sessionIdFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sessionId");
+        sessionIdFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sessionId");
 
         commands.put("start", this::startDebugging);
         commands.put("continue", this::continueDebugging);
@@ -124,7 +124,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         commands.put("modifyBreakpoint", args -> {
             try {
                 IObject arg = (IObject) args;
-                String bpId = (String) arg.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id"));
+                String bpId = (String) arg.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id"));
 
                 breakpointsStorage.modifyBreakpoint(bpId, arg);
 
@@ -230,18 +230,18 @@ public class DebuggerSessionImpl implements IDebuggerSession {
 
         try {
             IMessageProcessingSequence innerSequence = IOC.resolve(
-                    Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                    Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                     stackDepth,
                     mainChainName,
                     message
             );
-            sequence = IOC.resolve(Keys.resolveByName("new debugger sequence"), innerSequence, debuggerAddress);
+            sequence = IOC.resolve(Keys.getKeyByName("new debugger sequence"), innerSequence, debuggerAddress);
 
-            Object taskQueue = IOC.resolve(Keys.resolveByName("task_queue"));
+            Object taskQueue = IOC.resolve(Keys.getKeyByName("task_queue"));
 
-            processor = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), taskQueue, sequence);
+            processor = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), taskQueue, sequence);
 
-            IObject context = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject context = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             context.setValue(sessionIdFieldName, id);
 
@@ -331,7 +331,7 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         }
 
         try {
-            return IOC.resolve(Keys.resolveByName("make dump"), sequence, arg);
+            return IOC.resolve(Keys.getKeyByName("make dump"), sequence, arg);
         } catch (ResolutionException e) {
             throw new CommandExecutionException(e);
         }
@@ -346,11 +346,11 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         try {
             IObject args = (IObject) arg;
 
-            IFieldName fieldNameFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
-            IFieldName fieldValueFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "value");
-            IFieldName dependencyFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
+            IFieldName fieldNameFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+            IFieldName fieldValueFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "value");
+            IFieldName dependencyFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
 
-            IFieldName fieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), args.getValue(fieldNameFieldName));
+            IFieldName fieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), args.getValue(fieldNameFieldName));
             Object dependencyName = args.getValue(dependencyFieldName);
             Object value = args.getValue(fieldValueFieldName);
 
@@ -371,8 +371,8 @@ public class DebuggerSessionImpl implements IDebuggerSession {
         try {
             IObject args = (IObject) arg;
 
-            IFieldName levelFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "level");
-            IFieldName stepFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "step");
+            IFieldName levelFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "level");
+            IFieldName stepFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "step");
 
             int level = ((Number) args.getValue(levelFieldName)).intValue();
             int step = ((Number) args.getValue(stepFieldName)).intValue();

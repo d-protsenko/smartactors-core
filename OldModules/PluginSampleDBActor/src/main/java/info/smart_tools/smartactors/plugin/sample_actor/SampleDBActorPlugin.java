@@ -47,7 +47,7 @@ public class SampleDBActorPlugin implements IPlugin {
             item
                 .process(() -> {
                 try {
-                    IOC.register(Keys.resolveByName("PostgresConnectionOptions"), new IStrategy() {
+                    IOC.register(Keys.getKeyByName("PostgresConnectionOptions"), new IStrategy() {
                         @Override
                         public ConnectionOptions resolve(Object... args) throws StrategyException {
                             Properties connectionProperties = new Properties();
@@ -88,7 +88,7 @@ public class SampleDBActorPlugin implements IPlugin {
                             }
                         }
                     });
-                    IOC.register(Keys.resolveByName("SampleDBActor"), new IStrategy() {
+                    IOC.register(Keys.getKeyByName("SampleDBActor"), new IStrategy() {
                         @Override
                         public SampleDBActor resolve(Object... args) throws StrategyException {
                             try {

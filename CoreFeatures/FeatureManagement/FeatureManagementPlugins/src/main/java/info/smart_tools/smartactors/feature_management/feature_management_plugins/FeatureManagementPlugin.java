@@ -21,7 +21,6 @@ import info.smart_tools.smartactors.feature_management.load_feature_actor.LoadFe
 import info.smart_tools.smartactors.feature_management.unzip_feature_actor.UnzipFeatureActor;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -57,9 +56,9 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
     public void register()
             throws ResolutionException, RegistrationException, InvalidArgumentException, ChainNotFoundException, ChangeValueException {
 
-        IOC.register(Keys.resolveByName("plugin creator"), new SingletonStrategy(new PluginCreator()));
-        IOC.register(Keys.resolveByName("plugin loader visitor"), new SingletonStrategy(new PluginLoaderVisitor<String>()));
-        IOC.register(Keys.resolveByName("plugin loader"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.getKeyByName("plugin creator"), new SingletonStrategy(new PluginCreator()));
+        IOC.register(Keys.getKeyByName("plugin loader visitor"), new SingletonStrategy(new PluginLoaderVisitor<String>()));
+        IOC.register(Keys.getKeyByName("plugin loader"), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
                 return new PluginLoader(
                         (ISmartactorsClassLoader) args[0], (IAction<Class>) args[1], (IPluginLoaderVisitor) args[2]);
@@ -68,11 +67,11 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
             }
         }));
 
-        IOC.register(Keys.resolveByName("feature-repositories"), new SingletonStrategy(
+        IOC.register(Keys.getKeyByName("feature-repositories"), new SingletonStrategy(
                 new ArrayList<IObject>()
         ));
 
-        IOC.register(Keys.resolveByName("FeatureManager"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.getKeyByName("FeatureManager"), new ApplyFunctionToArgumentsStrategy(
                 (args) -> {
                     try {
                         return new FeatureManagerActor();
@@ -81,12 +80,12 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
                     }
                 }));
         IOC.register(
-                Keys.resolveByName("feature group load completion task queue"),
+                Keys.getKeyByName("feature group load completion task queue"),
                 new ApplyFunctionToArgumentsStrategy(
                         args -> AfterFeaturesCallbackStorage.getLocalCallbackQueue()
                 )
         );
-        IOC.register(Keys.resolveByName("DownloadFeatureActor"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.getKeyByName("DownloadFeatureActor"), new ApplyFunctionToArgumentsStrategy(
                 (args) -> {
                     try {
                         return new DownloadFeatureActor();
@@ -94,7 +93,7 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
                         throw new RuntimeException(e);
                     }
                 }));
-        IOC.register(Keys.resolveByName("UnzipFeatureActor"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.getKeyByName("UnzipFeatureActor"), new ApplyFunctionToArgumentsStrategy(
                 (args) -> {
                     try {
                         return new UnzipFeatureActor();
@@ -102,7 +101,7 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
                         throw new RuntimeException(e);
                     }
                 }));
-        IOC.register(Keys.resolveByName("LoadFeatureActor"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.getKeyByName("LoadFeatureActor"), new ApplyFunctionToArgumentsStrategy(
                 (args) -> {
                     try {
                         return new LoadFeatureActor();
@@ -110,7 +109,7 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
                         throw new RuntimeException(e);
                     }
                 }));
-        IOC.register(Keys.resolveByName("AllInDirectoryFeatureTracker"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.getKeyByName("AllInDirectoryFeatureTracker"), new ApplyFunctionToArgumentsStrategy(
                 (args) -> {
                     try {
                         return new AllInDirectoryFeatureTracker();
@@ -118,7 +117,7 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
                         throw new RuntimeException(e);
                     }
                 }));
-        IOC.register(Keys.resolveByName("DirectoryWatcherActor"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.getKeyByName("DirectoryWatcherActor"), new ApplyFunctionToArgumentsStrategy(
                 (args) -> {
                     try {
                         return new RuntimeDirectoryFeatureTracker();
@@ -127,7 +126,7 @@ public class FeatureManagementPlugin extends BootstrapPlugin {
                     }
                 })
         );
-        IOC.register(Keys.resolveByName("FeatureCreatorActor"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.getKeyByName("FeatureCreatorActor"), new ApplyFunctionToArgumentsStrategy(
                 (args) -> {
                     try {
                         return new FeaturesCreatorActor();

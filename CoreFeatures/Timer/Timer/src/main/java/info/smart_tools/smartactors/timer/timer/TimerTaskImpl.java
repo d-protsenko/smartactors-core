@@ -79,7 +79,7 @@ final class TimerTaskImpl implements ITimerTask {
         cancel();
 
         try {
-            IQueue<ITask> taskQueue = IOC.resolve(Keys.resolveByName("task_queue"));
+            IQueue<ITask> taskQueue = IOC.resolve(Keys.getKeyByName("task_queue"));
             timerTask = new JTimerTaskImpl(taskQueue);
             long delay = time - System.currentTimeMillis();
             timer.schedule(timerTask, delay > 0 ? delay : 0);

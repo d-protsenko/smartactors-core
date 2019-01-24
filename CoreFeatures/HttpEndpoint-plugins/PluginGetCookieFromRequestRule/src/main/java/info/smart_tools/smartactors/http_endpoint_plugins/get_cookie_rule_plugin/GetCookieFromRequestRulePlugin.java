@@ -39,7 +39,7 @@ public class GetCookieFromRequestRulePlugin implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.resolve(
-                                    Keys.resolveByName(IStrategy.class.getCanonicalName()),
+                                    Keys.getKeyByName(IStrategy.class.getCanonicalName()),
                                     "getCookieFromRequestRule",
                                     new GetCookieFromRequestRule()
                             );

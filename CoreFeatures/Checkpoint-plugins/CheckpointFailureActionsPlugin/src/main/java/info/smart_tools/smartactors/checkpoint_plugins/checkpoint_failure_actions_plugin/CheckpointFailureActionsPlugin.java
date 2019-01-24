@@ -45,13 +45,13 @@ public class CheckpointFailureActionsPlugin extends BootstrapPlugin {
             try {
                 IObject config = (IObject) args[0];
 
-                IAction<IObject> currentAction = IOC.resolve(Keys.resolveByName("checkpoint failure action"));
-                IFieldName chainFN = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "targetChain");
-                IFieldName messageFieldFN = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "messageField");
+                IAction<IObject> currentAction = IOC.resolve(Keys.getKeyByName("checkpoint failure action"));
+                IFieldName chainFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "targetChain");
+                IFieldName messageFieldFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "messageField");
 
-                // Object chainName = IOC.resolve(Keys.resolveByName("chain_id_from_map_name_and_message"), config.getValue(chainFN));
+                // Object chainName = IOC.resolve(Keys.getKeyByName("chain_id_from_map_name_and_message"), config.getValue(chainFN));
                 Object chainName = config.getValue(chainFN);
-                IFieldName messageFN = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), config.getValue(messageFieldFN));
+                IFieldName messageFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), config.getValue(messageFieldFN));
 
                 return new SendEnvelopeFailureAction(chainName, messageFN, currentAction);
             } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
@@ -59,7 +59,7 @@ public class CheckpointFailureActionsPlugin extends BootstrapPlugin {
             }
         });
 
-        IOC.register(Keys.resolveByName("default configurable checkpoint failure action"), strategy);
-        IOC.register(Keys.resolveByName("send to chain checkpoint failure action"), strategy);
+        IOC.register(Keys.getKeyByName("default configurable checkpoint failure action"), strategy);
+        IOC.register(Keys.getKeyByName("send to chain checkpoint failure action"), strategy);
     }
 }

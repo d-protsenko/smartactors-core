@@ -10,7 +10,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.http_endpoint.response_content_json_strategy.ResponseContentJsonStrategy;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -40,7 +39,7 @@ public class PluginResponseJsonContentStrategy implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.resolveByName(IResponseContentStrategy.class.getCanonicalName()),
+                                    Keys.getKeyByName(IResponseContentStrategy.class.getCanonicalName()),
                                     new SingletonStrategy(new ResponseContentJsonStrategy()));
                         } catch (ResolutionException e) {
                             throw new ActionExecutionException("ResponseJsonContentStrategy plugin can't load: can't get ResponseJsonContentStrategy key", e);

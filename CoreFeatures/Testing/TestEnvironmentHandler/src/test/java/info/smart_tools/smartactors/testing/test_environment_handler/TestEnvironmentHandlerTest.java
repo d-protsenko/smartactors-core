@@ -96,12 +96,12 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
         when(createAssertCheckerStrategyMock.resolve(any(ArrayList.class))).thenReturn(assertChecker);
         when(createInterceptCheckerStrategyMock.resolve(any(IObject.class))).thenReturn(interceptChecker);
 
-        IOC.register(Keys.resolveByName("task_queue"), new SingletonStrategy(taskQueueMock));
-        IOC.register(Keys.resolveByName(MainTestChain.class.getCanonicalName()), mainTestChainStrategyMock);
-        IOC.register(Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), sequenceStrategyMock);
-        IOC.register(Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), mpStrategyMock);
-        IOC.register(Keys.resolveByName(IResultChecker.class.getCanonicalName() + "#assert"), createAssertCheckerStrategyMock);
-        IOC.register(Keys.resolveByName(IResultChecker.class.getCanonicalName() + "#intercept"), createInterceptCheckerStrategyMock);
+        IOC.register(Keys.getKeyByName("task_queue"), new SingletonStrategy(taskQueueMock));
+        IOC.register(Keys.getKeyByName(MainTestChain.class.getCanonicalName()), mainTestChainStrategyMock);
+        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), sequenceStrategyMock);
+        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), mpStrategyMock);
+        IOC.register(Keys.getKeyByName(IResultChecker.class.getCanonicalName() + "#assert"), createAssertCheckerStrategyMock);
+        IOC.register(Keys.getKeyByName(IResultChecker.class.getCanonicalName() + "#intercept"), createInterceptCheckerStrategyMock);
     }
 
     @Test(expected = InvalidArgumentException.class)
@@ -125,14 +125,14 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
     @Test
     public void Should_runTestWithAssert()
             throws Exception {
-        IObject env = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
-        env.setValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message"), messageMock);
-        env.setValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"), contextMock);
+        IObject env = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        env.setValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message"), messageMock);
+        env.setValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"), contextMock);
 
-        IObject desc = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject desc = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'name': 'The test', 'chainName': 'chainToTest', 'assert': []}".replace('\'','"'));
 
-        desc.setValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "environment"), env);
+        desc.setValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "environment"), env);
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -149,14 +149,14 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
     @Test
     public void Should_runTestWithIntercept()
             throws Exception {
-        IObject env = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
-        env.setValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message"), messageMock);
-        env.setValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"), contextMock);
+        IObject env = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        env.setValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message"), messageMock);
+        env.setValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"), contextMock);
 
-        IObject desc = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject desc = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'name': 'The test', 'chainName': 'chainToTest', 'intercept': {}}".replace('\'','"'));
 
-        desc.setValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "environment"), env);
+        desc.setValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "environment"), env);
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -174,14 +174,14 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
     @Test
     public void Should_runTestWhenItFails()
             throws Exception {
-        IObject env = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
-        env.setValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message"), messageMock);
-        env.setValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"), contextMock);
+        IObject env = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        env.setValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message"), messageMock);
+        env.setValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"), contextMock);
 
-        IObject desc = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject desc = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'name': 'The test', 'chainName': 'chainToTest', 'assert': []}".replace('\'','"'));
 
-        desc.setValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "environment"), env);
+        desc.setValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "environment"), env);
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -198,14 +198,14 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
     @Test (expected = EnvironmentHandleException.class)
     public void Should_throwWhenDescriptionDoesNotContainsAssertAndInterceptSection()
             throws Exception {
-        IObject env = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
-        env.setValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message"), messageMock);
-        env.setValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"), contextMock);
+        IObject env = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        env.setValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message"), messageMock);
+        env.setValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"), contextMock);
 
-        IObject desc = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject desc = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'name': 'The test', 'chainName': 'chainToTest'}".replace('\'','"'));
 
-        desc.setValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "environment"), env);
+        desc.setValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "environment"), env);
 
         new TestEnvironmentHandler().handle(desc, chainNameMock, callbackMock);
         fail();
@@ -214,14 +214,14 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
     @Test (expected = EnvironmentHandleException.class)
     public void Should_throwWhenDescriptionContainsBothAssertAndInterceptSection()
             throws Exception {
-        IObject env = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
-        env.setValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message"), messageMock);
-        env.setValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"), contextMock);
+        IObject env = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        env.setValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message"), messageMock);
+        env.setValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"), contextMock);
 
-        IObject desc = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject desc = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'name': 'The test', 'chainName': 'chainToTest', 'intercept': {}, 'assert': []}".replace('\'','"'));
 
-        desc.setValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "environment"), env);
+        desc.setValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "environment"), env);
 
         new TestEnvironmentHandler().handle(desc, chainNameMock, callbackMock);
         fail();
@@ -230,7 +230,7 @@ public class TestEnvironmentHandlerTest extends PluginsLoadingTestBase {
     @Test(expected = EnvironmentHandleException.class)
     public void Should_throwWhenDescriptionContainsFieldOfUnexpectedType()
             throws Exception {
-        IObject desc = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject desc = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'name': 'The test', 'chainName': 'chainToTest', 'assert': [], 'environment': []}".replace('\'','"'));
 
         new TestEnvironmentHandler().handle(desc, chainNameMock, callbackMock);

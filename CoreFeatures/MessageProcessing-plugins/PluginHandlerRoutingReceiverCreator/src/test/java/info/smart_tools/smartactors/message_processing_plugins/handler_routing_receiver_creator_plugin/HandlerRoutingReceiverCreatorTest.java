@@ -110,7 +110,7 @@ public class HandlerRoutingReceiverCreatorTest {
         item.executeRevertProcess();
 
         try {
-            IOC.resolve(Keys.resolveByName(IRoutedObjectCreator.class.getCanonicalName() + "#stateless_actor"));
+            IOC.resolve(Keys.getKeyByName(IRoutedObjectCreator.class.getCanonicalName() + "#stateless_actor"));
             fail();
         } catch (ResolutionException e) {}
 

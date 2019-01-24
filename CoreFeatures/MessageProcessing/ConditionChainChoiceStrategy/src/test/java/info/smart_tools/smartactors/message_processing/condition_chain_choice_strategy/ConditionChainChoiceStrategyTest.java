@@ -47,7 +47,7 @@ public class ConditionChainChoiceStrategyTest extends PluginsLoadingTestBase {
         chainIdStrategy = mock(IStrategy.class);
         messageProcessorMock = mock(IMessageProcessor.class);
         messageProcessingSequenceMock = mock(IMessageProcessingSequence.class);
-        IObject args = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'trueChain':'trueChainId', 'falseChain':'falseChainId'}".replace('\'', '"'));
+        IObject args = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'trueChain':'trueChainId', 'falseChain':'falseChainId'}".replace('\'', '"'));
 
         when(messageProcessorMock.getSequence()).thenReturn(messageProcessingSequenceMock);
         when(messageProcessingSequenceMock.getCurrentReceiverArguments()).thenReturn(args);
@@ -55,13 +55,13 @@ public class ConditionChainChoiceStrategyTest extends PluginsLoadingTestBase {
         when(chainIdStrategy.resolve(eq("trueChainId"))).thenReturn(trueId);
         when(chainIdStrategy.resolve(eq("falseChainId"))).thenReturn(falseId);
 
-        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), chainIdStrategy);
+        IOC.register(Keys.getKeyByName("chain_id_from_map_name_and_message"), chainIdStrategy);
     }
 
     @Test
     public void Should_chooseChainConditionIsTrue()
             throws Exception {
-        IObject messageArgs = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'chainCondition': true}".replace('\'', '"'));
+        IObject messageArgs = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'chainCondition': true}".replace('\'', '"'));
         when(messageProcessorMock.getMessage()).thenReturn(messageArgs);
         IChainChoiceStrategy strategy = new ConditionChainChoiceStrategy();
 
@@ -71,7 +71,7 @@ public class ConditionChainChoiceStrategyTest extends PluginsLoadingTestBase {
     @Test
     public void Should_chooseChainConditionIsFalse()
             throws Exception {
-        IObject messageArgs = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'chainCondition': false}".replace('\'', '"'));
+        IObject messageArgs = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'chainCondition': false}".replace('\'', '"'));
         when(messageProcessorMock.getMessage()).thenReturn(messageArgs);
         IChainChoiceStrategy strategy = new ConditionChainChoiceStrategy();
 
@@ -83,7 +83,7 @@ public class ConditionChainChoiceStrategyTest extends PluginsLoadingTestBase {
     @Test(expected = ReadValueException.class)
     public void Should_ThrowException()
             throws Exception {
-        IObject messageArgs = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'chainCondition': false}".replace('\'', '"'));
+        IObject messageArgs = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'chainCondition': false}".replace('\'', '"'));
         when(messageProcessorMock.getMessage()).thenReturn(messageArgs);
         when(messageProcessingSequenceMock.getCurrentReceiverArguments()).thenThrow(ReadValueException.class);
 

@@ -25,7 +25,6 @@ import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
@@ -72,7 +71,7 @@ public class HttpClientPlugin implements IPlugin {
                     .process(() -> {
                         try {
                             registerFieldNames();
-                            IOC.register(Keys.resolveByName(URI.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(
+                            IOC.register(Keys.getKeyByName(URI.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(
                                             (args) -> {
                                                 try {
                                                     return new URI((String) args[0]);
@@ -86,23 +85,23 @@ public class HttpClientPlugin implements IPlugin {
 
                             IDeserializeStrategy deserializeStrategy = new HttpResponseDeserializationStrategy(messageMapper);
 
-                            IOC.register(Keys.resolveByName("httpResponseResolver"), new SingletonStrategy(
+                            IOC.register(Keys.getKeyByName("httpResponseResolver"), new SingletonStrategy(
                                             deserializeStrategy
                                     )
                             );
 
-                            IOC.register(Keys.resolveByName("EmptyIObject"), new ApplyFunctionToArgumentsStrategy(
+                            IOC.register(Keys.getKeyByName("EmptyIObject"), new ApplyFunctionToArgumentsStrategy(
                                             (args) -> new DSObject()
                                     )
                             );
 
-                            IOC.register(Keys.resolveByName(
+                            IOC.register(Keys.getKeyByName(
                                     IResponseHandler.class.getCanonicalName()),
                                     new ApplyFunctionToArgumentsStrategy(
                                             (args) -> {
                                                 try {
                                                     IObject configuration = IOC.resolve(
-                                                            Keys.resolveByName("responseHandlerConfiguration")
+                                                            Keys.getKeyByName("responseHandlerConfiguration")
                                                     );
                                                     IObject request = (IObject) args[0];
                                                     return new HttpResponseHandler(
@@ -129,23 +128,23 @@ public class HttpClientPlugin implements IPlugin {
                             );
 
                             IRequestMaker<FullHttpRequest> requestMaker = new HttpRequestMaker();
-                            IOC.register(Keys.resolveByName(
+                            IOC.register(Keys.getKeyByName(
                                     IRequestMaker.class.getCanonicalName()),
                                     new SingletonStrategy(requestMaker)
                             );
-                            IOC.register(Keys.resolveByName(MessageToBytesMapper.class.getCanonicalName()),
+                            IOC.register(Keys.getKeyByName(MessageToBytesMapper.class.getCanonicalName()),
                                     new SingletonStrategy(
                                             messageMapper
                                     )
                             );
-                            IOC.register(Keys.resolveByName("sendHttpRequest"), new ApplyFunctionToArgumentsStrategy(
+                            IOC.register(Keys.getKeyByName("sendHttpRequest"), new ApplyFunctionToArgumentsStrategy(
                                             (args) -> {
                                                 try {
                                                     HttpClient client = (HttpClient) args[0];
                                                     IObject request = (IObject) args[1];
                                                     client.sendRequest(request);
                                                     IOC.resolve(
-                                                            Keys.resolveByName("createTimerOnRequest"),
+                                                            Keys.getKeyByName("createTimerOnRequest"),
                                                             request,
                                                             request.getValue(exceptionalMessageMapId)
                                                     );
@@ -157,12 +156,12 @@ public class HttpClientPlugin implements IPlugin {
                                     )
                             );
 
-                            IOC.register(Keys.resolveByName("getHttpClient"), new ApplyFunctionToArgumentsStrategy(
+                            IOC.register(Keys.getKeyByName("getHttpClient"), new ApplyFunctionToArgumentsStrategy(
                                             (args) -> {
                                                 IObject request = (IObject) args[0];
                                                 try {
                                                     IResponseHandler responseHandler = IOC.resolve(
-                                                            Keys.resolveByName(IResponseHandler.class.getCanonicalName()),
+                                                            Keys.getKeyByName(IResponseHandler.class.getCanonicalName()),
                                                             request
                                                     );
                                                     return new HttpClient(
@@ -204,7 +203,7 @@ public class HttpClientPlugin implements IPlugin {
     }
 
     private void registerFieldNames() throws ResolutionException {
-        final IKey fieldNameKey = Keys.resolveByName(IFieldName.class.getCanonicalName());
+        final IKey fieldNameKey = Keys.getKeyByName(IFieldName.class.getCanonicalName());
 
         this.uriFieldName =            IOC.resolve(fieldNameKey, "uri");
         this.startChainNameFieldName = IOC.resolve(fieldNameKey, "startChain");

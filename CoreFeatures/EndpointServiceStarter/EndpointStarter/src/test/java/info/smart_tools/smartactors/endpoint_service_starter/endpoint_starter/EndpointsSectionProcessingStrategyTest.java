@@ -68,7 +68,7 @@ public class EndpointsSectionProcessingStrategyTest {
                 new ResolveByNameIocStrategy()
         );
 
-        IKey iFieldNameKey = Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey iFieldNameKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
 
         IOC.register(iFieldNameKey,
                 new CreateNewInstanceStrategy(
@@ -83,21 +83,21 @@ public class EndpointsSectionProcessingStrategyTest {
                 )
         );
 
-        IKey chainIdFromMapNameKey = Keys.resolveByName("chain_id_from_map_name_and_message");
+        IKey chainIdFromMapNameKey = Keys.getKeyByName("chain_id_from_map_name_and_message");
         IOC.register(chainIdFromMapNameKey,
                 new SingletonStrategy(mapId));
 
-        IKey taskQueueKey = Keys.resolveByName("task_queue");
+        IKey taskQueueKey = Keys.getKeyByName("task_queue");
         IOC.register(taskQueueKey,
                 new SingletonStrategy(taskQueue));
 
-        IKey chainStorageKey = Keys.resolveByName(IChainStorage.class.getCanonicalName());
+        IKey chainStorageKey = Keys.getKeyByName(IChainStorage.class.getCanonicalName());
         IOC.register(chainStorageKey,
                 new SingletonStrategy(chainStorage));
 
 
         IOC.register(
-            Keys.resolveByName(IEnvironmentHandler.class.getCanonicalName()),
+            Keys.getKeyByName(IEnvironmentHandler.class.getCanonicalName()),
             new CreateNewInstanceStrategy(
                 (args) -> {
                     IObject configuration = (IObject) args[0];
@@ -120,13 +120,13 @@ public class EndpointsSectionProcessingStrategyTest {
             )
         );
 
-        IOC.register(Keys.resolveByName("http_endpoint"),
+        IOC.register(Keys.getKeyByName("http_endpoint"),
             new CreateNewInstanceStrategy(
                 (args) -> {
                     IObject configuration = (IObject) args[0];
                     try {
                         IEnvironmentHandler environmentHandler = IOC.resolve(
-                            Keys.resolveByName(IEnvironmentHandler.class.getCanonicalName()),
+                            Keys.getKeyByName(IEnvironmentHandler.class.getCanonicalName()),
                             configuration);
                         return new HttpEndpoint((Integer) configuration.getValue(new FieldName("port")),
                             (Integer) configuration.getValue(new FieldName("maxContentLength")),

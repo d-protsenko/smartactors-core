@@ -49,10 +49,10 @@ public class DatabaseSectionStrategy implements ISectionStrategy {
      */
     public DatabaseSectionStrategy()
             throws ResolutionException {
-        sectionFN = IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "database");
-        keyFN = IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "key");
-        typeFN = IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "type");
-        configFN = IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "config");
+        sectionFN = IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "database");
+        keyFN = IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "key");
+        typeFN = IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "type");
+        configFN = IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "config");
     }
 
     @Override
@@ -60,8 +60,8 @@ public class DatabaseSectionStrategy implements ISectionStrategy {
         try {
             List<IObject> databaseObjects = (List<IObject>) config.getValue(sectionFN);
             for (IObject databaseObj : databaseObjects) {
-                Object databaseOpts = IOC.resolve(Keys.resolveByName((String) databaseObj.getValue(typeFN)), databaseObj.getValue(configFN));
-                IOC.register(Keys.resolveByName((String) databaseObj.getValue(keyFN)), new SingletonStrategy(databaseOpts));
+                Object databaseOpts = IOC.resolve(Keys.getKeyByName((String) databaseObj.getValue(typeFN)), databaseObj.getValue(configFN));
+                IOC.register(Keys.getKeyByName((String) databaseObj.getValue(keyFN)), new SingletonStrategy(databaseOpts));
             }
         } catch (ReadValueException | InvalidArgumentException | RegistrationException e) {
             throw new ConfigurationProcessingException("Error occurred loading \"database\" configuration section.", e);
@@ -77,7 +77,7 @@ public class DatabaseSectionStrategy implements ISectionStrategy {
             ListIterator<IObject> sectionIterator = databaseObjects.listIterator(databaseObjects.size());
             while (sectionIterator.hasPrevious()) {
                 IObject databaseObj = sectionIterator.previous();
-                IOC.unregister(Keys.resolveByName((String) databaseObj.getValue(keyFN)));
+                IOC.unregister(Keys.getKeyByName((String) databaseObj.getValue(keyFN)));
             }
         } catch (DeletionException | ReadValueException | InvalidArgumentException | ResolutionException e) {
             throw new ConfigurationProcessingException("Error occurred reverting \"database\" configuration section.", e);

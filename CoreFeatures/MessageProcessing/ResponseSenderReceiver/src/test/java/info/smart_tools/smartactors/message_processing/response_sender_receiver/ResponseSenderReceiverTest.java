@@ -44,13 +44,13 @@ public class ResponseSenderReceiverTest extends PluginsLoadingTestBase {
         ctxMock = mock(IObject.class);
         responseStrategyMock = mock(IResponseStrategy.class);
 
-        IOC.register(Keys.resolveByName("send response action"), new SingletonStrategy(new ResponseSenderAction()));
+        IOC.register(Keys.getKeyByName("send response action"), new SingletonStrategy(new ResponseSenderAction()));
 
-        when(envMock.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context")))
+        when(envMock.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context")))
                 .thenReturn(ctxMock);
         when(messageProcessorMock.getContext()).thenReturn(ctxMock);
         when(messageProcessorMock.getEnvironment()).thenReturn(envMock);
-        when(ctxMock.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responseStrategy")))
+        when(ctxMock.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responseStrategy")))
                 .thenReturn(responseStrategyMock);
     }
 

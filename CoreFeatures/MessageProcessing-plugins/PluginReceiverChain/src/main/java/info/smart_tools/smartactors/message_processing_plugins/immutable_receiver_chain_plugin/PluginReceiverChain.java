@@ -7,7 +7,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -40,7 +39,7 @@ public class PluginReceiverChain implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.resolveByName(IReceiverChain.class.getCanonicalName()),
+                                    Keys.getKeyByName(IReceiverChain.class.getCanonicalName()),
                                     new ImmutableReceiverChainStrategy());
                         } catch (ResolutionException e) {
                             throw new ActionExecutionException("ReceiverChain plugin can't load: can't get ReceiverChain key", e);

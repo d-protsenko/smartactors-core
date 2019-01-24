@@ -22,7 +22,7 @@ public class MapToIObjectStrategy implements IStrategy {
             Map<String, Object> stringObjectMap = (Map<String, Object>) args[0];
             Map<IFieldName, Object> fieldNameObjectMap = new HashMap<>();
             for (String key: stringObjectMap.keySet()) {
-                IFieldName fieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), key);
+                IFieldName fieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), key);
                 fieldNameObjectMap.put(fieldName, stringObjectMap.get(key));
             }
 

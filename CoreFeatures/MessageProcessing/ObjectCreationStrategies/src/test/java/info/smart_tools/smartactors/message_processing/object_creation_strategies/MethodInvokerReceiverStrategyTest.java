@@ -51,7 +51,7 @@ public class MethodInvokerReceiverStrategyTest extends PluginsLoadingTestBase {
     protected void registerMocks() throws Exception {
         receiverGeneratorMock = mock(IReceiverGenerator.class);
 
-        IOC.register(Keys.resolveByName(IReceiverGenerator.class.getCanonicalName()), new SingletonStrategy(receiverGeneratorMock));
+        IOC.register(Keys.getKeyByName(IReceiverGenerator.class.getCanonicalName()), new SingletonStrategy(receiverGeneratorMock));
 
         configMock = mock(IObject.class);
 
@@ -74,9 +74,9 @@ public class MethodInvokerReceiverStrategyTest extends PluginsLoadingTestBase {
         when(receiverGeneratorMock.generate(same(object), same(specialWrapperResolutionStrategyMock), eq("method1")))
                 .thenReturn(receiverMock2);
 
-        IOC.register(Keys.resolveByName("default wrapper resolution strategy dependency for invoker receiver"),
+        IOC.register(Keys.getKeyByName("default wrapper resolution strategy dependency for invoker receiver"),
                 defaultWrapperResolutionStrategyResolutionStrategyMock);
-        IOC.register(Keys.resolveByName("special wrapper resolution strategy dependency for invoker receiver"),
+        IOC.register(Keys.getKeyByName("special wrapper resolution strategy dependency for invoker receiver"),
                 specialWrapperResolutionStrategyResolutionStrategyMock);
     }
 
@@ -112,7 +112,7 @@ public class MethodInvokerReceiverStrategyTest extends PluginsLoadingTestBase {
     @Test
     public void Should_generateReceiverWithSpecificWrapperStrategy()
             throws Exception {
-        when(configMock.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "wrapperResolutionStrategyDependency")))
+        when(configMock.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "wrapperResolutionStrategyDependency")))
                 .thenReturn("special wrapper resolution strategy dependency for invoker receiver");
 
         assertSame(receiverMock2, strategy.resolve(

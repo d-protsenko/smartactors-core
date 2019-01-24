@@ -47,7 +47,7 @@ public class InMemoryDBCreateCollectionTaskTest {
                 IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
-        IOC.register(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
@@ -59,7 +59,7 @@ public class InMemoryDBCreateCollectionTaskTest {
                 )
         );
 
-        IOC.register(Keys.resolveByName(InMemoryDatabase.class.getCanonicalName()), new SingletonStrategy(
+        IOC.register(Keys.getKeyByName(InMemoryDatabase.class.getCanonicalName()), new SingletonStrategy(
                         inMemoryDatabase
                 )
         );

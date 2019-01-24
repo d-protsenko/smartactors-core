@@ -49,7 +49,7 @@ public class EndpointTest {
                 new ResolveByNameIocStrategy()
         );
         IOC.register(
-                Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
@@ -62,13 +62,13 @@ public class EndpointTest {
                 )
         );
 
-        IOC.register(Keys.resolveByName("DeserializationStrategyChooser"), new SingletonStrategy(
+        IOC.register(Keys.getKeyByName("DeserializationStrategyChooser"), new SingletonStrategy(
                         deserializationStrategyChooser
                 )
         );
 
 
-        IOC.register(Keys.resolveByName("ResponseSenderChooser"), new SingletonStrategy(
+        IOC.register(Keys.getKeyByName("ResponseSenderChooser"), new SingletonStrategy(
                         resolveByTypeAndNameStrategy
                 )
         );

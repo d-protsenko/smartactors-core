@@ -7,7 +7,6 @@ import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.Ap
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -46,7 +45,7 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
     public void registerRouterListener()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
-                Keys.resolveByName("global router registration receiver object listener"),
+                Keys.getKeyByName("global router registration receiver object listener"),
                 new SingletonStrategy(new RouterRegistrationObjectListener())
         );
     }
@@ -67,7 +66,7 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
     public void registerFullCreatorStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
-                Keys.resolveByName("full receiver object creator"),
+                Keys.getKeyByName("full receiver object creator"),
                 new FullObjectCreatorStrategy()
         );
     }
@@ -86,14 +85,14 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         // Dependencies of ActorReceiver
         IOC.register(
-                Keys.resolveByName("actor_receiver_queue"),
+                Keys.getKeyByName("actor_receiver_queue"),
                 new ApplyFunctionToArgumentsStrategy(args -> new ConcurrentLinkedQueue()));
         IOC.register(
-                Keys.resolveByName("actor_receiver_busyness_flag"),
+                Keys.getKeyByName("actor_receiver_busyness_flag"),
                 new ApplyFunctionToArgumentsStrategy(args -> new AtomicBoolean(false)));
 
         IOC.register(
-                Keys.resolveByName("create actor synchronization receiver"),
+                Keys.getKeyByName("create actor synchronization receiver"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     try {
                         return new ActorReceiver((IMessageReceiver) args[0]);
@@ -104,7 +103,7 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
         );
 
         IOC.register(
-                Keys.resolveByName("create handler router receiver"),
+                Keys.getKeyByName("create handler router receiver"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     try {
                         return new HandlerRoutingReceiver((Map) args[0]);
@@ -136,7 +135,7 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
             Class<?> clazz = (Class) args[0];
 
             try {
-                IWrapperGenerator wrapperGenerator = IOC.resolve(Keys.resolveByName(IWrapperGenerator.class.getCanonicalName()));
+                IWrapperGenerator wrapperGenerator = IOC.resolve(Keys.getKeyByName(IWrapperGenerator.class.getCanonicalName()));
 
                 Object wrapper = wrapperGenerator.generate(clazz);
 
@@ -156,7 +155,7 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
             Class<?> clazz = (Class) args[0];
 
             try {
-                IWrapperGenerator wrapperGenerator = IOC.resolve(Keys.resolveByName(IWrapperGenerator.class.getCanonicalName()));
+                IWrapperGenerator wrapperGenerator = IOC.resolve(Keys.getKeyByName(IWrapperGenerator.class.getCanonicalName()));
 
                 Object wrapper = wrapperGenerator.generate(clazz);
 
@@ -167,17 +166,17 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
         });
 
         IOC.register(
-                Keys.resolveByName("default wrapper resolution strategy dependency for invoker receiver"),
+                Keys.getKeyByName("default wrapper resolution strategy dependency for invoker receiver"),
                 newInstanceWrapperStrategy
         );
 
         IOC.register(
-                Keys.resolveByName("new instance wrapper resolution strategy"),
+                Keys.getKeyByName("new instance wrapper resolution strategy"),
                 newInstanceWrapperStrategy
         );
 
         IOC.register(
-                Keys.resolveByName("singleton wrapper resolution strategy"),
+                Keys.getKeyByName("singleton wrapper resolution strategy"),
                 singletonWrapperStrategy
         );
     }
@@ -204,7 +203,7 @@ public class ObjectCreationStrategiesPlugin extends BootstrapPlugin {
     public void registerInvokerCreationStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
-                Keys.resolveByName("method invoker receiver"),
+                Keys.getKeyByName("method invoker receiver"),
                 new MethodInvokerReceiverStrategy()
         );
     }

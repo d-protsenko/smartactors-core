@@ -34,7 +34,6 @@ import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.field_name_tools.FieldNames;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
@@ -88,7 +87,7 @@ public class HttpEndpointPlugin implements IPlugin {
                         try {
                             initializeFieldNames();
 
-                            IKey httpEndpointKey = Keys.resolveByName("http_endpoint");
+                            IKey httpEndpointKey = Keys.getKeyByName("http_endpoint");
 
                             registerCookiesSetter();
                             registerHeadersExtractor();
@@ -96,7 +95,7 @@ public class HttpEndpointPlugin implements IPlugin {
                             registerExceptionalResponse();
 
                             IOC.register(
-                                    Keys.resolveByName(IEnvironmentHandler.class.getCanonicalName()),
+                                    Keys.getKeyByName(IEnvironmentHandler.class.getCanonicalName()),
                                     new ApplyFunctionToArgumentsStrategy(
                                             (args) -> {
                                                 IObject configuration = (IObject) args[0];
@@ -128,30 +127,30 @@ public class HttpEndpointPlugin implements IPlugin {
                                                     String endpointName = (String) configuration.getValue(endpointNameFieldName);
 
                                                     IOC.resolve(
-                                                            Keys.resolveByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
+                                                            Keys.getKeyByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
                                                             "HTTP_GET",
                                                             endpointName,
                                                             configuration.getValue(templatesFieldName)
                                                     );
                                                     IOC.resolve(
-                                                            Keys.resolveByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
+                                                            Keys.getKeyByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
                                                             "HTTP_application/json",
                                                             endpointName
                                                     );
                                                     IOC.resolve(
-                                                            Keys.resolveByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
+                                                            Keys.getKeyByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
                                                             "HTTP_application/x-www-form-urlencoded",
                                                             endpointName
                                                     );
                                                     IOC.register(
-                                                            Keys.resolveByName(endpointName + "_endpoint-config"),
+                                                            Keys.getKeyByName(endpointName + "_endpoint-config"),
                                                             new SingletonStrategy(configuration)
                                                     );
 
-                                                    IUpCounter upCounter = IOC.resolve(Keys.resolveByName("root upcounter"));
+                                                    IUpCounter upCounter = IOC.resolve(Keys.getKeyByName("root upcounter"));
 
                                                     IEnvironmentHandler environmentHandler = IOC.resolve(
-                                                            Keys.resolveByName(IEnvironmentHandler.class.getCanonicalName()),
+                                                            Keys.getKeyByName(IEnvironmentHandler.class.getCanonicalName()),
                                                             configuration);
                                                     HttpEndpoint endpoint = new HttpEndpoint(
                                                             (Integer) configuration.getValue(portFieldName),
@@ -176,13 +175,13 @@ public class HttpEndpointPlugin implements IPlugin {
                             registerDeserializationStrategies();
                             registerResponseSenders();
 
-                            IKey emptyIObjectKey = Keys.resolveByName("EmptyIObject");
+                            IKey emptyIObjectKey = Keys.getKeyByName("EmptyIObject");
                             IOC.register(
                                     emptyIObjectKey,
                                     new ApplyFunctionToArgumentsStrategy((args) -> new DSObject())
                             );
 
-                            IKey channelHandlerNettyKey = Keys.resolveByName(
+                            IKey channelHandlerNettyKey = Keys.getKeyByName(
                                     "info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty"
                             );
                             IOC.register(channelHandlerNettyKey,
@@ -266,15 +265,15 @@ public class HttpEndpointPlugin implements IPlugin {
                         IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "templates"
                 );
-        scopeSwitchingFieldName = FieldNames.resolveByName("scopeSwitching");
+        scopeSwitchingFieldName = FieldNames.getFieldNameByName("scopeSwitching");
     }
 
     private void registerResponseSenders() throws ResolutionException, InvalidArgumentException, RegistrationException,
             StrategyRegistrationException {
         IStrategyRegistration responseSenderChooser =
-                IOC.resolve(Keys.resolveByName("ResponseSenderChooser"));
+                IOC.resolve(Keys.getKeyByName("ResponseSenderChooser"));
 
-        IOC.register(Keys.resolveByName("http_request_key_for_response_sender"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.getKeyByName("http_request_key_for_response_sender"), new ApplyFunctionToArgumentsStrategy(
                         (args) ->
                                 "HTTP_POST"
 
@@ -300,10 +299,10 @@ public class HttpEndpointPlugin implements IPlugin {
             RegistrationException, StrategyRegistrationException {
 
         IStrategyRegistration cookiesSetterChooser =
-                IOC.resolve(Keys.resolveByName("CookiesSetterChooser"));
+                IOC.resolve(Keys.getKeyByName("CookiesSetterChooser"));
 
         IOC.register(
-                Keys.resolveByName("key_for_cookies_extractor"),
+                Keys.getKeyByName("key_for_cookies_extractor"),
                 new ApplyFunctionToArgumentsStrategy((args) -> "HTTP")
         );
 
@@ -313,9 +312,9 @@ public class HttpEndpointPlugin implements IPlugin {
     private void registerHeadersExtractor() throws ResolutionException, InvalidArgumentException, RegistrationException,
             StrategyRegistrationException {
         IStrategyRegistration cookiesSetterChooser =
-                IOC.resolve(Keys.resolveByName("HeadersExtractorChooser"));
+                IOC.resolve(Keys.getKeyByName("HeadersExtractorChooser"));
 
-        IOC.register(Keys.resolveByName("key_for_headers_extractor"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.getKeyByName("key_for_headers_extractor"), new ApplyFunctionToArgumentsStrategy(
                         (args) ->
                                 "HTTP"
                 )
@@ -329,10 +328,10 @@ public class HttpEndpointPlugin implements IPlugin {
             RegistrationException, StrategyRegistrationException {
 
         IStrategyRegistration cookiesSetterChooser =
-                IOC.resolve(Keys.resolveByName("ResponseStatusSetter"));
+                IOC.resolve(Keys.getKeyByName("ResponseStatusSetter"));
 
         IOC.register(
-                Keys.resolveByName("key_for_response_status_setter"),
+                Keys.getKeyByName("key_for_response_status_setter"),
                 new ApplyFunctionToArgumentsStrategy((args) -> "HTTP")
         );
 
@@ -354,11 +353,11 @@ public class HttpEndpointPlugin implements IPlugin {
             RegistrationException, StrategyRegistrationException {
 
         IStrategyRegistration deserializationStrategyChooser =
-                IOC.resolve(Keys.resolveByName("DeserializationStrategyChooser"));
+                IOC.resolve(Keys.getKeyByName("DeserializationStrategyChooser"));
 
         IMessageMapper messageMapper = new MessageToBytesMapper();
 
-        IOC.register(Keys.resolveByName("http_request_key_for_deserialize"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.getKeyByName("http_request_key_for_deserialize"), new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             FullHttpRequest request = (FullHttpRequest) args[0];
                             if (request.method().toString().equals("GET")) {
@@ -397,26 +396,26 @@ public class HttpEndpointPlugin implements IPlugin {
                 )
         );
         IParseTree tree = new ParseTree();
-        IOC.register(Keys.resolveByName(IParseTree.class.getCanonicalName()), new SingletonStrategy(
+        IOC.register(Keys.getKeyByName(IParseTree.class.getCanonicalName()), new SingletonStrategy(
                         tree
                 )
         );
     }
 
     private void registerExceptionalResponse() throws InvalidArgumentException, ResolutionException, RegistrationException {
-        IOC.register(Keys.resolveByName("HttpPostParametersToIObjectException"), new SingletonStrategy(
+        IOC.register(Keys.getKeyByName("HttpPostParametersToIObjectException"), new SingletonStrategy(
                         new DSObject("{\"exception\": \"Request body is not json\", \"statusCode\": 400}")
                 )
         );
-        IOC.register(Keys.resolveByName("HttpRequestParametersToIObjectException"), new SingletonStrategy(
+        IOC.register(Keys.getKeyByName("HttpRequestParametersToIObjectException"), new SingletonStrategy(
                         new DSObject("{\"exception\": \"This url is not registered\", \"statusCode\": 404}")
                 )
         );
-        IOC.register(Keys.resolveByName("HttpInternalException"), new SingletonStrategy(
+        IOC.register(Keys.getKeyByName("HttpInternalException"), new SingletonStrategy(
                         new DSObject("{\"exception\": \"Internal server error\", \"statusCode\": 500}")
                 )
         );
-        IOC.register(Keys.resolveByName("HttpShuttingDownException"), new SingletonStrategy(
+        IOC.register(Keys.getKeyByName("HttpShuttingDownException"), new SingletonStrategy(
                         new DSObject("{\"exception\": \"Service not available (shutting down)\", \"statusCode\": 503}")
                 )
         );

@@ -84,8 +84,8 @@ public class PostgresConnectionPoolPlugin implements IPlugin {
                                         }
                                     }
                                 });
-                        IKey postgresConnectionPoolKey = Keys.resolveByName("PostgresConnectionPool");
-                        IKey databaseConnectionPoolKey = Keys.resolveByName("DatabaseConnectionPool");
+                        IKey postgresConnectionPoolKey = Keys.getKeyByName("PostgresConnectionPool");
+                        IKey databaseConnectionPoolKey = Keys.getKeyByName("DatabaseConnectionPool");
                         IOC.register(postgresConnectionPoolKey, poolStrategy);
                         IOC.register(databaseConnectionPoolKey, poolStrategy);
                     } catch (Exception e) {
@@ -107,7 +107,7 @@ public class PostgresConnectionPoolPlugin implements IPlugin {
      * @return the IOC key to store the pool in
      */
     private IKey getPoolKey(final ConnectionOptions options) throws ReadValueException, ResolutionException {
-        return Keys.resolveByName(String.format("postgres_connection_%s_%s_%d",
+        return Keys.getKeyByName(String.format("postgres_connection_%s_%s_%d",
                 options.getUrl(), options.getUsername(), options.getMaxConnections()));
     }
 

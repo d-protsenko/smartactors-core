@@ -22,7 +22,19 @@ public final class Keys {
      * @throws ResolutionException if dependency resolution has failed
      * @return instance of {@link IKey}
      */
+    @Deprecated
     public static IKey resolveByName(final String keyName)
+            throws ResolutionException {
+        return (IKey) IOC.resolve(IOC.getKeyForKeyByNameStrategy(), keyName);
+    }
+
+    /**
+     * Resolve instance of {@link IKey} by given name
+     * @param keyName name of instance of {@link IKey}
+     * @throws ResolutionException if dependency resolution has failed
+     * @return instance of {@link IKey}
+     */
+    public static IKey getKeyByName(final String keyName)
             throws ResolutionException {
         return (IKey) IOC.resolve(IOC.getKeyForKeyByNameStrategy(), keyName);
     }
@@ -34,7 +46,7 @@ public final class Keys {
     public static void unregisterByNames(final String[] keyNames) {
         for(String keyName : keyNames) {
             try {
-                IOC.unregister(Keys.resolveByName(keyName));
+                IOC.unregister(Keys.getKeyByName(keyName));
             } catch (DeletionException e) {
                 System.out.println("[WARNING] Deregistration of key '"+keyName+"' failed.");
             } catch (ResolutionException e) { }

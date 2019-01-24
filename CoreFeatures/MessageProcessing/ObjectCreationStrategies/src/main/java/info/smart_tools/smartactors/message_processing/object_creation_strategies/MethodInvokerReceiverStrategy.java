@@ -28,10 +28,10 @@ public class MethodInvokerReceiverStrategy implements IStrategy {
      */
     public MethodInvokerReceiverStrategy()
             throws ResolutionException {
-        wrapperResolutionStrategyDependencyFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+        wrapperResolutionStrategyDependencyFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "wrapperResolutionStrategyDependency");
 
-        receiverGenerator = IOC.resolve(Keys.resolveByName(IReceiverGenerator.class.getCanonicalName()));
+        receiverGenerator = IOC.resolve(Keys.getKeyByName(IReceiverGenerator.class.getCanonicalName()));
     }
 
     @Override

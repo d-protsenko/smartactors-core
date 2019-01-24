@@ -21,8 +21,8 @@ public class ResponseSenderAction implements IAction<IObject> {
 
     public ResponseSenderAction()
             throws ResolutionException {
-        responseStrategyFN = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responseStrategy");
-        contextFN = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context");
+        responseStrategyFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responseStrategy");
+        contextFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context");
     }
 
     @Override

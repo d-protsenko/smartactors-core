@@ -51,28 +51,28 @@ public class DatabaseCountQueryExecutorTest extends PluginsLoadingTestBase {
     protected void registerMocks() throws Exception {
         connectionOptionsStrategyMock = mock(IStrategy.class);
         when(connectionOptionsStrategyMock.resolve()).thenReturn(connectionOptionsMock);
-        IOC.register(Keys.resolveByName("the connection options"), connectionOptionsStrategyMock);
+        IOC.register(Keys.getKeyByName("the connection options"), connectionOptionsStrategyMock);
 
         poolMock = mock(IPool.class);
         connectionPoolStrategyMock = mock(IStrategy.class);
         when(connectionPoolStrategyMock.resolve(same(connectionOptionsMock))).thenReturn(poolMock);
-        IOC.register(Keys.resolveByName("the connection pool"), connectionPoolStrategyMock);
+        IOC.register(Keys.getKeyByName("the connection pool"), connectionPoolStrategyMock);
         when(poolMock.get()).thenReturn(connectionMock).thenThrow(GettingFromPoolException.class);
 
         taskMock = mock(ITask.class);
 
         taskStrategyMock = mock(IStrategy.class);
-        IOC.register(Keys.resolveByName("db.collection.count"), taskStrategyMock);
+        IOC.register(Keys.getKeyByName("db.collection.count"), taskStrategyMock);
 
         entryMock = mock(ISchedulerEntry.class);
-        when(entryMock.getState()).thenReturn(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
+        when(entryMock.getState()).thenReturn(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
     }
 
     @Test
     public void Should_queryCountOfRecordsFromDatabase()
             throws Exception {
         IQueryExecutor executor = new DatabaseCountQueryExecutor();
-        IObject args = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject args = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'collection':'the_collection'," +
                         "'connectionOptionsDependency':'the connection options'," +
@@ -85,7 +85,7 @@ public class DatabaseCountQueryExecutorTest extends PluginsLoadingTestBase {
             verify(taskStrategyMock).resolve(argsCaptor.capture());
             assertSame(connectionMock, argsCaptor.getAllValues().get(0));
             assertEquals("the_collection", argsCaptor.getAllValues().get(1));
-            assertSame(args.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "filter")),
+            assertSame(args.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "filter")),
                     argsCaptor.getAllValues().get(2));
             ((IAction<Long>) argsCaptor.getAllValues().get(3)).execute(3L);
             return null;

@@ -82,7 +82,7 @@ public class HandlerRoutingReceiverCreatorTest {
         when(objectSection.getValue(new FieldName("name"))).thenReturn("actorID");
         when(objectSection.getValue(new FieldName("dependency"))).thenReturn("createSampleActorStrategy");
         IStrategy createSampleActorStrategy = mock(IStrategy.class);
-        IOC.register(Keys.resolveByName("createSampleActorStrategy"), createSampleActorStrategy);
+        IOC.register(Keys.getKeyByName("createSampleActorStrategy"), createSampleActorStrategy);
         ConstructorWrapperImpl wrapperImpl = new ConstructorWrapperImpl();
         CustomActor a = new CustomActor(wrapperImpl);
         when(createSampleActorStrategy.resolve(objectSection))
@@ -91,14 +91,14 @@ public class HandlerRoutingReceiverCreatorTest {
         // register wrapper generator
         IStrategy wgs = mock(IStrategy.class);
         IWrapperGenerator wg = mock(IWrapperGenerator.class);
-        IOC.register(Keys.resolveByName(IWrapperGenerator.class.getCanonicalName()), wgs);
+        IOC.register(Keys.getKeyByName(IWrapperGenerator.class.getCanonicalName()), wgs);
         when(wgs.resolve()).thenReturn(wg);
         MethodWrapper mw = new MethodWrapper();
         when(wg.generate(IMethodWrapper.class)).thenReturn(mw);
         // register receiver generator
         IStrategy rgs = mock(IStrategy.class);
         IReceiverGenerator rg = mock(IReceiverGenerator.class);
-        IOC.register(Keys.resolveByName(IReceiverGenerator.class.getCanonicalName()), rgs);
+        IOC.register(Keys.getKeyByName(IReceiverGenerator.class.getCanonicalName()), rgs);
         when(rgs.resolve()).thenReturn(rg);
         IMessageReceiver mr = mock(IMessageReceiver.class);
         when(rg.generate(any(CustomActor.class), any(IStrategy.class), any(String.class)))

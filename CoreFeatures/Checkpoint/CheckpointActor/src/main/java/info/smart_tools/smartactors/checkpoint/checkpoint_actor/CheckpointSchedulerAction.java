@@ -42,17 +42,17 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
      */
     public CheckpointSchedulerAction()
             throws ResolutionException {
-        recoverFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "recover");
-        strategyFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "strategy");
-        recoverStrategyFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "recoverStrategy");
-        messageFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
-        completedFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "completed");
-        gotFeedbackFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "gotFeedback");
+        recoverFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "recover");
+        strategyFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "strategy");
+        recoverStrategyFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "recoverStrategy");
+        messageFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
+        completedFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "completed");
+        gotFeedbackFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "gotFeedback");
 
-        responsibleCheckpointIdFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responsibleCheckpointId");
-        prevCheckpointIdFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointId");
-        prevCheckpointEntryIdFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointEntryId");
-        processorFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "processor");
+        responsibleCheckpointIdFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responsibleCheckpointId");
+        prevCheckpointIdFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointId");
+        prevCheckpointEntryIdFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointEntryId");
+        processorFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "processor");
     }
 
     @Override
@@ -70,7 +70,7 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
 
             entry.getState().setValue(messageFieldName, message);
 
-            IRecoverStrategy strategy = IOC.resolve(Keys.resolveByName(recoverStrategyId));
+            IRecoverStrategy strategy = IOC.resolve(Keys.getKeyByName(recoverStrategyId));
 
             strategy.init(entry.getState(), recoverConfig, (IMessageProcessor) args.getValue(processorFieldName));
 
@@ -99,7 +99,7 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
                 // If there was no feedback (the message did not reach next checkpoint before it ran out of re-send trials) then we should
                 // execute a "failure action" that will handle the "lost" message.
                 if (null == entry.getState().getValue(gotFeedbackFieldName)) {
-                    IAction<IObject> failureAction = IOC.resolve(Keys.resolveByName("checkpoint failure action"));
+                    IAction<IObject> failureAction = IOC.resolve(Keys.getKeyByName("checkpoint failure action"));
 
                     failureAction.execute((IObject) entry.getState().getValue(messageFieldName));
                 }

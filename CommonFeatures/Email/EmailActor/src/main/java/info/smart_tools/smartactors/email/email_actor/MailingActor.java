@@ -91,18 +91,18 @@ public class MailingActor {
     public MailingActor(final IObject params) throws MailingActorException {
         try {
             //Fields initialize
-            serverURI_ActorParams_F = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "server");
-            senderAddress_Context_F = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "senderAddress");
-            senderAddress_ActorParams_F = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "senderAddress");
-            userName_ActorParams_F = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "username");
-            password_ActorParams_F = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "password");
-            authenticationMode_ActorParams_F = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "authenticationMode");
-            SSLProtocol_ActorParams_F = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "sslProtocol");
-            senderAddress_Context_F = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "senderAddress");
-            recipientF = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "recipient");
-            typeF = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "type");
+            serverURI_ActorParams_F = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "server");
+            senderAddress_Context_F = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "senderAddress");
+            senderAddress_ActorParams_F = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "senderAddress");
+            userName_ActorParams_F = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "username");
+            password_ActorParams_F = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "password");
+            authenticationMode_ActorParams_F = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "authenticationMode");
+            SSLProtocol_ActorParams_F = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "sslProtocol");
+            senderAddress_Context_F = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "senderAddress");
+            recipientF = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "recipient");
+            typeF = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "type");
 
-            mailingContext = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            mailingContext = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             serverUri = new URI(serverURI_ActorParams_F.in(params, String.class));
             serverHost = new InetSocketAddress(serverUri.getHost(), serverUri.getPort());

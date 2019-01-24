@@ -70,8 +70,8 @@ public class ReceiverGeneratorTest {
         w.setSetterUsed(false);
         IStrategy returnCustomActorStrategy = mock(IStrategy.class);
         IStrategy returnWrapperStrategy = mock(IStrategy.class);
-        IOC.register(Keys.resolveByName("actorID"), returnCustomActorStrategy);
-        IOC.register(Keys.resolveByName(ICustomWrapper.class.getCanonicalName()), returnWrapperStrategy);
+        IOC.register(Keys.getKeyByName("actorID"), returnCustomActorStrategy);
+        IOC.register(Keys.getKeyByName(ICustomWrapper.class.getCanonicalName()), returnWrapperStrategy);
         when(returnCustomActorStrategy.resolve()).thenReturn(a);
         when(returnWrapperStrategy.resolve()).thenReturn(w);
         IObject configs = mock(IObject.class);

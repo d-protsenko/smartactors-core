@@ -62,12 +62,12 @@ public class EnvironmentHandlerTest {
                 IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
-        IKey keyIObjectByString = Keys.resolveByName("IObjectByString");
-        IKey keyIObject = Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject");
-        IKey keyIMessageProcessingSequence = Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence");
-        IKey keyIReceiverChain = Keys.resolveByName(IReceiverChain.class.toString());
-        IKey keyIFieldName = Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
-        IKey keyFieldName = Keys.resolveByName(IFieldName.class.getCanonicalName());
+        IKey keyIObjectByString = Keys.getKeyByName("IObjectByString");
+        IKey keyIObject = Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject");
+        IKey keyIMessageProcessingSequence = Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence");
+        IKey keyIReceiverChain = Keys.getKeyByName(IReceiverChain.class.toString());
+        IKey keyIFieldName = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey keyFieldName = Keys.getKeyByName(IFieldName.class.getCanonicalName());
         IOC.register(
                 keyIObjectByString,
                 new CreateNewInstanceStrategy(
@@ -123,18 +123,18 @@ public class EnvironmentHandlerTest {
     public void whenEnvironmentHandlerReceiveEnvironment_ItShouldProcessMessageProcessor()
             throws Exception {
         messageProcessor = mock(IMessageProcessor.class);
-        IKey keyIMessageProcessor = Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor");
+        IKey keyIMessageProcessor = Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor");
         IOC.register(
                 keyIMessageProcessor,
                 new SingletonStrategy(messageProcessor)
         );
-        IObject iObject = IOC.resolve(Keys.resolveByName("IObjectByString"), "{}");
-        IKey keyIObject = Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject");
+        IObject iObject = IOC.resolve(Keys.getKeyByName("IObjectByString"), "{}");
+        IKey keyIObject = Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject");
         IOC.register(
                 keyIObject,
                 new SingletonStrategy(iObject)
         );
-        IObject environment = IOC.resolve(Keys.resolveByName("IObjectByString"), "{\"message\": {\"hello\": \"world\"}, \"context\": {}}");
+        IObject environment = IOC.resolve(Keys.getKeyByName("IObjectByString"), "{\"message\": {\"hello\": \"world\"}, \"context\": {}}");
         Map<Class<? extends Throwable>, IObject> exceptionalChainsAndEnv = new HashMap<>();
 //        exceptionalChainsAndEnv.put(InvalidArgumentException.class, null);
         IMessageReceiver messageReceivers[] = new IMessageReceiver[1];
@@ -149,8 +149,8 @@ public class EnvironmentHandlerTest {
         handler.handle(environment, "name", null);
         try {
             verify(messageProcessor, times(1)).process(
-                    (IObject) environment.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message")),
-                    (IObject) environment.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context")));
+                    (IObject) environment.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message")),
+                    (IObject) environment.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context")));
         } catch (ReadValueException e) {
             e.printStackTrace();
         }

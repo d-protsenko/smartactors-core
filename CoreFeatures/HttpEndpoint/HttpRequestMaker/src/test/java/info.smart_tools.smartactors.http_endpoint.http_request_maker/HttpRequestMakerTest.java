@@ -78,7 +78,7 @@ public class HttpRequestMakerTest {
                 new ResolveByNameIocStrategy()
         );
 
-        IKey fieldNameKey = Keys.resolveByName(IFieldName.class.getCanonicalName());
+        IKey fieldNameKey = Keys.getKeyByName(IFieldName.class.getCanonicalName());
         IOC.register(
                 fieldNameKey,
                 new ApplyFunctionToArgumentsStrategy((args) ->
@@ -107,7 +107,7 @@ public class HttpRequestMakerTest {
         when(strategy.resolve()).thenReturn(mapper);
 
         IOC.register(
-                Keys.resolveByName(MessageToBytesMapper.class.getCanonicalName()),
+                Keys.getKeyByName(MessageToBytesMapper.class.getCanonicalName()),
                 strategy
         );
     }

@@ -14,7 +14,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
@@ -76,8 +75,8 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             };
 
                             // to String strategies
-                            IKey stringKey = Keys.resolveByName(String.class.getCanonicalName() + "convert");
-                            IKey expandableStrategyStringKey = Keys.resolveByName("expandable_strategy#" + String.class.getCanonicalName());
+                            IKey stringKey = Keys.getKeyByName(String.class.getCanonicalName() + "convert");
+                            IKey expandableStrategyStringKey = Keys.getKeyByName("expandable_strategy#" + String.class.getCanonicalName());
                             IStrategy stringStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
                             ((IStrategyRegistration)stringStrategy).register(
                                     String.class,
@@ -123,8 +122,8 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             IOC.register(expandableStrategyStringKey, new SingletonStrategy(stringStrategy));
 
                             // to Character strategies
-                            IKey characterKey = Keys.resolveByName(Character.class.getCanonicalName() + "convert");
-                            IKey expandableStrategyCharacterKey = Keys.resolveByName("expandable_strategy#" + Character.class.getCanonicalName());
+                            IKey characterKey = Keys.getKeyByName(Character.class.getCanonicalName() + "convert");
+                            IKey expandableStrategyCharacterKey = Keys.getKeyByName("expandable_strategy#" + Character.class.getCanonicalName());
                             IStrategy characterStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
                             ((IStrategyRegistration) characterStrategy).register(
                                     Character.class,
@@ -138,8 +137,8 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             IOC.register(expandableStrategyCharacterKey, new SingletonStrategy(characterStrategy));
 
                             // to boolean strategies
-                            IKey booleanKey = Keys.resolveByName(boolean.class.getCanonicalName() + "convert");
-                            IKey expandableStrategyBooleanKey = Keys.resolveByName("expandable_strategy#" + boolean.class.getCanonicalName());
+                            IKey booleanKey = Keys.getKeyByName(boolean.class.getCanonicalName() + "convert");
+                            IKey expandableStrategyBooleanKey = Keys.getKeyByName("expandable_strategy#" + boolean.class.getCanonicalName());
                             IStrategy booleanStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
                             ((IStrategyRegistration) booleanStrategy).register(
                                     boolean.class,
@@ -153,8 +152,8 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             IOC.register(expandableStrategyBooleanKey, new SingletonStrategy(booleanStrategy));
 
                             // to Integer strategies
-                            IKey integerKey = Keys.resolveByName(Integer.class.getCanonicalName() + "convert");
-                            IKey expandableStrategyIntegerKey = Keys.resolveByName("expandable_strategy#" + Integer.class.getCanonicalName());
+                            IKey integerKey = Keys.getKeyByName(Integer.class.getCanonicalName() + "convert");
+                            IKey expandableStrategyIntegerKey = Keys.getKeyByName("expandable_strategy#" + Integer.class.getCanonicalName());
                             IStrategy integerStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
                             ((IStrategyRegistration) integerStrategy).register(
                                     Integer.class,
@@ -172,8 +171,8 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             IOC.register(expandableStrategyIntegerKey, new SingletonStrategy(integerStrategy));
 
                             // to BigDecimal strategies
-                            IKey bigDecimalKey = Keys.resolveByName(BigDecimal.class.getCanonicalName() + "convert");
-                            IKey expandableStrategyBigDecimalKey = Keys.resolveByName("expandable_strategy#" + BigDecimal.class.getCanonicalName());
+                            IKey bigDecimalKey = Keys.getKeyByName(BigDecimal.class.getCanonicalName() + "convert");
+                            IKey expandableStrategyBigDecimalKey = Keys.getKeyByName("expandable_strategy#" + BigDecimal.class.getCanonicalName());
                             IStrategy bigDecimalStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
                             ((IStrategyRegistration) bigDecimalStrategy).register(
                                     BigDecimal.class,
@@ -199,8 +198,8 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             IOC.register(expandableStrategyBigDecimalKey, new SingletonStrategy(bigDecimalStrategy));
 
                             // to LocalDateTime strategies
-                            IKey localDateTimeKey = Keys.resolveByName(LocalDateTime.class.getCanonicalName() + "convert");
-                            IKey expandableStrategyLocalDateTimeKey = Keys.resolveByName("expandable_strategy#" + LocalDateTime.class.getCanonicalName());
+                            IKey localDateTimeKey = Keys.getKeyByName(LocalDateTime.class.getCanonicalName() + "convert");
+                            IKey expandableStrategyLocalDateTimeKey = Keys.getKeyByName("expandable_strategy#" + LocalDateTime.class.getCanonicalName());
                             IStrategy localDateTimeStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
                             ((IStrategyRegistration) localDateTimeStrategy).register(
                                     LocalDateTime.class,
@@ -214,8 +213,8 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             IOC.register(expandableStrategyLocalDateTimeKey, new SingletonStrategy(localDateTimeStrategy));
 
                             // to list strategies
-                            IKey listKey = Keys.resolveByName(List.class.getCanonicalName() + "convert");
-                            IKey expandableStrategyListKey = Keys.resolveByName("expandable_strategy#" + List.class.getCanonicalName());
+                            IKey listKey = Keys.getKeyByName(List.class.getCanonicalName() + "convert");
+                            IKey expandableStrategyListKey = Keys.getKeyByName("expandable_strategy#" + List.class.getCanonicalName());
                             IStrategy listStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
                             ((IStrategyRegistration) listStrategy).register(boolean[].class, new BooleanArrayToListStrategy());
                             ((IStrategyRegistration) listStrategy).register(byte[].class, new ByteArrayToListStrategy());
@@ -230,8 +229,8 @@ public class ResolveStandardTypesStrategiesPlugin implements IPlugin {
                             IOC.register(expandableStrategyListKey, new SingletonStrategy(listStrategy));
 
                             //to int strategies
-                            IKey intKey = Keys.resolveByName(int.class.getCanonicalName() + "convert");
-                            IKey expandableStrategyIntKey = Keys.resolveByName("expandable_strategy#" + int.class.getCanonicalName());
+                            IKey intKey = Keys.getKeyByName(int.class.getCanonicalName() + "convert");
+                            IKey expandableStrategyIntKey = Keys.getKeyByName("expandable_strategy#" + int.class.getCanonicalName());
                             IStrategy intStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
                             ((IStrategyRegistration) intStrategy).register(
                                     String.class,

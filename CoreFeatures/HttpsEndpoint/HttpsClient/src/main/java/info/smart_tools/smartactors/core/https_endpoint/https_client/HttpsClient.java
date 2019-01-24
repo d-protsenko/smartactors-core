@@ -33,7 +33,7 @@ public class HttpsClient extends NettyClient<FullHttpRequest> {
 
     static {
         try {
-            sslEngineProvider = IOC.resolve(Keys.resolveByName(ISslEngineProvider.class.getCanonicalName()));
+            sslEngineProvider = IOC.resolve(Keys.getKeyByName(ISslEngineProvider.class.getCanonicalName()));
         } catch (ResolutionException e) {
             e.printStackTrace();
         }
@@ -73,7 +73,7 @@ public class HttpsClient extends NettyClient<FullHttpRequest> {
     @Override
     public void sendRequest(final IObject request) throws RequestSenderException {
         try {
-            IRequestMaker<FullHttpRequest> requestMaker = IOC.resolve(Keys.resolveByName(IRequestMaker.class.getCanonicalName()));
+            IRequestMaker<FullHttpRequest> requestMaker = IOC.resolve(Keys.getKeyByName(IRequestMaker.class.getCanonicalName()));
             FullHttpRequest httpRequest = requestMaker.make(request);
             send(httpRequest);
         } catch (RequestMakerException | ResolutionException e) {

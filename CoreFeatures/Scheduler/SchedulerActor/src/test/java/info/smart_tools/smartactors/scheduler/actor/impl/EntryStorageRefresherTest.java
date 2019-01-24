@@ -84,14 +84,14 @@ public class EntryStorageRefresherTest extends PluginsLoadingTestBase {
 
         for (int i = 0; i < entries.length; i++) {
             entries[i] = mock(ISchedulerEntry.class);
-            states[i] = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+            states[i] = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                     String.format("{'entryId':'entry-%010d'}".replace('\'', '"'), i));
         }
 
-        IOC.register(Keys.resolveByName("timer"), new SingletonStrategy(timerMock));
-        IOC.register(Keys.resolveByName("time"), new SingletonStrategy(timeMock));
-        IOC.register(Keys.resolveByName("task_queue"), new SingletonStrategy(taskQueueMock));
-        IOC.register(Keys.resolveByName("restore scheduler entry"), restoreEntryStrategy);
+        IOC.register(Keys.getKeyByName("timer"), new SingletonStrategy(timerMock));
+        IOC.register(Keys.getKeyByName("time"), new SingletonStrategy(timeMock));
+        IOC.register(Keys.getKeyByName("task_queue"), new SingletonStrategy(taskQueueMock));
+        IOC.register(Keys.getKeyByName("restore scheduler entry"), restoreEntryStrategy);
     }
 
     @Test(expected = InvalidArgumentException.class)

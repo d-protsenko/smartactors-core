@@ -106,13 +106,13 @@ public class EndpointsSectionProcessingStrategy implements ISectionStrategy {
     public void onLoadConfig(final IObject config) throws ConfigurationProcessingException {
         try {
             List<IObject> endpointObjects = (List<IObject>) config.getValue(name);
-            IQueue<ITask> queue = IOC.resolve(Keys.resolveByName("task_queue"));
+            IQueue<ITask> queue = IOC.resolve(Keys.getKeyByName("task_queue"));
             for (IObject endpoint : endpointObjects) {
                 // TODO: 25.07.16 remove stack depth from endpoint config
                 String type = (String) endpoint.getValue(typeFieldName);
                 endpoint.setValue(queueFieldName, queue);
                 IAsyncService endpointService =
-                        IOC.resolve(Keys.resolveByName(type + "_endpoint"), endpoint);
+                        IOC.resolve(Keys.getKeyByName(type + "_endpoint"), endpoint);
                 endpointService.start();
             }
         } catch (ReadValueException | InvalidArgumentException e) {

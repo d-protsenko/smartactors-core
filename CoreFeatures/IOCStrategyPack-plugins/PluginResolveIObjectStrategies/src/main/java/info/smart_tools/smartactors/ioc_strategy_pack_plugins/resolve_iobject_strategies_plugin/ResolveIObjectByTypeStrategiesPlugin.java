@@ -14,7 +14,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
@@ -66,8 +65,8 @@ public class ResolveIObjectByTypeStrategiesPlugin implements IPlugin {
                             return strategy;
                         };
 
-                        IKey typeStrategy = Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject" + "convert");
-                        IKey expandableTypeStrategy = Keys.resolveByName("expandable_strategy#" + "info.smart_tools.smartactors.iobject.iobject.IObject");
+                        IKey typeStrategy = Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject" + "convert");
+                        IKey expandableTypeStrategy = Keys.getKeyByName("expandable_strategy#" + "info.smart_tools.smartactors.iobject.iobject.IObject");
                         IStrategy resolveStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
                         ((IStrategyRegistration) resolveStrategy).register(Map.class, new MapToIObjectStrategy());
                         ((IStrategyRegistration) resolveStrategy).register(String.class, new StringToIObjectStrategy());

@@ -63,7 +63,7 @@ public class AsyncOperationCollectionTest {
         IField connectionPoolField = mock(IField.class);
 
         IKey mockKeyField = mock(IKey.class);
-        when(Keys.resolveByName(IField.class.getCanonicalName())).thenReturn(mockKeyField);
+        when(Keys.getKeyByName(IField.class.getCanonicalName())).thenReturn(mockKeyField);
         when(IOC.resolve(mockKeyField, "collectionName")).thenReturn(collectionNameField);
         when(IOC.resolve(mockKeyField, "connectionPool")).thenReturn(connectionPoolField);
         when(IOC.resolve(mockKeyField, "keyName")).thenReturn(keyNameField);
@@ -93,12 +93,12 @@ public class AsyncOperationCollectionTest {
         String token = mock(String.class);
         IObject deleteQuery = mock(IObject.class);
         IKey keyIObject = mock(IKey.class);
-        when(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(keyIObject);
+        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(keyIObject);
         when(IOC.resolve(keyIObject)).thenReturn(deleteQuery);
 
         IDatabaseTask deleteTask = mock(IDatabaseTask.class);
         IKey keyTask = mock(IKey.class);
-        when(Keys.resolveByName("db.async_ops_collection.delete")).thenReturn(keyTask);
+        when(Keys.getKeyByName("db.async_ops_collection.delete")).thenReturn(keyTask);
         when(IOC.resolve(eq(keyTask), any(), any(), eq(token))).thenReturn(deleteTask);
         collection.delete(token);
 

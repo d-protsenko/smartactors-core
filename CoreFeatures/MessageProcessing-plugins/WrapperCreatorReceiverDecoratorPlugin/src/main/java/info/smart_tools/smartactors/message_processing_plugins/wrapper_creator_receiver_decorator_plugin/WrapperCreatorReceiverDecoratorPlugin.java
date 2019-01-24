@@ -8,7 +8,6 @@ import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.Boot
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -34,10 +33,10 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
     @After({"IOC", "IFieldNamePlugin"})
     public void registerMapStrategies()
             throws RegistrationException, ResolutionException, InvalidArgumentException {
-        IOC.register(Keys.resolveByName("wrapper creator receiver decorator non thread safe map"),
+        IOC.register(Keys.getKeyByName("wrapper creator receiver decorator non thread safe map"),
                 new ApplyFunctionToArgumentsStrategy(args -> new WeakHashMap()));
 
-        IOC.register(Keys.resolveByName("wrapper creator receiver decorator thread safe map"),
+        IOC.register(Keys.getKeyByName("wrapper creator receiver decorator thread safe map"),
                 // TODO:: Use some concurrent map with weak keys; ConcurrentHashMap will cause memory leak when chain containing non-actor \
                 // receiver with wrapper configuration is deleted
                 new ApplyFunctionToArgumentsStrategy(args -> new ConcurrentHashMap()));
@@ -59,17 +58,17 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
     public void registerWrapperCreationStrategies()
             throws RegistrationException, ResolutionException, InvalidArgumentException {
         IOC.register(
-                Keys.resolveByName("thread safe environment wrapper creation strategy"),
+                Keys.getKeyByName("thread safe environment wrapper creation strategy"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     try {
                         IObject config = (IObject) args[0];
 
-                        Object conf = IOC.resolve(Keys.resolveByName("thread safe wrapper configuration"), config);
+                        Object conf = IOC.resolve(Keys.getKeyByName("thread safe wrapper configuration"), config);
 
                         return new ApplyFunctionToArgumentsStrategy(args2 -> {
                             try {
                                 IObjectWrapper wrapper = IOC.resolve(
-                                        Keys.resolveByName("info.smart_tools.smartactors.iobject_extension.wds_object.WDSObject"),
+                                        Keys.getKeyByName("info.smart_tools.smartactors.iobject_extension.wds_object.WDSObject"),
                                         conf
                                 );
 
@@ -87,15 +86,15 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
         );
 
         IOC.register(
-                Keys.resolveByName("non thread safe environment wrapper creation strategy"),
+                Keys.getKeyByName("non thread safe environment wrapper creation strategy"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     try {
                         IObject config = (IObject) args[0];
 
-                        Object conf = IOC.resolve(Keys.resolveByName("non thread safe wrapper configuration"), config);
+                        Object conf = IOC.resolve(Keys.getKeyByName("non thread safe wrapper configuration"), config);
 
                         IObjectWrapper wrapper = IOC.resolve(
-                                Keys.resolveByName("info.smart_tools.smartactors.iobject_extension.wds_object.WDSObject"),
+                                Keys.getKeyByName("info.smart_tools.smartactors.iobject_extension.wds_object.WDSObject"),
                                 conf
                         );
 
@@ -127,14 +126,14 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
     public void registerDecoratorCreationStrategy()
             throws RegistrationException, ResolutionException, InvalidArgumentException {
         IOC.register(
-                Keys.resolveByName("thread safe wrapper creator receiver decorator"),
+                Keys.getKeyByName("thread safe wrapper creator receiver decorator"),
                 wrapperCreatorDecoratorStrategy(
                         "wrapper creator receiver decorator thread safe map",
                         "thread safe environment wrapper creation strategy"
                 ));
 
         IOC.register(
-                Keys.resolveByName("non thread safe wrapper creator receiver decorator"),
+                Keys.getKeyByName("non thread safe wrapper creator receiver decorator"),
                 wrapperCreatorDecoratorStrategy(
                         "wrapper creator receiver decorator non thread safe map",
                         "non thread safe environment wrapper creation strategy"
@@ -157,7 +156,7 @@ public class WrapperCreatorReceiverDecoratorPlugin extends BootstrapPlugin {
             try {
                 IMessageReceiver underlying = (IMessageReceiver) args[0];
 
-                Map<Object, IStrategy> strategyMap = IOC.resolve(Keys.resolveByName(mapDependency));
+                Map<Object, IStrategy> strategyMap = IOC.resolve(Keys.getKeyByName(mapDependency));
 
                 return new WrapperCreatorReceiverDecorator(underlying, strategyMap, wrapperStrategyDependency);
             } catch (ClassCastException | ResolutionException e) {

@@ -49,7 +49,7 @@ public class PostgresCreateTask implements IDatabaseTask {
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-            CreateCollectionMessage message = IOC.resolve(Keys.resolveByName(CreateCollectionMessage.class.getCanonicalName()), query);
+            CreateCollectionMessage message = IOC.resolve(Keys.getKeyByName(CreateCollectionMessage.class.getCanonicalName()), query);
             collection = message.getCollectionName();
             options = message.getOptions();
             preparedQuery = new QueryStatement();

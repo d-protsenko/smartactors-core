@@ -24,9 +24,9 @@ However, the recommended way to get the key is to resolve it with IOC.
 
 `IOC.getKeyForKeyByNameStrategy()` produces the key to get the key.
     
-This magic is hidden in `Keys` class, so it's necessary just to call `Keys.resolveByName()`.
+This magic is hidden in `Keys` class, so it's necessary just to call `Keys.getKeyByName()`.
 
-    IKey key = Keys.resolveByName("sample");
+    IKey key = Keys.getKeyByName("sample");
     
 ## Initialization
 
@@ -55,7 +55,7 @@ The [`ResolveByNameIocStrategy`](../apidocs/info/smart_tools/smartactors/core/re
 When you have a key, you can register the resolving strategy.
 For example, [`SingletonStrategy`](../apidocs/info/smart_tools/smartactors/core/singleton_strategy/SingletonStrategy.html):
 
-    IKey key = Keys.resolveByName("singleton");
+    IKey key = Keys.getKeyByName("singleton");
     SampleClass sampleObject = new SampleClass("singleton");
     IOC.register(key, new SingletonStrategy(sampleObject));
     
@@ -71,7 +71,7 @@ Both these variables point to the same object.
 The [`CreateNewInstanceStrategy`](../apidocs/info/smart_tools/smartactors/core/create_new_instance_strategy/CreateNewInstanceStrategy.html) creates a new object for each call to `resolve()`.
 You should define a [lambda expression](https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html) to create your objects and pass it to the strategy constructor.
  
-    IKey key = Keys.resolveByName("new");
+    IKey key = Keys.getKeyByName("new");
     IOC.register(key, new CreateNewInstanceStrategy(
             (args) -> new SampleClass((String) args[0])));
             

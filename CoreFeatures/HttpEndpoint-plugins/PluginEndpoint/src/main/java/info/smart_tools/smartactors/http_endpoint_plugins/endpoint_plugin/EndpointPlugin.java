@@ -13,7 +13,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.ex
 import info.smart_tools.smartactors.http_endpoint.interfaces.icookies_extractor.ICookiesSetter;
 import info.smart_tools.smartactors.http_endpoint.interfaces.iheaders_extractor.IHeadersExtractor;
 import info.smart_tools.smartactors.http_endpoint.interfaces.iresponse_status_extractor.IResponseStatusExtractor;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -56,7 +55,7 @@ public class EndpointPlugin implements IPlugin {
                         ResolveByTypeAndNameStrategy responseStatusExtractorChooser = new ResolveByTypeAndNameStrategy();
                         try {
                             try {
-                                IOC.register(Keys.resolveByName("DeserializationStrategyChooser"),
+                                IOC.register(Keys.getKeyByName("DeserializationStrategyChooser"),
                                         new SingletonStrategy(
                                                 deserializationStrategyChooser
                                         )
@@ -64,44 +63,44 @@ public class EndpointPlugin implements IPlugin {
                             } catch (InvalidArgumentException e) {
                                 throw new RuntimeException(e);
                             }
-                            IOC.register(Keys.resolveByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
+                            IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
                                     deserializationStrategyChooser
                             );
 
-                            IOC.register(Keys.resolveByName("ResponseSenderChooser"),
+                            IOC.register(Keys.getKeyByName("ResponseSenderChooser"),
                                     new SingletonStrategy(
                                             responseSenderChooser
                                     )
                             );
-                            IOC.register(Keys.resolveByName(IResponseSender.class.getCanonicalName()),
+                            IOC.register(Keys.getKeyByName(IResponseSender.class.getCanonicalName()),
                                     responseSenderChooser
                             );
 
 
-                            IOC.register(Keys.resolveByName("CookiesSetterChooser"),
+                            IOC.register(Keys.getKeyByName("CookiesSetterChooser"),
                                     new SingletonStrategy(
                                             cookiesSetterChooser
                                     )
                             );
-                            IOC.register(Keys.resolveByName(ICookiesSetter.class.getCanonicalName()),
+                            IOC.register(Keys.getKeyByName(ICookiesSetter.class.getCanonicalName()),
                                     cookiesSetterChooser
                             );
 
-                            IOC.register(Keys.resolveByName("HeadersExtractorChooser"),
+                            IOC.register(Keys.getKeyByName("HeadersExtractorChooser"),
                                     new SingletonStrategy(
                                             headersExtractorChooser
                                     )
                             );
-                            IOC.register(Keys.resolveByName(IHeadersExtractor.class.getCanonicalName()),
+                            IOC.register(Keys.getKeyByName(IHeadersExtractor.class.getCanonicalName()),
                                     headersExtractorChooser
                             );
 
-                            IOC.register(Keys.resolveByName("ResponseStatusSetter"),
+                            IOC.register(Keys.getKeyByName("ResponseStatusSetter"),
                                     new SingletonStrategy(
                                             responseStatusExtractorChooser
                                     )
                             );
-                            IOC.register(Keys.resolveByName(IResponseStatusExtractor.class.getCanonicalName()),
+                            IOC.register(Keys.getKeyByName(IResponseStatusExtractor.class.getCanonicalName()),
                                     responseStatusExtractorChooser
                             );
 

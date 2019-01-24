@@ -64,7 +64,7 @@ public class UserObjectMethodInvokerReceiverCreatorTest extends PluginsLoadingTe
         };
         invokerResolutionStrategy = mock(IStrategy.class);
 
-        IOC.register(Keys.resolveByName("method invoker receiver"), invokerResolutionStrategy);
+        IOC.register(Keys.getKeyByName("method invoker receiver"), invokerResolutionStrategy);
 
         when(invokerResolutionStrategy.resolve(
                 same(object),

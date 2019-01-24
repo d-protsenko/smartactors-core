@@ -8,7 +8,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -43,7 +42,7 @@ public class PluginMapRouter implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.resolveByName(IRouter.class.getCanonicalName()),
+                                    Keys.getKeyByName(IRouter.class.getCanonicalName()),
                                     new SingletonStrategy(new MapRouter(new ConcurrentHashMap<>())));
                         } catch (ResolutionException e) {
                             throw new ActionExecutionException("MapRouter plugin can't load: can't get MapRouter key", e);

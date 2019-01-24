@@ -53,7 +53,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =
-                                    IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
+                                    IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
                             configurationManager.addSectionStrategy(new ObjectsSectionProcessingStrategy());
                         } catch (ResolutionException | InvalidArgumentException e) {
                             throw new ActionExecutionException(e);
@@ -62,7 +62,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                     .revertProcess(() -> {
                         try {
                             IConfigurationManager configurationManager =
-                                    IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
+                                    IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
                             ISectionStrategy sectionStrategy = new ObjectsSectionProcessingStrategy();
                             configurationManager.removeSectionStrategy(sectionStrategy.getSectionName());
                         } catch (InvalidArgumentException e) {
@@ -86,10 +86,10 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =
-                                    IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
+                                    IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
 
                             configurationManager.addSectionStrategy(new MapsSectionProcessingStrategy());
-                            IStrategyRegistration strategy = IOC.resolve(Keys.resolveByName("expandable_strategy#resolve key for configuration object"));
+                            IStrategyRegistration strategy = IOC.resolve(Keys.getKeyByName("expandable_strategy#resolve key for configuration object"));
 
                             strategy.register("maps", new ApplyFunctionToArgumentsStrategy(
                                     (a) -> {
@@ -198,7 +198,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                     })
                     .revertProcess(() -> {
                         try {
-                            IStrategyRegistration strategy = IOC.resolve(Keys.resolveByName("expandable_strategy#resolve key for configuration object"));
+                            IStrategyRegistration strategy = IOC.resolve(Keys.getKeyByName("expandable_strategy#resolve key for configuration object"));
                             try {
                                 strategy.unregister("exceptional");
                             } catch (StrategyRegistrationException e) {
@@ -222,7 +222,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                         } catch (ResolutionException e) { }
                         try {
                             IConfigurationManager configurationManager =
-                                    IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
+                                    IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
                             ISectionStrategy sectionStrategy = new MapsSectionProcessingStrategy();
                             configurationManager.removeSectionStrategy(sectionStrategy.getSectionName());
                         } catch (InvalidArgumentException e) {
@@ -245,7 +245,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =
-                                    IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
+                                    IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
 
                             configurationManager.addSectionStrategy(new ExecutorSectionProcessingStrategy());
                         } catch (ResolutionException | InvalidArgumentException e) {
@@ -255,7 +255,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                     .revertProcess(() -> {
                         try {
                             IConfigurationManager configurationManager =
-                                    IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
+                                    IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
                             ISectionStrategy sectionStrategy = new ExecutorSectionProcessingStrategy();
                             configurationManager.removeSectionStrategy(sectionStrategy.getSectionName());
                         } catch (InvalidArgumentException e) {

@@ -44,7 +44,7 @@ public class GetAsyncOperationPlugin implements IPlugin {
 //                    .before("starter")
                     .process(() -> {
                         try {
-                            IKey actorKey = Keys.resolveByName(GetAsyncOperationActor.class.getCanonicalName());
+                            IKey actorKey = Keys.getKeyByName(GetAsyncOperationActor.class.getCanonicalName());
                             IOC.register(actorKey, new ApplyFunctionToArgumentsStrategy(
                                     (args) -> {
                                         try {

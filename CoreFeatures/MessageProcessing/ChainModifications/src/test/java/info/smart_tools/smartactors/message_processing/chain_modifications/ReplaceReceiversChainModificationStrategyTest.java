@@ -43,9 +43,9 @@ public class ReplaceReceiversChainModificationStrategyTest extends PluginsLoadin
     @Override
     protected void registerMocks() throws Exception {
         replaceStrategy1 = mock(IStrategy.class);
-        IOC.register(Keys.resolveByName("replacement 1 strategy"), replaceStrategy1);
+        IOC.register(Keys.getKeyByName("replacement 1 strategy"), replaceStrategy1);
         replaceStrategy2 = mock(IStrategy.class);
-        IOC.register(Keys.resolveByName("replacement 2 strategy"), replaceStrategy2);
+        IOC.register(Keys.getKeyByName("replacement 2 strategy"), replaceStrategy2);
         originalChainMock = mock(IReceiverChain.class);
     }
 
@@ -55,7 +55,7 @@ public class ReplaceReceiversChainModificationStrategyTest extends PluginsLoadin
         when(originalChainMock.get(0)).thenReturn(receivers[0]);
 
         IReceiverChain decorated = new ReplaceReceiversChainModificationStrategy().resolve(originalChainMock,
-                IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'replacements':[]}".replace('\'','"')));
+                IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'replacements':[]}".replace('\'','"')));
 
         assertSame(receivers[0], decorated.get(0));
 
@@ -84,7 +84,7 @@ public class ReplaceReceiversChainModificationStrategyTest extends PluginsLoadin
     @Test
     public void Should_replaceReceivers()
             throws Exception {
-        IObject modDesc = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject modDesc = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{'replacements':[" +
                         "{" +
                         "'step':0," +
@@ -121,7 +121,7 @@ public class ReplaceReceiversChainModificationStrategyTest extends PluginsLoadin
     @Test(expected = StrategyException.class)
     public void Should_throwWhenReplacementStepIndexIsTooLarge()
             throws Exception {
-        IObject modDesc = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject modDesc = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{'replacements':[" +
                         "{" +
                         "'step':2," +

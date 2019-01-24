@@ -12,7 +12,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.ex
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -44,7 +43,7 @@ public class PluginMessagingIdentifiers implements IPlugin {
                     .before("starter")
                     .process(() -> {
                         try {
-                            IFieldName targetFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "target");
+                            IFieldName targetFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "target");
 
                             // Just use strings as identifiers for chains and receivers
                             IStrategy toStringStrategy = new IStrategy() {
@@ -66,10 +65,10 @@ public class PluginMessagingIdentifiers implements IPlugin {
                                 }
                             };
 
-                            IOC.register(Keys.resolveByName("route_from_object_name"), toStringStrategy);
-                            IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), toStringStrategy);
-                            IOC.register(Keys.resolveByName("chain_id_from_map_name"), toStringStrategy);
-                            IOC.register(Keys.resolveByName("receiver_id_from_iobject"), targetToStringStrategy);
+                            IOC.register(Keys.getKeyByName("route_from_object_name"), toStringStrategy);
+                            IOC.register(Keys.getKeyByName("chain_id_from_map_name_and_message"), toStringStrategy);
+                            IOC.register(Keys.getKeyByName("chain_id_from_map_name"), toStringStrategy);
+                            IOC.register(Keys.getKeyByName("receiver_id_from_iobject"), targetToStringStrategy);
                         } catch (ResolutionException e) {
                             throw new ActionExecutionException("MessagingIdentifiers plugin can't load: can't get MessagingIdentifiers key", e);
                         } catch (RegistrationException e) {

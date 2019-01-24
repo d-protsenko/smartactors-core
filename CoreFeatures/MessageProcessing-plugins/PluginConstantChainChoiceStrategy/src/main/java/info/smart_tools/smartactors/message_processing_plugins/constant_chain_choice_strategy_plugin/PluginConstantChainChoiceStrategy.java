@@ -4,7 +4,6 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -31,7 +30,7 @@ public class PluginConstantChainChoiceStrategy extends BootstrapPlugin {
     @Before({"ChainCallReceiver"})
     public void item()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.resolveByName("constant chain choice strategy"), new SingletonStrategy(new ConstantChainChoiceStrategy()));
+        IOC.register(Keys.getKeyByName("constant chain choice strategy"), new SingletonStrategy(new ConstantChainChoiceStrategy()));
     }
 
     /**

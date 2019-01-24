@@ -93,7 +93,7 @@ public class CookiesSetter implements ICookiesSetter {
      * @throws ResolutionException When occur field name resolution error
      */
     public CookiesSetter() throws ResolutionException {
-        IKey fieldNameKey = Keys.resolveByName(IFieldName.class.getCanonicalName());
+        IKey fieldNameKey = Keys.getKeyByName(IFieldName.class.getCanonicalName());
 
         this.contextFN =        IOC.resolve(fieldNameKey, "context");
         this.endpointNameFN =   IOC.resolve(fieldNameKey, "endpointName");
@@ -107,7 +107,7 @@ public class CookiesSetter implements ICookiesSetter {
         this.cookieHttpOnlyFN = IOC.resolve(fieldNameKey, "httpOnly");
         this.cookieMaxAgeFN =   IOC.resolve(fieldNameKey, "maxAge");
 
-        this.emptyCookieConfig = IOC.resolve(Keys.resolveByName(IObject.class.getCanonicalName()));
+        this.emptyCookieConfig = IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()));
     }
 
 // Methods -----------------------------------------------------------------------------------------------------------
@@ -216,7 +216,7 @@ public class CookiesSetter implements ICookiesSetter {
         }
         try {
             String endpointName = String.valueOf(context.getValue(endpointNameFN));
-            IObject endpointConfig = IOC.resolve(Keys.resolveByName(endpointName + "_endpoint-config"));
+            IObject endpointConfig = IOC.resolve(Keys.getKeyByName(endpointName + "_endpoint-config"));
             IObject cookieConfig = (IObject) endpointConfig.getValue(cookiesFN);
 
             return  (cookieConfig != null) ? cookieConfig : emptyCookieConfig;

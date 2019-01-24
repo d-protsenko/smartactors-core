@@ -81,7 +81,7 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
 
     public HttpRequestMaker() throws ResolutionException {
 
-        final IKey fieldNameKey = Keys.resolveByName(IFieldName.class.getCanonicalName());
+        final IKey fieldNameKey = Keys.getKeyByName(IFieldName.class.getCanonicalName());
 
         this.nameFN =            IOC.resolve(fieldNameKey, "name");
         this.valueFN =           IOC.resolve(fieldNameKey, "value");
@@ -329,7 +329,7 @@ public class HttpRequestMaker implements IRequestMaker<FullHttpRequest> {
                         url.toString()
                 );
             } else {
-                IKey contentMapperKey = Keys.resolveByName(MessageToBytesMapper.class.getCanonicalName());
+                IKey contentMapperKey = Keys.getKeyByName(MessageToBytesMapper.class.getCanonicalName());
                 IMessageMapper<byte[]> contentMapper = IOC.resolve(contentMapperKey);
 
                 httpRequest = new DefaultFullHttpRequest(
