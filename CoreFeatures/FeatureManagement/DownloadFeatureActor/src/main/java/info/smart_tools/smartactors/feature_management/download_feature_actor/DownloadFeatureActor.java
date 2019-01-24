@@ -13,6 +13,7 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import org.sonatype.aether.artifact.Artifact;
+import org.sonatype.aether.repository.Authentication;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 
@@ -32,6 +33,10 @@ public class DownloadFeatureActor {
     private final IFieldName repositoryIdFN;
     private final IFieldName repositoryTypeFN;
     private final IFieldName repositoryUrlFN;
+    private final IFieldName repositoryUsernameFN;
+    private final IFieldName repositoryUserPassFN;
+    private final IFieldName repositoryPrivateKeyFileFN;
+    private final IFieldName repositoryPassPhraseFN;
 
     private final static String DOWNLOAD_DIRECTORY = "downloads";
     private final static String IOC_FEATURE_REPOSITORY_STORAGE_NAME = "feature-repositories";
@@ -53,6 +58,10 @@ public class DownloadFeatureActor {
         this.repositoryIdFN = IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "repositoryId");
         this.repositoryTypeFN = IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "type");
         this.repositoryUrlFN = IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "url");
+        this.repositoryUsernameFN = IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "username");
+        this.repositoryUserPassFN = IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "password");
+        this.repositoryPrivateKeyFileFN = IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "privateKeyFile");
+        this.repositoryPassPhraseFN = IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "passphrase");
     }
 
     /**
@@ -102,12 +111,20 @@ public class DownloadFeatureActor {
             File local = new File(DOWNLOAD_DIRECTORY);
             List<IObject> repositories = IOC.resolve(Keys.resolveByName(IOC_FEATURE_REPOSITORY_STORAGE_NAME));
             Collection<RemoteRepository> remotes = repositories.stream().map(
-                    a -> {
+                    repository -> {
                         try {
-                            return new RemoteRepository(
-                                    (String) a.getValue(this.repositoryIdFN),
-                                    (String) a.getValue(this.repositoryTypeFN),
-                                    (String) a.getValue(this.repositoryUrlFN));
+                            RemoteRepository rr = new RemoteRepository(
+                                    (String) repository.getValue(this.repositoryIdFN),
+                                    (String) repository.getValue(this.repositoryTypeFN),
+                                    (String) repository.getValue(this.repositoryUrlFN));
+                            if (repository.getValue(this.repositoryUsernameFN) != null) {
+                                String userName = (String) repository.getValue(this.repositoryUsernameFN);
+                                String userPass = (String) repository.getValue(this.repositoryUserPassFN);
+                                String privateKeyFile = (String) repository.getValue(this.repositoryPrivateKeyFileFN);
+                                String passPhrase = (String) repository.getValue(this.repositoryPassPhraseFN);
+                                rr.setAuthentication(new Authentication(userName, userPass, privateKeyFile, passPhrase));
+                            }
+                            return rr;
                         } catch (ReadValueException | InvalidArgumentException e) {
                             throw new RuntimeException(e);
                         }
