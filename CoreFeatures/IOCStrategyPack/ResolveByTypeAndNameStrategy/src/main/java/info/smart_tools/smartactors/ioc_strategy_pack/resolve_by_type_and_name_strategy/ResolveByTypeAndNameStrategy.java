@@ -38,7 +38,7 @@ public class ResolveByTypeAndNameStrategy implements IStrategy, IStrategyRegistr
     }
 
     @Override
-    public void unregister(final Object key) throws StrategyRegistrationException {
-        creatingStrategy.remove(key);
+    public IStrategy unregister(final Object key) throws StrategyRegistrationException {
+        return creatingStrategy.remove(key);
     }
 }

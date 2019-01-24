@@ -78,11 +78,11 @@ public class StrategyStorageWithCacheStrategy implements IStrategy, IStrategyReg
     }
 
     @Override
-    public void unregister(Object key)
+    public IStrategy unregister(Object key)
             throws StrategyRegistrationException {
         try {
             this.dropCacheFor(key);
-            this.strategyStorage.remove(key);
+            return this.strategyStorage.remove(key);
         } catch (CacheDropException e) {
             throw new StrategyRegistrationException(e);
         }

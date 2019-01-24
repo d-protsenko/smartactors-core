@@ -57,10 +57,10 @@ public class StrategyStorageStrategy implements IStrategy, IStrategyRegistration
     }
 
     @Override
-    public void unregister(Object arg)
+    public IStrategy unregister(Object arg)
             throws StrategyRegistrationException {
         try {
-            this.strategyStorage.remove(this.argToKeyFunction.execute(arg));
+            return this.strategyStorage.remove(this.argToKeyFunction.execute(arg));
         } catch (FunctionExecutionException | InvalidArgumentException e) {
             throw new StrategyRegistrationException(e);
         }

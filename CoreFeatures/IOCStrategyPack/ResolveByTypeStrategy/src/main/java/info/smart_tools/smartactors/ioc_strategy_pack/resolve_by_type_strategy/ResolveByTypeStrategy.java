@@ -48,8 +48,8 @@ public class ResolveByTypeStrategy implements IStrategy, IStrategyRegistration {
      * @param key the key for output type
      */
     @Override
-    public void unregister(final Object key) throws StrategyRegistrationException {
-        resolveStrategies.remove(key);
+    public IStrategy unregister(final Object key) throws StrategyRegistrationException {
+        return resolveStrategies.remove(key);
     }
 
     @Override

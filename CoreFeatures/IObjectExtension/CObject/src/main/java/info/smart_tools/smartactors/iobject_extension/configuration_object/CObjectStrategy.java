@@ -53,7 +53,8 @@ public class CObjectStrategy implements IStrategy, IStrategyRegistration {
     }
 
     @Override
-    public void unregister(Object arg)
+    public IStrategy unregister(Object arg)
             throws StrategyRegistrationException {
+        return null;
     }
 }
