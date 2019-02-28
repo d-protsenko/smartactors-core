@@ -763,7 +763,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PostgresCountTask",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "database-postgresql.postgres-insert-task",
   "uploadRepositories" : [ {
@@ -771,7 +771,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PostgresInsertTask",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "database-postgresql.postgres-delete-task",
   "uploadRepositories" : [ {
@@ -779,7 +779,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PostgresDeleteTask",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "database-postgresql.postgres-schema",
   "uploadRepositories" : [ {
@@ -787,7 +787,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PostgresSchema",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "database-postgresql.postgres-search-task",
   "uploadRepositories" : [ {
@@ -795,7 +795,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PostgresSearchTask",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "database-postgresql.postgres-connection",
   "uploadRepositories" : [ {
@@ -803,7 +803,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PostgresConnection",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "database-postgresql.postgres-getbyid-task",
   "uploadRepositories" : [ {
@@ -811,7 +811,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PostgresGetByIdTask",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "database-postgresql.postgres-create-task",
   "uploadRepositories" : [ {
@@ -819,7 +819,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PostgresCreateCollectionTask",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "database-postgresql.postgres-upsert-task",
   "uploadRepositories" : [ {
@@ -827,7 +827,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PostgresUpsertTask",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -837,7 +837,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "database-postgresql",
   "rawName" : "Database-postgresql",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "actors" : [ {
   "artifactId" : "iobject-extension-plugins.configuration-object-plugin",
