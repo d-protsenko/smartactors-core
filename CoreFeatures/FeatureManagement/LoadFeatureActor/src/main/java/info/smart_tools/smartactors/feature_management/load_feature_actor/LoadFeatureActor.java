@@ -77,6 +77,10 @@ public class LoadFeatureActor {
         } catch (ReadValueException e) {
             throw new LoadFeatureException("Feature should not be null.");
         }
+        if (feature.isFailed() || null == ModuleManager.getModuleById(feature.getId())) {
+            System.out.println("[INFO] --------- Feature '" + feature.getDisplayName() + "' loading is skipped.");
+            return;
+        }
         IModule currentModule = ModuleManager.getCurrentModule();
         try {
             System.out.println("[INFO] Start loading feature '" + feature.getDisplayName() + "'.");

@@ -1603,7 +1603,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "DirectoryWatcherActor",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "feature-management.feature-management-plugins",
   "uploadRepositories" : [ {
@@ -1611,7 +1611,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "FeatureManagementPlugins",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "feature-management.all-in-directory-feature-tracker",
   "uploadRepositories" : [ {
@@ -1619,7 +1619,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "AllInDirectoryFeatureTracker",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "feature-management.feature",
   "uploadRepositories" : [ {
@@ -1627,7 +1627,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "Feature",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "feature-management.interfaces.ifeature",
   "uploadRepositories" : [ {
@@ -1635,7 +1635,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "IFeature",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "feature-management.download-feature-actor",
   "uploadRepositories" : [ {
@@ -1643,7 +1643,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "DownloadFeatureActor",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "feature-management.feature-creator-actor",
   "uploadRepositories" : [ {
@@ -1651,7 +1651,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "FeatureCreatorActor",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "feature-management.unzip-feature-actor",
   "uploadRepositories" : [ {
@@ -1659,7 +1659,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "UnzipFeatureActor",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "feature-management.load-feature-actor",
   "uploadRepositories" : [ {
@@ -1667,7 +1667,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "LoadFeatureActor",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "feature-management.feature-manager-actor",
   "uploadRepositories" : [ {
@@ -1675,12 +1675,12 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "FeatureManagerActor",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "after-features-callback-storage",
   "uploadRepositories" : [ ],
   "rawName" : "AfterFeaturesCallbackStorage",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -1690,7 +1690,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "feature-management",
   "rawName" : "FeatureManagement",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "actors" : [ {
   "artifactId" : "helpers.plugins-loading-test-base",
