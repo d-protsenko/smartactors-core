@@ -44,16 +44,16 @@ public class CachedCollectionPlugin extends BootstrapPlugin {
 
     private void registerCachedCollection() throws RegistrationException {
         try {
-            IKey cachedCollectionKey = Keys.resolveByName(ICachedCollection.class.getCanonicalName());
-            IField connectionPoolField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "connectionPool");
-            IField collectionNameField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "collectionName");
-            IField keyNameField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "keyName");
+            IKey cachedCollectionKey = Keys.getKeyByName(ICachedCollection.class.getCanonicalName());
+            IField connectionPoolField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "connectionPool");
+            IField collectionNameField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
+            IField keyNameField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "keyName");
             IOC.register(cachedCollectionKey, new ResolveByCompositeNameIOCStrategy(
                     (args) -> {
                         try {
                             ConnectionOptions connectionOptions = (ConnectionOptions) args[0];
-                            IPool connectionPool = IOC.resolve(Keys.resolveByName("PostgresConnectionPool"), connectionOptions);
-                            IObject config = IOC.resolve(Keys.resolveByName(IObject.class.getCanonicalName()));
+                            IPool connectionPool = IOC.resolve(Keys.getKeyByName("PostgresConnectionPool"), connectionOptions);
+                            IObject config = IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()));
                             connectionPoolField.out(config, connectionPool);
                             collectionNameField.out(config, args[1]);
                             keyNameField.out(config, args[2]);
@@ -71,19 +71,19 @@ public class CachedCollectionPlugin extends BootstrapPlugin {
     private void registerTasks() throws RegistrationException {
         try {
             IField collectionNameField = IOC.resolve(
-                    Keys.resolveByName(IField.class.getCanonicalName()), "collectionName");
+                    Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
             IField documentField = IOC.resolve(
-                    Keys.resolveByName(IField.class.getCanonicalName()), "document");
+                    Keys.getKeyByName(IField.class.getCanonicalName()), "document");
             IField callbackField = IOC.resolve(
-                    Keys.resolveByName(IField.class.getCanonicalName()), "callback");
+                    Keys.getKeyByName(IField.class.getCanonicalName()), "callback");
             IField keyNameField = IOC.resolve(
-                    Keys.resolveByName(IField.class.getCanonicalName()), "keyName");
+                    Keys.getKeyByName(IField.class.getCanonicalName()), "keyName");
             IField keyField = IOC.resolve(
-                    Keys.resolveByName(IField.class.getCanonicalName()), "key");
+                    Keys.getKeyByName(IField.class.getCanonicalName()), "key");
 
 
             IOC.register(
-                    Keys.resolveByName("db.cached_collection.upsert"),
+                    Keys.getKeyByName("db.cached_collection.upsert"),
                     //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
                     new ApplyFunctionToArgumentsStrategy(
                             (args) -> {
@@ -93,7 +93,7 @@ public class CachedCollectionPlugin extends BootstrapPlugin {
                                     IObject document = (IObject) args[2];
                                     IDatabaseTask task = new UpsertIntoCachedCollectionTask(connection);
 
-                                    IObject query = IOC.resolve(Keys.resolveByName(IObject.class.getCanonicalName()));
+                                    IObject query = IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()));
 
                                     collectionNameField.out(query, collectionName);
                                     documentField.out(query, document);
@@ -108,7 +108,7 @@ public class CachedCollectionPlugin extends BootstrapPlugin {
             );
 
             IOC.register(
-                    Keys.resolveByName("db.cached_collection.delete"),
+                    Keys.getKeyByName("db.cached_collection.delete"),
                     //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
                     new ApplyFunctionToArgumentsStrategy(
                             (args) -> {
@@ -118,7 +118,7 @@ public class CachedCollectionPlugin extends BootstrapPlugin {
                                     IObject document = (IObject) args[2];
                                     IDatabaseTask task = new DeleteFromCachedCollectionTask(connection);
 
-                                    IObject query = IOC.resolve(Keys.resolveByName(IObject.class.getCanonicalName()));
+                                    IObject query = IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()));
 
                                     collectionNameField.out(query, collectionName);
                                     documentField.out(query, document);
@@ -133,7 +133,7 @@ public class CachedCollectionPlugin extends BootstrapPlugin {
             );
 
             IOC.register(
-                    Keys.resolveByName("db.cached_collection.get_item"),
+                    Keys.getKeyByName("db.cached_collection.get_item"),
                     //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
                     new ApplyFunctionToArgumentsStrategy(
                             (args) -> {
@@ -142,7 +142,7 @@ public class CachedCollectionPlugin extends BootstrapPlugin {
                                     CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
                                     IDatabaseTask task = new GetItemFromCachedCollectionTask(connection);
 
-                                    IObject query = IOC.resolve(Keys.resolveByName(IObject.class.getCanonicalName()));
+                                    IObject query = IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()));
                                     collectionNameField.out(query, collectionName);
                                     keyNameField.out(query, args[2]);
                                     keyField.out(query, args[3]);

@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.testing_plugins.test_checkers_plugin;
 
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -55,7 +55,7 @@ public class TestCheckersPlugin implements IPlugin {
                             () -> {
                                 try {
                                     IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IResultChecker.class.getCanonicalName() + "#assert"),
+                                            IOC.resolve(IOC.getKeyForKeyByNameStrategy(), IResultChecker.class.getCanonicalName() + "#assert"),
                                             new ApplyFunctionToArgumentsStrategy((args) -> {
                                                 try {
                                                     return new AssertionChecker((List<IObject>) args[0]);
@@ -65,7 +65,7 @@ public class TestCheckersPlugin implements IPlugin {
                                             })
                                     );
                                     IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IResultChecker.class.getCanonicalName() + "#intercept"),
+                                            IOC.resolve(IOC.getKeyForKeyByNameStrategy(), IResultChecker.class.getCanonicalName() + "#intercept"),
                                             new ApplyFunctionToArgumentsStrategy((args) -> {
                                                 try {
                                                     return new ExceptionInterceptor((IObject) args[0]);
@@ -75,11 +75,11 @@ public class TestCheckersPlugin implements IPlugin {
                                             })
                                     );
                                 } catch (ResolutionException e) {
-                                    throw new ActionExecuteException("TestCheckers plugin can't load: can't get ioc key.", e);
+                                    throw new ActionExecutionException("TestCheckers plugin can't load: can't get ioc key.", e);
                                 } catch (InvalidArgumentException e) {
-                                    throw new ActionExecuteException("TestCheckers plugin can't load: can't create strategy.", e);
+                                    throw new ActionExecutionException("TestCheckers plugin can't load: can't create strategy.", e);
                                 } catch (RegistrationException e) {
-                                    throw new ActionExecuteException("TestCheckers plugin can't load: can't register new strategy.", e);
+                                    throw new ActionExecutionException("TestCheckers plugin can't load: can't register new strategy.", e);
                                 }
                             }
                         );

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.email_plugins.email_actor_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.email.email_actor.MailingActor;
 import info.smart_tools.smartactors.email.email_actor.exception.MailingActorException;
@@ -43,7 +43,7 @@ public class MailigActorPlugin implements IPlugin {
 //                    .before("starter")
                     .process(() -> {
                         try {
-                            IKey actorKey = Keys.resolveByName(MailingActor.class.getCanonicalName());
+                            IKey actorKey = Keys.getKeyByName(MailingActor.class.getCanonicalName());
                             IOC.register(actorKey,
                                     new ApplyFunctionToArgumentsStrategy(
                                             (args) -> {
@@ -64,11 +64,11 @@ public class MailigActorPlugin implements IPlugin {
                                     )
                             );
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("MailingActor plugin can't load: can't get MailingActor key", e);
+                            throw new ActionExecutionException("MailingActor plugin can't load: can't get MailingActor key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("MailingActor plugin can't load: can't create strategy", e);
+                            throw new ActionExecutionException("MailingActor plugin can't load: can't create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("MailingActor plugin can't load: can't register new strategy", e);
+                            throw new ActionExecutionException("MailingActor plugin can't load: can't register new strategy", e);
                         }
                     });
             bootstrap.add(item);

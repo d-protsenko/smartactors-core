@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.field.field;
 
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -32,7 +32,7 @@ public class FieldTest {
         scope.setValue(IOC.getIocKey(), new StrategyContainer());
         ScopeProvider.setCurrentScope(scope);
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -96,10 +96,10 @@ public class FieldTest {
     @Test
     public void checkInMethodWithTypeCast()
             throws Exception {
-        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+        IStrategy strategy = mock(IStrategy.class);
         when(strategy.resolve(1)).thenReturn("1");
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), String.class.getCanonicalName() + "convert"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), String.class.getCanonicalName() + "convert"),
                 strategy
         );
         IField field = new Field(new FieldName("a"));

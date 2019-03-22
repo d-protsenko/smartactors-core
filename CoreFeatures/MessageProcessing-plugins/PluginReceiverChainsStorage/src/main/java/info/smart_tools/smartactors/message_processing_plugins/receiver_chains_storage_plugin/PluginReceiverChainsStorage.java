@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_processing_plugins.receiver_chains_storage_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
@@ -10,7 +10,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -50,7 +49,7 @@ public class PluginReceiverChainsStorage implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.resolveByName(IChainState.class.getCanonicalName()),
+                                    Keys.getKeyByName(IChainState.class.getCanonicalName()),
                                     new ApplyFunctionToArgumentsStrategy(args -> {
                                         try {
                                             return new ChainStateImpl((IReceiverChain) args[0]);
@@ -60,20 +59,12 @@ public class PluginReceiverChainsStorage implements IPlugin {
                                     })
                             );
                         } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "receiver_chains_storage_chain_state";
-                        String keyName = "";
-
-                        try {
-                            keyName = IChainState.class.getCanonicalName();
-                            IOC.remove(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Unregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
+                        String[] itemNames = { "receiver_chains_storage_chain_state" };
+                        Keys.unregisterByNames(itemNames);
                     });
 
             bootstrap.add(chainsStorageChainStateItem);
@@ -86,29 +77,22 @@ public class PluginReceiverChainsStorage implements IPlugin {
                     .after("router")
                     .process(() -> {
                         try {
-                            IRouter router = IOC.resolve(Keys.resolveByName(IRouter.class.getCanonicalName()));
+                            IRouter router = IOC.resolve(Keys.getKeyByName(IRouter.class.getCanonicalName()));
 
                             IOC.register(
-                                    Keys.resolveByName(IChainStorage.class.getCanonicalName()),
+                                    Keys.getKeyByName(IChainStorage.class.getCanonicalName()),
                                     new SingletonStrategy(new ChainStorage(new ConcurrentHashMap<>(), router)));
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("ReceiverChainsStorage plugin can't load: can't get ReceiverChainsStorage key", e);
+                            throw new ActionExecutionException("ReceiverChainsStorage plugin can't load: can't get ReceiverChainsStorage key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("ReceiverChainsStorage plugin can't load: can't create strategy", e);
+                            throw new ActionExecutionException("ReceiverChainsStorage plugin can't load: can't create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("ReceiverChainsStorage plugin can't load: can't register new strategy", e);
+                            throw new ActionExecutionException("ReceiverChainsStorage plugin can't load: can't register new strategy", e);
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "receiver_chains_storage";
-                        String keyName = "";
-
-                        try {
-                            keyName = IChainStorage.class.getCanonicalName();
-                            IOC.remove(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Unregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] itemNames = { "receiver_chains_storage" };
+                        Keys.unregisterByNames(itemNames);
                     });
 
             bootstrap.add(chainsStorageItem);

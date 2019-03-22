@@ -39,11 +39,11 @@ public class PluginStarter implements IPlugin {
                     .process(() -> {
 //                        try {
 //                            IConfigurationManager configurationManager = IOC.resolve(
-//                                    Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
+//                                    Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
 //
 //                            configurationManager.configure();
 //                        } catch (ResolutionException | InvalidStateException | ConfigurationProcessingException e) {
-//                            throw new ActionExecuteException(e);
+//                            throw new ActionExecutionException(e);
 //                        }
                     });
 

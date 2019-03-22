@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.version_management.versioned_recursive_strategy_container;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
@@ -31,7 +31,7 @@ public class StrategyContainerScopeTest {
 
     private IScope parentScope;
     private IScope childScope;
-    private IResolveDependencyStrategy resolveByNameStrategy = mock(IResolveDependencyStrategy.class);
+    private IStrategy resolveByNameStrategy = mock(IStrategy.class);
 
     @Before
     public void setUp() throws ScopeProviderException, InvalidArgumentException, RegistrationException {
@@ -60,7 +60,7 @@ public class StrategyContainerScopeTest {
 
         ScopeProvider.setCurrentScope(parentScope);
         ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
-        IOC.register(IOC.getKeyForKeyByNameResolutionStrategy(), new ResolveByNameIocStrategy(
+        IOC.register(IOC.getKeyForKeyByNameStrategy(), new ResolveByNameIocStrategy(
                 (a) -> {
                     try {
                         return new Key((String) a[0]);
@@ -73,7 +73,7 @@ public class StrategyContainerScopeTest {
 
     @Test
     public void testSystemIOC() throws ScopeProviderException, ResolutionException, InvalidArgumentException, RegistrationException, DeletionException {
-        IKey key = Keys.resolveByName("test");
+        IKey key = Keys.getKeyByName("test");
 
         ScopeProvider.setCurrentScope(parentScope);
         try {
@@ -109,7 +109,7 @@ public class StrategyContainerScopeTest {
         assertSame(childObject, IOC.resolve(key));
 
         ScopeProvider.setCurrentScope(childScope);
-        IOC.remove(key);
+        IOC.unregister(key);
 
         ScopeProvider.setCurrentScope(parentScope);
         assertSame(parentObject, IOC.resolve(key));
@@ -117,7 +117,7 @@ public class StrategyContainerScopeTest {
         assertSame(parentObject, IOC.resolve(key));
 
         ScopeProvider.setCurrentScope(parentScope);
-        IOC.remove(key);
+        IOC.unregister(key);
 
         ScopeProvider.setCurrentScope(parentScope);
         try {

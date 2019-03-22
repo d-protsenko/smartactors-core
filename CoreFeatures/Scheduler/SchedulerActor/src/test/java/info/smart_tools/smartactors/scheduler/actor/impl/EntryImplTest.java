@@ -71,13 +71,13 @@ public class EntryImplTest extends PluginsLoadingTestBase {
         when(storage.getTimer()).thenReturn(timer);
         when(timer.schedule(any(), anyLong())).thenReturn(timerTask).thenThrow(AssertionError.class);
 
-        IOC.register(Keys.resolveByName("default scheduler action"), new SingletonStrategy(action));
+        IOC.register(Keys.getKeyByName("default scheduler action"), new SingletonStrategy(action));
     }
 
     @Test
     public void Should_getIdFromState()
             throws Exception {
-        IObject state = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject state = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'entryId':'trust-methis-isa-guid'}".replace('\'','"'));
 
         ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action, false);
@@ -90,7 +90,7 @@ public class EntryImplTest extends PluginsLoadingTestBase {
     @Test
     public void Should_saveItself()
             throws Exception {
-        IObject state = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject state = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'entryId':'trust-methis-isa-guid'}".replace('\'','"'));
 
         ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action, false);
@@ -103,7 +103,7 @@ public class EntryImplTest extends PluginsLoadingTestBase {
     @Test
     public void Should_rescheduleItself()
             throws Exception {
-        IObject state = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject state = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'entryId':'trust-methis-isa-guid'}".replace('\'','"'));
 
         ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action, false);
@@ -122,7 +122,7 @@ public class EntryImplTest extends PluginsLoadingTestBase {
     @Test
     public void Should_cancelAndDeleteItselfOnlyOnce()
             throws Exception {
-        IObject state = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject state = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'entryId':'trust-methis-isa-guid'}".replace('\'','"'));
 
         ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action, false);
@@ -139,7 +139,7 @@ public class EntryImplTest extends PluginsLoadingTestBase {
     @Test
     public void Should_sendMessageWhenTaskExecuted()
             throws Exception {
-        IObject state = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject state = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'entryId':'trust-methis-isa-guid', 'message':{'this is':'the message'}}".replace('\'','"'));
 
         ISchedulerEntry entry = new EntryImpl(state, strategy, storage, action, false);
@@ -166,9 +166,9 @@ public class EntryImplTest extends PluginsLoadingTestBase {
     @Test
     public void Should_restoreSavedEntry()
             throws Exception {
-        IOC.register(Keys.resolveByName("neverschedule strategy"), new SingletonStrategy(strategy));
+        IOC.register(Keys.getKeyByName("neverschedule strategy"), new SingletonStrategy(strategy));
 
-        IObject state = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject state = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'entryId':'trust-methis-isa-guid','strategy':'neverschedule strategy'}".replace('\'','"'));
 
         ISchedulerEntry entry = EntryImpl.restoreEntry(state, storage);
@@ -180,9 +180,9 @@ public class EntryImplTest extends PluginsLoadingTestBase {
     @Test
     public void Should_createNewEntry()
             throws Exception {
-        IOC.register(Keys.resolveByName("neverschedule strategy"), new SingletonStrategy(strategy));
+        IOC.register(Keys.getKeyByName("neverschedule strategy"), new SingletonStrategy(strategy));
 
-        IObject args = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject args = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'strategy':'neverschedule strategy','message':{}}".replace('\'','"'));
 
         ISchedulerEntry entry = EntryImpl.newEntry(args, storage);
@@ -194,9 +194,9 @@ public class EntryImplTest extends PluginsLoadingTestBase {
     @Test
     public void Should_createNewEntryWithNestedSchedulingConfigurationObject()
             throws Exception {
-        IOC.register(Keys.resolveByName("neverschedule strategy"), new SingletonStrategy(strategy));
+        IOC.register(Keys.getKeyByName("neverschedule strategy"), new SingletonStrategy(strategy));
 
-        IObject args = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject args = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'scheduling':{'strategy':'neverschedule strategy'},'message':{}}".replace('\'','"'));
 
         ISchedulerEntry entry = EntryImpl.newEntry(args, storage);
@@ -204,15 +204,15 @@ public class EntryImplTest extends PluginsLoadingTestBase {
         assertNotNull(entry.getId());
         verify(strategy).init(
                 same(entry),
-                same((IObject) args.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "scheduling"))));
+                same((IObject) args.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "scheduling"))));
     }
 
     @Test
     public void Should_suspendEntryIdempotent()
             throws Exception {
-        IOC.register(Keys.resolveByName("neverschedule strategy"), new SingletonStrategy(strategy));
+        IOC.register(Keys.getKeyByName("neverschedule strategy"), new SingletonStrategy(strategy));
 
-        IObject state = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject state = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'entryId':'trust-methis-isa-guid','strategy':'neverschedule strategy'}".replace('\'','"'));
 
         ISchedulerEntry entry = EntryImpl.restoreEntry(state, storage);
@@ -238,9 +238,9 @@ public class EntryImplTest extends PluginsLoadingTestBase {
                 .thenReturn(timerTask)
                 .thenReturn(timerTask2)
                 .thenThrow(AssertionError.class);
-        IOC.register(Keys.resolveByName("neverschedule strategy"), new SingletonStrategy(strategy));
+        IOC.register(Keys.getKeyByName("neverschedule strategy"), new SingletonStrategy(strategy));
 
-        IObject state = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject state = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'entryId':'trust-methis-isa-guid','strategy':'neverschedule strategy'}".replace('\'','"'));
 
         ISchedulerEntry entry = EntryImpl.restoreEntry(state, storage);
@@ -266,9 +266,9 @@ public class EntryImplTest extends PluginsLoadingTestBase {
     @Test(expected = EntryPauseException.class)
     public void Should_throwWhenTryingToUnpauseNotPaused()
             throws Exception {
-        IOC.register(Keys.resolveByName("neverschedule strategy"), new SingletonStrategy(strategy));
+        IOC.register(Keys.getKeyByName("neverschedule strategy"), new SingletonStrategy(strategy));
 
-        IObject state = IOC.resolve(Keys.resolveByName(IObject.class.getCanonicalName()),
+        IObject state = IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()),
                 "{'entryId':'trust-methis-isa-guid','strategy':'neverschedule strategy'}".replace('\'','"'));
 
         ISchedulerEntry entry = EntryImpl.restoreEntry(state, storage);
@@ -279,9 +279,9 @@ public class EntryImplTest extends PluginsLoadingTestBase {
     @Test(expected = EntryPauseException.class)
     public void Should_throwWhenTryingToPausePaused()
             throws Exception {
-        IOC.register(Keys.resolveByName("neverschedule strategy"), new SingletonStrategy(strategy));
+        IOC.register(Keys.getKeyByName("neverschedule strategy"), new SingletonStrategy(strategy));
 
-        IObject state = IOC.resolve(Keys.resolveByName(IObject.class.getCanonicalName()),
+        IObject state = IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()),
                 "{'entryId':'trust-methis-isa-guid','strategy':'neverschedule strategy'}".replace('\'','"'));
 
         ISchedulerEntry entry = EntryImpl.restoreEntry(state, storage);
@@ -298,9 +298,9 @@ public class EntryImplTest extends PluginsLoadingTestBase {
     @Test
     public void Should_notifyStrategyWhenEntryIsPausedOrUnpaused()
             throws Exception {
-        IOC.register(Keys.resolveByName("neverschedule strategy"), new SingletonStrategy(strategy));
+        IOC.register(Keys.getKeyByName("neverschedule strategy"), new SingletonStrategy(strategy));
 
-        IObject state = IOC.resolve(Keys.resolveByName(IObject.class.getCanonicalName()),
+        IObject state = IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()),
                 "{'entryId':'trust-methis-isa-guid','strategy':'neverschedule strategy'}".replace('\'','"'));
 
         ISchedulerEntry entry = EntryImpl.restoreEntry(state, storage);
@@ -323,11 +323,11 @@ public class EntryImplTest extends PluginsLoadingTestBase {
             throws Exception {
         ISchedulerAction actionMock = mock(ISchedulerAction.class);
 
-        IOC.register(Keys.resolveByName("neverschedule strategy"), new SingletonStrategy(strategy));
+        IOC.register(Keys.getKeyByName("neverschedule strategy"), new SingletonStrategy(strategy));
 
-        IOC.register(Keys.resolveByName("default scheduler action"), new SingletonStrategy(actionMock));
+        IOC.register(Keys.getKeyByName("default scheduler action"), new SingletonStrategy(actionMock));
 
-        IObject state = IOC.resolve(Keys.resolveByName(IObject.class.getCanonicalName()),
+        IObject state = IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()),
                 "{'entryId':'trust-methis-isa-guid','strategy':'neverschedule strategy'}".replace('\'','"'));
 
         ISchedulerEntry entry = EntryImpl.restoreEntry(state, storage);

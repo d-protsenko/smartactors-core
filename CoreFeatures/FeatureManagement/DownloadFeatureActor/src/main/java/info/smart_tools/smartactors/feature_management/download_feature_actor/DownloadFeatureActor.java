@@ -55,13 +55,13 @@ public class DownloadFeatureActor {
      */
     public DownloadFeatureActor()
             throws ResolutionException {
-        this.repositoryIdFN = IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "repositoryId");
-        this.repositoryTypeFN = IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "type");
-        this.repositoryUrlFN = IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "url");
-        this.repositoryUsernameFN = IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "username");
-        this.repositoryUserPassFN = IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "password");
-        this.repositoryPrivateKeyFileFN = IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "privateKeyFile");
-        this.repositoryPassPhraseFN = IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "passphrase");
+        this.repositoryIdFN = IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "repositoryId");
+        this.repositoryTypeFN = IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "type");
+        this.repositoryUrlFN = IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "url");
+        this.repositoryUsernameFN = IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "username");
+        this.repositoryUserPassFN = IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "password");
+        this.repositoryPrivateKeyFileFN = IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "privateKeyFile");
+        this.repositoryPassPhraseFN = IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "passphrase");
     }
 
     /**
@@ -109,7 +109,7 @@ public class DownloadFeatureActor {
             throws Exception {
         try {
             File local = new File(DOWNLOAD_DIRECTORY);
-            List<IObject> repositories = IOC.resolve(Keys.resolveByName(IOC_FEATURE_REPOSITORY_STORAGE_NAME));
+            List<IObject> repositories = IOC.resolve(Keys.getKeyByName(IOC_FEATURE_REPOSITORY_STORAGE_NAME));
             Collection<RemoteRepository> remotes = repositories.stream().map(
                     repository -> {
                         try {

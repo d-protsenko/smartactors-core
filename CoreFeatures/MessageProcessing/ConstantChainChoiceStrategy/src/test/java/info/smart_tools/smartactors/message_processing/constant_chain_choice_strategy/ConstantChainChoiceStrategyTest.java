@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.message_processing.constant_chain_choice_strategy;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
  * Test for {@link ConstantChainChoiceStrategy}.
  */
 public class ConstantChainChoiceStrategyTest extends PluginsLoadingTestBase {
-    private IResolveDependencyStrategy chainIdStrategy;
+    private IStrategy chainIdStrategy;
     private IMessageProcessor messageProcessorMock;
     private IMessageProcessingSequence messageProcessingSequenceMock;
     private Object id = new Object();
@@ -44,16 +44,16 @@ public class ConstantChainChoiceStrategyTest extends PluginsLoadingTestBase {
     @Override
     protected void registerMocks()
             throws Exception {
-        chainIdStrategy = mock(IResolveDependencyStrategy.class);
+        chainIdStrategy = mock(IStrategy.class);
         messageProcessorMock = mock(IMessageProcessor.class);
         messageProcessingSequenceMock = mock(IMessageProcessingSequence.class);
-        IObject args = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'chain':'chain_to_call_name'}".replace('\'', '"'));
+        IObject args = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'chain':'chain_to_call_name'}".replace('\'', '"'));
 
         when(messageProcessorMock.getSequence()).thenReturn(messageProcessingSequenceMock);
         when(messageProcessingSequenceMock.getCurrentReceiverArguments()).thenReturn(args);
         when(chainIdStrategy.resolve(eq("chain_to_call_name"))).thenReturn(id);
 
-        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), chainIdStrategy);
+        IOC.register(Keys.getKeyByName("chain_id_from_map_name_and_message"), chainIdStrategy);
     }
 
     @Test

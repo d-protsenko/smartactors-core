@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_processing.receiver_generator;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
@@ -38,7 +38,7 @@ public class ReceiverGeneratorTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -68,10 +68,10 @@ public class ReceiverGeneratorTest {
         CustomWrapper w = new CustomWrapper();
         w.setGetterUsed(false);
         w.setSetterUsed(false);
-        IResolveDependencyStrategy returnCustomActorStrategy = mock(IResolveDependencyStrategy.class);
-        IResolveDependencyStrategy returnWrapperStrategy = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.resolveByName("actorID"), returnCustomActorStrategy);
-        IOC.register(Keys.resolveByName(ICustomWrapper.class.getCanonicalName()), returnWrapperStrategy);
+        IStrategy returnCustomActorStrategy = mock(IStrategy.class);
+        IStrategy returnWrapperStrategy = mock(IStrategy.class);
+        IOC.register(Keys.getKeyByName("actorID"), returnCustomActorStrategy);
+        IOC.register(Keys.getKeyByName(ICustomWrapper.class.getCanonicalName()), returnWrapperStrategy);
         when(returnCustomActorStrategy.resolve()).thenReturn(a);
         when(returnWrapperStrategy.resolve()).thenReturn(w);
         IObject configs = mock(IObject.class);
@@ -83,7 +83,7 @@ public class ReceiverGeneratorTest {
         when(processor.getEnvironment()).thenReturn(w);
         IReceiverGenerator rg = new ReceiverGenerator();
         assertNotNull(rg);
-        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+        IStrategy strategy = mock(IStrategy.class);
         when(strategy.resolve()).thenReturn(w);
         IMessageReceiver r = rg.generate(a, strategy, "doSomeWork");
         assertNotNull(r);
@@ -104,7 +104,7 @@ public class ReceiverGeneratorTest {
     public void checkReceiverGeneratorExceptionOn()
             throws Exception {
         CustomActor a = new CustomActor();
-        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+        IStrategy strategy = mock(IStrategy.class);
 
         IReceiverGenerator rg = new ReceiverGenerator();
         rg.generate(a, strategy, "a");

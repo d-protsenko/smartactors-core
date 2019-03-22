@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.examples.db_collection;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.exception.PoolGuardException;
@@ -52,8 +52,8 @@ public class TestPostgresSearchServer implements IServer {
             new PostgresDBTasksPlugin(bootstrap).load();
             bootstrap.start();
 
-            iObjectKey = Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject");
-            iFieldKey = Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+            iObjectKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject");
+            iFieldKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         } catch (Throwable e) {
             throw new ServerInitializeException("Server initialization failed", e);
         }
@@ -74,7 +74,7 @@ public class TestPostgresSearchServer implements IServer {
             document.setValue(modelField, "FVVEE1224");
 
             ConnectionOptions connectionOptions = new TestConnectionOptions();
-            IPool pool = IOC.resolve(Keys.resolveByName("DatabaseConnectionPool"), connectionOptions);
+            IPool pool = IOC.resolve(Keys.getKeyByName("DatabaseConnectionPool"), connectionOptions);
 
             IFieldName fullTextField = IOC.resolve(iFieldKey, "fulltext");
             IFieldName languageField = IOC.resolve(iFieldKey, "language");
@@ -88,7 +88,7 @@ public class TestPostgresSearchServer implements IServer {
 
             try (PoolGuard guard = new PoolGuard(pool)) {
                 ITask task = IOC.resolve(
-                        Keys.resolveByName("db.collection.create"),
+                        Keys.getKeyByName("db.collection.create"),
                         guard.getObject(),
                         collection,
                         createOptions
@@ -98,7 +98,7 @@ public class TestPostgresSearchServer implements IServer {
 
             try (PoolGuard guard = new PoolGuard(pool)) {
                 ITask task = IOC.resolve(
-                        Keys.resolveByName("db.collection.insert"),
+                        Keys.getKeyByName("db.collection.insert"),
                         guard.getObject(),
                         collection,
                         document
@@ -134,7 +134,7 @@ public class TestPostgresSearchServer implements IServer {
             throws ResolutionException, TaskExecutionException, PoolGuardException {
         try (PoolGuard guard = new PoolGuard(pool)) {
             ITask task = IOC.resolve(
-                    Keys.resolveByName("db.collection.search"),
+                    Keys.getKeyByName("db.collection.search"),
                     guard.getObject(),
                     collection,
                     criteria,
@@ -144,7 +144,7 @@ public class TestPostgresSearchServer implements IServer {
                                 System.out.println((String) doc.serialize());
                             }
                         } catch (SerializeException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     }
             );

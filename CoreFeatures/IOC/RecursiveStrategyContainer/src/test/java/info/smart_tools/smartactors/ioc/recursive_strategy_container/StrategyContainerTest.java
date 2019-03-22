@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc.recursive_strategy_container;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
 import info.smart_tools.smartactors.ioc.istrategy_container.exception.StrategyContainerException;
 import org.junit.Test;
@@ -18,12 +18,12 @@ public class StrategyContainerTest {
     public void testRegistrationResolutionDeletion()
             throws Exception {
         IStrategyContainer container = new StrategyContainer(null);
-        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+        IStrategy strategy = mock(IStrategy.class);
         Object key = new Object();
         container.register(key, strategy);
-        IResolveDependencyStrategy result = container.resolve(key);
+        IStrategy result = container.resolve(key);
         assertEquals(result, strategy);
-        container.remove(key);
+        container.unregister(key);
         result = container.resolve(key);
         assertNull(result);
         reset(strategy);
@@ -35,8 +35,8 @@ public class StrategyContainerTest {
         IStrategyContainer child = new StrategyContainer(parent);
 
         Object key = new Object();
-        IResolveDependencyStrategy parentStrategy = mock(IResolveDependencyStrategy.class);
-        IResolveDependencyStrategy childStrategy = mock(IResolveDependencyStrategy.class);
+        IStrategy parentStrategy = mock(IStrategy.class);
+        IStrategy childStrategy = mock(IStrategy.class);
 
         assertNull(parent.resolve(key));
         assertNull(child.resolve(key));
@@ -49,11 +49,11 @@ public class StrategyContainerTest {
         assertSame(parentStrategy, parent.resolve(key));
         assertSame(childStrategy, child.resolve(key));
 
-        child.remove(key);
+        child.unregister(key);
         assertSame(parentStrategy, parent.resolve(key));
         assertSame(parentStrategy, child.resolve(key));
 
-        parent.remove(key);
+        parent.unregister(key);
         assertNull(parent.resolve(key));
         assertNull(child.resolve(key));
     }

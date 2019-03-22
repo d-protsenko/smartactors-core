@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.base.pool;
 
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
-import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolTakeException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
+import info.smart_tools.smartactors.base.interfaces.ipool.exception.GettingFromPoolException;
 import org.junit.Test;
 
 import java.util.function.Supplier;
@@ -14,14 +14,14 @@ import static org.mockito.Mockito.*;
  */
 
 public class PoolTest {
-    @Test(expected = PoolTakeException.class)
+    @Test(expected = GettingFromPoolException.class)
     public void Should_getItemsWhenRequired()
             throws Exception {
         Pool pool = new Pool(3, Object::new);
-        assertNotNull(pool.take());
-        assertNotNull(pool.take());
-        assertNotNull(pool.take());
-        pool.take();
+        assertNotNull(pool.get());
+        assertNotNull(pool.get());
+        assertNotNull(pool.get());
+        pool.get();
         fail();
     }
 
@@ -32,22 +32,22 @@ public class PoolTest {
         when(func.get()).thenThrow(new RuntimeException()).thenReturn(new Object());
         Pool pool = new Pool(1, func);
         try {
-            pool.take();
+            pool.get();
             fail();
-        } catch (PoolTakeException ignored) {}
-        assertNotNull(pool.take());
+        } catch (GettingFromPoolException ignored) {}
+        assertNotNull(pool.get());
     }
 
     @Test
     public void Should_returnConnectionSecondTime_WhenItIsReturnedToPool()
             throws Exception {
         Pool pool = new Pool(2, Object::new);
-        Object obj1 = pool.take();
-        Object obj2 = pool.take();
+        Object obj1 = pool.get();
+        Object obj2 = pool.get();
         pool.put(obj1);
         pool.put(obj2);
-        assertEquals(pool.take(), obj1);
-        assertEquals(pool.take(), obj2);
+        assertEquals(pool.get(), obj1);
+        assertEquals(pool.get(), obj2);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -67,30 +67,30 @@ public class PoolTest {
         Supplier<Object> createFunc = mock(Supplier.class);
         when(createFunc.get()).thenReturn(new Object());
         Pool pool = new Pool(10, createFunc);
-        Object item = pool.take();
+        Object item = pool.get();
         pool.put(item);
-        pool.take();
+        pool.get();
         verify(createFunc, times(1)).get();
     }
 
     @Test
-    public void Should_executePoorActionWhenItemReturns() throws Exception {
+    public void Should_executeActionNoArgsWhenItemReturns() throws Exception {
         Supplier<Object> createFunc = mock(Supplier.class);
         when(createFunc.get()).thenReturn(new Object());
         Pool pool = new Pool(1, createFunc);
-        IPoorAction pAction = mock(IPoorAction.class);
+        IActionNoArgs pAction = mock(IActionNoArgs.class);
         pool.onAvailable(pAction);
-        Object item = pool.take();
+        Object item = pool.get();
         pool.put(item);
         verify(pAction).execute();
     }
 
     @Test
-    public void Should_executePoorActionWhenFreeItemsAreExists() throws Exception {
+    public void Should_executeActionNoArgsWhenFreeItemsAreExists() throws Exception {
         Supplier<Object> createFunc = mock(Supplier.class);
         when(createFunc.get()).thenReturn(new Object());
         Pool pool = new Pool(1, createFunc);
-        IPoorAction pAction = mock(IPoorAction.class);
+        IActionNoArgs pAction = mock(IActionNoArgs.class);
         pool.onAvailable(pAction);
         verify(pAction).execute();
     }

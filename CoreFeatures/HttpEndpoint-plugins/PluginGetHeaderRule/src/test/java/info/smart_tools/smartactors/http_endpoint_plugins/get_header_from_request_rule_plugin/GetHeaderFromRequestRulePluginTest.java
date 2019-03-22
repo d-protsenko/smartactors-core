@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.http_endpoint_plugins.get_header_from_request_rule_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -54,7 +54,7 @@ public class GetHeaderFromRequestRulePluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("GetHeaderFromRequestRulePlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
 //        verify(bootstrapItem).after("IOC");
 //        verify(bootstrapItem).after("wds_object");
@@ -64,7 +64,7 @@ public class GetHeaderFromRequestRulePluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey strategyKey = mock(IKey.class);
-        when(Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName())).thenReturn(strategyKey);
+        when(Keys.getKeyByName(IStrategy.class.getCanonicalName())).thenReturn(strategyKey);
 
         GetHeaderFromRequestRule targetObject = mock(GetHeaderFromRequestRule.class);
         whenNew(GetHeaderFromRequestRule.class).withNoArguments().thenReturn(targetObject);
@@ -73,19 +73,19 @@ public class GetHeaderFromRequestRulePluginTest {
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName());
+        Keys.getKeyByName(IStrategy.class.getCanonicalName());
 
         verifyNew(GetHeaderFromRequestRule.class).withNoArguments();
 
         verifyStatic();
         IOC.resolve(strategyKey, "getHeaderFromRequestRule", targetObject);
         /*IKey ruleKey = mock(IKey.class);
-        when(Keys.resolveByName(GetHeaderFromRequestRule.class.getCanonicalName())).thenReturn(ruleKey);
+        when(Keys.getKeyByName(GetHeaderFromRequestRule.class.getCanonicalName())).thenReturn(ruleKey);
 
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.resolveByName(GetHeaderFromRequestRule.class.getCanonicalName());
+        Keys.getKeyByName(GetHeaderFromRequestRule.class.getCanonicalName());
 
         ArgumentCaptor<CreateNewInstanceStrategy> createNewInstanceStrategyArgumentCaptor = ArgumentCaptor.forClass(CreateNewInstanceStrategy.class);
 
@@ -130,23 +130,23 @@ public class GetHeaderFromRequestRulePluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("GetHeaderFromRequestRulePlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
 //        verify(bootstrapItem).after("IOC");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         verify(bootstrap).add(bootstrapItem);
 
-        when(Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName())).thenThrow(new ResolutionException(""));
+        when(Keys.getKeyByName(IStrategy.class.getCanonicalName())).thenThrow(new ResolutionException(""));
 
         GetHeaderFromRequestRule targetObject = mock(GetHeaderFromRequestRule.class);
         whenNew(GetHeaderFromRequestRule.class).withNoArguments().thenReturn(targetObject);
 
         try {
             actionArgumentCaptor.getValue().execute();
-        } catch (ActionExecuteException e) {
+        } catch (ActionExecutionException e) {
             verifyStatic();
-            Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName());
+            Keys.getKeyByName(IStrategy.class.getCanonicalName());
             return;
         }
         assertTrue("Must throw exception", false);
@@ -165,7 +165,7 @@ public class GetHeaderFromRequestRulePluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("GetHeaderFromRequestRulePlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
 //        verify(bootstrapItem).after("IOC");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
@@ -173,7 +173,7 @@ public class GetHeaderFromRequestRulePluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey strategyKey = mock(IKey.class);
-        when(Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName())).thenReturn(strategyKey);
+        when(Keys.getKeyByName(IStrategy.class.getCanonicalName())).thenReturn(strategyKey);
 
         GetHeaderFromRequestRule targetObject = mock(GetHeaderFromRequestRule.class);
         whenNew(GetHeaderFromRequestRule.class).withNoArguments().thenReturn(targetObject);
@@ -182,9 +182,9 @@ public class GetHeaderFromRequestRulePluginTest {
 
         try {
             actionArgumentCaptor.getValue().execute();
-        } catch (ActionExecuteException e) {
+        } catch (ActionExecutionException e) {
             verifyStatic();
-            Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName());
+            Keys.getKeyByName(IStrategy.class.getCanonicalName());
 
             verifyNew(GetHeaderFromRequestRule.class).withNoArguments();
 

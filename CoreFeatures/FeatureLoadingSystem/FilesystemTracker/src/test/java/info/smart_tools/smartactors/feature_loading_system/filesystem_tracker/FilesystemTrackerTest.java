@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.feature_loading_system.filesystem_tracker;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPathFilter;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ifilesystem_tracker.exception.FilesystemTrackerStartupException;
@@ -108,7 +108,7 @@ public class FilesystemTrackerTest {
         IPath[] fileMocks = new IPath[]{mock(IPath.class),mock(IPath.class), mock(IPath.class)};
         IAction<IPath> fileActionMock = mock(IAction.class);
 
-        when(pathFilterMock.accept(any())).thenReturn(true);
+        when(pathFilterMock.checkPath(any())).thenReturn(true);
 
         FilesystemTracker tracker = new FilesystemTracker(pathFilterMock, taskFactoryMock, fileSystemMock);
         tracker.start(directoryMock);
@@ -138,7 +138,7 @@ public class FilesystemTrackerTest {
         IPath fileMock = mock(IPath.class);
         IAction<IPath> fileActionMock = mock(IAction.class);
 
-        when(pathFilterMock.accept(any())).thenReturn(false);
+        when(pathFilterMock.checkPath(any())).thenReturn(false);
 
         FilesystemTracker tracker = new FilesystemTracker(pathFilterMock, taskFactoryMock, fileSystemMock);
         tracker.start(directoryMock);
@@ -163,9 +163,9 @@ public class FilesystemTrackerTest {
         IPath fileMock = mock(IPath.class);
         IAction<IPath> fileActionMock = mock(IAction.class);
         IAction<Throwable> errorActionMock = mock(IAction.class);
-        ActionExecuteException exceptionMock = mock(ActionExecuteException.class);
+        ActionExecutionException exceptionMock = mock(ActionExecutionException.class);
 
-        when(pathFilterMock.accept(any())).thenReturn(true);
+        when(pathFilterMock.checkPath(any())).thenReturn(true);
         doThrow(exceptionMock).when(fileActionMock).execute(same(fileMock));
 
         FilesystemTracker tracker = new FilesystemTracker(pathFilterMock, taskFactoryMock, fileSystemMock);

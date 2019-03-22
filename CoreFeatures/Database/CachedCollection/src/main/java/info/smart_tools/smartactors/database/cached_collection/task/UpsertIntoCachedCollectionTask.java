@@ -38,10 +38,10 @@ public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
     public UpsertIntoCachedCollectionTask(final IStorageConnection connection) throws CreateCachedCollectionTaskException {
         this.connection = connection;
         try {
-            this.formatter = IOC.resolve(Keys.resolveByName("datetime_formatter"));
-            this.startDateTimeField = IOC.resolve(Keys.resolveByName(NestedField.class.getCanonicalName()), "document/startDateTime");
-            this.collectionNameField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "collectionName");
-            this.documentField  = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "document");
+            this.formatter = IOC.resolve(Keys.getKeyByName("datetime_formatter"));
+            this.startDateTimeField = IOC.resolve(Keys.getKeyByName(NestedField.class.getCanonicalName()), "document/startDateTime");
+            this.collectionNameField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
+            this.documentField  = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "document");
         } catch (ResolutionException e) {
             throw new CreateCachedCollectionTaskException("Can't create UpsertIntoCachedCollectionTask.", e);
         }
@@ -68,7 +68,7 @@ public class UpsertIntoCachedCollectionTask implements IDatabaseTask {
                 startDateTimeField.out(query, LocalDateTime.now().format(formatter));
             }
             upsertTask = IOC.resolve(
-                Keys.resolveByName("db.collection.upsert"),
+                Keys.getKeyByName("db.collection.upsert"),
                 connection,
                 collectionNameField.in(query),
                 documentField.in(query)

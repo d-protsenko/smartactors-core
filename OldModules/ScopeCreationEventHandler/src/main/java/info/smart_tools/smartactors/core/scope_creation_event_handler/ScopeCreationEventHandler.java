@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.core.scope_creation_event_handler;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
@@ -35,12 +35,12 @@ public class ScopeCreationEventHandler implements IAction<IScope> {
     /**
      * Add instance of {@link IStrategyContainer}
      * @param createdScope instance of {@link IScope}
-     * @throws ActionExecuteException if any errors occurred
+     * @throws ActionExecutionException if any errors occurred
      * @throws InvalidArgumentException if incoming argument are null
      */
     @Override
     public void execute(final IScope createdScope)
-            throws ActionExecuteException, InvalidArgumentException {
+            throws ActionExecutionException, InvalidArgumentException {
         if (null == createdScope) {
             throw new InvalidArgumentException("Argument should not be null.");
         }
@@ -48,7 +48,7 @@ public class ScopeCreationEventHandler implements IAction<IScope> {
             IStrategyContainer container = new StrategyContainer();
             createdScope.setValue(this.id, container);
         } catch (Exception e) {
-            throw new ActionExecuteException("Execution error.", e);
+            throw new ActionExecutionException("Execution error.", e);
         }
     }
 }

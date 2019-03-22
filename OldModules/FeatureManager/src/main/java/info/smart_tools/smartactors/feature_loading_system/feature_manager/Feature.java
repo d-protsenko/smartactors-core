@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.feature_loading_system.feature_manager;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ifeature_manager.IFeature;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ifeature_manager.IFeatureManager;
@@ -36,7 +36,7 @@ class Feature implements IFeature {
     private class FileHandlerAction implements IAction<IPath> {
         @Override
         public void execute(final IPath file)
-                throws ActionExecuteException {
+                throws ActionExecutionException {
             synchronized (Feature.this.lock) {
                 String fileName = fileSystem.getPath(file.getPath()).getFileName().toString();
 
@@ -52,7 +52,7 @@ class Feature implements IFeature {
                 filesystemTracker.removeFileHandler(FileHandlerAction.this);
             }
 
-            List<ActionExecuteException> exceptions = new LinkedList<>();
+            List<ActionExecutionException> exceptions = new LinkedList<>();
 
             for (IAction<Collection<IPath>> action : actions) {
                 try {
@@ -63,11 +63,11 @@ class Feature implements IFeature {
             }
 
             if (0 != exceptions.size()) {
-                ActionExecuteException exception = new ActionExecuteException(
+                ActionExecutionException exception = new ActionExecutionException(
                         "Error(s) occurred while executing actions specified for feature",
                         exceptions.remove(0));
 
-                for (ActionExecuteException e : exceptions) {
+                for (ActionExecutionException e : exceptions) {
                     exception.addSuppressed(e);
                 }
 

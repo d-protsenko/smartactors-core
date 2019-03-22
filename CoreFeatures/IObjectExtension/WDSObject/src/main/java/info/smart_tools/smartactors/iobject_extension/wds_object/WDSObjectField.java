@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.iobject_extension.wds_object;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -36,7 +36,7 @@ public class WDSObjectField implements IField {
     private FieldName args;
     private FieldName strategyName;
     private List<IObject> rules;
-    private HashMap<String, IResolveDependencyStrategy> strategies = new HashMap<>();
+    private HashMap<String, IStrategy> strategies = new HashMap<>();
     private HashMap<String, IFunction<StrategyAndArgs, Object>> strategyExecutors = new HashMap<>();
     private HashMap<String, IFunction<Arg, Object>> argumentsResolvers = new HashMap<>();
 
@@ -62,7 +62,7 @@ public class WDSObjectField implements IField {
                 strategies.put(
                         name,
                         null == this.strategyExecutors.get(name) ?
-                                IOC.resolve(Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName()), name) :
+                                IOC.resolve(Keys.getKeyByName(IStrategy.class.getCanonicalName()), name) :
                                 null
                 );
             }
@@ -135,10 +135,10 @@ public class WDSObjectField implements IField {
         try {
             String[] separated = location.split(SPLITTER);
             if (separated.length == 1) {
-                return source.getValue(IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), separated[0]));
+                return source.getValue(IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), separated[0]));
             }
             return getNestedIObject(source, separated).getValue(
-                    IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), separated[separated.length - 1])
+                    IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), separated[separated.length - 1])
             );
         } catch (Throwable e) {
             throw new ReadValueException("Could not read " + location + " from IObject", e);
@@ -149,11 +149,11 @@ public class WDSObjectField implements IField {
             throws Exception {
         try {
             IObject nestedObject = (IObject) source.getValue(
-                    IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), separatedPath[0])
+                    IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), separatedPath[0])
             );
             for (int i = 1; i < separatedPath.length - 1; ++i) {
                 nestedObject = (IObject) nestedObject.getValue(
-                        IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), separatedPath[i])
+                        IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), separatedPath[i])
                 );
             }
 
@@ -177,7 +177,7 @@ public class WDSObjectField implements IField {
                             String fieldName = split[split.length - 1];
                             String path = source.substring(0, source.lastIndexOf(SLASH));
                             ((IObject) getValueFromNestedIObject(o.getEnv(), path)).setValue(
-                                    IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), fieldName), value
+                                    IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), fieldName), value
                             );
 
                             return null;
@@ -284,7 +284,7 @@ public class WDSObjectField implements IField {
  * Support class for pack some arguments to single
  */
 class StrategyAndArgs {
-    private IResolveDependencyStrategy strategy;
+    private IStrategy strategy;
     private List<String> args;
     private IObject env;
     private Object localValue;
@@ -292,13 +292,13 @@ class StrategyAndArgs {
     /**
      * Constructor.
      * Creates new instance of {@link StrategyAndArgs} by follow params
-     * @param strategy instance of {@link IResolveDependencyStrategy}
+     * @param strategy instance of {@link IStrategy}
      * @param env the environment object
      * @param args unresolved strategy arguments
      * @param localValue the result of last transformation rule execution or argument of {@code out} method
      */
     StrategyAndArgs(
-            final IResolveDependencyStrategy strategy,
+            final IStrategy strategy,
             final IObject env,
             final List<String> args, final Object localValue
     ) {
@@ -308,7 +308,7 @@ class StrategyAndArgs {
         this.localValue = localValue;
     }
 
-    IResolveDependencyStrategy getStrategy() {
+    IStrategy getStrategy() {
         return this.strategy;
     }
 

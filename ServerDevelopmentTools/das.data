@@ -7,14 +7,14 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/server-dev-tools/"
 } ],
   "rawName" : "IServer",
-  "version" : "0.5.0"
+  "version" : "0.6.0"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "server-developing-tools",
   "rawName" : "Interfaces",
-  "version" : "0.5.0"
+  "version" : "0.6.0"
 } ],
   "on-actor-creation-upload-repositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
@@ -30,5 +30,5 @@
 } ],
   "groupId" : "info.smart_tools.smartactors",
   "name" : "ServerDevelopmentTools",
-  "version" : "0.5.0"
+  "version" : "0.6.0"
 }

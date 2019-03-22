@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.plugin.get_first_not_null_rule;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
@@ -33,12 +33,12 @@ public class GetFirstNotNullRulePlugin implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.resolve(
-                                    Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName()),
+                                    Keys.getKeyByName(IStrategy.class.getCanonicalName()),
                                     "getFirstNotNullRule",
                                     new GetFirstNotNullRule()
                             );
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException(
+                            throw new ActionExecutionException(
                                     "GetFirstNotNullRule plugin can't load: can't get GetFirstNotNullRule key", e
                             );
                         }

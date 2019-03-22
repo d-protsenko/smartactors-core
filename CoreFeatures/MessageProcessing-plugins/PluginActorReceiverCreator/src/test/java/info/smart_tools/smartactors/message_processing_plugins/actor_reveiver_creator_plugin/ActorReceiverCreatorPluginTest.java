@@ -39,7 +39,7 @@ public class ActorReceiverCreatorPluginTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -50,7 +50,7 @@ public class ActorReceiverCreatorPluginTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -102,7 +102,7 @@ public class ActorReceiverCreatorPluginTest {
         item.executeProcess();
         IRoutedObjectCreator objectCreator = IOC.resolve(
                 IOC.resolve(
-                        IOC.getKeyForKeyByNameResolutionStrategy(),
+                        IOC.getKeyForKeyByNameStrategy(),
                         IRoutedObjectCreator.class.getCanonicalName() + "#actor"
                 )
         );
@@ -111,17 +111,17 @@ public class ActorReceiverCreatorPluginTest {
         item.executeRevertProcess();
 
         try {
-            IOC.resolve(Keys.resolveByName(IRoutedObjectCreator.class.getCanonicalName() + "#actor"));
+            IOC.resolve(Keys.getKeyByName(IRoutedObjectCreator.class.getCanonicalName() + "#actor"));
             fail();
         } catch (ResolutionException e) {}
 
         try {
-            IOC.resolve(Keys.resolveByName("actor_receiver_queue"));
+            IOC.resolve(Keys.getKeyByName("actor_receiver_queue"));
             fail();
         } catch (ResolutionException e) {}
 
         try {
-            IOC.resolve(Keys.resolveByName("actor_receiver_busyness_flag"));
+            IOC.resolve(Keys.getKeyByName("actor_receiver_busyness_flag"));
             fail();
         } catch (ResolutionException e) {}
 

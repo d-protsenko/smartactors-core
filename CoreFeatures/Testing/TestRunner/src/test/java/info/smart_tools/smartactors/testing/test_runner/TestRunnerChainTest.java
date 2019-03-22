@@ -3,8 +3,8 @@ package info.smart_tools.smartactors.testing.test_runner;
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
@@ -17,8 +17,6 @@ import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.testing.interfaces.itest_runner.ITestRunner;
@@ -49,7 +47,7 @@ public class TestRunnerChainTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -60,7 +58,7 @@ public class TestRunnerChainTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ApplyFunctionToArgumentsStrategy(
                         (a) -> {
                             try {
@@ -72,7 +70,7 @@ public class TestRunnerChainTest {
                 )
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "test environment handler"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "test environment handler"),
                 new SingletonStrategy(testHandler)
         );
     }
@@ -92,7 +90,7 @@ public class TestRunnerChainTest {
         IAction<Throwable> callback = new IAction<Throwable>() {
             @Override
             public void execute(Throwable actingObject)
-                    throws ActionExecuteException, InvalidArgumentException {
+                    throws ActionExecutionException, InvalidArgumentException {
             }
         };
         when(desc.getValue(new FieldName("chainName"))).thenReturn(this.chainName);
@@ -106,7 +104,7 @@ public class TestRunnerChainTest {
         IAction<Throwable> callback = new IAction<Throwable>() {
             @Override
             public void execute(Throwable actingObject)
-                    throws ActionExecuteException, InvalidArgumentException {
+                    throws ActionExecutionException, InvalidArgumentException {
             }
         };
         ITestRunner runner = new ChainTestRunner();
@@ -125,10 +123,10 @@ public class TestRunnerChainTest {
     @Test (expected = InitializationException.class)
     public void checkInitializationExceptionOnCreation()
             throws Exception {
-        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+        IStrategy strategy = mock(IStrategy.class);
         doThrow(ResolutionException.class).when(strategy).resolve(any());
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 strategy
         );
         new ChainTestRunner();
@@ -143,7 +141,7 @@ public class TestRunnerChainTest {
         IAction<Throwable> callback = new IAction<Throwable>() {
             @Override
             public void execute(Throwable actingObject)
-                    throws ActionExecuteException, InvalidArgumentException {
+                    throws ActionExecutionException, InvalidArgumentException {
             }
         };
         when(desc.getValue(new FieldName("chainName"))).thenReturn(this.chainName);

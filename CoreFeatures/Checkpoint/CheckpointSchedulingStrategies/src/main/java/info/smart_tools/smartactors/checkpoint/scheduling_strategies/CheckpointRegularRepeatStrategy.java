@@ -39,7 +39,7 @@ public class CheckpointRegularRepeatStrategy extends CheckpointRepeatStrategy {
      * @throws ResolutionException if error occurs resolving any dependencies
      */
     public CheckpointRegularRepeatStrategy() throws ResolutionException {
-        intervalFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "interval");
+        intervalFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "interval");
     }
 
     @Override

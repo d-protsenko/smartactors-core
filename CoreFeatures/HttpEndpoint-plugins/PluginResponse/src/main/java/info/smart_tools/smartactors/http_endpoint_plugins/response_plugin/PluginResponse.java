@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.http_endpoint_plugins.response_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse.IResponse;
 import info.smart_tools.smartactors.endpoint.response.Response;
@@ -10,7 +10,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -39,25 +38,19 @@ public class PluginResponse implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.resolveByName(IResponse.class.getCanonicalName()),
+                                    Keys.getKeyByName(IResponse.class.getCanonicalName()),
                                     new CreateNewInstanceStrategy(args -> new Response()));
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("Response plugin can't load: can't get Response key", e);
+                            throw new ActionExecutionException("Response plugin can't load: can't get Response key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("Response plugin can't load: can't create strategy", e);
+                            throw new ActionExecutionException("Response plugin can't load: can't create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("Response plugin can't load: can't register new strategy", e);
+                            throw new ActionExecutionException("Response plugin can't load: can't register new strategy", e);
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "response";
-                        String keyName = IResponse.class.getCanonicalName();
-
-                        try {
-                            IOC.remove(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] itemNames = { IResponse.class.getCanonicalName() };
+                        Keys.unregisterByNames(itemNames);
                     });
 
             bootstrap.add(item);

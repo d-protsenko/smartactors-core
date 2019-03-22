@@ -10,6 +10,6 @@ public interface IPathFilter {
      * @param path path to check
      * @return true or false
      */
-    boolean accept(IPath path);
+    boolean checkPath(IPath path);
 
 }

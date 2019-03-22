@@ -1,7 +1,5 @@
 package info.smart_tools.smartactors.checkpoint.recover_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.checkpoint.interfaces.exceptions.RecoverStrategyInitializationException;
 import info.smart_tools.smartactors.checkpoint.recover_strategies.chain_choice.ChainSequenceRecoverStrategy;
 import info.smart_tools.smartactors.checkpoint.recover_strategies.chain_choice.IRecoveryChainChoiceStrategy;
@@ -35,9 +33,9 @@ public class ChainSequenceRecoverStrategyTest extends PluginsLoadingTestBase {
     @Override
     protected void registerMocks() throws Exception {
         /*
-        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), new IResolveDependencyStrategy() {
+        IOC.register(Keys.getKeyByName("chain_id_from_map_name_and_message"), new IStrategy() {
             @Override
-            public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
+            public <T> T resolve(Object... args) throws StrategyException {
                 return (T) args[0].toString().concat("__1");
             }
         });
@@ -47,9 +45,9 @@ public class ChainSequenceRecoverStrategyTest extends PluginsLoadingTestBase {
     @Test
     public void Should_chooseChainInConfiguredSequence()
             throws Exception {
-        IObject args = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject args = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'trials':[1,3,2],'chains':['A','B','C','D']}".replace('\'','"'));
-        IObject state = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject state = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
         IRecoveryChainChoiceStrategy strategy = new ChainSequenceRecoverStrategy();
 
@@ -72,8 +70,8 @@ public class ChainSequenceRecoverStrategyTest extends PluginsLoadingTestBase {
     @Test(expected = RecoverStrategyInitializationException.class)
     public void Should_throwWhenArgumentsContainNoRequiredFields()
             throws Exception {
-        IObject args = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
-        IObject state = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject args = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject state = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
         IRecoveryChainChoiceStrategy strategy = new ChainSequenceRecoverStrategy();
 
@@ -83,9 +81,9 @@ public class ChainSequenceRecoverStrategyTest extends PluginsLoadingTestBase {
     @Test(expected = RecoverStrategyInitializationException.class)
     public void Should_throwWhenListSizesDoNotMatch()
             throws Exception {
-        IObject args = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject args = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{'trials':[1,3,2],'chains':['A','B','C','D','E']}".replace('\'', '"'));
-        IObject state = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject state = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
         IRecoveryChainChoiceStrategy strategy = new ChainSequenceRecoverStrategy();
 

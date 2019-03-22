@@ -3,8 +3,8 @@ package info.smart_tools.smartactors.testing.test_environment_handler;
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
@@ -54,7 +54,7 @@ public class MainTestChainTest {
 
         ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -65,11 +65,11 @@ public class MainTestChainTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new ApplyFunctionToArgumentsStrategy((args) -> new DSObject())
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ApplyFunctionToArgumentsStrategy((args) -> new FieldName((String) args[0]))
         );
     }
@@ -99,8 +99,8 @@ public class MainTestChainTest {
     @Test(expected = InitializationException.class)
     public void Should_constructorThrowInitializationExceptionWhenIOCNotInitialized()
             throws Exception {
-        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
-        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"), strategy);
+        IStrategy strategy = mock(IStrategy.class);
+        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"), strategy);
         doThrow(Exception.class).when(strategy).resolve();
         assertNotNull(new MainTestChain(this.testingChainName, this.completionCallbackMock, this.successArgumentsMock,
                 ScopeProvider.getCurrentScope(),
@@ -187,7 +187,7 @@ public class MainTestChainTest {
                 ModuleManager.getCurrentModule());
         IMessageProcessor mpMock = mock(IMessageProcessor.class);
 
-        doThrow(ActionExecuteException.class).when(this.completionCallbackMock).execute(null);
+        doThrow(ActionExecutionException.class).when(this.completionCallbackMock).execute(null);
 
         chain.get(1).receive(mpMock);
     }

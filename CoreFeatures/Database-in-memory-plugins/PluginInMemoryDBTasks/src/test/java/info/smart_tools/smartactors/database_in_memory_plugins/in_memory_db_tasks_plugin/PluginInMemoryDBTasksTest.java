@@ -41,11 +41,11 @@ public class PluginInMemoryDBTasksTest {
         scope.setValue(IOC.getIocKey(), new StrategyContainer());
         ScopeProvider.setCurrentScope(scope);
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
 
-        IOC.register(Keys.resolveByName(IField.class.getCanonicalName()), new CreateNewInstanceStrategy(
+        IOC.register(Keys.getKeyByName(IField.class.getCanonicalName()), new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
                                 return new Field(new FieldName((String) args[0]));

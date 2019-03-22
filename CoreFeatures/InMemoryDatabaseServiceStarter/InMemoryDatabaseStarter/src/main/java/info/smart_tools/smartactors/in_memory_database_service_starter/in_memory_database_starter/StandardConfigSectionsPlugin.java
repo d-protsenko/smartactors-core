@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.in_memory_database_service_starter.in_memory_database_starter;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
@@ -46,15 +46,15 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =
-                                    IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
+                                    IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
 
                             configurationManager.addSectionStrategy(new InMemoryDBSectionProcessingStrategy());
                         } catch (ResolutionException | InvalidArgumentException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     });
             bootstrap.add(inMemoryDatabaseItem);
-            IOC.register(Keys.resolveByName("IObjectByString"), new ApplyFunctionToArgumentsStrategy(
+            IOC.register(Keys.getKeyByName("IObjectByString"), new ApplyFunctionToArgumentsStrategy(
                             (args) ->
                                     new DSObject((String) args[0])
                     )

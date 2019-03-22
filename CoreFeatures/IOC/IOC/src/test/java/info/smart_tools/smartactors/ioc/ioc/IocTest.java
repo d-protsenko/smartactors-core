@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc.ioc;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.ioc.iioccontainer.IContainer;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import org.junit.After;
@@ -47,7 +47,7 @@ public class IocTest {
     public void checkRegistration()
             throws Exception {
         IKey key = mock(IKey.class);
-        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+        IStrategy strategy = mock(IStrategy.class);
         doNothing().when(container).register(key, strategy);
         IOC.register(key, strategy);
         verify(container, times(1)).register(key, strategy);
@@ -57,9 +57,9 @@ public class IocTest {
     public void checkDeletion()
             throws Exception {
         IKey key = mock(IKey.class);
-        doNothing().when(container).remove(key);
-        IOC.remove(key);
-        verify(container, times(1)).remove(key);
+        when(container.unregister(key)).thenReturn(null);
+        IOC.unregister(key);
+        verify(container, times(1)).unregister(key);
     }
 
     @Test
@@ -71,10 +71,10 @@ public class IocTest {
     }
 
     @Test
-    public void checkgetKeyForKeyByNameResolutionStrategy()
+    public void checkgetKeyForKeyByNameStrategy()
             throws Exception {
-        when(container.getKeyForKeyByNameResolutionStrategy()).thenReturn(mock(IKey.class));
-        IKey key = IOC.getKeyForKeyByNameResolutionStrategy();
+        when(container.getKeyForKeyByNameStrategy()).thenReturn(mock(IKey.class));
+        IKey key = IOC.getKeyForKeyByNameStrategy();
         assertNotNull(key);
     }
 

@@ -31,12 +31,12 @@ public class ConnectionOptionsPlugin extends BootstrapPlugin {
     @Item("PostgresConnectionOptionsPlugin")
     public void registerCanonizationStrategies()
             throws ResolutionException, InvalidArgumentException,RegistrationException {
-        IField urlF = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "url");
-        IField usernameF = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "username");
-        IField passwordF = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "password");
-        IField maxConnectionsF = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "maxConnections");
+        IField urlF = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "url");
+        IField usernameF = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "username");
+        IField passwordF = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "password");
+        IField maxConnectionsF = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "maxConnections");
 
-        IOC.register(Keys.resolveByName("PostgresConnectionOptionsStrategy"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.getKeyByName("PostgresConnectionOptionsStrategy"), new ApplyFunctionToArgumentsStrategy(
                 (args) -> {
                     IObject opts = (IObject) args[0];
                     return new ConnectionOptions() {

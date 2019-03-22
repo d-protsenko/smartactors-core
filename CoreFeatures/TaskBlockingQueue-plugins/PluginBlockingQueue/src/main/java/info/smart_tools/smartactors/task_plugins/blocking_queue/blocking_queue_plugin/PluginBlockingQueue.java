@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.task_plugins.blocking_queue.blocking_queue_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -47,10 +47,10 @@ public class PluginBlockingQueue implements IPlugin {
                     .after("IFieldNamePlugin")
                     .process(() -> {
                         try {
-                            IOC.register(Keys.resolveByName(IQueue.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(args -> {
+                            IOC.register(Keys.getKeyByName(IQueue.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(args -> {
                                 try {
                                     IFieldName queueSizeFieldName = IOC.resolve(
-                                            Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "queueSize");
+                                            Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "queueSize");
                                     int queueSize = DEFAULT_QUEUE_SIZE;
 
                                     if (args.length > 0) {
@@ -64,7 +64,7 @@ public class PluginBlockingQueue implements IPlugin {
                                 }
                             }));
                         } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     });
 

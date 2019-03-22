@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.database.async_operation_collection;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
-import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolTakeException;
+import info.smart_tools.smartactors.base.interfaces.ipool.exception.GettingFromPoolException;
 import info.smart_tools.smartactors.database.async_operation_collection.exception.CompleteAsyncOperationException;
 import info.smart_tools.smartactors.database.async_operation_collection.exception.DeleteAsyncOperationException;
 import info.smart_tools.smartactors.database.async_operation_collection.exception.GetAsyncOperationException;
@@ -45,7 +45,7 @@ public class AsyncOperationCollectionTest {
     private IField searchResultField;
 
     @Before
-    public void setUp() throws ReadValueException, ChangeValueException, InvalidArgumentException, PoolTakeException, ResolutionException {
+    public void setUp() throws ReadValueException, ChangeValueException, InvalidArgumentException, GettingFromPoolException, ResolutionException {
 
         mockStatic(IOC.class);
         mockStatic(Keys.class);
@@ -63,7 +63,7 @@ public class AsyncOperationCollectionTest {
         IField connectionPoolField = mock(IField.class);
 
         IKey mockKeyField = mock(IKey.class);
-        when(Keys.resolveByName(IField.class.getCanonicalName())).thenReturn(mockKeyField);
+        when(Keys.getKeyByName(IField.class.getCanonicalName())).thenReturn(mockKeyField);
         when(IOC.resolve(mockKeyField, "collectionName")).thenReturn(collectionNameField);
         when(IOC.resolve(mockKeyField, "connectionPool")).thenReturn(connectionPoolField);
         when(IOC.resolve(mockKeyField, "keyName")).thenReturn(keyNameField);
@@ -80,7 +80,7 @@ public class AsyncOperationCollectionTest {
         IPool connectionPool = mock(IPool.class);
         connection = mock(IStorageConnection.class);
         collectionName = mock(String.class);
-        when(connectionPool.take()).thenReturn(connection);
+        when(connectionPool.get()).thenReturn(connection);
         collection = new AsyncOperationCollection(connectionPool, "async_operation");
 
         IKey keyConnection = mock(IKey.class);
@@ -93,12 +93,12 @@ public class AsyncOperationCollectionTest {
         String token = mock(String.class);
         IObject deleteQuery = mock(IObject.class);
         IKey keyIObject = mock(IKey.class);
-        when(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(keyIObject);
+        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(keyIObject);
         when(IOC.resolve(keyIObject)).thenReturn(deleteQuery);
 
         IDatabaseTask deleteTask = mock(IDatabaseTask.class);
         IKey keyTask = mock(IKey.class);
-        when(Keys.resolveByName("db.async_ops_collection.delete")).thenReturn(keyTask);
+        when(Keys.getKeyByName("db.async_ops_collection.delete")).thenReturn(keyTask);
         when(IOC.resolve(eq(keyTask), any(), any(), eq(token))).thenReturn(deleteTask);
         collection.delete(token);
 

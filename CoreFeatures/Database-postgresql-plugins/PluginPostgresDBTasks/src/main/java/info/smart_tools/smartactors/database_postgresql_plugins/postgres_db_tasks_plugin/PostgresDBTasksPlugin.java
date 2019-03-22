@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.database_postgresql_plugins.postgres_db_tas
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
@@ -70,11 +70,11 @@ public class PostgresDBTasksPlugin implements IPlugin {
                         registerDeleteTask();
                         registerCountTask();
                     } catch (ResolutionException e) {
-                        throw new ActionExecuteException("Can't resolve fields for db task.", e);
+                        throw new ActionExecutionException("Can't resolve fields for db task.", e);
                     } catch (InvalidArgumentException e) {
-                        throw new ActionExecuteException("Can't create strategy for db task.", e);
+                        throw new ActionExecutionException("Can't create strategy for db task.", e);
                     } catch (RegistrationException e) {
-                        throw new ActionExecuteException("Can't register strategy for db task.", e);
+                        throw new ActionExecutionException("Can't register strategy for db task.", e);
                     }
                 });
             bootstrap.add(item);
@@ -85,12 +85,12 @@ public class PostgresDBTasksPlugin implements IPlugin {
 
     private void registerCreateTask() throws RegistrationException, ResolutionException, InvalidArgumentException {
         IField collectionNameField = IOC.resolve(
-                Keys.resolveByName(IField.class.getCanonicalName()), "collectionName");
+                Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
         IField optionsField = IOC.resolve(
-                Keys.resolveByName(IField.class.getCanonicalName()), "options");
+                Keys.getKeyByName(IField.class.getCanonicalName()), "options");
 
         IOC.register(
-                Keys.resolveByName(CreateCollectionMessage.class.getCanonicalName()),
+                Keys.getKeyByName(CreateCollectionMessage.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             IObject message = (IObject) args[0];
@@ -116,7 +116,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                 )
         );
         IOC.register(
-                Keys.resolveByName("db.collection.create"),
+                Keys.getKeyByName("db.collection.create"),
                 //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
@@ -129,7 +129,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                                 }
                                 IDatabaseTask task = new PostgresCreateTask(connection);
 
-                                IObject query = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                                IObject query = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName);
                                 optionsField.out(query, options);
@@ -146,20 +146,20 @@ public class PostgresDBTasksPlugin implements IPlugin {
 
     private void registerNextIdStrategy() throws RegistrationException, ResolutionException {
         IOC.register(
-                Keys.resolveByName("db.collection.nextid"),
+                Keys.getKeyByName("db.collection.nextid"),
                 new UuidNextIdStrategy()
         );
     }
 
     private void registerUpsertTask() throws RegistrationException, ResolutionException, InvalidArgumentException {
         IField collectionNameField = IOC.resolve(
-                Keys.resolveByName(IField.class.getCanonicalName()), "collectionName");
+                Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
         IField documentField = IOC.resolve(
-                Keys.resolveByName(IField.class.getCanonicalName()), "document");
+                Keys.getKeyByName(IField.class.getCanonicalName()), "document");
 
         registerNextIdStrategy();
         IOC.register(
-                Keys.resolveByName(UpsertMessage.class.getCanonicalName()),
+                Keys.getKeyByName(UpsertMessage.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             IObject message = (IObject) args[0];
@@ -185,7 +185,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                 )
         );
         IOC.register(
-                Keys.resolveByName("db.collection.upsert"),
+                Keys.getKeyByName("db.collection.upsert"),
                 //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
@@ -195,7 +195,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                                 IObject document = (IObject) args[2];
                                 IDatabaseTask task = new PostgresUpsertTask(connection);
 
-                                IObject query = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                                IObject query = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName);
                                 documentField.out(query, document);
@@ -212,14 +212,14 @@ public class PostgresDBTasksPlugin implements IPlugin {
 
     private void registerGetByIdTask() throws RegistrationException, ResolutionException, InvalidArgumentException {
         IField collectionNameField = IOC.resolve(
-                Keys.resolveByName(IField.class.getCanonicalName()), "collectionName");
+                Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
         IField idField = IOC.resolve(
-                Keys.resolveByName(IField.class.getCanonicalName()), "id");
+                Keys.getKeyByName(IField.class.getCanonicalName()), "id");
         IField callbackField = IOC.resolve(
-                Keys.resolveByName(IField.class.getCanonicalName()), "callback");
+                Keys.getKeyByName(IField.class.getCanonicalName()), "callback");
 
         IOC.register(
-                Keys.resolveByName(GetByIdMessage.class.getCanonicalName()),
+                Keys.getKeyByName(GetByIdMessage.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             IObject message = (IObject) args[0];
@@ -253,7 +253,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                 )
         );
         IOC.register(
-                Keys.resolveByName("db.collection.getbyid"),
+                Keys.getKeyByName("db.collection.getbyid"),
                 //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
@@ -264,7 +264,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                                 IAction<IObject> callback = (IAction<IObject>) args[3];
                                 IDatabaseTask task = new PostgresGetByIdTask(connection);
 
-                                IObject query = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                                IObject query = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName);
                                 idField.out(query, id);
@@ -282,14 +282,14 @@ public class PostgresDBTasksPlugin implements IPlugin {
 
     private void registerSearchTask() throws RegistrationException, ResolutionException, InvalidArgumentException {
         IField collectionNameField = IOC.resolve(
-                Keys.resolveByName(IField.class.getCanonicalName()), "collectionName");
+                Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
         IField criteriaField = IOC.resolve(
-                Keys.resolveByName(IField.class.getCanonicalName()), "criteria");
+                Keys.getKeyByName(IField.class.getCanonicalName()), "criteria");
         IField callbackField = IOC.resolve(
-                Keys.resolveByName(IField.class.getCanonicalName()), "callback");
+                Keys.getKeyByName(IField.class.getCanonicalName()), "callback");
 
         IOC.register(
-                Keys.resolveByName(SearchMessage.class.getCanonicalName()),
+                Keys.getKeyByName(SearchMessage.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             IObject message = (IObject) args[0];
@@ -323,7 +323,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                 )
         );
         IOC.register(
-                Keys.resolveByName("db.collection.search"),
+                Keys.getKeyByName("db.collection.search"),
                 //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
@@ -334,7 +334,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                                 IAction<IObject[]> callback = (IAction<IObject[]>) args[3];
                                 IDatabaseTask task = new PostgresSearchTask(connection);
 
-                                IObject query = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                                IObject query = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName);
                                 criteriaField.out(query, criteria);
@@ -352,12 +352,12 @@ public class PostgresDBTasksPlugin implements IPlugin {
 
     private void registerDeleteTask() throws RegistrationException, ResolutionException, InvalidArgumentException {
         IField collectionNameField = IOC.resolve(
-                Keys.resolveByName(IField.class.getCanonicalName()), "collectionName");
+                Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
         IField documentField = IOC.resolve(
-                Keys.resolveByName(IField.class.getCanonicalName()), "document");
+                Keys.getKeyByName(IField.class.getCanonicalName()), "document");
 
         IOC.register(
-                Keys.resolveByName(DeleteMessage.class.getCanonicalName()),
+                Keys.getKeyByName(DeleteMessage.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             IObject message = (IObject) args[0];
@@ -383,7 +383,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                 )
         );
         IOC.register(
-                Keys.resolveByName("db.collection.delete"),
+                Keys.getKeyByName("db.collection.delete"),
                 //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
@@ -393,7 +393,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                                 IObject document = (IObject) args[2];
                                 IDatabaseTask task = new PostgresDeleteTask(connection);
 
-                                IObject query = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                                IObject query = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName);
                                 documentField.out(query, document);
@@ -410,12 +410,12 @@ public class PostgresDBTasksPlugin implements IPlugin {
 
     private void registerInsertTask() throws RegistrationException, ResolutionException, InvalidArgumentException {
         IField collectionNameField = IOC.resolve(
-                Keys.resolveByName(IField.class.getCanonicalName()), "collectionName");
+                Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
         IField documentField = IOC.resolve(
-                Keys.resolveByName(IField.class.getCanonicalName()), "document");
+                Keys.getKeyByName(IField.class.getCanonicalName()), "document");
 
         IOC.register(
-                Keys.resolveByName(InsertMessage.class.getCanonicalName()),
+                Keys.getKeyByName(InsertMessage.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             IObject message = (IObject) args[0];
@@ -441,7 +441,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                 )
         );
         IOC.register(
-                Keys.resolveByName("db.collection.insert"),
+                Keys.getKeyByName("db.collection.insert"),
                 //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
@@ -451,7 +451,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                                 IObject document = (IObject) args[2];
                                 IDatabaseTask task = new PostgresInsertTask(connection);
 
-                                IObject query = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                                IObject query = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName);
                                 documentField.out(query, document);
@@ -468,14 +468,14 @@ public class PostgresDBTasksPlugin implements IPlugin {
 
     private void registerCountTask() throws RegistrationException, ResolutionException, InvalidArgumentException {
         IField collectionNameField = IOC.resolve(
-                Keys.resolveByName(IField.class.getCanonicalName()), "collectionName");
+                Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
         IField criteriaField = IOC.resolve(
-                Keys.resolveByName(IField.class.getCanonicalName()), "criteria");
+                Keys.getKeyByName(IField.class.getCanonicalName()), "criteria");
         IField callbackField = IOC.resolve(
-                Keys.resolveByName(IField.class.getCanonicalName()), "callback");
+                Keys.getKeyByName(IField.class.getCanonicalName()), "callback");
 
         IOC.register(
-                Keys.resolveByName(CountMessage.class.getCanonicalName()),
+                Keys.getKeyByName(CountMessage.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             IObject message = (IObject) args[0];
@@ -509,7 +509,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                 )
         );
         IOC.register(
-                Keys.resolveByName("db.collection.count"),
+                Keys.getKeyByName("db.collection.count"),
                 //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
@@ -520,7 +520,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                                 IAction<Long> callback = (IAction<Long>) args[3];
                                 IDatabaseTask task = new PostgresCountTask(connection);
 
-                                IObject query = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                                IObject query = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                                 collectionNameField.out(query, collectionName);
                                 criteriaField.out(query, criteria);

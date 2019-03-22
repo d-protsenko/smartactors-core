@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.iobject_plugins.iobject_simple_impl_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -21,12 +21,13 @@ import org.mockito.ArgumentCaptor;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.*;
 
-@PrepareForTest({IOC.class, Keys.class, IPoorAction.class, CreateNewInstanceStrategy.class, IObjectSimpleImplPlugin.class, IObjectImpl.class})
+@PrepareForTest({IOC.class, Keys.class, IActionNoArgs.class, CreateNewInstanceStrategy.class, IObjectSimpleImplPlugin.class, IObjectImpl.class})
 @RunWith(PowerMockRunner.class)
 public class IObjectSimpleImplPluginTest {
     private IObjectSimpleImplPlugin plugin;
@@ -41,7 +42,7 @@ public class IObjectSimpleImplPluginTest {
 
         IKey keyGeneral = mock(IKey.class);
         IKey keyPlugin = mock(IKey.class);
-        when(IOC.getKeyForKeyByNameResolutionStrategy()).thenReturn(keyGeneral);
+        when(IOC.getKeyForKeyByNameStrategy()).thenReturn(keyGeneral);
         when(IOC.resolve(eq(keyGeneral), eq("IObjectSimpleImplPlugin"))).thenReturn(keyPlugin);
 
         bootstrap = mock(IBootstrap.class);
@@ -52,7 +53,7 @@ public class IObjectSimpleImplPluginTest {
     public void ShouldCorrectLoadPlugin() throws Exception {
 
         IKey IObjectKey = mock(IKey.class);
-        when(Keys.resolveByName(IObjectImpl.class.getCanonicalName())).thenReturn(IObjectKey);
+        when(Keys.getKeyByName(IObjectImpl.class.getCanonicalName())).thenReturn(IObjectKey);
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("IObjectSimpleImplPlugin").thenReturn(bootstrapItem);
@@ -64,7 +65,7 @@ public class IObjectSimpleImplPluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("IObjectSimpleImplPlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         ArgumentCaptor<CreateNewInstanceStrategy> createNewInstanceStrategyArgumentCaptor =
@@ -76,13 +77,12 @@ public class IObjectSimpleImplPluginTest {
 
         verify(bootstrap).add(bootstrapItem);
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor2 = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor2 = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(bootstrapItem).revertProcess(actionArgumentCaptor2.capture());
 
         actionArgumentCaptor2.getValue().execute();
 
-        verifyStatic();
-        IOC.remove(eq(IObjectKey));
+        assertNull(IOC.unregister(eq(IObjectKey)));
     }
 
     @Test(expected = PluginException.class)
@@ -95,7 +95,7 @@ public class IObjectSimpleImplPluginTest {
     @Test
     public void ShouldThrowRuntimeException_When_processThrowsException() throws Exception {
 
-        when(Keys.resolveByName(IObjectImpl.class.getCanonicalName())).thenThrow(new ResolutionException(""));
+        when(Keys.getKeyByName(IObjectImpl.class.getCanonicalName())).thenThrow(new ResolutionException(""));
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("IObjectSimpleImplPlugin").thenReturn(bootstrapItem);
@@ -107,20 +107,20 @@ public class IObjectSimpleImplPluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("IObjectSimpleImplPlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         try {
             actionArgumentCaptor.getValue().execute();
             fail();
-        } catch(ActionExecuteException e) { }
+        } catch(ActionExecutionException e) { }
     }
 
     @Test
     public void ShouldThrowRuntimeException_When_revertThrowsException() throws Exception {
 
         doThrow(new DeletionException("TestException")).when(IOC.class);
-        IOC.remove(any());
+        IOC.unregister(any());
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("IObjectSimpleImplPlugin").thenReturn(bootstrapItem);
@@ -132,13 +132,13 @@ public class IObjectSimpleImplPluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("IObjectSimpleImplPlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(bootstrapItem).revertProcess(actionArgumentCaptor.capture());
 
         // this wrapper may be enabled when revert throws exception instead of printing to console
         // try {
         actionArgumentCaptor.getValue().execute();
         //    fail();
-        //} catch(ActionExecuteException e) { }
+        //} catch(ActionExecutionException e) { }
     }
 }

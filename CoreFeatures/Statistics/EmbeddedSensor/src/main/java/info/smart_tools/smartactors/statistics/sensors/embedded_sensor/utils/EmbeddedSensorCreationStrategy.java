@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.statistics.sensors.embedded_sensor.utils;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
@@ -42,7 +42,7 @@ import java.util.List;
  *     }
  * </pre>
  */
-public class EmbeddedSensorCreationStrategy implements IResolveDependencyStrategy {
+public class EmbeddedSensorCreationStrategy implements IStrategy {
     private static final int CHAIN_ID_STRATEGY_ARGUMENT_INDEX = 0;
     private static final int CONFIG_STRATEGY_ARGUMENT_INDEX = 1;
 
@@ -66,18 +66,18 @@ public class EmbeddedSensorCreationStrategy implements IResolveDependencyStrateg
      */
     public EmbeddedSensorCreationStrategy()
             throws ResolutionException {
-        argsFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "args");
-        stepFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "step");
-        dependencyFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
-        statisticsChainFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "statisticsChain");
-        replacementsFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "replacements");
-        modificationFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "modification");
-        embedFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "embed");
-        chainFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
+        argsFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "args");
+        stepFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "step");
+        dependencyFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
+        statisticsChainFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "statisticsChain");
+        replacementsFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "replacements");
+        modificationFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "modification");
+        embedFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "embed");
+        chainFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
     }
 
     @Override
-    public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
+    public <T> T resolve(final Object... args) throws StrategyException {
         try {
             Object statisticsChainName = args[CHAIN_ID_STRATEGY_ARGUMENT_INDEX];
             IObject conf = (IObject) args[CONFIG_STRATEGY_ARGUMENT_INDEX];
@@ -88,10 +88,10 @@ public class EmbeddedSensorCreationStrategy implements IResolveDependencyStrateg
 
             // ToDo: check whether such way of chain Id resolution is correct for Embedded Sensors
             Object targetChainId = IOC.resolve(
-                    Keys.resolveByName("chain_id_from_map_name"),
+                    Keys.getKeyByName("chain_id_from_map_name"),
                     conf.getValue(chainFieldName)
             );
-            IChainStorage chainStorage = IOC.resolve(Keys.resolveByName(IChainStorage.class.getCanonicalName()));
+            IChainStorage chainStorage = IOC.resolve(Keys.getKeyByName(IChainStorage.class.getCanonicalName()));
 
             for (IObject embedItemConf : embedConf) {
                 IObject itemArgs = (IObject) embedItemConf.getValue(argsFieldName);
@@ -101,12 +101,12 @@ public class EmbeddedSensorCreationStrategy implements IResolveDependencyStrateg
                 itemArgs.setValue(statisticsChainFieldName, statisticsChainName);
 
                 IMessageReceiver sensor = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(),
+                        IOC.resolve(IOC.getKeyForKeyByNameStrategy(),
                                 (itemDependency == null) ? DEFAULT_RECEIVER_DEPENDENCY : itemDependency),
                             itemArgs
                         );
 
-                IObject replacement = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                IObject replacement = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                 replacement.setValue(stepFieldName, embedItemConf.getValue(stepFieldName));
                 replacement.setValue(dependencyFieldName, SENSOR_RECEIVER_REPLACEMENT_DEPENDENCY);
@@ -115,7 +115,7 @@ public class EmbeddedSensorCreationStrategy implements IResolveDependencyStrateg
                 replacements.add(replacement);
             }
 
-            IObject modification = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject modification = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             modification.setValue(modificationFieldName, RECEIVER_REPLACEMENT_MODIFICATION_DEPENDENCY);
             modification.setValue(replacementsFieldName, replacements);
@@ -125,7 +125,7 @@ public class EmbeddedSensorCreationStrategy implements IResolveDependencyStrateg
             return (T) new EmbeddedSensorHandle(chainStorage, targetChainId, modId);
         } catch (ReadValueException | ChangeValueException | InvalidArgumentException | ResolutionException | ChainNotFoundException
                 | ChainModificationException e) {
-            throw new ResolveDependencyStrategyException(e);
+            throw new StrategyException(e);
         }
     }
 }

@@ -38,9 +38,9 @@ public class EnvironmentHandler implements IEnvironmentHandler {
      */
     public EnvironmentHandler(final IQueue<ITask> taskQueue, final int stackDepth, final Boolean scopeSwitching)
             throws InvalidArgumentException, ResolutionException {
-        this.messageFieldName = IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "message");
-        this.contextFieldName = IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "context");
-        this.fromExternalFieldName = IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "fromExternal");
+        this.messageFieldName = IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "message");
+        this.contextFieldName = IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "context");
+        this.fromExternalFieldName = IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "fromExternal");
         if (null == taskQueue) {
             throw new InvalidArgumentException("Task queue should not be null.");
         }
@@ -58,9 +58,9 @@ public class EnvironmentHandler implements IEnvironmentHandler {
             IObject message = (IObject) environment.getValue(this.messageFieldName);
             IObject context = (IObject) environment.getValue(this.contextFieldName);
             IMessageProcessingSequence processingSequence =
-                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), stackDepth, receiverChainName, message, this.scopeSwitching);
+                    IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), stackDepth, receiverChainName, message, this.scopeSwitching);
             IMessageProcessor messageProcessor =
-                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), taskQueue, processingSequence);
+                    IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), taskQueue, processingSequence);
 
             context.setValue(this.fromExternalFieldName, true);
             messageProcessor.process(message, context);

@@ -5,15 +5,15 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>class-management</artifactId>
-        <version>0.5.0</version>
+        <version>0.6.0</version>
     </parent>
     <artifactId>class-management.interfaces.imodule</artifactId>
-    <version>0.5.0</version>
+    <version>0.6.0</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>class-management.interfaces.ismartactors_class_loader</artifactId>
-            <version>0.5.0</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -51,7 +51,7 @@
                             <inherited>false</inherited>
                             <configuration>
                                 <generatePom>true</generatePom>
-                                <file>target/class-management.interfaces.imodule-0.5.0.jar</file>
+                                <file>target/class-management.interfaces.imodule-0.6.0.jar</file>
                                 <url>${module.rurl}</url>
                                 <repositoryId>${module.rid}</repositoryId>
                                 <groupId>${project.groupId}</groupId>

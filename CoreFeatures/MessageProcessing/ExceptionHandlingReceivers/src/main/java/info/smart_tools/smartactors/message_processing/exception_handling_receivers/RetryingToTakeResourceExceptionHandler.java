@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_processing.exception_handling_receivers;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iresource_source.exceptions.OutOfResourceException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -40,7 +40,7 @@ public class RetryingToTakeResourceExceptionHandler extends ExceptionHandlingRec
                 try {
                     processor.continueProcess(null);
                 } catch (AsynchronousOperationException e) {
-                    throw new ActionExecuteException(e);
+                    throw new ActionExecutionException(e);
                 }
             });
         } catch (ReadValueException | InvalidArgumentException | AsynchronousOperationException e) {

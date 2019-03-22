@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.feature_management.load_feature_actor;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
@@ -59,9 +59,9 @@ public class LoadFeatureActor {
      */
     public LoadFeatureActor()
             throws ResolutionException {
-        this.pluginLoaderVisitor =          IOC.resolve(Keys.resolveByName("plugin loader visitor"));
-        this.pluginCreator =                IOC.resolve(Keys.resolveByName("plugin creator"));
-        configurationManager =              IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
+        this.pluginLoaderVisitor =          IOC.resolve(Keys.getKeyByName("plugin loader visitor"));
+        this.pluginCreator =                IOC.resolve(Keys.getKeyByName("plugin creator"));
+        configurationManager =              IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
     }
 
     /**
@@ -102,13 +102,13 @@ public class LoadFeatureActor {
                     IPlugin plugin = pluginCreator.create(clz, bootstrap);
                     plugin.load();
                 } catch (PluginCreationException | PluginException e) {
-                    throw new ActionExecuteException(e);
+                    throw new ActionExecutionException(e);
                 }
             };
             // setup current feature for class loading, bootstrap and applying config
             ModuleManager.setCurrentModule(ModuleManager.getModuleById(feature.getId()));
             IPluginLoader<Collection<IPath>> pluginLoader = IOC.resolve(
-                    Keys.resolveByName(PLUGIN_LOADER_KEY),
+                    Keys.getKeyByName(PLUGIN_LOADER_KEY),
                     ModuleManager.getCurrentClassLoader(),
                     classHandler,
                     pluginLoaderVisitor);
@@ -133,7 +133,7 @@ public class LoadFeatureActor {
             if (null != files && files.length > 0) {
                 File configFile = files[0];
                 String configString = new Scanner(configFile).useDelimiter(END_OF_INPUT_DELIMITER).next();
-                configurationManager.applyConfig(IOC.resolve(Keys.resolveByName(CONFIGURATION_OBJECT_KEY), configString));
+                configurationManager.applyConfig(IOC.resolve(Keys.getKeyByName(CONFIGURATION_OBJECT_KEY), configString));
             }
             System.out.println("[OK] -------------- Feature '" + feature.getDisplayName() + "' loaded successfully.");
         } catch (Throwable e) {

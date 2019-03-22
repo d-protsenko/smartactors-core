@@ -40,7 +40,7 @@ public class PluginChainTestingAssertionsTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -51,7 +51,7 @@ public class PluginChainTestingAssertionsTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -100,8 +100,8 @@ public class PluginChainTestingAssertionsTest {
         assertEquals(itemList.size(), 1);
         IBootstrapItem<String> item = itemList.get(0);
         item.executeProcess();
-        assertNotNull(IOC.resolve(Keys.resolveByName("assertion of type equal")));
-        assertNotNull(IOC.resolve(Keys.resolveByName("assertion of type not equal")));
+        assertNotNull(IOC.resolve(Keys.getKeyByName("assertion of type equal")));
+        assertNotNull(IOC.resolve(Keys.getKeyByName("assertion of type not equal")));
     }
 
     @Test (expected = PluginException.class)

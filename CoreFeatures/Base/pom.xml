@@ -5,27 +5,29 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>core-features</artifactId>
-        <version>0.5.0</version>
+        <version>0.6.0</version>
     </parent>
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>base</artifactId>
-    <version>0.5.0</version>
+    <version>0.6.0</version>
     <packaging>pom</packaging>
     <modules>
-        <module>IAdditionDependencyStrategy</module>
         <module>IAction</module>
+        <module>IAdditionDependencyStrategy</module>
         <module>ApplyFunctionToArgumentsStrategy</module>
         <module>IPath</module>
         <module>InvalidStateException</module>
         <module>CreateNewInstanceStrategy</module>
         <module>PoolGuard</module>
         <module>Path</module>
+        <module>IStrategyRegistration</module>
         <module>SingletonStrategy</module>
         <module>Pool</module>
         <module>InitializationException</module>
         <module>InvalidArgumentException</module>
-        <module>IResourceSource</module>
+        <module>IStrategy</module>
         <module>IResolveDependencyStrategy</module>
+        <module>IResourceSource</module>
         <module>IPool</module>
         <module>StrategyStorageStrategy</module>
         <module>ICacheable</module>

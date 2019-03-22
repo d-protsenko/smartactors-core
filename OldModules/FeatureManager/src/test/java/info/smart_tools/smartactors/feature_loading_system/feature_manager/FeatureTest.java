@@ -100,7 +100,7 @@ public class FeatureTest {
 //    public void Should_subscribeForNotificationsFromFileSystemTracker_When_listenCalled()
 //            throws Exception {
 //        IAction actionMock1 = mock(IAction.class), actionMock2 = mock(IAction.class), actionMock3 = mock(IAction.class);
-//        ActionExecuteException exceptionMock1 = mock(ActionExecuteException.class), exceptionMock2 = mock(ActionExecuteException.class);
+//        ActionExecutionException exceptionMock1 = mock(ActionExecutionException.class), exceptionMock2 = mock(ActionExecutionException.class);
 //        IPath fileMock1 = mock(IPath.class), fileMock2 = mock(IPath.class), fileMock3 = mock(IPath.class);
 //
 //        doThrow(exceptionMock1).when(actionMock1).execute(any());
@@ -130,7 +130,7 @@ public class FeatureTest {
 //        try {
 //            trackerActionCaptor.getValue().execute(fileMock2);
 //            fail();
-//        } catch (ActionExecuteException e) {
+//        } catch (ActionExecutionException e) {
 //            assertSame(exceptionMock1, e.getCause());
 //            assertEquals(e.getSuppressed().length, 1);
 //            assertSame(exceptionMock2, e.getSuppressed()[0]);
@@ -171,7 +171,7 @@ public class FeatureTest {
 //            throws Exception {
 //        IPath fileMock = mock(IPath.class);
 //        IAction actionMock = mock(IAction.class);
-//        ActionExecuteException exceptionMock = mock(ActionExecuteException.class);
+//        ActionExecutionException exceptionMock = mock(ActionExecutionException.class);
 //
 //        when(fileMock.getPath()).thenReturn("dir/bug-feature.jar");
 //        doThrow(exceptionMock).when(actionMock).execute(any());

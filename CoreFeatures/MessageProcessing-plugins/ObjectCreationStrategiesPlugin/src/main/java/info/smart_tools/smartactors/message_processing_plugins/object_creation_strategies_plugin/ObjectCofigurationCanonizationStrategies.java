@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.message_processing_plugins.object_creation_strategies_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.IStrategyRegistration;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.exception.StrategyRegistrationException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
@@ -11,7 +11,6 @@ import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -42,14 +41,14 @@ public class ObjectCofigurationCanonizationStrategies extends BootstrapPlugin {
             "ConfigurationObject",
     })
     public void registerCanonizationStrategies()
-            throws ResolutionException, RegistrationException, InvalidArgumentException, AdditionDependencyStrategyException {
-        IOC.register(Keys.resolveByName("canonize objects configuration section item filters list"),
+            throws ResolutionException, RegistrationException, InvalidArgumentException, StrategyRegistrationException {
+        IOC.register(Keys.getKeyByName("canonize objects configuration section item filters list"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     try {
                         IObject value = (IObject) args[0];
 
-                        IFieldName filtersFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "filters");
-                        IFieldName kindFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "kind");
+                        IFieldName filtersFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "filters");
+                        IFieldName kindFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "kind");
 
                         List filtersList = (List) value.getValue(filtersFieldName);
                         String kindName = (String) value.getValue(kindFieldName);
@@ -61,7 +60,7 @@ public class ObjectCofigurationCanonizationStrategies extends BootstrapPlugin {
                         }
 
                         if (null != kindName) {
-                            filtersList.addAll(0, IOC.resolve(Keys.resolveByName("object kind filter sequence#" + kindName)));
+                            filtersList.addAll(0, IOC.resolve(Keys.getKeyByName("object kind filter sequence#" + kindName)));
                         }
 
                         ListIterator iterator = filtersList.listIterator();
@@ -70,7 +69,7 @@ public class ObjectCofigurationCanonizationStrategies extends BootstrapPlugin {
                             Object filterItem = iterator.next();
 
                             if (filterItem instanceof String) {
-                                filterItem = IOC.resolve(Keys.resolveByName("named filter config#" + filterItem));
+                                filterItem = IOC.resolve(Keys.getKeyByName("named filter config#" + filterItem));
                                 iterator.set(filterItem);
                             }
                         }
@@ -83,7 +82,7 @@ public class ObjectCofigurationCanonizationStrategies extends BootstrapPlugin {
                     }
         }));
 
-        IAdditionDependencyStrategy strategy = IOC.resolve(Keys.resolveByName("expandable_strategy#resolve key for configuration object"));
+        IStrategyRegistration strategy = IOC.resolve(Keys.getKeyByName("expandable_strategy#resolve key for configuration object"));
 
         strategy.register("objects", new ApplyFunctionToArgumentsStrategy(args -> {
             try {
@@ -98,7 +97,7 @@ public class ObjectCofigurationCanonizationStrategies extends BootstrapPlugin {
                 while (iterator.hasNext()) {
                     IObject objConf = iterator.next();
 
-                    IObject updConf = IOC.resolve(Keys.resolveByName("canonize objects configuration section item filters list"), objConf);
+                    IObject updConf = IOC.resolve(Keys.getKeyByName("canonize objects configuration section item filters list"), objConf);
 
                     iterator.set(updConf);
                 }
@@ -112,13 +111,7 @@ public class ObjectCofigurationCanonizationStrategies extends BootstrapPlugin {
 
     @ItemRevert("object_configuration_canonization_strategies")
     public void unregisterCanonizationStrategies() {
-        String itemName = "object_configuration_canonization_strategies";
-        String keyName = "canonize objects configuration section item filters list";
-
-        try {
-            IOC.remove(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] keyNames = { "canonize objects configuration section item filters list" };
+        Keys.unregisterByNames(keyNames);
     }
 }

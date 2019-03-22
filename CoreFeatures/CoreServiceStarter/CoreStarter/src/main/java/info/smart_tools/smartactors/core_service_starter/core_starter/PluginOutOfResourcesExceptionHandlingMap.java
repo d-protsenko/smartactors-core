@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core_service_starter.core_starter;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
@@ -50,12 +50,12 @@ public class PluginOutOfResourcesExceptionHandlingMap implements IPlugin {
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =
-                                    IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
+                                    IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
 
-                            IKey fieldNameKey = Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
-                            IObject templateObj = IOC.resolve(Keys.resolveByName("configuration object"));
+                            IKey fieldNameKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+                            IObject templateObj = IOC.resolve(Keys.getKeyByName("configuration object"));
 
-                            IObject object = IOC.resolve(Keys.resolveByName("configuration object"));
+                            IObject object = IOC.resolve(Keys.getKeyByName("configuration object"));
                             object.setValue(IOC.resolve(fieldNameKey, "kind"), "raw");
                             object.setValue(IOC.resolve(fieldNameKey, "dependency"), "RetryingToTakeResourceExceptionHandler");
                             object.setValue(IOC.resolve(fieldNameKey, "name"), "retryingToTakeResourceExceptionHandler");
@@ -64,10 +64,10 @@ public class PluginOutOfResourcesExceptionHandlingMap implements IPlugin {
                             objectsSection.add(object);
                             templateObj.setValue(IOC.resolve(fieldNameKey, "objects"), objectsSection);
 
-                            IObject map = IOC.resolve(Keys.resolveByName("configuration object"));
+                            IObject map = IOC.resolve(Keys.getKeyByName("configuration object"));
                             map.setValue(IOC.resolve(fieldNameKey, "id"), "tryToTakeResourceMap");
 
-                            IObject step = IOC.resolve(Keys.resolveByName("configuration object"));
+                            IObject step = IOC.resolve(Keys.getKeyByName("configuration object"));
                             step.setValue(IOC.resolve(fieldNameKey, "target"), "retryingToTakeResourceExceptionHandler");
 
                             List<IObject> steps = new ArrayList<>(1);
@@ -82,7 +82,7 @@ public class PluginOutOfResourcesExceptionHandlingMap implements IPlugin {
 
                             configurationManager.applyConfig(templateObj);
                         } catch (ResolutionException | InvalidArgumentException | ChangeValueException | ConfigurationProcessingException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     });
 

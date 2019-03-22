@@ -6,7 +6,7 @@
 
     <artifactId>server-with-features</artifactId>
     <groupId>info.smart_tools.smartactors</groupId>
-    <version>0.5.0</version>
+    <version>0.6.0</version>
 
     <properties>
         <feature.rurl>http://archiva.smart-tools.info/repository/servers/</feature.rurl>
@@ -76,7 +76,7 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>class-management.module-manager</artifactId>
-            <version>0.5.0</version>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
     </dependencies>
 
@@ -129,7 +129,7 @@
 
                     <groupId>info.smart_tools.smartactors</groupId>
                     <artifactId>${artifactId}</artifactId>
-                    <version>0.5.0</version>
+                    <version>0.6.0</version>
                     <packaging>jar</packaging>
                 </configuration>
             </plugin>

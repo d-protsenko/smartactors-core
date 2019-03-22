@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.testing_plugins.test_checkers_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
@@ -46,7 +46,7 @@ public class TestCheckersPluginTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -57,7 +57,7 @@ public class TestCheckersPluginTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -68,7 +68,7 @@ public class TestCheckersPluginTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new ApplyFunctionToArgumentsStrategy(
                         (a) -> {
                             try {
@@ -80,7 +80,7 @@ public class TestCheckersPluginTest {
         );
         IOC.register(
                 IOC.resolve(
-                        IOC.getKeyForKeyByNameResolutionStrategy(), "configuration object"
+                        IOC.getKeyForKeyByNameStrategy(), "configuration object"
                 ),
                 new ApplyFunctionToArgumentsStrategy(
                         (a) -> {
@@ -101,17 +101,17 @@ public class TestCheckersPluginTest {
         );
         IAssertion assertionMock = mock(IAssertion.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "assertion of type myType"), new SingletonStrategy(assertionMock)
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "assertion of type myType"), new SingletonStrategy(assertionMock)
         );
         Object receiverIdStrategyMock = mock(Object.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "receiver_id_from_iobject"), new SingletonStrategy(receiverIdStrategyMock)
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "receiver_id_from_iobject"), new SingletonStrategy(receiverIdStrategyMock)
         );
         IRouter routerMock = mock(IRouter.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IRouter.class.getCanonicalName()), new IResolveDependencyStrategy() {
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), IRouter.class.getCanonicalName()), new IStrategy() {
             @Override
-            public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
+            public <T> T resolve(Object... args) throws StrategyException {
                 return (T) routerMock;
             }
         });
@@ -163,9 +163,9 @@ public class TestCheckersPluginTest {
         IObject interception = mock(IObject.class);
         when(interception.getValue(new FieldName("class"))).thenReturn(Integer.class.getCanonicalName());
         IResultChecker assertChecker = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IResultChecker.class.getCanonicalName() + "#assert"), assertions);
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), IResultChecker.class.getCanonicalName() + "#assert"), assertions);
         IResultChecker interceptChecker = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IResultChecker.class.getCanonicalName() + "#intercept"), interception);
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), IResultChecker.class.getCanonicalName() + "#intercept"), interception);
         assertNotNull(assertChecker);
         assertNotNull(interceptChecker);
     }

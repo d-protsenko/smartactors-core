@@ -47,15 +47,15 @@ public class MessageBusSectionProcessingStrategy implements ISectionStrategy {
     public MessageBusSectionProcessingStrategy()
             throws ResolutionException {
         this.name = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "messageBus"
         );
         this.startChainNameFieldName = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "routingChain"
         );
         this.stackDepthFieldName = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "stackDepth"
         );
     }
@@ -65,13 +65,13 @@ public class MessageBusSectionProcessingStrategy implements ISectionStrategy {
         try {
             IObject messageBusObject = (IObject) config.getValue(name);
 
-            IQueue<ITask> queue = IOC.resolve(Keys.resolveByName("task_queue"));
+            IQueue<ITask> queue = IOC.resolve(Keys.getKeyByName("task_queue"));
 
             Integer stackDepth = Integer.valueOf(String.valueOf(messageBusObject.getValue(stackDepthFieldName)));
 
             String startChainName = (String) messageBusObject.getValue(startChainNameFieldName);
 
-            IAction<IObject> finalAction = IOC.resolve(Keys.resolveByName("send response action"));
+            IAction<IObject> finalAction = IOC.resolve(Keys.getKeyByName("send response action"));
 
             IMessageBusHandler handler = new MessageBusHandler(queue, stackDepth, startChainName, finalAction);
 

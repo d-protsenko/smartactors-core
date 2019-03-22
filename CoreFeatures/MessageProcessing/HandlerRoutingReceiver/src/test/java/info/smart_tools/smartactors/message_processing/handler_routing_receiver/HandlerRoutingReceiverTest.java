@@ -53,8 +53,8 @@ public class HandlerRoutingReceiverTest {
         messageProcessingSequenceMock = mock(IMessageProcessingSequence.class);
 
         mockStatic(IOC.class);
-        when(IOC.getKeyForKeyByNameResolutionStrategy()).thenReturn(mock(IKey.class));
-        when(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IField.class.getCanonicalName())).thenReturn(fieldKey);
+        when(IOC.getKeyForKeyByNameStrategy()).thenReturn(mock(IKey.class));
+        when(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), IField.class.getCanonicalName())).thenReturn(fieldKey);
         when(IOC.resolve(fieldKey, "handler")).thenReturn(handlerFieldMock);
 
         when(messageProcessorMock.getSequence()).thenReturn(messageProcessingSequenceMock);

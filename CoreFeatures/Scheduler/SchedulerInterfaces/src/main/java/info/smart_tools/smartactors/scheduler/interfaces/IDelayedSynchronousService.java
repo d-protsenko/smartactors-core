@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.scheduler.interfaces;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.isynchronous_service.ISynchronousService;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
-import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartupException;
+import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStopException;
 
 /**
@@ -14,11 +14,11 @@ public interface IDelayedSynchronousService extends ISynchronousService {
      * Start this service after given moment of time.
      *
      * @param startTime    the time to start the service
-     * @throws ServiceStartupException if any error occurs starting the service or scheduling service start
+     * @throws ServiceStartException if any error occurs starting the service or scheduling service start
      * @throws InvalidArgumentException if {@code startTime} is not valid
      * @throws IllegalServiceStateException if the service is already running
      */
-    void startAfter(long startTime) throws ServiceStartupException, IllegalServiceStateException, InvalidArgumentException;
+    void startAfter(long startTime) throws ServiceStartException, IllegalServiceStateException, InvalidArgumentException;
 
     /**
      * Stop this service after given moment of time.

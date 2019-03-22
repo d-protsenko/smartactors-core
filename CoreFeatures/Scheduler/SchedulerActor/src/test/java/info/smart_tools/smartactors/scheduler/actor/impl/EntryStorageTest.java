@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.scheduler.actor.impl;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
@@ -41,7 +41,7 @@ import static org.mockito.Mockito.*;
  */
 public class EntryStorageTest extends PluginsLoadingTestBase {
     private IPool connectionPool;
-    private IResolveDependencyStrategy restoreEntryStrategy;
+    private IStrategy restoreEntryStrategy;
     private IObject[] saved;
     private ISchedulerEntry[] entries;
     private IRemoteEntryStorage remoteEntryStorage;
@@ -62,32 +62,32 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
 
     @Override
     protected void registerMocks() throws Exception {
-//        connectionPool = IOC.resolve(Keys.resolveByName("DatabaseConnectionPool"));
+//        connectionPool = IOC.resolve(Keys.getKeyByName("DatabaseConnectionPool"));
         connectionPool = mock(IPool.class);
 
         try (IPoolGuard guard = new PoolGuard(connectionPool)) {
             ITask createTask = IOC.resolve(
-                    Keys.resolveByName("db.collection.create"),
+                    Keys.getKeyByName("db.collection.create"),
                     guard.getObject(),
                     "scheduler_collection",
-                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
+                    IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
 
             createTask.execute();
 
             saved = new IObject[] {
-                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                    IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                             "{'strategy':'strategy1','entryId':'0'}".replace('\'', '"')),
-                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                    IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                             "{'strategy':'strategy2','entryId':'1'}".replace('\'', '"')),
-                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                    IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                             "{'strategy':'strategy3','entryId':'2'}".replace('\'', '"')),
-                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                    IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                             "{'strategy':'strategy4','entryId':'3'}".replace('\'', '"')),
-                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                    IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                             "{'strategy':'strategy5','entryId':'4'}".replace('\'', '"')),
-                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                    IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                             "{'strategy':'strategy6','entryId':'5'}".replace('\'', '"')),
-                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                    IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                             "{'strategy':'strategy7','entryId':'6'}".replace('\'', '"')),
             };
 
@@ -102,7 +102,7 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
 
             for (IObject obj : saved) {
                 ITask task = IOC.resolve(
-                        Keys.resolveByName("db.collection.insert"),
+                        Keys.getKeyByName("db.collection.insert"),
                         guard.getObject(),
                         "scheduler_collection",
                         obj);
@@ -113,12 +113,12 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
             remoteEntryStorage = new DatabaseRemoteStorage(connectionPool, "scheduler_collection");
         }
 
-        restoreEntryStrategy = mock(IResolveDependencyStrategy.class);
+        restoreEntryStrategy = mock(IStrategy.class);
         when(restoreEntryStrategy.resolve(any(), any())).thenReturn(entries[0], Arrays.copyOfRange(entries, 1, entries.length));
-        IOC.register(Keys.resolveByName("restore scheduler entry"), restoreEntryStrategy);
+        IOC.register(Keys.getKeyByName("restore scheduler entry"), restoreEntryStrategy);
 
         timerMock = mock(ITimer.class);
-        IOC.register(Keys.resolveByName("timer"), new SingletonStrategy(timerMock));
+        IOC.register(Keys.getKeyByName("timer"), new SingletonStrategy(timerMock));
     }
 
     private int countDBEntries() throws Exception {
@@ -126,10 +126,10 @@ public class EntryStorageTest extends PluginsLoadingTestBase {
 
         try (IPoolGuard guard = new PoolGuard(connectionPool)) {
             ITask createTask = IOC.resolve(
-                    Keys.resolveByName("db.collection.count"),
+                    Keys.getKeyByName("db.collection.count"),
                     guard.getObject(),
                     "scheduler_collection",
-                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'filter':{},'sort':[]}".replace('\'','"')),
+                    IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'filter':{},'sort':[]}".replace('\'','"')),
                     (IAction<Long>) c -> res[0] = c.intValue());
 
             createTask.execute();

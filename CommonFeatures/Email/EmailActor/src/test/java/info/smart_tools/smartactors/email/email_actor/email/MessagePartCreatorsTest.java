@@ -49,10 +49,10 @@ public class MessagePartCreatorsTest {
         ScopeProvider.setCurrentScope(mainScope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
-        IKey keyIField = Keys.resolveByName(IField.class.getCanonicalName());
+        IKey keyIField = Keys.getKeyByName(IField.class.getCanonicalName());
         IOC.register(keyIField, new ApplyFunctionToArgumentsStrategy(
                 (args) -> {
                     String fieldName = String.valueOf(args[0]);

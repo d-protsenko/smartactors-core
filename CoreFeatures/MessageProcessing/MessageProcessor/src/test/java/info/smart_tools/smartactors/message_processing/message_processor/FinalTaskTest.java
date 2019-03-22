@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.message_processing.message_processor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
@@ -37,7 +37,7 @@ public class FinalTaskTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -48,7 +48,7 @@ public class FinalTaskTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -81,7 +81,7 @@ public class FinalTaskTest {
             throws Exception {
         IObject env = mock(IObject.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy((a)-> {
                     throw new RuntimeException();
                 })
@@ -101,7 +101,7 @@ public class FinalTaskTest {
         Checker checker = new Checker();
         IAction action = new IAction() {
             @Override
-            public void execute(Object actingObject) throws ActionExecuteException, InvalidArgumentException {
+            public void execute(Object actingObject) throws ActionExecutionException, InvalidArgumentException {
                 checker.setChecked(true);
             }
         };
@@ -130,14 +130,14 @@ public class FinalTaskTest {
         Checker checker2 = new Checker();
         IAction action1 = new IAction() {
             @Override
-            public void execute(Object actingObject) throws ActionExecuteException, InvalidArgumentException {
+            public void execute(Object actingObject) throws ActionExecutionException, InvalidArgumentException {
                 checker1.setChecked(true);
-                throw new ActionExecuteException("something");
+                throw new ActionExecutionException("something");
             }
         };
         IAction action2 = new IAction() {
             @Override
-            public void execute(Object actingObject) throws ActionExecuteException, InvalidArgumentException {
+            public void execute(Object actingObject) throws ActionExecutionException, InvalidArgumentException {
                 checker2.setChecked(true);
             }
         };

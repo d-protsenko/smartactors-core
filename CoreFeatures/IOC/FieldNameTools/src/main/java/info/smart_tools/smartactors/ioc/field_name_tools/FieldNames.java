@@ -25,10 +25,25 @@ public final class FieldNames {
      * @throws ResolutionException if dependency resolution has been failed
      * @return instance of {@link IFieldName}
      */
+    @Deprecated
     public static IFieldName resolveByName(final String name)
             throws ResolutionException {
         if (iFieldNameKey == null) {
-            iFieldNameKey = Keys.resolveByName(IFieldName.class.getCanonicalName());
+            iFieldNameKey = Keys.getKeyByName(IFieldName.class.getCanonicalName());
+        }
+        return (IFieldName) IOC.resolve(iFieldNameKey, name);
+    }
+
+    /**
+     * Resolve instance of {@link IFieldName} by given name
+     * @param name name of instance of {@link IFieldName}
+     * @throws ResolutionException if dependency resolution has been failed
+     * @return instance of {@link IFieldName}
+     */
+    public static IFieldName getFieldNameByName(final String name)
+            throws ResolutionException {
+        if (iFieldNameKey == null) {
+            iFieldNameKey = Keys.getKeyByName(IFieldName.class.getCanonicalName());
         }
         return (IFieldName) IOC.resolve(iFieldNameKey, name);
     }

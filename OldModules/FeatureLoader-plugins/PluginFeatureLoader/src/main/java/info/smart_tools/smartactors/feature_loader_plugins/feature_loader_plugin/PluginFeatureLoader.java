@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.feature_loader_plugins.feature_loader_plugi
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.IBiAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionTwoArgs;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loader.feature_loader.FeatureLoader;
@@ -47,16 +47,16 @@ public class PluginFeatureLoader extends BootstrapPlugin {
     @After({"IOC", "configuration_manager", "config_sections:done", "IFieldNamePlugin", "filesystem_facade", "ConfigurationObject", "queue", "iobject"})
     public void registerFeatureLoader()
             throws ResolutionException, RegistrationException, InvalidArgumentException, ChangeValueException {
-        IOC.register(Keys.resolveByName(FeatureStatusImpl.class.getCanonicalName()), new CreateNewInstanceStrategy(args -> {
+        IOC.register(Keys.getKeyByName(FeatureStatusImpl.class.getCanonicalName()), new CreateNewInstanceStrategy(args -> {
             try {
-                return new FeatureStatusImpl((String) args[0], (IBiAction) args[1]);
+                return new FeatureStatusImpl((String) args[0], (IActionTwoArgs) args[1]);
             } catch (InvalidArgumentException e) {
                 throw new RuntimeException(e);
             }
         }));
-        IOC.register(Keys.resolveByName("plugin creator"), new SingletonStrategy(new PluginCreator()));
-        IOC.register(Keys.resolveByName("plugin loader visitor"), new SingletonStrategy(new PluginLoaderVisitor<String>()));
-        IOC.register(Keys.resolveByName("plugin loader"), new CreateNewInstanceStrategy(args -> {
+        IOC.register(Keys.getKeyByName("plugin creator"), new SingletonStrategy(new PluginCreator()));
+        IOC.register(Keys.getKeyByName("plugin loader visitor"), new SingletonStrategy(new PluginLoaderVisitor<String>()));
+        IOC.register(Keys.getKeyByName("plugin loader"), new CreateNewInstanceStrategy(args -> {
             try {
                 return new PluginLoader(
                         (ClassLoader) args[0], (IAction<Class>) args[1], (IPluginLoaderVisitor) args[2]);
@@ -65,15 +65,15 @@ public class PluginFeatureLoader extends BootstrapPlugin {
             }
         }));
 
-        IFieldName sizeFN = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "queueSize");
-        IObject sizeObj = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IFieldName sizeFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "queueSize");
+        IObject sizeObj = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
         sizeObj.setValue(sizeFN, 10);
-        IQueue queue = IOC.resolve(Keys.resolveByName(IQueue.class.getCanonicalName()), sizeObj);
-        IOC.register(Keys.resolveByName("feature group load completion task queue"),
+        IQueue queue = IOC.resolve(Keys.getKeyByName(IQueue.class.getCanonicalName()), sizeObj);
+        IOC.register(Keys.getKeyByName("feature group load completion task queue"),
                 new SingletonStrategy(queue));
 
         IFeatureLoader featureLoader = new FeatureLoader();
         GlobalFeatureLoader.set(featureLoader);
-        IOC.register(Keys.resolveByName("feature loader"), new SingletonStrategy(featureLoader));
+        IOC.register(Keys.getKeyByName("feature loader"), new SingletonStrategy(featureLoader));
     }
 }

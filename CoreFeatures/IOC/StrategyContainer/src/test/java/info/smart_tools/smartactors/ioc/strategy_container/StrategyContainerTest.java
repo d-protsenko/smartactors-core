@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc.strategy_container;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
 import org.junit.Test;
 
@@ -18,12 +18,12 @@ public class StrategyContainerTest {
     public void checkRegistrationResolutionDeletion()
             throws Exception {
         IStrategyContainer container = new StrategyContainer();
-        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+        IStrategy strategy = mock(IStrategy.class);
         Object key = new Object();
         container.register(key, strategy);
-        IResolveDependencyStrategy result = container.resolve(key);
+        IStrategy result = container.resolve(key);
         assertEquals(result, strategy);
-        container.remove(key);
+        container.unregister(key);
         result = container.resolve(key);
         assertNull(result);
         reset(strategy);

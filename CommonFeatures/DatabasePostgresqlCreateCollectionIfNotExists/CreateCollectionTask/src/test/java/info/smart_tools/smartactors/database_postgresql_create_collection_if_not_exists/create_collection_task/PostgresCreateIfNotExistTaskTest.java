@@ -69,7 +69,7 @@ public class PostgresCreateIfNotExistTaskTest {
         when(message.getCollectionName()).thenReturn(CollectionName.fromString("test"));
 
         IOC.register(
-                Keys.resolveByName(CreateIfNotExistsCollectionMessage.class.getCanonicalName()),
+                Keys.getKeyByName(CreateIfNotExistsCollectionMessage.class.getCanonicalName()),
                 new SingletonStrategy(message)
         );
     }

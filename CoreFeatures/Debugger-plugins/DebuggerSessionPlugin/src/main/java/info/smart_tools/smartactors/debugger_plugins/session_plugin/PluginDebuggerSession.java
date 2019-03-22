@@ -35,7 +35,7 @@ public class PluginDebuggerSession extends BootstrapPlugin {
     @After({"debugger:sequence", "debugger:breakpoint_storage"})
     public void registerSessionStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.resolveByName("debugger session"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.getKeyByName("debugger session"), new ApplyFunctionToArgumentsStrategy(args -> {
             String id = (String) args[0];
             Object addr = args[1];
 

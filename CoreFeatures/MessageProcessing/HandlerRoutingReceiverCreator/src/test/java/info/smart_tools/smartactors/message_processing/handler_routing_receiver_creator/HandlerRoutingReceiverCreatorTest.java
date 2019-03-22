@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.message_processing.handler_routing_receiver_creator;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -42,7 +42,7 @@ public class HandlerRoutingReceiverCreatorTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -58,7 +58,7 @@ public class HandlerRoutingReceiverCreatorTest {
     public void checkCreationAndExecution()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -71,7 +71,7 @@ public class HandlerRoutingReceiverCreatorTest {
         );
         IField field = mock(IField.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IField.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), IField.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             return field;
@@ -81,33 +81,33 @@ public class HandlerRoutingReceiverCreatorTest {
         IObject objectSection = mock(IObject.class);
         when(objectSection.getValue(new FieldName("name"))).thenReturn("actorID");
         when(objectSection.getValue(new FieldName("dependency"))).thenReturn("createSampleActorStrategy");
-        IResolveDependencyStrategy createSampleActorStrategy = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.resolveByName("createSampleActorStrategy"), createSampleActorStrategy);
+        IStrategy createSampleActorStrategy = mock(IStrategy.class);
+        IOC.register(Keys.getKeyByName("createSampleActorStrategy"), createSampleActorStrategy);
         ConstructorWrapperImpl wrapperImpl = new ConstructorWrapperImpl();
         CustomActor a = new CustomActor(wrapperImpl);
         when(createSampleActorStrategy.resolve(objectSection))
                 .thenReturn(a);
 
         // register wrapper generator
-        IResolveDependencyStrategy wgs = mock(IResolveDependencyStrategy.class);
+        IStrategy wgs = mock(IStrategy.class);
         IWrapperGenerator wg = mock(IWrapperGenerator.class);
-        IOC.register(Keys.resolveByName(IWrapperGenerator.class.getCanonicalName()), wgs);
+        IOC.register(Keys.getKeyByName(IWrapperGenerator.class.getCanonicalName()), wgs);
         when(wgs.resolve()).thenReturn(wg);
         MethodWrapper mw = new MethodWrapper();
         when(wg.generate(IMethodWrapper.class)).thenReturn(mw);
         // register receiver generator
-        IResolveDependencyStrategy rgs = mock(IResolveDependencyStrategy.class);
+        IStrategy rgs = mock(IStrategy.class);
         IReceiverGenerator rg = mock(IReceiverGenerator.class);
-        IOC.register(Keys.resolveByName(IReceiverGenerator.class.getCanonicalName()), rgs);
+        IOC.register(Keys.getKeyByName(IReceiverGenerator.class.getCanonicalName()), rgs);
         when(rgs.resolve()).thenReturn(rg);
         IMessageReceiver mr = mock(IMessageReceiver.class);
-        when(rg.generate(any(CustomActor.class), any(IResolveDependencyStrategy.class), any(String.class)))
+        when(rg.generate(any(CustomActor.class), any(IStrategy.class), any(String.class)))
                 .thenAnswer(new Answer<IMessageReceiver>() {
                     @Override
                     public IMessageReceiver answer(InvocationOnMock invocation) throws Throwable {
                         Object[] args = invocation.getArguments();
                         assertSame(args[0], a);
-                        assertEquals(((IResolveDependencyStrategy) args[1]).resolve().getClass(), MethodWrapper.class);
+                        assertEquals(((IStrategy) args[1]).resolve().getClass(), MethodWrapper.class);
                         assertEquals(args[2], "getSomeValue");
                         return mr;
                     }
@@ -136,7 +136,7 @@ public class HandlerRoutingReceiverCreatorTest {
         verify(createSampleActorStrategy, times(1)).resolve(objectSection);
         verify(rg, times(1)).generate(
                 any(CustomActor.class),
-                any(IResolveDependencyStrategy.class),
+                any(IStrategy.class),
                 any(String.class)
         );
         verify(objectSection, times(1)).getValue(new FieldName("name"));
@@ -147,7 +147,7 @@ public class HandlerRoutingReceiverCreatorTest {
     public void checkCreationExceptionOnWrongFieldNameStrategy()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -166,7 +166,7 @@ public class HandlerRoutingReceiverCreatorTest {
     public void checkMethodExceptionOnWrongArgs()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {

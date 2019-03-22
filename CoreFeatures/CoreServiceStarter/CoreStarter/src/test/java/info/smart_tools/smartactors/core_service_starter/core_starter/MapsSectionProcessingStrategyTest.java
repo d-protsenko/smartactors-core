@@ -60,9 +60,9 @@ public class MapsSectionProcessingStrategyTest {
         idFieldName = mock(IFieldName.class);
         chainStorageMock = mock(IChainStorage.class);
 
-        when(Keys.resolveByName(eq("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"))).thenReturn(fieldNameKey);
-        when(Keys.resolveByName(eq(IChainStorage.class.getCanonicalName()))).thenReturn(chainStorageKey);
-        when(Keys.resolveByName(eq("chain_id_from_map_name"))).thenReturn(chainIdKey);
+        when(Keys.getKeyByName(eq("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"))).thenReturn(fieldNameKey);
+        when(Keys.getKeyByName(eq(IChainStorage.class.getCanonicalName()))).thenReturn(chainStorageKey);
+        when(Keys.getKeyByName(eq("chain_id_from_map_name"))).thenReturn(chainIdKey);
 
         when(IOC.resolve(same(fieldNameKey), eq("maps"))).thenReturn(mapsFieldName);
         when(IOC.resolve(same(fieldNameKey), eq("id"))).thenReturn(idFieldName);

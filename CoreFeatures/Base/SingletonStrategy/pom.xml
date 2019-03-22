@@ -5,14 +5,14 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>base</artifactId>
-        <version>0.5.0</version>
+        <version>0.6.0</version>
     </parent>
     <artifactId>base.strategy.singleton-strategy</artifactId>
-    <version>0.5.0</version>
+    <version>0.6.0</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.interfaces.iresolve-dependency-strategy</artifactId>
+            <artifactId>base.interfaces.istrategy</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>

@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.testing_plugins.test_http_endpoint_and_envi
 
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.iasync_service.IAsyncService;
 import info.smart_tools.smartactors.endpoint.interfaces.ichannel_handler.IChannelHandler;
@@ -63,27 +63,27 @@ public class RegisterTestHttpEndpointAndEnvironment implements IPlugin {
                                     // Creates and registers test data source
                                     ISource<IObject, IObject> source = new IObjectDataSource();
                                     IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "test_data_source"),
+                                            IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "test_data_source"),
                                             new SingletonStrategy(source)
                                     );
 
                                     // Creates and register object with test responses
                                     List<Object> responses = new ArrayList<Object>();
                                     IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "test_responses"),
+                                            IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "test_responses"),
                                             new SingletonStrategy(responses)
                                     );
 
                                     // Creates and registers test channel handler
                                     IChannelHandler channelHandler = new TestChannelHandler(responses);
                                     IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), TestChannelHandler.class.getCanonicalName()),
+                                            IOC.resolve(IOC.getKeyForKeyByNameStrategy(), TestChannelHandler.class.getCanonicalName()),
                                             new SingletonStrategy(channelHandler)
                                     );
 
                                     // Creates and registers test http endpoint
                                     IEnvironmentHandler handler = IOC.resolve(
-                                            IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "test environment handler")
+                                            IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "test environment handler")
                                     );
                                     IAsyncService endpoint = new TestHttpEndpoint(
                                             source,
@@ -93,20 +93,20 @@ public class RegisterTestHttpEndpointAndEnvironment implements IPlugin {
                                             null
                                     );
                                     IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "test_http_endpoint"),
+                                            IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "test_http_endpoint"),
                                             new SingletonStrategy(endpoint)
                                     );
                                     endpoint.start();
                                 } catch (ScopeProviderException e) {
-                                    throw new ActionExecuteException("RegisterTestHttpEndpoint plugin can't load: current scope is undefined.", e);
+                                    throw new ActionExecutionException("RegisterTestHttpEndpoint plugin can't load: current scope is undefined.", e);
                                 } catch (ResolutionException e) {
-                                    throw new ActionExecuteException("RegisterTestHttpEndpoint plugin can't load: can't get keys for testing objects", e);
+                                    throw new ActionExecutionException("RegisterTestHttpEndpoint plugin can't load: can't get keys for testing objects", e);
                                 } catch (InvalidArgumentException e) {
-                                    throw new ActionExecuteException("RegisterTestHttpEndpoint plugin can't load: can't create strategy", e);
+                                    throw new ActionExecutionException("RegisterTestHttpEndpoint plugin can't load: can't create strategy", e);
                                 } catch (RegistrationException e) {
-                                    throw new ActionExecuteException("RegisterTestHttpEndpoint plugin can't load: can't register new strategy", e);
+                                    throw new ActionExecutionException("RegisterTestHttpEndpoint plugin can't load: can't register new strategy", e);
                                 } catch (InitializationException e) {
-                                    throw new ActionExecuteException("RegisterTestHttpEndpoint plugin can't load: can't create instance of TestHttpEndpoint", e);
+                                    throw new ActionExecutionException("RegisterTestHttpEndpoint plugin can't load: can't create instance of TestHttpEndpoint", e);
                                 }
                             }
                         );

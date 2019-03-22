@@ -27,7 +27,7 @@ public class InMemoryDBCreateCollectionTask implements IDatabaseTask {
      */
     public InMemoryDBCreateCollectionTask() throws TaskPrepareException {
         try {
-            collectionNameField = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collectionName");
+            collectionNameField = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collectionName");
         } catch (ResolutionException e) {
             throw new TaskPrepareException("Failed to resolve IFieldName", e);
         }
@@ -45,7 +45,7 @@ public class InMemoryDBCreateCollectionTask implements IDatabaseTask {
     @Override
     public void execute() throws TaskExecutionException {
         try {
-            IDatabase dataBase = IOC.resolve(Keys.resolveByName(InMemoryDatabase.class.getCanonicalName()));
+            IDatabase dataBase = IOC.resolve(Keys.getKeyByName(InMemoryDatabase.class.getCanonicalName()));
             dataBase.createCollection(collectionName);
         } catch (ResolutionException e) {
             throw new TaskExecutionException("Failed to resolve InMemoryDatabase", e);

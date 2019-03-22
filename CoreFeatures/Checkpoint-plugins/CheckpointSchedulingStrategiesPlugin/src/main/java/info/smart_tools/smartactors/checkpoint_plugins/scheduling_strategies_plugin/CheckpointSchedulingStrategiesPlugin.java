@@ -35,7 +35,7 @@ public class CheckpointSchedulingStrategiesPlugin extends BootstrapPlugin {
     @Before("checkpoint_actor")
     public void registerRegularRepeatStrategy()
             throws ResolutionException, InvalidArgumentException, RegistrationException {
-        IOC.register(Keys.resolveByName("checkpoint repeat strategy"),
+        IOC.register(Keys.getKeyByName("checkpoint repeat strategy"),
                 new SingletonStrategy(new CheckpointRegularRepeatStrategy()));
     }
 
@@ -50,7 +50,7 @@ public class CheckpointSchedulingStrategiesPlugin extends BootstrapPlugin {
     @Before("checkpoint_actor")
     public void registerFibonacciRepeatStrategy()
             throws ResolutionException, InvalidArgumentException, RegistrationException {
-        IOC.register(Keys.resolveByName("checkpoint fibonacci repeat strategy"),
+        IOC.register(Keys.getKeyByName("checkpoint fibonacci repeat strategy"),
                 new SingletonStrategy(new CheckpointFibonacciRepeatStrategy()));
     }
 }

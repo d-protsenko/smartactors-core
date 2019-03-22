@@ -20,6 +20,7 @@ import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.HashSet;
 
 import static org.junit.Assert.assertNotNull;
@@ -42,7 +43,7 @@ public class UnzipFeatureActorTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -54,7 +55,7 @@ public class UnzipFeatureActorTest {
         );
 
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
@@ -65,7 +66,7 @@ public class UnzipFeatureActorTest {
                         }
                 )
         );
-        IOC.register(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     if (args.length == 0) {
                         return new DSObject();
@@ -97,8 +98,8 @@ public class UnzipFeatureActorTest {
         when(feature.getName()).thenReturn("test-feature");
         when(feature.getDependencies()).thenReturn(null);
         when(feature.getGroupId()).thenReturn("com.groupId");
-        String fileName = "target/test-classes/test-feature-VERSION.zip";
-        String directory = "target/test-classes/test-feature-VERSION";
+        String fileName = "target"+File.separator+"test-classes"+File.separator+"test-feature-VERSION.zip";
+        String directory = "target"+File.separator+"test-classes"+File.separator+"test-feature-VERSION";
         when(feature.getLocation()).thenReturn(
                 new Path(fileName)
         );

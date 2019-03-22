@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.feature_management.feature_manager_actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.exception.FeatureManagementException;
@@ -47,15 +47,15 @@ public class FeatureManagerActorTest {
     private IQueue queue = mock(IQueue.class);
     private IReceiverChain chain = mock(IReceiverChain.class);
     private IChainStorage storage = mock(IChainStorage.class);
-    private IResolveDependencyStrategy getChainIDByNameStrategy = mock(IResolveDependencyStrategy.class);
-    private IResolveDependencyStrategy getSequence = mock(IResolveDependencyStrategy.class);
-    private IResolveDependencyStrategy getProcessor = mock(IResolveDependencyStrategy.class);
+    private IStrategy getChainIDByNameStrategy = mock(IStrategy.class);
+    private IStrategy getSequence = mock(IStrategy.class);
+    private IStrategy getProcessor = mock(IStrategy.class);
 
     private IQueue afterFeaturesCallbackQueue1 = mock(IQueue.class);
     private IQueue afterFeaturesCallbackQueue2 = mock(IQueue.class);
     private IQueue afterFeaturesCallbackQueue3 = mock(IQueue.class);
 
-    private IResolveDependencyStrategy afterFeaturesCallbackStrategy = mock(IResolveDependencyStrategy.class);
+    private IStrategy afterFeaturesCallbackStrategy = mock(IStrategy.class);
 
     @Before
     public void init()
@@ -66,7 +66,7 @@ public class FeatureManagerActorTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -78,7 +78,7 @@ public class FeatureManagerActorTest {
         );
 
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
@@ -89,7 +89,7 @@ public class FeatureManagerActorTest {
                         }
                 )
         );
-        IOC.register(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     if (args.length == 0) {
                         return new DSObject();
@@ -104,21 +104,21 @@ public class FeatureManagerActorTest {
                     }
                 }));
         IOC.register(
-                Keys.resolveByName("task_queue"), new SingletonStrategy(this.queue)
+                Keys.getKeyByName("task_queue"), new SingletonStrategy(this.queue)
         );
         IOC.register(
-                Keys.resolveByName("chain_id_from_map_name_and_message"), getChainIDByNameStrategy
+                Keys.getKeyByName("chain_id_from_map_name_and_message"), getChainIDByNameStrategy
         );
         IOC.register(
-                Keys.resolveByName(IChainStorage.class.getCanonicalName()), new SingletonStrategy(this.storage)
+                Keys.getKeyByName(IChainStorage.class.getCanonicalName()), new SingletonStrategy(this.storage)
         );
         IOC.register(
-                Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), this.getSequence
+                Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), this.getSequence
         );
         IOC.register(
-                Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), this.getProcessor
+                Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), this.getProcessor
         );
-        IOC.register(Keys.resolveByName(IQueue.class.getCanonicalName()), this.afterFeaturesCallbackStrategy);
+        IOC.register(Keys.getKeyByName(IQueue.class.getCanonicalName()), this.afterFeaturesCallbackStrategy);
     }
 
     @Test
@@ -152,9 +152,9 @@ public class FeatureManagerActorTest {
                 .thenReturn(features).thenReturn(features)
                 .thenReturn(features2).thenReturn(features2);
         when(wrapper.getMessageProcessor()).thenReturn(mp1).thenReturn(mp2).thenReturn(mp3);
-        IObject ctx1 = IOC.resolve(Keys.resolveByName(IObject.class.getName()));
-        IObject ctx2 = IOC.resolve(Keys.resolveByName(IObject.class.getName()));
-        IObject ctx3 = IOC.resolve(Keys.resolveByName(IObject.class.getName()));
+        IObject ctx1 = IOC.resolve(Keys.getKeyByName(IObject.class.getName()));
+        IObject ctx2 = IOC.resolve(Keys.getKeyByName(IObject.class.getName()));
+        IObject ctx3 = IOC.resolve(Keys.getKeyByName(IObject.class.getName()));
         when(mp1.getContext()).thenReturn(ctx1);
         when(mp2.getContext()).thenReturn(ctx2);
         when(mp3.getContext()).thenReturn(ctx3);

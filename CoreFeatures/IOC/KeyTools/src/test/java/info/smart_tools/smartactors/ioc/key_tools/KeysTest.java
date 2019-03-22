@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc.key_tools;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
@@ -23,7 +23,7 @@ public class KeysTest {
     public void checkGetKeyByName()
             throws Exception {
         IStrategyContainer strategyContainer = mock(IStrategyContainer.class);
-        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+        IStrategy strategy = mock(IStrategy.class);
         IKey key = mock(IKey.class);
         ScopeProvider.subscribeOnCreationNewScope(
                 scope -> {
@@ -39,7 +39,7 @@ public class KeysTest {
         ScopeProvider.setCurrentScope(scope);
         when(strategyContainer.resolve(any())).thenReturn(strategy);
         when(strategy.resolve("test")).thenReturn(key);
-        IKey result = Keys.resolveByName("test");
+        IKey result = Keys.getKeyByName("test");
         assertNotNull(result);
         assertEquals(result, key);
     }

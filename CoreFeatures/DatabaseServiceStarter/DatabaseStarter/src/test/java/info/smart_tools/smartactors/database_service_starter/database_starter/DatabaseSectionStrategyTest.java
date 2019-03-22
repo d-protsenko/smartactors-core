@@ -47,11 +47,11 @@ public class DatabaseSectionStrategyTest {
         IScope mainScope = ScopeProvider.getScope(keyOfMainScope);
         ScopeProvider.setCurrentScope(mainScope);
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
 
-        IKey iFieldNameKey = Keys.resolveByName(IFieldName.class.getCanonicalName());
+        IKey iFieldNameKey = Keys.getKeyByName(IFieldName.class.getCanonicalName());
         IOC.register(iFieldNameKey,
                 new CreateNewInstanceStrategy(
                         (args) -> {
@@ -65,7 +65,7 @@ public class DatabaseSectionStrategyTest {
                 )
         );
 
-        IOC.register(Keys.resolveByName("TestStrategy"),
+        IOC.register(Keys.getKeyByName("TestStrategy"),
                 new CreateNewInstanceStrategy(
                         (args) -> configMock
                 )
@@ -86,10 +86,10 @@ public class DatabaseSectionStrategyTest {
                 "     }");
         DatabaseSectionStrategy strategy = new DatabaseSectionStrategy();
         strategy.onLoadConfig(config);
-        assertSame(configMock, IOC.resolve(Keys.resolveByName("databaseKey")));
+        assertSame(configMock, IOC.resolve(Keys.getKeyByName("databaseKey")));
         strategy.onRevertConfig(config);
         try {
-            IOC.resolve(Keys.resolveByName("databaseKey"));
+            IOC.resolve(Keys.getKeyByName("databaseKey"));
             fail();
         } catch(ResolutionException e) {
         }

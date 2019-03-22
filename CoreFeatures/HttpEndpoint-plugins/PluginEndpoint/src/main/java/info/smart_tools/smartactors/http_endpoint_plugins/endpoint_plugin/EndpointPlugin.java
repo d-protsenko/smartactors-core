@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.http_endpoint_plugins.endpoint_plugin;
 
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_sender.IResponseSender;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
@@ -13,7 +13,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.ex
 import info.smart_tools.smartactors.http_endpoint.interfaces.icookies_extractor.ICookiesSetter;
 import info.smart_tools.smartactors.http_endpoint.interfaces.iheaders_extractor.IHeadersExtractor;
 import info.smart_tools.smartactors.http_endpoint.interfaces.iresponse_status_extractor.IResponseStatusExtractor;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -56,7 +55,7 @@ public class EndpointPlugin implements IPlugin {
                         ResolveByTypeAndNameStrategy responseStatusExtractorChooser = new ResolveByTypeAndNameStrategy();
                         try {
                             try {
-                                IOC.register(Keys.resolveByName("DeserializationStrategyChooser"),
+                                IOC.register(Keys.getKeyByName("DeserializationStrategyChooser"),
                                         new SingletonStrategy(
                                                 deserializationStrategyChooser
                                         )
@@ -64,129 +63,70 @@ public class EndpointPlugin implements IPlugin {
                             } catch (InvalidArgumentException e) {
                                 throw new RuntimeException(e);
                             }
-                            IOC.register(Keys.resolveByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
+                            IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
                                     deserializationStrategyChooser
                             );
 
-                            IOC.register(Keys.resolveByName("ResponseSenderChooser"),
+                            IOC.register(Keys.getKeyByName("ResponseSenderChooser"),
                                     new SingletonStrategy(
                                             responseSenderChooser
                                     )
                             );
-                            IOC.register(Keys.resolveByName(IResponseSender.class.getCanonicalName()),
+                            IOC.register(Keys.getKeyByName(IResponseSender.class.getCanonicalName()),
                                     responseSenderChooser
                             );
 
 
-                            IOC.register(Keys.resolveByName("CookiesSetterChooser"),
+                            IOC.register(Keys.getKeyByName("CookiesSetterChooser"),
                                     new SingletonStrategy(
                                             cookiesSetterChooser
                                     )
                             );
-                            IOC.register(Keys.resolveByName(ICookiesSetter.class.getCanonicalName()),
+                            IOC.register(Keys.getKeyByName(ICookiesSetter.class.getCanonicalName()),
                                     cookiesSetterChooser
                             );
 
-                            IOC.register(Keys.resolveByName("HeadersExtractorChooser"),
+                            IOC.register(Keys.getKeyByName("HeadersExtractorChooser"),
                                     new SingletonStrategy(
                                             headersExtractorChooser
                                     )
                             );
-                            IOC.register(Keys.resolveByName(IHeadersExtractor.class.getCanonicalName()),
+                            IOC.register(Keys.getKeyByName(IHeadersExtractor.class.getCanonicalName()),
                                     headersExtractorChooser
                             );
 
-                            IOC.register(Keys.resolveByName("ResponseStatusSetter"),
+                            IOC.register(Keys.getKeyByName("ResponseStatusSetter"),
                                     new SingletonStrategy(
                                             responseStatusExtractorChooser
                                     )
                             );
-                            IOC.register(Keys.resolveByName(IResponseStatusExtractor.class.getCanonicalName()),
+                            IOC.register(Keys.getKeyByName(IResponseStatusExtractor.class.getCanonicalName()),
                                     responseStatusExtractorChooser
                             );
 
 
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("\"EndpointPlugin\" plugin can't load: can't register new strategy", e);
+                            throw new ActionExecutionException("\"EndpointPlugin\" plugin can't load: can't register new strategy", e);
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("\"EndpointPlugin\" plugin can't load: can't get key", e);
+                            throw new ActionExecutionException("\"EndpointPlugin\" plugin can't load: can't get key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("\"EndpointPlugin\" plugin can't load: can't create strategy", e);
+                            throw new ActionExecutionException("\"EndpointPlugin\" plugin can't load: can't create strategy", e);
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "EndpointPlugin";
-                        String keyName = "";
-
-                        try {
-                            keyName = IResponseStatusExtractor.class.getCanonicalName();
-                            IOC.remove(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "ResponseStatusSetter";
-                            IOC.remove(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = IHeadersExtractor.class.getCanonicalName();
-                            IOC.remove(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "HeadersExtractorChooser";
-                            IOC.remove(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = ICookiesSetter.class.getCanonicalName();
-                            IOC.remove(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "CookiesSetterChooser";
-                            IOC.remove(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = IResponseSender.class.getCanonicalName();
-                            IOC.remove(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "ResponseSenderChooser";
-                            IOC.remove(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy";
-                            IOC.remove(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "DeserializationStrategyChooser";
-                            IOC.remove(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] keyNames = {
+                                IResponseStatusExtractor.class.getCanonicalName(),
+                                "ResponseStatusSetter",
+                                IHeadersExtractor.class.getCanonicalName(),
+                                "HeadersExtractorChooser",
+                                ICookiesSetter.class.getCanonicalName(),
+                                "CookiesSetterChooser",
+                                IResponseSender.class.getCanonicalName(),
+                                "ResponseSenderChooser",
+                                "info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy",
+                                "DeserializationStrategyChooser"
+                        };
+                        Keys.unregisterByNames(keyNames);
                     });
 
             bootstrap.add(item);

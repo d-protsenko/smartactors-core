@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.scheduler.actor.impl;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -43,7 +43,7 @@ public class EntryStorageRefresherTest extends PluginsLoadingTestBase {
     private ITimerTask timerTaskMock;
     private EntryStorage storageMock;
     private IRemoteEntryStorage remoteStorageMock;
-    private IResolveDependencyStrategy restoreEntryStrategy;
+    private IStrategy restoreEntryStrategy;
     private ArgumentCaptor<ITask> taskArgumentCaptor;
     private ArgumentCaptor<Long> timeArgumentCaptor;
     private ISchedulerEntryFilter filterMock;
@@ -68,7 +68,7 @@ public class EntryStorageRefresherTest extends PluginsLoadingTestBase {
         timerTaskMock = mock(ITimerTask.class);
         storageMock = mock(EntryStorage.class);
         remoteStorageMock = mock(IRemoteEntryStorage.class);
-        restoreEntryStrategy = mock(IResolveDependencyStrategy.class);
+        restoreEntryStrategy = mock(IStrategy.class);
         filterMock = mock(ISchedulerEntryFilter.class);
 
         when(filterMock.testRestore(any())).thenReturn(true);
@@ -84,14 +84,14 @@ public class EntryStorageRefresherTest extends PluginsLoadingTestBase {
 
         for (int i = 0; i < entries.length; i++) {
             entries[i] = mock(ISchedulerEntry.class);
-            states[i] = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+            states[i] = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                     String.format("{'entryId':'entry-%010d'}".replace('\'', '"'), i));
         }
 
-        IOC.register(Keys.resolveByName("timer"), new SingletonStrategy(timerMock));
-        IOC.register(Keys.resolveByName("time"), new SingletonStrategy(timeMock));
-        IOC.register(Keys.resolveByName("task_queue"), new SingletonStrategy(taskQueueMock));
-        IOC.register(Keys.resolveByName("restore scheduler entry"), restoreEntryStrategy);
+        IOC.register(Keys.getKeyByName("timer"), new SingletonStrategy(timerMock));
+        IOC.register(Keys.getKeyByName("time"), new SingletonStrategy(timeMock));
+        IOC.register(Keys.getKeyByName("task_queue"), new SingletonStrategy(taskQueueMock));
+        IOC.register(Keys.getKeyByName("restore scheduler entry"), restoreEntryStrategy);
     }
 
     @Test(expected = InvalidArgumentException.class)

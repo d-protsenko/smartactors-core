@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.statistics.sensors.scheduled_query_sensor;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 public class QuerySensorCreationStrategyTest extends PluginsLoadingTestBase {
     private Object entryStorage = new Object();
     private ISchedulerEntry entryMock;
-    private IResolveDependencyStrategy newEntryStrategyMock;
+    private IStrategy newEntryStrategyMock;
 
     @Override
     protected void loadPlugins() throws Exception {
@@ -40,22 +40,22 @@ public class QuerySensorCreationStrategyTest extends PluginsLoadingTestBase {
 
     @Override
     protected void registerMocks() throws Exception {
-        IOC.register(Keys.resolveByName("query sensors scheduler storage"), new SingletonStrategy(entryStorage));
+        IOC.register(Keys.getKeyByName("query sensors scheduler storage"), new SingletonStrategy(entryStorage));
 
-        newEntryStrategyMock = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.resolveByName("new scheduler entry"), newEntryStrategyMock);
+        newEntryStrategyMock = mock(IStrategy.class);
+        IOC.register(Keys.getKeyByName("new scheduler entry"), newEntryStrategyMock);
     }
 
     @Test
     public void Should_createSchedulerEntryAndSensorHandle()
             throws Exception {
-        IObject conf = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject conf = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
         when(newEntryStrategyMock.resolve(same(conf), same(entryStorage))).thenAnswer(invocation -> {
             assertEquals("stat_chain",
-                    conf.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "statisticsChain")));
+                    conf.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "statisticsChain")));
             assertEquals("query sensor scheduler action",
-                    conf.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "action")));
+                    conf.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "action")));
             return entryMock;
         });
 

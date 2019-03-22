@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.message_bus_service_starter.message_bus_sta
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
@@ -72,11 +72,11 @@ public class MessageBusSectionProcessingStrategyTest {
         IScope mainScope = ScopeProvider.getScope(keyOfMainScope);
         ScopeProvider.setCurrentScope(mainScope);
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
 
-        IKey iFieldNameKey = Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey iFieldNameKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
 
         IOC.register(iFieldNameKey,
                 new CreateNewInstanceStrategy(
@@ -91,44 +91,44 @@ public class MessageBusSectionProcessingStrategyTest {
                 )
         );
 
-        IKey chainIdFromMapNameKey = Keys.resolveByName("chain_id_from_map_name_and_message");
+        IKey chainIdFromMapNameKey = Keys.getKeyByName("chain_id_from_map_name_and_message");
         IOC.register(chainIdFromMapNameKey,
                 new SingletonStrategy(mapId));
 
-        IKey taskQueueKey = Keys.resolveByName("task_queue");
+        IKey taskQueueKey = Keys.getKeyByName("task_queue");
         IOC.register(taskQueueKey,
                 new SingletonStrategy(taskQueue));
 
-        IKey chainStorageKey = Keys.resolveByName(IChainStorage.class.getCanonicalName());
+        IKey chainStorageKey = Keys.getKeyByName(IChainStorage.class.getCanonicalName());
         IOC.register(chainStorageKey,
                 new SingletonStrategy(chainStorage));
 
         responseAction = mock(IAction.class);
-        IOC.register(Keys.resolveByName("send response action"), new SingletonStrategy(responseAction));
+        IOC.register(Keys.getKeyByName("send response action"), new SingletonStrategy(responseAction));
 
         nullResponseStrategy = mock(IResponseStrategy.class);
         mbResponseStrategy = mock(IResponseStrategy.class);
 
-        IOC.register(Keys.resolveByName("null response strategy"), new SingletonStrategy(nullResponseStrategy));
-        IOC.register(Keys.resolveByName("message bus response strategy"), new SingletonStrategy(mbResponseStrategy));
+        IOC.register(Keys.getKeyByName("null response strategy"), new SingletonStrategy(nullResponseStrategy));
+        IOC.register(Keys.getKeyByName("message bus response strategy"), new SingletonStrategy(mbResponseStrategy));
     }
 
     @Test
     public void testLoadingAndRevertingConfig()
             throws Exception {
         IObject message = mock(IObject.class);
-        IResolveDependencyStrategy sequenceStrategy = mock(IResolveDependencyStrategy.class);
+        IStrategy sequenceStrategy = mock(IStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                 sequenceStrategy
         );
-        IResolveDependencyStrategy messageProcessorStrategy = mock(IResolveDependencyStrategy.class);
+        IStrategy messageProcessorStrategy = mock(IStrategy.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                 messageProcessorStrategy
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             return new DSObject();

@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.feature_loading_system.filesystem_tracker;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPathFilter;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ifilesystem_tracker.IFilesystemTracker;
@@ -37,9 +37,9 @@ public class FilesystemTracker implements IFilesystemTracker {
      */
     private class FileCreationHandler implements IAction<IPath> {
         @Override
-        public void execute(final IPath file) throws ActionExecuteException {
+        public void execute(final IPath file) throws ActionExecutionException {
             synchronized (knownFilesLock) {
-                if (!filter.accept(file)) {
+                if (!filter.checkPath(file)) {
                     return;
                 }
 
@@ -157,7 +157,7 @@ public class FilesystemTracker implements IFilesystemTracker {
         for (IAction<Throwable> errorHandler : errorHandlers) {
             try {
                 errorHandler.execute(error);
-            } catch (ActionExecuteException | InvalidArgumentException ignore) {
+            } catch (ActionExecutionException | InvalidArgumentException ignore) {
             }
         }
     }

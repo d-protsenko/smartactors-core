@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.http_endpoint.http_request_maker;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.endpoint.irequest_maker.IRequestMaker;
 import info.smart_tools.smartactors.endpoint.irequest_maker.exception.RequestMakerException;
@@ -74,11 +74,11 @@ public class HttpRequestMakerTest {
         ScopeProvider.setCurrentScope(mainScope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
 
-        IKey fieldNameKey = Keys.resolveByName(IFieldName.class.getCanonicalName());
+        IKey fieldNameKey = Keys.getKeyByName(IFieldName.class.getCanonicalName());
         IOC.register(
                 fieldNameKey,
                 new ApplyFunctionToArgumentsStrategy((args) ->
@@ -103,11 +103,11 @@ public class HttpRequestMakerTest {
         MessageToBytesMapper mapper = mock(MessageToBytesMapper.class);
         when(mapper.serialize(eq(content))).thenReturn(contentBody.getBytes());
 
-        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+        IStrategy strategy = mock(IStrategy.class);
         when(strategy.resolve()).thenReturn(mapper);
 
         IOC.register(
-                Keys.resolveByName(MessageToBytesMapper.class.getCanonicalName()),
+                Keys.getKeyByName(MessageToBytesMapper.class.getCanonicalName()),
                 strategy
         );
     }

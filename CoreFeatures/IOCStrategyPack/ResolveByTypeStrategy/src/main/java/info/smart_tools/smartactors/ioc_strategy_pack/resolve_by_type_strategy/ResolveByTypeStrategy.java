@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_by_type_strategy;
 
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.IStrategyRegistration;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.exception.StrategyRegistrationException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,12 +16,12 @@ import java.util.concurrent.ConcurrentMap;
  *
  */
 @Deprecated
-public class ResolveByTypeStrategy implements IResolveDependencyStrategy, IAdditionDependencyStrategy {
+public class ResolveByTypeStrategy implements IStrategy, IStrategyRegistration {
     /**
      * Specific strategies for resolve
      */
-    private ConcurrentMap<Class, IResolveDependencyStrategy> resolveStrategies;
-    private ConcurrentMap<Class, IResolveDependencyStrategy> cacheStrategiesMap;
+    private ConcurrentMap<Class, IStrategy> resolveStrategies;
+    private ConcurrentMap<Class, IStrategy> cacheStrategiesMap;
 
 
     /**
@@ -38,7 +38,7 @@ public class ResolveByTypeStrategy implements IResolveDependencyStrategy, IAddit
      * @param strategy the strategy for specific output type
      */
     @Override
-    public void register(final Object key, final IResolveDependencyStrategy strategy) {
+    public void register(final Object key, final IStrategy strategy) {
         cacheStrategiesMap.remove((Class) key);
         resolveStrategies.put((Class) key, strategy);
     }
@@ -48,16 +48,16 @@ public class ResolveByTypeStrategy implements IResolveDependencyStrategy, IAddit
      * @param key the key for output type
      */
     @Override
-    public void remove(final Object key) throws AdditionDependencyStrategyException {
-        resolveStrategies.remove(key);
+    public IStrategy unregister(final Object key) throws StrategyRegistrationException {
+        return resolveStrategies.remove(key);
     }
 
     @Override
-    public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
+    public <T> T resolve(final Object... args) throws StrategyException {
         try {
-            IResolveDependencyStrategy strategy = cacheStrategiesMap.get(args[0].getClass());
+            IStrategy strategy = cacheStrategiesMap.get(args[0].getClass());
             if (strategy == null) {
-                for (Map.Entry<Class, IResolveDependencyStrategy> entry : resolveStrategies.entrySet()) {
+                for (Map.Entry<Class, IStrategy> entry : resolveStrategies.entrySet()) {
                     if (entry.getKey().isInstance(args[0])) {
                         strategy = entry.getValue();
                         cacheStrategiesMap.put(args[0].getClass(), strategy);
@@ -69,7 +69,7 @@ public class ResolveByTypeStrategy implements IResolveDependencyStrategy, IAddit
             Object result = strategy.resolve(args[0]);
             return (T) result;
         } catch (Exception e) {
-            throw new ResolveDependencyStrategyException("Object resolution failed.", e);
+            throw new StrategyException("Object resolution failed.", e);
         }
     }
 }

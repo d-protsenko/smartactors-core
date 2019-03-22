@@ -3,9 +3,9 @@ package info.smart_tools.smartactors.plugin.sample_actor;
 import info.smart_tools.smartactors.actors.SampleDBActor;
 import info.smart_tools.smartactors.actors.exception.SampleDBException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrapper.ConnectionOptions;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -47,9 +47,9 @@ public class SampleDBActorPlugin implements IPlugin {
             item
                 .process(() -> {
                 try {
-                    IOC.register(Keys.resolveByName("PostgresConnectionOptions"), new IResolveDependencyStrategy() {
+                    IOC.register(Keys.getKeyByName("PostgresConnectionOptions"), new IStrategy() {
                         @Override
-                        public ConnectionOptions resolve(Object... args) throws ResolveDependencyStrategyException {
+                        public ConnectionOptions resolve(Object... args) throws StrategyException {
                             Properties connectionProperties = new Properties();
                             try {
                                 connectionProperties.load(new FileReader("db_connection.properties"));
@@ -84,22 +84,22 @@ public class SampleDBActorPlugin implements IPlugin {
                                     }
                                 };
                             } catch (IOException e) {
-                                throw new ResolveDependencyStrategyException("Cannot read db_connection.properties", e);
+                                throw new StrategyException("Cannot read db_connection.properties", e);
                             }
                         }
                     });
-                    IOC.register(Keys.resolveByName("SampleDBActor"), new IResolveDependencyStrategy() {
+                    IOC.register(Keys.getKeyByName("SampleDBActor"), new IStrategy() {
                         @Override
-                        public SampleDBActor resolve(Object... args) throws ResolveDependencyStrategyException {
+                        public SampleDBActor resolve(Object... args) throws StrategyException {
                             try {
                                 return new SampleDBActor();
                             } catch (SampleDBException e) {
-                                throw new ResolveDependencyStrategyException(e);
+                                throw new StrategyException(e);
                             }
                         }
                     });
                 } catch (ResolutionException | RegistrationException e) {
-                    throw new ActionExecuteException(e);
+                    throw new ActionExecutionException(e);
                 }
             });
             bootstrap.add(item);

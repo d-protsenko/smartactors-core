@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.async_operations_plugins.check_validity_async_operation_actor_plugin;
 
 import info.smart_tools.smartactors.async_operations.check_validity_async_operation.CheckValidityAsyncOperationActor;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -36,8 +36,8 @@ public class CheckValidityAsyncOperationPluginTest {
 
         IKey key = Mockito.mock(IKey.class);
         operationKey = Mockito.mock(IKey.class);
-        when(IOC.getKeyForKeyByNameResolutionStrategy()).thenReturn(key);
-        PowerMockito.when(Keys.resolveByName(CheckValidityAsyncOperationActor.class.getCanonicalName())).thenReturn(operationKey);
+        when(IOC.getKeyForKeyByNameStrategy()).thenReturn(key);
+        PowerMockito.when(Keys.getKeyByName(CheckValidityAsyncOperationActor.class.getCanonicalName())).thenReturn(operationKey);
 
         bootstrap = Mockito.mock(IBootstrap.class);
         plugin = new CheckValidityAsyncOperationPlugin(bootstrap);
@@ -57,7 +57,7 @@ public class CheckValidityAsyncOperationPluginTest {
 
         PowerMockito.verifyNew(BootstrapItem.class).withArguments("CreateCheckValidityAsyncOperationActor");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         ArgumentCaptor<ApplyFunctionToArgumentsStrategy> createNewInstanceStrategyArgumentCaptor =

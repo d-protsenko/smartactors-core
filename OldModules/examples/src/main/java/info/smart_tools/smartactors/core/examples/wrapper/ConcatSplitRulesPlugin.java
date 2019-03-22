@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.core.examples.wrapper;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
@@ -56,11 +56,11 @@ public class ConcatSplitRulesPlugin implements IPlugin {
 
     private void registerConcatRule() throws ResolutionException, RegistrationException {
         //call IOC.resolve for put "concat_strategy" into cache of ResolveByNameDependency strategy
-        IKey key = Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName());
+        IKey key = Keys.getKeyByName(IStrategy.class.getCanonicalName());
         String name = "concat_strategy";
-        IResolveDependencyStrategy strategy = new IResolveDependencyStrategy() {
+        IStrategy strategy = new IStrategy() {
             @Override
-            public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
+            public <T> T resolve(final Object... args) throws StrategyException {
                 String result = Arrays.stream(args).map(String::valueOf).collect(Collectors.joining());
                 return (T) result;
             }
@@ -70,11 +70,11 @@ public class ConcatSplitRulesPlugin implements IPlugin {
 
     private void registerSplitRule() throws ResolutionException, RegistrationException {
         //call IOC.resolve for put "concat_strategy" into cache of ResolveByNameDependency strategy
-        IKey key = Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName());
+        IKey key = Keys.getKeyByName(IStrategy.class.getCanonicalName());
         String name = "split_strategy";
-        IResolveDependencyStrategy strategy = new IResolveDependencyStrategy() {
+        IStrategy strategy = new IStrategy() {
             @Override
-            public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
+            public <T> T resolve(final Object... args) throws StrategyException {
                 String value = (String) args[0];
                 String delimiters = (String) args[1];
                 List<String> result = new ArrayList<>();

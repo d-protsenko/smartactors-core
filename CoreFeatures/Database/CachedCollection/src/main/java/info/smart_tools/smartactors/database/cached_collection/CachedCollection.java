@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.database.cached_collection;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
 import info.smart_tools.smartactors.base.pool_guard.IPoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
@@ -58,15 +58,15 @@ public class CachedCollection implements ICachedCollection {
     public CachedCollection(final IObject config) throws InvalidArgumentException {
         try {
             this.map = new ConcurrentHashMap<>();
-            this.collectionNameField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "collectionName");
-            IField connectionPoolField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "connectionPool");
-            this.keyNameField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "keyName");
-            this.isActiveField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "isActive");
+            this.collectionNameField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
+            IField connectionPoolField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "connectionPool");
+            this.keyNameField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "keyName");
+            this.isActiveField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "isActive");
             this.collectionName = collectionNameField.in(config);
             this.connectionPool = connectionPoolField.in(config);
             this.keyName = keyNameField.in(config);
-            this.specificKeyNameField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), keyName);
-            this.idField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), String.format("%sID", collectionName));
+            this.specificKeyNameField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), keyName);
+            this.idField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), String.format("%sID", collectionName));
         } catch (ResolutionException | ReadValueException e) {
             throw new InvalidArgumentException("Can't create cached collection.", e);
         }
@@ -93,7 +93,7 @@ public class CachedCollection implements ICachedCollection {
             if (items.isEmpty()) {
                 try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
                     IDatabaseTask getItemTask = IOC.resolve(
-                            Keys.resolveByName("db.cached_collection.get_item"),
+                            Keys.getKeyByName("db.cached_collection.get_item"),
                             poolGuard.getObject(),
                             collectionName,
                             keyName,
@@ -102,7 +102,7 @@ public class CachedCollection implements ICachedCollection {
                                 try {
                                     items.addAll(Arrays.asList(foundDocs));
                                 } catch (Exception e) {
-                                    throw new ActionExecuteException(e);
+                                    throw new ActionExecutionException(e);
                                 }
                             }
                     );
@@ -137,7 +137,7 @@ public class CachedCollection implements ICachedCollection {
         try {
             try (IPoolGuard poolGuard = new PoolGuard(connectionPool)) {
                 IDatabaseTask deleteTask = IOC.resolve(
-                    Keys.resolveByName("db.cached_collection.delete"),
+                    Keys.getKeyByName("db.cached_collection.delete"),
                     poolGuard.getObject(),
                     collectionName,
                     message
@@ -184,7 +184,7 @@ public class CachedCollection implements ICachedCollection {
                 Boolean isActive = isActiveField.in(message);
                 isActiveField.out(message, true);
                 IDatabaseTask upsertTask = IOC.resolve(
-                    Keys.resolveByName("db.cached_collection.upsert"),
+                    Keys.getKeyByName("db.cached_collection.upsert"),
                     poolGuard.getObject(),
                     collectionName,
                     message
