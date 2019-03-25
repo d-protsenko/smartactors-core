@@ -93,7 +93,7 @@ class ThreadImpl implements Runnable {
             throw new TaskExecutionException("Another task is being executed.");
         }
 
-        if (!thread.isAlive()) {
+        if (!thread.isAlive() || thread.isInterrupted()) {
             throw new TaskExecutionException("Thread is dead.");
         }
 

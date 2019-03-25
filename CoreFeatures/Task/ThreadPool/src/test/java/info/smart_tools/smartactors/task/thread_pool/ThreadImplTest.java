@@ -8,7 +8,6 @@ import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutio
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
@@ -56,32 +55,25 @@ public class ThreadImplTest {
     @Test(expected = TaskExecutionException.class)
     public void Should_throwWhenAnotherTaskIsBeingExecuted()
             throws Exception {
-        Object mutex = new Object();
-        ITask firstTask = () -> {
+        thread.execute(() -> {
             try {
-                synchronized (mutex) {
-                    mutex.wait();
-                }
+                //ToDo: Need to exclude Thread.sleep from tests
+                Thread.sleep(200);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                thread.interrupt();
             }
-        };
-        ITask secondTask = mutex::notify;
-        thread.execute(firstTask);
-        thread.execute(secondTask);
-        fail();
+        });
+
+        thread.execute(mock(ITask.class));
     }
 
     @Test(expected = TaskExecutionException.class)
     public void Should_throwWhenThreadIsNotAlive()
             throws Exception {
         ITask taskMock = mock(ITask.class);
-
         thread.interrupt();
-        Thread.sleep(100);
         thread.execute(taskMock);
-
-        verify(taskMock, timeout(100).times(0)).execute();
+        fail();
     }
 
     @Test
@@ -94,9 +86,9 @@ public class ThreadImplTest {
         thread.execute(taskMock1);
         verify(taskMock1, timeout(100)).execute();
 
-        Thread.sleep(100);
+        //ToDo: Need to exclude Thread.sleep from tests
+        Thread.sleep(200);
 
         thread.execute(taskMock2);
-        verify(taskMock2, timeout(100)).execute();
-    }
+        verify(taskMock2, timeout(100)).execute();    }
 }
