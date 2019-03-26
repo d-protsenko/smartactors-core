@@ -26,4 +26,12 @@ public interface SetParamsToLoadFromFileWrapper {
      */
     String getFeatureLocation()
             throws ReadValueException;
+
+    /**
+     *
+     * @return
+     * @throws ReadValueException
+     */
+    String getFeatureDestinationPath()
+            throws ReadValueException;
 }
