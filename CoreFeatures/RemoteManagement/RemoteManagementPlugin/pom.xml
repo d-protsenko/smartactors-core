@@ -5,10 +5,10 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>remote-management</artifactId>
-        <version>0.6.0</version>
+        <version>0.6.1</version>
     </parent>
     <artifactId>remote-management.remote-management-plugin</artifactId>
-    <version>0.6.0</version>
+    <version>0.6.1</version>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
