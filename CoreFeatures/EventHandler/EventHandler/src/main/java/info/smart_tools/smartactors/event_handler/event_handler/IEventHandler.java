@@ -6,5 +6,5 @@ public interface IEventHandler {
 
     void handle(IEvent event) throws EventHandlerException;
 
-    String getName();
+    String getEventHandlerKey();
 }

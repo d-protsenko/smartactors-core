@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class PrintToConsoleEventHandler implements IEventHandler, IExtendedEventHandler {
 
-    private String name;
+    private String eventHandlerKey;
     private Map<String, IAction<IEvent>> executors = new HashMap<String, IAction<IEvent>>() {{
         put(
                 Exception.class.getCanonicalName(), (event) -> {
@@ -18,8 +18,8 @@ public class PrintToConsoleEventHandler implements IEventHandler, IExtendedEvent
         );
     }};
 
-    public PrintToConsoleEventHandler(final String name) {
-        this.name = name;
+    public PrintToConsoleEventHandler(final String eventHandlerKey) {
+        this.eventHandlerKey = eventHandlerKey;
     }
 
     @Override
@@ -42,8 +42,9 @@ public class PrintToConsoleEventHandler implements IEventHandler, IExtendedEvent
     }
 
     @Override
-    public String getName() {
-        return this.name;
+    public String getEventHandlerKey() {
+
+        return this.eventHandlerKey;
     }
 
     @Override

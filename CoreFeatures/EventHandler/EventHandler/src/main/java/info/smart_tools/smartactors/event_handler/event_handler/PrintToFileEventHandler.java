@@ -15,7 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class PrintToFileEventHandler implements IEventHandler, IExtendedEventHandler {
 
-    private String name;
+    private String eventHandlerKey;
     private Queue<IEvent> queue = new ConcurrentLinkedQueue<>();
     private ReentrantLock writeLock = new ReentrantLock();
     private static final String FILENAME = "server.log";
@@ -28,8 +28,8 @@ public class PrintToFileEventHandler implements IEventHandler, IExtendedEventHan
         );
     }};
 
-    public PrintToFileEventHandler(final String name) {
-        this.name = name;
+    public PrintToFileEventHandler(final String eventHandlerKey) {
+        this.eventHandlerKey = eventHandlerKey;
     }
 
     @Override
@@ -52,8 +52,9 @@ public class PrintToFileEventHandler implements IEventHandler, IExtendedEventHan
     }
 
     @Override
-    public String getName() {
-        return this.name;
+    public String getEventHandlerKey() {
+
+        return this.eventHandlerKey;
     }
 
     @Override
