@@ -5,6 +5,13 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * The default implementation of {@link EventHandlerContainer} which store instances of {@link IEventHandler} in the {@link LinkedList}.
+ * Also, this container implements a sequential call of registered instances of {@link IEventHandler} from latest to early.
+ * The sequential call will be stopped after the first successful execution of the next handler.
+ * This container expanded by interface {@link IExtendedEventHandlerContainer} that provides to add custom implementations of {@link IEventHandler}
+ * and remove handler by its key.
+ */
 public class EventHandlerContainer implements IEventHandlerContainer, IExtendedEventHandlerContainer {
 
     private LinkedList<IEventHandler> handlers = new LinkedList<IEventHandler>(

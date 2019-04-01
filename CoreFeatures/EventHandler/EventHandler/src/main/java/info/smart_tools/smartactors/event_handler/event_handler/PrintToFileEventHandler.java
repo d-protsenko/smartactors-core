@@ -13,6 +13,9 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Implementation of {@link IEventHandler} which output data of {@link IEvent} to the file.
+ */
 public class PrintToFileEventHandler implements IEventHandler, IExtendedEventHandler {
 
     private String eventHandlerKey;
@@ -28,6 +31,10 @@ public class PrintToFileEventHandler implements IEventHandler, IExtendedEventHan
         );
     }};
 
+    /**
+     * The constructor
+     * @param eventHandlerKey the key of created instance of {@link PrintToConsoleEventHandler}
+     */
     public PrintToFileEventHandler(final String eventHandlerKey) {
         this.eventHandlerKey = eventHandlerKey;
     }
@@ -58,20 +65,20 @@ public class PrintToFileEventHandler implements IEventHandler, IExtendedEventHan
     }
 
     @Override
-    public void addExecutor(final Object key, final Object executor)
+    public void addExecutor(final Object eventType, final Object executor)
             throws ExtendedEventHandlerException {
-        String castedKey = castKey(key);
+        String castedEventType = castEventType(eventType);
         IActionTwoArgs<IEvent, PrintWriter> castedExecutor = castExecutor(executor);
 
-        executors.put(castedKey, castedExecutor);
+        executors.put(castedEventType, castedExecutor);
     }
 
     @Override
-    public Object removeExecutor(final Object key)
+    public Object removeExecutor(final Object eventType)
             throws ExtendedEventHandlerException {
-        String castedKey = castKey(key);
+        String castedEventType = castEventType(eventType);
 
-        return executors.remove(castedKey);
+        return executors.remove(castedEventType);
     }
 
     private void writeToFile()
@@ -95,12 +102,12 @@ public class PrintToFileEventHandler implements IEventHandler, IExtendedEventHan
         }
     }
 
-    private String castKey(final Object key)
+    private String castEventType(final Object eventType)
             throws ExtendedEventHandlerException {
         try {
-            return  (String) key;
+            return  (String) eventType;
         } catch (Exception e) {
-            throw new ExtendedEventHandlerException("Could not cast key to String.");
+            throw new ExtendedEventHandlerException("Could not cast event type to String.");
         }
     }
 

@@ -7,6 +7,9 @@ import info.smart_tools.smartactors.event_handler.event_handler.exception.Extend
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Implementation of {@link IEventHandler} which output data of {@link IEvent} to system console.
+ */
 public class PrintToConsoleEventHandler implements IEventHandler, IExtendedEventHandler {
 
     private String eventHandlerKey;
@@ -18,6 +21,10 @@ public class PrintToConsoleEventHandler implements IEventHandler, IExtendedEvent
         );
     }};
 
+    /**
+     * The constructor
+     * @param eventHandlerKey the key of created instance of {@link PrintToConsoleEventHandler}
+     */
     public PrintToConsoleEventHandler(final String eventHandlerKey) {
         this.eventHandlerKey = eventHandlerKey;
     }
@@ -48,27 +55,27 @@ public class PrintToConsoleEventHandler implements IEventHandler, IExtendedEvent
     }
 
     @Override
-    public void addExecutor(final Object key, final Object executor)
+    public void addExecutor(final Object eventType, final Object executor)
             throws ExtendedEventHandlerException {
-        String castedKey = castKey(key);
+        String castedEventType = castEventType(eventType);
         IAction<IEvent> castedExecutor = castExecutor(executor);
 
-        executors.put(castedKey, castedExecutor);
+        executors.put(castedEventType, castedExecutor);
     }
 
     @Override
-    public Object removeExecutor(final Object key) throws ExtendedEventHandlerException {
-        String castedKey = castKey(key);
+    public Object removeExecutor(final Object eventType) throws ExtendedEventHandlerException {
+        String castedEventType = castEventType(eventType);
 
-        return executors.remove(castedKey);
+        return executors.remove(castedEventType);
     }
 
-    private String castKey(final Object key)
+    private String castEventType(final Object eventType)
             throws ExtendedEventHandlerException {
         try {
-            return  (String) key;
+            return  (String) eventType;
         } catch (Exception e) {
-            throw new ExtendedEventHandlerException("Could not cast key to String.");
+            throw new ExtendedEventHandlerException("Could not cast event type to String.");
         }
     }
 

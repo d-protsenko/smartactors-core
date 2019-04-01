@@ -32,7 +32,6 @@ public final class IOC {
     /**
      * Initialize IOC by default implementation of {@link IContainer}
      */
-
     static {
         container = new Container();
     }

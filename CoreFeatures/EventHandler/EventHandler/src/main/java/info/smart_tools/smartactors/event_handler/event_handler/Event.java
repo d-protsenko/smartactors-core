@@ -1,6 +1,9 @@
 package info.smart_tools.smartactors.event_handler.event_handler;
 
-public class Event implements IEvent {
+/**
+ * The implementation of {@link IEvent}
+ */
+public final class Event implements IEvent {
 
     private static final String UNDEFINED = "undefined";
     private static final Integer EXCEPTION_LEVEL = 4;
@@ -44,51 +47,95 @@ public class Event implements IEvent {
         return params;
     }
 
+    /**
+     * Inner builder for instance of {@link Event}
+     * @return the instance of {@link Event}
+     */
     public static Builder builder() {
         return new Event().new Builder();
     }
 
-    public class Builder {
+    /**
+     * Implementation of factory for {@link Event} by builder pattern
+     */
+    public final class Builder {
 
+        /**
+         * Default constructor
+         */
         private Builder() {
         }
 
+        /**
+         * sets the type of event
+         * @param eventType the type of event
+         * @return the current state of builder
+         */
         public Builder type(final String eventType) {
             Event.this.type = eventType;
 
             return this;
         }
 
+        /**
+         * sets the level of event
+         * @param eventLevel the level of event
+         * @return the current state of builder
+         */
         public Builder level(final Integer eventLevel) {
             Event.this.level = eventLevel;
 
             return this;
         }
 
+        /**
+         * sets the event initiator
+         * @param eventInitiator the event initiator
+         * @return the current state of builder
+         */
         public Builder initiator(final String eventInitiator) {
             Event.this.initiator = eventInitiator;
 
             return this;
         }
 
+        /**
+         * sets the event message
+         * @param eventMessage the event message
+         * @return the current state of builder
+         */
         public Builder message(final String eventMessage) {
             Event.this.message = eventMessage;
 
             return this;
         }
 
+        /**
+         * sets the original event form
+         * @param eventBody the original event form
+         * @return the current state of builder
+         */
         public Builder body(final Object eventBody) {
             Event.this.body = eventBody;
 
             return this;
         }
 
+        /**
+         * sets parameters which can be useful for event processing
+         * @param eventParams the original parameters
+         * @return the current state of builder
+         */
         public Builder params(final Object eventParams) {
             Event.this.params = eventParams;
 
             return this;
         }
 
+        /**
+         * Builds an instance of {@link Event}
+         * @return the instance of {@link Event}
+         */
         public IEvent build() {
             if (null == Event.this.type || Event.this.type.isEmpty()) {
                 if (Event.this.body != null) {
