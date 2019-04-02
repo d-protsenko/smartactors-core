@@ -1,7 +1,12 @@
 package info.smart_tools.smartactors.event_handler.event_handler;
 
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionTwoArgs;
+
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,8 +21,26 @@ public class EventHandlerContainer implements IEventHandlerContainer, IExtendedE
 
     private LinkedList<IEventHandler> handlers = new LinkedList<IEventHandler>(
             Arrays.asList(
-                    new PrintToFileEventHandler("fileLogger"),
-                    new PrintToConsoleEventHandler("consoleLogger")
+                    new PrintToFileEventHandler(
+                        "fileLogger",
+                        (event, writer) -> writer.println(event.toString()),
+                        new HashMap<Object, Object>() {{
+                            put(
+                                Exception.class.getCanonicalName(),
+                                (IActionTwoArgs<IEvent, PrintWriter>) (event, writer) -> ((Exception) event.getBody()).printStackTrace(writer)
+                            );
+                        }}
+                    ),
+                    new PrintToConsoleEventHandler(
+                        "consoleLogger",
+                        (event) -> System.out.println(event.toString()),
+                        new HashMap<Object, Object>() {{
+                            put(
+                                Exception.class.getCanonicalName(),
+                                (IAction<IEvent>) (event) -> ((Exception) event.getBody()).printStackTrace()
+                            );
+                        }}
+                    )
             )
     );
 
@@ -60,7 +83,15 @@ public class EventHandlerContainer implements IEventHandlerContainer, IExtendedE
     @Override
     public IEventHandler unregister(final String eventHandlerKey) {
         if (null != eventHandlerKey) {
-            handlers.removeIf((IEventHandler handler) -> handler.getEventHandlerKey().equals(eventHandlerKey));
+
+            return handlers
+                    .stream()
+                    .filter(handler -> handler.getEventHandlerKey().equals(eventHandlerKey))
+                    .findFirst()
+                    .map(h -> {
+                        handlers.remove(h);
+                        return h;
+                    }).orElse(null);
         } else {
             if (handlers.size() > 0) {
                 return handlers.pollFirst();

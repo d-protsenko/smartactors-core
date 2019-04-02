@@ -22,21 +22,43 @@ public class PrintToFileEventHandler implements IEventHandler, IExtendedEventHan
     private Queue<IEvent> queue = new ConcurrentLinkedQueue<>();
     private ReentrantLock writeLock = new ReentrantLock();
     private static final String FILENAME = "server.log";
-
-    private Map<String, IActionTwoArgs<IEvent, PrintWriter>> executors = new HashMap<String, IActionTwoArgs<IEvent, PrintWriter>>() {{
-        put(
-                Exception.class.getCanonicalName(), (event, writer) -> {
-                    ((Exception) event.getBody()).printStackTrace(writer);
-                }
-        );
-    }};
+    private IActionTwoArgs<IEvent, PrintWriter> defaultExecutor;
+    private Map<String, IActionTwoArgs<IEvent, PrintWriter>> executors = new HashMap<>();
 
     /**
      * The constructor
-     * @param eventHandlerKey the key of created instance of {@link PrintToConsoleEventHandler}
+     * @param eventHandlerKey the key of created instance of {@link PrintToFileEventHandler}
+     * @param defaultExecutor the default executor for event processing
      */
-    public PrintToFileEventHandler(final String eventHandlerKey) {
+    public PrintToFileEventHandler(
+            final String eventHandlerKey,
+            final IActionTwoArgs<IEvent, PrintWriter> defaultExecutor
+    ) {
         this.eventHandlerKey = eventHandlerKey;
+        this.defaultExecutor = defaultExecutor;
+    }
+
+    /**
+     * The constructor
+     * @param eventHandlerKey the key of created instance of {@link PrintToFileEventHandler}
+     * @param defaultExecutor the default executor for event processing
+     * @param executors initialization map of executors
+     */
+    public PrintToFileEventHandler(
+            final String eventHandlerKey,
+            final IActionTwoArgs<IEvent, PrintWriter> defaultExecutor,
+            final Map<Object, Object> executors
+    ) {
+        this.eventHandlerKey = eventHandlerKey;
+        this.defaultExecutor = defaultExecutor;
+
+        executors.forEach((type, executor) -> {
+            try {
+                this.addExecutor(type, executor);
+            } catch (Exception e) {
+                throw new RuntimeException("One of the executors cannot be casted to a specified type");
+            }
+        });
     }
 
     @Override
@@ -83,18 +105,20 @@ public class PrintToFileEventHandler implements IEventHandler, IExtendedEventHan
 
     private void writeToFile()
             throws IOException, EventHandlerException {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(FILENAME, true))) {
+        try (
+                PrintWriter writer = new PrintWriter(
+                        new FileWriter(FILENAME, true)
+                )
+        ) {
             while (!this.queue.isEmpty()) {
                 IEvent event = queue.poll();
                 String eventType = event.getType();
-                IActionTwoArgs<IEvent, PrintWriter> exec = executors.getOrDefault(eventType, (et, pw) -> {
-                    pw.println(et.toString());
-                });
+                IActionTwoArgs<IEvent, PrintWriter> exec = executors.getOrDefault(eventType, this.defaultExecutor);
                 try {
                     exec.execute(event, writer);
                 } catch (Exception e) {
                     throw new EventHandlerException(
-                            String.format("Event handler action '%s' throws exception.", eventType),
+                            String.format("Event handler executor '%s' throws exception.", eventType),
                             e
                     );
                 }

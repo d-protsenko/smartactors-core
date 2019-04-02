@@ -13,31 +13,51 @@ import java.util.Map;
 public class PrintToConsoleEventHandler implements IEventHandler, IExtendedEventHandler {
 
     private String eventHandlerKey;
-    private Map<String, IAction<IEvent>> executors = new HashMap<String, IAction<IEvent>>() {{
-        put(
-                Exception.class.getCanonicalName(), (event) -> {
-                    ((Exception) event.getBody()).printStackTrace();
-                }
-        );
-    }};
+    private IAction<IEvent> defaultExecutor;
+    private Map<String, IAction<IEvent>> executors = new HashMap<>();
 
     /**
      * The constructor
      * @param eventHandlerKey the key of created instance of {@link PrintToConsoleEventHandler}
+     * @param defaultExecutor the default executor for event processing
      */
-    public PrintToConsoleEventHandler(final String eventHandlerKey) {
+    public PrintToConsoleEventHandler(final String eventHandlerKey, final IAction<IEvent> defaultExecutor) {
         this.eventHandlerKey = eventHandlerKey;
+        this.defaultExecutor = defaultExecutor;
     }
 
+    /**
+     * The constructor
+     * @param eventHandlerKey the key of created instance of {@link PrintToConsoleEventHandler}
+     * @param defaultExecutor the default executor for event processing
+     * @param executors initialization map of executors
+     */
+    public PrintToConsoleEventHandler(
+            final String eventHandlerKey,
+            final IAction<IEvent> defaultExecutor,
+            final Map<Object, Object> executors
+            ) {
+        this.eventHandlerKey = eventHandlerKey;
+        this.defaultExecutor = defaultExecutor;
+
+        executors.forEach((type, executor) -> {
+            try {
+                this.addExecutor(type, executor);
+            } catch (Exception e) {
+                throw new RuntimeException("One of the executors cannot be casted to a specified type");
+            }
+        });
+    }
+
+
     @Override
-    public void handle(final IEvent event) throws EventHandlerException {
+    public void handle(final IEvent event)
+            throws EventHandlerException {
         if (event == null) {
             return;
         }
         String type = event.getType();
-        IAction<IEvent> exec = executors.getOrDefault(event.getType(), (et) -> {
-            System.out.println(event.toString());
-        });
+        IAction<IEvent> exec = executors.getOrDefault(event.getType(), defaultExecutor);
         try {
             exec.execute(event);
         } catch (Exception e) {
