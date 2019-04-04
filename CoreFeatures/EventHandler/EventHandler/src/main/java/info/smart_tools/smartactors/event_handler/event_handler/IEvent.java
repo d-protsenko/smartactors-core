@@ -9,25 +9,25 @@ public interface IEvent {
      * returns the event type
      * @return the event type
      */
-    String getType();
+//    String getType();
 
     /**
      * returns the event level
      * @return the event level
      */
-    Integer getLevel();
+//    Integer getLevel();
 
     /**
      * returns the event initiator
      * @return the event initiator
      */
-    String getInitiator();
+//    String getInitiator();
 
     /**
      * returns the event message
      * @return the event message
      */
-    String getMessage();
+//    String getMessage();
 
     /**
      * return the event in original form

@@ -44,7 +44,9 @@ public class PrintToConsoleEventHandler implements IEventHandler, IExtendedEvent
             try {
                 this.addExecutor(type, executor);
             } catch (Exception e) {
-                throw new RuntimeException("One of the executors cannot be casted to a specified type");
+                throw new RuntimeException(
+                        "PrintToConsoleEventHandler: One of the executors cannot be casted to a specified type", e
+                );
             }
         });
     }
@@ -56,13 +58,13 @@ public class PrintToConsoleEventHandler implements IEventHandler, IExtendedEvent
         if (event == null) {
             return;
         }
-        String type = event.getType();
-        IAction<IEvent> exec = executors.getOrDefault(event.getType(), defaultExecutor);
+        String type = event.getBody().getClass().getCanonicalName();
+        IAction<IEvent> exec = executors.getOrDefault(type, defaultExecutor);
         try {
             exec.execute(event);
         } catch (Exception e) {
             throw new EventHandlerException(
-                    String.format("Event handler action '%s' throws exception.", type),
+                    String.format("PrintToConsoleEventHandler: Event handler action '%s' throws exception.", type),
                     e
             );
         }
@@ -95,7 +97,9 @@ public class PrintToConsoleEventHandler implements IEventHandler, IExtendedEvent
         try {
             return  (String) eventType;
         } catch (Exception e) {
-            throw new ExtendedEventHandlerException("Could not cast event type to String.");
+            throw new ExtendedEventHandlerException(
+                    "PrintToConsoleEventHandler: Could not cast event type to String.", e
+            );
         }
     }
 
@@ -105,7 +109,9 @@ public class PrintToConsoleEventHandler implements IEventHandler, IExtendedEvent
         try {
             return  (IAction<IEvent>) executor;
         } catch (Exception e) {
-            throw new ExtendedEventHandlerException("Could not cast executor to IAction<IEvent>.");
+            throw new ExtendedEventHandlerException(
+                    "PrintToConsoleEventHandler: Could not cast executor to IAction<IEvent>.", e
+            );
         }
     }
 }

@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.event_handler.event_handler.exception;
 
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.event_handler.event_handler.IEvent;
 
 /**
@@ -7,7 +8,9 @@ import info.smart_tools.smartactors.event_handler.event_handler.IEvent;
  * of the method {@link info.smart_tools.smartactors.event_handler.event_handler.IEventHandler#handle(IEvent)}
  * will be unexpectedly terminated by any reason
  */
-public class EventHandlerException extends Exception {
+public class EventHandlerException extends ActionExecutionException {
+
+    private IEvent event;
 
     /**
      * Constructor with a specific error message as the argument
@@ -32,5 +35,40 @@ public class EventHandlerException extends Exception {
      */
     public EventHandlerException(final Throwable cause) {
         super(cause);
+    }
+
+    /**
+     * Constructor with a specific error message and an event as arguments
+     * @param message the specific error message
+     * @param event the event
+     */
+    public EventHandlerException(final String message, final IEvent event) {
+        super(message);
+        this.event = event;
+    }
+
+    /**
+     * Constructor with a specific error message, cause and an event as arguments
+     * @param message the specific error message
+     * @param cause the specific cause
+     * @param event the event
+     */
+    public EventHandlerException(final String message, final Throwable cause, final IEvent event) {
+        super(message, cause);
+        this.event = event;
+    }
+
+    /**
+     * Constructor with a specific cause and an event as arguments
+     * @param cause the specific cause
+     * @param event the event
+     */
+    public EventHandlerException(final Throwable cause, final IEvent event) {
+        super(cause);
+        this.event = event;
+    }
+
+    public IEvent getEvent() {
+        return event;
     }
 }

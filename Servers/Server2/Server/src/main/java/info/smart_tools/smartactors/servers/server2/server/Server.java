@@ -77,7 +77,7 @@ public class Server implements IServer {
         EventHandler.handle(
             Event
                 .builder()
-                .message(
+                .body(
                         String.format(
                                 "\n%s\nStarting server ...",
                                 (new Date()).toString()
@@ -106,13 +106,13 @@ public class Server implements IServer {
             Duration elapsedTime = Duration.between(start, LocalTime.now());
             LocalTime elapsedTimeToLocalTime = LocalTime.ofNanoOfDay(elapsedTime.toNanos());
             EventHandler.handle(
-                    Event.builder().message("[OK] Stage 1: server core has been loaded successful.").build()
+                    Event.builder().body("[OK] Stage 1: server core has been loaded successful.").build()
             );
             EventHandler.handle(
-                    Event.builder().message("[OK] Stage 1: elapsed time - " + elapsedTimeToLocalTime.format(df) + ".").build())
+                    Event.builder().body("[OK] Stage 1: elapsed time - " + elapsedTimeToLocalTime.format(df) + ".").build())
             ;
             EventHandler.handle(
-                    Event.builder().message("\n\n").build()
+                    Event.builder().body("\n\n").build()
             );
         } catch (IOException | InvalidArgumentException | PluginLoaderException | ProcessExecutionException e) {
             throw new ServerExecutionException(e);

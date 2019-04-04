@@ -3,7 +3,6 @@ package info.smart_tools.smartactors.event_handler.event_handler;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.event_handler.event_handler.exception.EventHandlerException;
 import info.smart_tools.smartactors.event_handler.event_handler.exception.ExtendedEventHandlerException;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -18,12 +17,6 @@ import static org.mockito.Mockito.when;
 
 public class PrintToConsoleEventHandlerTest {
 
-    @Before
-    public void init()
-            throws Exception {
-
-    }
-
     @Test
     public void should_be_not_null() {
         IEventHandler handler = new PrintToConsoleEventHandler("test1", (event) -> {});
@@ -32,7 +25,10 @@ public class PrintToConsoleEventHandlerTest {
 
         IAction<IEvent> testAction = mock(IAction.class);
         handler = new PrintToConsoleEventHandler(
-                "test2", (event) -> {}, new HashMap<Object, Object>(){{put("action", testAction);}}
+                "test2",
+                (event) -> {}, new HashMap<Object, Object>(){{
+                    put("action", testAction);
+                }}
         );
         assertNotNull(handler);
         assertNotNull("test2", handler.getEventHandlerKey());
@@ -41,7 +37,10 @@ public class PrintToConsoleEventHandlerTest {
     @Test(expected = RuntimeException.class)
     public void should_throw_exception_on_creating_with_invalid_executor() {
         IEventHandler handler = new PrintToConsoleEventHandler(
-                "test", (event) -> {}, new HashMap<Object, Object>(){{put("action", "");}}
+                "test",
+                (event) -> {}, new HashMap<Object, Object>(){{
+                    put("action", "");
+                }}
         );
     }
 
@@ -51,32 +50,39 @@ public class PrintToConsoleEventHandlerTest {
         IAction<IEvent> defaultAction = mock(IAction.class);
         IAction<IEvent> testAction = mock(IAction.class);
         IEventHandler handler = new PrintToConsoleEventHandler(
-                "test", defaultAction, new HashMap<Object, Object>(){{put("test", testAction);}}
+                "test",
+                defaultAction,
+                new HashMap<Object, Object>(){{
+                    put(TestClass1.class.getCanonicalName(), testAction);
+                }}
         );
         IEvent eventWithSpecifiedType = mock(IEvent.class);
         IEvent event = mock(IEvent.class);
-        when(eventWithSpecifiedType.getType()).thenReturn("test");
+        when(eventWithSpecifiedType.getBody()).thenReturn(new TestClass1());
+        when(event.getBody()).thenReturn(new TestClass2());
         handler.handle(eventWithSpecifiedType);
         verify(testAction, times(1)).execute(eventWithSpecifiedType);
         verify(defaultAction, times(0)).execute(eventWithSpecifiedType);
         handler.handle(event);
         verify(testAction, times(0)).execute(event);
         verify(defaultAction, times(1)).execute(event);
-        Object action = ((PrintToConsoleEventHandler) handler).removeExecutor("test");
+        Object action = ((PrintToConsoleEventHandler) handler).removeExecutor(TestClass1.class.getCanonicalName());
         assertEquals(testAction, action);
     }
 
     @Test (expected = EventHandlerException.class)
-    public void should_throw_specified_any_exception_on_executor()
+    public void should_throw_the_specified_exception_on_an_exception_in_an_executor()
             throws Exception {
         IAction<IEvent> testAction = mock(IAction.class);
         IEventHandler handler = new PrintToConsoleEventHandler(
                 "test",
                 (event) -> {},
-                new HashMap<Object, Object>() {{put("test", testAction);}}
+                new HashMap<Object, Object>() {{
+                    put(TestClass1.class.getCanonicalName(), testAction);
+                }}
         );
         IEvent event = mock(IEvent.class);
-        when(event.getType()).thenReturn("test");
+        when(event.getBody()).thenReturn(new TestClass1());
         doThrow(new RuntimeException()).when(testAction).execute(event);
         handler.handle(event);
     }
@@ -101,4 +107,11 @@ public class PrintToConsoleEventHandlerTest {
         IEventHandler handler = new PrintToConsoleEventHandler("test", (event) -> {});
         ((IExtendedEventHandler) handler).addExecutor("test", 5);
     }
+}
+
+
+class TestClass1 {
+}
+
+class TestClass2 {
 }

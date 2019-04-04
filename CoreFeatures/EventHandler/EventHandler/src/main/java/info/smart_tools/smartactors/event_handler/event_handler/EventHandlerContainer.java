@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.event_handler.event_handler;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IActionTwoArgs;
+import info.smart_tools.smartactors.event_handler.event_handler.exception.EventHandlerException;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -23,7 +24,8 @@ public class EventHandlerContainer implements IEventHandlerContainer, IExtendedE
             Arrays.asList(
                     new PrintToFileEventHandler(
                         "fileLogger",
-                        (event, writer) -> writer.println(event.toString()),
+                        null,
+                        (event, writer) -> writer.println(event.getBody().toString()),
                         new HashMap<Object, Object>() {{
                             put(
                                 Exception.class.getCanonicalName(),
@@ -33,7 +35,7 @@ public class EventHandlerContainer implements IEventHandlerContainer, IExtendedE
                     ),
                     new PrintToConsoleEventHandler(
                         "consoleLogger",
-                        (event) -> System.out.println(event.toString()),
+                        (event) -> System.out.println(event.getBody().toString()),
                         new HashMap<Object, Object>() {{
                             put(
                                 Exception.class.getCanonicalName(),
@@ -50,19 +52,28 @@ public class EventHandlerContainer implements IEventHandlerContainer, IExtendedE
         events.add(event);
         for (IEventHandler handler : handlers) {
             try {
-                for (IEvent e: events) {
+                for (IEvent e : events) {
                     handler.handle(e);
                 }
                 break;
             } catch (Exception e) {
                 events = new ArrayList<>();
-                events.add(event);
+                if (e instanceof EventHandlerException) {
+                    IEvent nestedEvent = ((EventHandlerException) e).getEvent();
+                    if (null != nestedEvent) {
+                        events.add(nestedEvent);
+                    } else {
+                        events.add(event);
+                    }
+                } else {
+                    events.add(event);
+                }
                 events.add(
                     Event
                         .builder()
-                        .message(
+                        .body(
                             String.format(
-                                "Exception on executing 'handle' method of '%s' event handler.",
+                                "EventHandlerContainer: Exception on executing 'handle' method of '%s' event handler.",
                                     handler.getEventHandlerKey()
                             )
                         )
