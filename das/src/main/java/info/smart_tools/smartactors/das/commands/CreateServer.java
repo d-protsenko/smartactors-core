@@ -69,7 +69,9 @@ public class CreateServer implements IAction {
             RemoteRepository remoteRepository = new RemoteRepository(
                     rid, "default", rurl
             );
-            Collection<RemoteRepository> repositories = new ArrayList<RemoteRepository>(){{add(remoteRepository);}};
+            Collection<RemoteRepository> repositories = new ArrayList<RemoteRepository>() {{
+                add(remoteRepository);
+            }};
 
             List<Artifact> artifacts = new Aether(repositories, Paths.get(
                     destination.getAbsolutePath().toString(), "/downloads"
