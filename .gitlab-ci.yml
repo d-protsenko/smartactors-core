@@ -13,17 +13,80 @@ stages:
     - mkdir -p /cache/.m2/repository
     - ln -sf /cache/.m2/repository /root/.m2/repository
 
-build:
+.build:
   stage: build
   extends: .maven
   artifacts:
     expire_in: 8h
     paths:
       - build
+
+build:core_features:
+  extends: .build
   only:
     refs:
       - develop
     changes:
       - CoreFeatures/*
   script:
-    - ./build.sh
+    - cd CoreFeatures && das make
+
+build:system_features:
+  extends: .build
+  only:
+    refs:
+      - develop
+    changes:
+      - SystemActors/*
+  script:
+    - cd SystemActors && das make
+
+build:core_pack:
+  extends: .build
+  only:
+    refs:
+      - develop
+    changes:
+      - CorePack/*
+  script:
+    - echo
+
+build:common_features:
+  extends: .build
+  only:
+    refs:
+      - develop
+    changes:
+      - CommonFeatures/*
+  script:
+    - cd CommonFeatures && das make
+
+build:server_development_tools:
+  extends: .build
+  only:
+    refs:
+      - develop
+    changes:
+      - ServerDevelopmentTools/*
+  script:
+    - cd ServerDevelopmentTools && das make
+  
+build:das:
+  extends: .build
+  only:
+    refs:
+      - develop
+    changes:
+      - das/*
+  script:
+    - cd das && mvn clean package
+    
+build:server:
+  extends: .build
+  only:
+    refs:
+      - develop
+    changes:
+      - Servers/Server2/*
+  script:
+    - cd Servers/Server2 && das make
