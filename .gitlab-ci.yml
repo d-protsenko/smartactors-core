@@ -18,9 +18,9 @@ build:
     paths:
       - build
   only:
-    - develop
-  only:
-    - changes:
+    refs:
+      - develop
+    changes:
       - CoreFeatures/*
   script:
     - ./build.sh
