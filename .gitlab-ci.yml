@@ -6,6 +6,9 @@ stages:
 
 .maven:
   image: $CI_REGISTRY/docker/das:0.5.0-jdk-8-slim
+  variables:
+    MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
+    MAVEN_OPTS: "-Djava.awt.headless=true -Dorg.slf4j.simpleLogger.defaultLogLevel=warn"
   before_script:
     - mkdir -p /cache/.m2/repository
     - ln -sf /cache/.m2/repository /root/.m2/repository
