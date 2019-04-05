@@ -1,0 +1,26 @@
+stages:
+  - build
+#  - deploy
+#  - build with sources
+#  - deploy with sources
+
+.maven:
+  image: $CI_REGISTRY/docker/das:0.5.0-jdk-8-slim
+  before_script:
+    - mkdir -p /cache/.m2/repository
+    - ln -sf /cache/.m2/repository /root/.m2/repository
+
+build:
+  stage: build
+  extends: .maven
+  artifacts:
+    expire_in: 8h
+    paths:
+      - build
+  only:
+    - develop
+  only:
+    - changes:
+      - CoreFeatures/*
+  script:
+    - ./build.sh
