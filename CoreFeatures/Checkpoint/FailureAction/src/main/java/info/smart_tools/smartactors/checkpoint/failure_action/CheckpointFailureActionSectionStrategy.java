@@ -71,7 +71,7 @@ public class CheckpointFailureActionSectionStrategy implements ISectionStrategy 
     public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
         try {
             IOC.unregister(Keys.getKeyByName("checkpoint failure action"));
-        } catch(DeletionException e) {
+        } catch (DeletionException e) {
             throw new ConfigurationProcessingException("Error occurred while reverting checkpoint_failure_action section.", e);
         } catch (ResolutionException e) { }
     }

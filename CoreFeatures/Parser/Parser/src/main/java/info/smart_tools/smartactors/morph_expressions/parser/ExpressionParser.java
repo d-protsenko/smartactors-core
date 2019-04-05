@@ -24,7 +24,7 @@ import java.util.Map;
  * @see RecursiveDescentParser
  * @see IEvaluator
  */
-public class ExpressionParser implements IParser {
+public final class ExpressionParser implements IParser {
 
     private final Map<String, IProperty> properties = new HashMap<>(1);
     private final Map<String, IFunction> functions = new HashMap<>(1);
@@ -140,7 +140,7 @@ public class ExpressionParser implements IParser {
      * @see IFunction
      */
     @Override
-    public void registerFunction(String lexeme, IFunction function) {
+    public void registerFunction(final String lexeme, final IFunction function) {
         this.functions.put(lexeme, function);
     }
 
@@ -166,7 +166,7 @@ public class ExpressionParser implements IParser {
      * @see IProperty
      */
     @Override
-    public void unregisterProperty(String lexeme) {
+    public void unregisterProperty(final String lexeme) {
         this.properties.remove(lexeme);
     }
 
@@ -178,7 +178,7 @@ public class ExpressionParser implements IParser {
      * @see IProperty
      */
     @Override
-    public void unregisterFunction(String lexeme) {
+    public void unregisterFunction(final String lexeme) {
         this.functions.remove(lexeme);
     }
 
