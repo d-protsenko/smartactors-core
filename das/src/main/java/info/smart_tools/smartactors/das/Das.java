@@ -29,6 +29,10 @@ import java.util.Map;
 
 public final class Das {
 
+    private Das() {
+    }
+
+    @SuppressWarnings("unchecked")
     public static void main(final String[] args)
             throws Exception {
 

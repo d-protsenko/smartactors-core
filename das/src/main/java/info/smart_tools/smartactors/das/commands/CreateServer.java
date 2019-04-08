@@ -33,7 +33,7 @@ public class CreateServer implements IAction {
     public void execute(final Object o)
             throws ActionExecutionException, InvalidArgumentException {
         System.out.println("Creating server ...");
-        ICommandLineArgsResolver clar = (ICommandLineArgsResolver) ((Object[])o)[0];
+        ICommandLineArgsResolver clar = (ICommandLineArgsResolver) ((Object[]) o)[0];
 
         try {
             String groupId = defGroupId;

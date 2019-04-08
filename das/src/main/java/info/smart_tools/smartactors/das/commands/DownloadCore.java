@@ -80,7 +80,7 @@ public class DownloadCore implements IAction {
     public void execute(final Object o)
             throws ActionExecutionException, InvalidArgumentException {
         System.out.println("Download server core ...");
-        ICommandLineArgsResolver clar = (ICommandLineArgsResolver) ((Object[])o)[0];
+        ICommandLineArgsResolver clar = (ICommandLineArgsResolver) ((Object[]) o)[0];
 
         try {
             String groupId = defGroupId;
@@ -155,7 +155,7 @@ public class DownloadCore implements IAction {
         RemoteRepository remoteRepository = new RemoteRepository(
                 rid, "default", rurl
         );
-        Collection<RemoteRepository> repositories = new ArrayList<RemoteRepository>(){{
+        Collection<RemoteRepository> repositories = new ArrayList<RemoteRepository>() {{
             add(remoteRepository);
         }};
 

@@ -246,7 +246,7 @@ public class Feature {
         return plugins;
     }
 
-    public void setPlugins(List<Plugin> plugins) {
+    public void setPlugins(final List<Plugin> plugins) {
         this.plugins = plugins;
     }
 
