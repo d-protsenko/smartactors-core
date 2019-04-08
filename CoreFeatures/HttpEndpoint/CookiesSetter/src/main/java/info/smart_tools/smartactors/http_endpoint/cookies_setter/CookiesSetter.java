@@ -262,7 +262,7 @@ public class CookiesSetter implements ICookiesSetter {
                 ));
     }
 
-    private Cookie createCookie(final IObject params, IObject config)
+    private Cookie createCookie(final IObject params, final IObject config)
             throws CookieSettingException, ReadValueException, InvalidArgumentException {
 
         String cookieName = Optional
@@ -311,7 +311,7 @@ public class CookiesSetter implements ICookiesSetter {
         return cookie;
     }
 
-    private Object getFirstNotNull(Optional... optionals) {
+    private Object getFirstNotNull(final Optional... optionals) {
         for (Optional optional: optionals) {
             if (optional.isPresent()) {
                 return optional.get();
@@ -321,7 +321,7 @@ public class CookiesSetter implements ICookiesSetter {
         throw new IllegalArgumentException("Value not found");
     }
 
-    private CookieSettingException getError(String message, Throwable cause) {
+    private CookieSettingException getError(final String message, final Throwable cause) {
         String errMsg = String.format(COMMON_ERROR_MSG, message);
         return new CookieSettingException(errMsg, cause);
     }

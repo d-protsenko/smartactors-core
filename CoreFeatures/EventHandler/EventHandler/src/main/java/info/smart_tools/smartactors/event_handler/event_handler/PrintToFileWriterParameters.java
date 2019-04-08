@@ -10,7 +10,7 @@ import java.util.Queue;
 /**
  * Support class for initialization writer of {@link PrintToFileEventHandler}
  */
-class PrintToFileWriterParameters {
+final class PrintToFileWriterParameters {
 
     private Queue<IEvent> queue;
     private Map<String, IActionTwoArgs<IEvent, PrintWriter>> executors;

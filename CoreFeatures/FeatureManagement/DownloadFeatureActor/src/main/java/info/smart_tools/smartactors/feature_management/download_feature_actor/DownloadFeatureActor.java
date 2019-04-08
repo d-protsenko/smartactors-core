@@ -79,7 +79,7 @@ public class DownloadFeatureActor {
         }
         if (null == feature.getDependencies() && null != feature.getGroupId()) {
             System.out.println("[INFO] Start downloading feature - '" + feature.getDisplayName() + "'.");
-            for(String type : FILE_TYPE_LIST) {
+            for (String type : FILE_TYPE_LIST) {
                 if (
                         Paths.get(
                                 feature.getDirectory().getPath(),

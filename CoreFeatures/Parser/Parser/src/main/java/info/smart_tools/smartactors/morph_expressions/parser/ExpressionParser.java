@@ -76,7 +76,7 @@ public final class ExpressionParser implements IParser {
      * @see IEvaluator
      */
     @Override
-    public IEvaluator parse(String expression) throws ParsingException {
+    public IEvaluator parse(final String expression) throws ParsingException {
         try {
             final List<Token> tokens = lexer.getTokens(expression);
             final IEvaluationNode ruleNode = parser.parse(tokens);
@@ -111,7 +111,7 @@ public final class ExpressionParser implements IParser {
      * @see IProperty
      */
     @Override
-    public void registerProperty(String lexeme, IProperty property) {
+    public void registerProperty(final String lexeme, final IProperty property) {
         this.properties.put(lexeme, property);
     }
 

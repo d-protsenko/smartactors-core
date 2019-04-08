@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Implementation of {@link IEventHandler} which output data of {@link IEvent} to system console.
  */
-public class PrintToConsoleEventHandler implements IEventHandler, IExtendedEventHandler {
+public final class PrintToConsoleEventHandler implements IEventHandler, IExtendedEventHandler {
 
     private String eventHandlerKey;
     private IAction<IEvent> defaultExecutor;

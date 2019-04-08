@@ -18,7 +18,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Implementation of {@link IEventHandler} which output data of {@link IEvent} to the file.
  */
-public class PrintToFileEventHandler implements IEventHandler, IExtendedEventHandler {
+public final class PrintToFileEventHandler implements IEventHandler, IExtendedEventHandler {
 
     private String eventHandlerKey;
     private Queue<IEvent> queue = new ConcurrentLinkedQueue<>();

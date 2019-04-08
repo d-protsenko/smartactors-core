@@ -21,7 +21,11 @@ import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -75,7 +79,7 @@ public class FeaturesCreatorActor {
         this.repositoryUrlFN =   IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "url");
 
         //TODO: need refactoring. This actions would be took out to the plugin.
-        this.creationFunctions = new HashMap<String, IActionTwoArgs<File, CreateMessageWrapper>>(){{
+        this.creationFunctions = new HashMap<String, IActionTwoArgs<File, CreateMessageWrapper>>() {{
             put("zip", (f, w) -> {
                 try {
                     w.setJsonFeaturesDescription(createJsonFeatureDescriptionByZip(f));
@@ -140,7 +144,7 @@ public class FeaturesCreatorActor {
 
             for (IObject repository : repositories) {
                 boolean found = false;
-                for (IObject stored : repositoryStorage ) {
+                for (IObject stored : repositoryStorage) {
                     if (stored.getValue(this.repositoryIdFN).equals(repository.getValue(this.repositoryIdFN)) &&
                         stored.getValue(this.repositoryTypeFN).equals(repository.getValue(this.repositoryTypeFN)) &&
                         stored.getValue(this.repositoryUrlFN).equals(repository.getValue(this.repositoryUrlFN))) {
