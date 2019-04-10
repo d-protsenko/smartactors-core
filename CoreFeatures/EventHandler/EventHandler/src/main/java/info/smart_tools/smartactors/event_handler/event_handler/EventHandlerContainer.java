@@ -1,12 +1,10 @@
 package info.smart_tools.smartactors.event_handler.event_handler;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.IActionTwoArgs;
 import info.smart_tools.smartactors.event_handler.event_handler.exception.EventHandlerException;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,28 +18,17 @@ import java.util.List;
  */
 public class EventHandlerContainer implements IEventHandlerContainer, IExtendedEventHandlerContainer {
 
-    private LinkedList<IEventHandler> handlers = new LinkedList<IEventHandler>(
-            Arrays.asList(
-                    new PrintToFileEventHandler(
-                        "fileLogger",
-                        null,
-                        (event, writer) -> writer.println(event.getBody().toString()),
-                        new HashMap<Object, Object>() {{
-                            put(
-                                Exception.class.getCanonicalName(),
-                                (IActionTwoArgs<IEvent, PrintWriter>) (event, writer) -> ((Exception) event.getBody()).printStackTrace(writer)
-                            );
-                        }}
-                    ),
+    private LinkedList<IEventHandler> handlers = new LinkedList<>(
+            Collections.singletonList(
                     new PrintToConsoleEventHandler(
-                        "consoleLogger",
-                        (event) -> System.out.println(event.getBody().toString()),
-                        new HashMap<Object, Object>() {{
-                            put(
-                                Exception.class.getCanonicalName(),
-                                (IAction<IEvent>) (event) -> ((Exception) event.getBody()).printStackTrace()
-                            );
-                        }}
+                            "consoleLogger",
+                            (event) -> System.out.println(event.getBody().toString()),
+                            new HashMap<Object, Object>() {{
+                                put(
+                                        Exception.class.getCanonicalName(),
+                                        (IAction<IEvent>) (event) -> ((Exception) event.getBody()).printStackTrace()
+                                );
+                            }}
                     )
             )
     );

@@ -25,20 +25,16 @@ public class EventHandlerContainerTest {
         IEventHandlerContainer container = new EventHandlerContainer();
 
         assertNotNull(container);
-        IEventHandler fileWriterHandler = ((IExtendedEventHandlerContainer) container).unregister(null);
         IEventHandler consoleWriterHandler = ((IExtendedEventHandlerContainer) container).unregister(null);
         IEventHandler emptyHandler = ((IExtendedEventHandlerContainer) container).unregister(null);
 
         // check default container handlers
-        assertEquals(PrintToFileEventHandler.class, fileWriterHandler.getClass());
         assertEquals(PrintToConsoleEventHandler.class, consoleWriterHandler.getClass());
         assertNull(emptyHandler);
 
         container = new EventHandlerContainer();
-        fileWriterHandler = ((IExtendedEventHandlerContainer) container).unregister("fileLogger");
         consoleWriterHandler = ((IExtendedEventHandlerContainer) container).unregister("consoleLogger");
         emptyHandler = ((IExtendedEventHandlerContainer) container).unregister("empty");
-        assertEquals(PrintToFileEventHandler.class, fileWriterHandler.getClass());
         assertEquals(PrintToConsoleEventHandler.class, consoleWriterHandler.getClass());
         assertNull(emptyHandler);
     }

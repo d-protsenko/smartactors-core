@@ -6,7 +6,7 @@ package info.smart_tools.smartactors.event_handler.event_handler;
 public final class Event implements IEvent {
 
     private Object body;
-    private Object params;
+    private Object parameters;
 
     private Event() {
     }
@@ -15,8 +15,8 @@ public final class Event implements IEvent {
         return body;
     }
 
-    public Object getParams() {
-        return params;
+    public Object getParameters() {
+        return parameters;
     }
 
     /**
@@ -51,11 +51,11 @@ public final class Event implements IEvent {
 
         /**
          * sets parameters which can be useful for event processing
-         * @param eventParams the original parameters
+         * @param eventParameters the original parameters
          * @return the current state of builder
          */
-        public Builder params(final Object eventParams) {
-            Event.this.params = eventParams;
+        public Builder parameters(final Object eventParameters) {
+            Event.this.parameters = eventParameters;
 
             return this;
         }
