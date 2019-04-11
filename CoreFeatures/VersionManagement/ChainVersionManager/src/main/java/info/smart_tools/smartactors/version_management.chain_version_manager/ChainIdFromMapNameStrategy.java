@@ -12,21 +12,21 @@ public class ChainIdFromMapNameStrategy {
 
     Map<Object, Map<Comparable, Object>> chainIds = new ConcurrentHashMap<>();
     private static Map<Object, ChainVersionStrategies> chainVersionStrategies = new ConcurrentHashMap<>();
-    private IStrategy resolve_by_message_strategy = new IStrategy(){
+    private IStrategy resolveByMessageStrategy = new IStrategy(){
         @Override
         public <T> T resolve(Object... args) throws StrategyException {
-            return (T) resolve_by_message(args[0], (IObject) args[1]);
+            return (T) resolveByMessage(args[0], (IObject) args[1]);
         }
     };
 
-    private IStrategy resolve_by_module_dependencies_strategy = new IStrategy(){
+    private IStrategy resolveByModuleDependenciesStrategy = new IStrategy(){
         @Override
         public <T> T resolve(Object... args) throws StrategyException {
-            return (T) resolve_by_module_dependencies(args[0]);
+            return (T) resolveByModuleDependencies(args[0]);
         }
     };
 
-    private IStrategy register_message_version_strategy = new IStrategy(){
+    private IStrategy registerMessageVersionStrategy = new IStrategy(){
         @Override
         public <T> T resolve(Object... args) throws StrategyException {
             registerVersionResolutionStrategy(
@@ -38,15 +38,15 @@ public class ChainIdFromMapNameStrategy {
     };
 
     public IStrategy getRegisterMessageVersionStrategy() {
-        return register_message_version_strategy;
+        return registerMessageVersionStrategy;
     }
 
     public IStrategy getResolveByMessageStrategy() {
-        return resolve_by_message_strategy;
+        return resolveByMessageStrategy;
     }
 
     public IStrategy getResolveByModuleDependenciesStrategy() {
-        return resolve_by_module_dependencies_strategy;
+        return resolveByModuleDependenciesStrategy;
     }
 
     private void registerVersionResolutionStrategy(Object mapName, IStrategy strategy)
@@ -89,7 +89,7 @@ public class ChainIdFromMapNameStrategy {
         return chainId;
     }
 
-    private Object resolve_by_message(Object chainName, IObject message)
+    private Object resolveByMessage(Object chainName, IObject message)
             throws StrategyException {
         if (chainName == null) {
             throw new StrategyException("Chain name cannot be null.");
@@ -105,7 +105,7 @@ public class ChainIdFromMapNameStrategy {
         return resolve_by_version(chainName, version);
     }
 
-    private Object resolve_by_module_dependencies(Object chainName)
+    private Object resolveByModuleDependencies(Object chainName)
             throws StrategyException {
         if (chainName.toString().indexOf(":") > -1) {
             return chainName;
