@@ -7,22 +7,24 @@ public interface SetParamsToLoadFromFileWrapper {
 
     /**
      * Set the name of feature file to use in onNewFile chain
-     * @throws ChangeValueException
+     * @param fileName the name of feature file
+     * @throws ChangeValueException if error during set is occurred
      */
-    void setFileName(final String fileName)
+    void setFileName(String fileName)
             throws ChangeValueException;
 
     /**
      * Set the directory to use in onNewFile chain
-     * @throws ChangeValueException
+     * @param directory the directory for onNewFile chain
+     * @throws ChangeValueException if error during change is occurred
      */
-    void setObservedDirectory(final String directory)
+    void setObservedDirectory(String directory)
             throws ChangeValueException;
 
     /**
      * Get feature location for loading
      * @return feature location
-     * @throws ReadValueException
+     * @throws ReadValueException if error during get is occurred
      */
     String getFeatureLocation()
             throws ReadValueException;
@@ -30,7 +32,7 @@ public interface SetParamsToLoadFromFileWrapper {
     /**
      * Get destination server directory to store loading feature
      * @return destination feature directory on server
-     * @throws ReadValueException
+     * @throws ReadValueException if error during get is occurred
      */
     String getFeatureDestinationPath()
             throws ReadValueException;
