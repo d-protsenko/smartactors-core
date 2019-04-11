@@ -3647,7 +3647,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "FeatureLoadStarterActor",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -3660,12 +3660,12 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "RemoteManagementPlugin",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 } ],
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "remote-management",
   "rawName" : "RemoteManagement",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 } ],
   "on-actor-creation-upload-repositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
