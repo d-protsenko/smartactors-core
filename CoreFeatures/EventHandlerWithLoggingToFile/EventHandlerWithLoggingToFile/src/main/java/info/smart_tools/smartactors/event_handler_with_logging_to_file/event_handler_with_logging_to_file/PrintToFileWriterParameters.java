@@ -1,7 +1,8 @@
-package info.smart_tools.smartactors.event_handler.event_handler;
+package info.smart_tools.smartactors.event_handler_with_logging_to_file.event_handler_with_logging_to_file;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IActionTwoArgs;
+import info.smart_tools.smartactors.event_handler.event_handler.IEvent;
 
 import java.io.PrintWriter;
 import java.util.Map;

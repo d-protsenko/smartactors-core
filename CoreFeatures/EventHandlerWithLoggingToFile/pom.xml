@@ -7,12 +7,12 @@
         <artifactId>core-features</artifactId>
         <version>0.6.0</version>
     </parent>
-    <artifactId>event-handler</artifactId>
+    <artifactId>event-handler-with-logging-to-file</artifactId>
     <version>0.6.0</version>
     <packaging>pom</packaging>
     <modules>
-        <module>EventHandler</module>
-        <module>EventHandlerDistribution</module>
+        <module>EventHandlerWithLoggingToFile</module>
+        <module>EventHandlerWithLoggingToFileDistribution</module>
     </modules>
     <build>
         <pluginManagement>

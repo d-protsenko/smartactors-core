@@ -1,9 +1,12 @@
-package info.smart_tools.smartactors.event_handler.event_handler;
+package info.smart_tools.smartactors.event_handler_with_logging_to_file.event_handler_with_logging_to_file;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IActionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
+import info.smart_tools.smartactors.event_handler.event_handler.IEvent;
+import info.smart_tools.smartactors.event_handler.event_handler.IEventHandler;
+import info.smart_tools.smartactors.event_handler.event_handler.IExtendedEventHandler;
 import info.smart_tools.smartactors.event_handler.event_handler.exception.EventHandlerException;
 import info.smart_tools.smartactors.event_handler.event_handler.exception.ExtendedEventHandlerException;
 
@@ -28,7 +31,7 @@ public final class PrintToFileEventHandler implements IEventHandler, IExtendedEv
     private Map<String, IActionTwoArgs<IEvent, PrintWriter>> executors = new HashMap<>();
 
     // Default writer
-    private IAction<PrintToFileWriterParameters>  writer = (params) -> {
+    private IAction<PrintToFileWriterParameters> writer = (params) -> {
         IEvent event = null;
         try (PrintWriter writer = new PrintWriter(new FileWriter(params.getFileName(), true))) {
             while (!params.getQueue().isEmpty()) {
@@ -46,7 +49,7 @@ public final class PrintToFileEventHandler implements IEventHandler, IExtendedEv
         }
     };
 
-     /**
+    /**
      * The constructor
      * @param eventHandlerKey the key of created instance of {@link PrintToFileEventHandler}
      * @param writer the action for writing event data
@@ -96,7 +99,7 @@ public final class PrintToFileEventHandler implements IEventHandler, IExtendedEv
 
     @Override
     public void handle(final IEvent event)
-             throws EventHandlerException {
+            throws EventHandlerException {
         if (event != null) {
             this.queue.offer(event);
         }

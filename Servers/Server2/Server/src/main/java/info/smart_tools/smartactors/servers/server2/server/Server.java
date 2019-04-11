@@ -154,7 +154,8 @@ public class Server implements IServer {
                         throw new ActionExecutionException(e);
                     }
                 },
-                pluginLoaderVisitor);
+                pluginLoaderVisitor
+        );
         pluginLoader.loadPlugins(jars);
         try {
             bootstrap.start();

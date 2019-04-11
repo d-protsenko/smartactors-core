@@ -1,7 +1,10 @@
-package info.smart_tools.smartactors.event_handler.event_handler;
+package info.smart_tools.smartactors.event_handler_with_logging_to_file.event_handler_with_logging_to_file;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IActionTwoArgs;
+import info.smart_tools.smartactors.event_handler.event_handler.IEvent;
+import info.smart_tools.smartactors.event_handler.event_handler.IEventHandler;
+import info.smart_tools.smartactors.event_handler.event_handler.IExtendedEventHandler;
 import info.smart_tools.smartactors.event_handler.event_handler.exception.EventHandlerException;
 import info.smart_tools.smartactors.event_handler.event_handler.exception.ExtendedEventHandlerException;
 import org.junit.Test;
@@ -185,8 +188,8 @@ public class PrintToFileEventHandlerTest {
     }
 }
 
-class testClass1{
+class TestClass1 {
 }
 
-class testClass2{
+class TestClass2 {
 }
