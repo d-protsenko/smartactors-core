@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
  */
 public class CollectionName {
 
-    private static final Pattern VALIDATION_PATTERN = Pattern.compile("[a-zA-Z_][0-9a-zA-Z_]*");
+    private static final Pattern VALIDATION_PATTERN = Pattern.compile("\"?[a-zA-Z_][0-9a-zA-Z_]*\"?");
 
     private String name;
 
