@@ -1,7 +1,7 @@
 {
   "features" : [ {
   "actors" : [ {
-  "artifactId" : "server-developing-tools.interfaces.iserver",
+  "artifactId" : "server-interfaces.interfaces.iserver",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.server-dev-tools",
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/server-dev-tools/"
@@ -12,8 +12,8 @@
   "uploadRepositories" : [ ],
   "plugins" : [ ],
   "groupId" : "info.smart_tools.smartactors",
-  "artifactId" : "server-developing-tools",
-  "rawName" : "Interfaces",
+  "artifactId" : "server-interfaces",
+  "rawName" : "ServerInterfaces",
   "version" : "0.6.0"
 } ],
   "on-actor-creation-upload-repositories" : [ {

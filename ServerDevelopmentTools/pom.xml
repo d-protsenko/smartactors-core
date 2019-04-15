@@ -23,7 +23,7 @@
     </repositories>
 
     <modules>
-        <module>Interfaces</module>
+        <module>ServerInterfaces</module>
     </modules>
 
     <build>

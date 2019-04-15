@@ -21,9 +21,9 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_lo
 import info.smart_tools.smartactors.feature_loading_system.plugin_creator.PluginCreator;
 import info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar.PluginLoader;
 import info.smart_tools.smartactors.feature_loading_system.plugin_loader_visitor_empty_implementation.PluginLoaderVisitor;
-import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.IServer;
-import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.exception.ServerExecutionException;
-import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.exception.ServerInitializeException;
+import info.smart_tools.smartactors.server_development_tools.interfaces.iserver.IServer;
+import info.smart_tools.smartactors.server_development_tools.interfaces.iserver.exception.ServerExecutionException;
+import info.smart_tools.smartactors.server_development_tools.interfaces.iserver.exception.ServerInitializeException;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 
 import java.io.File;
