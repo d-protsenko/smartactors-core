@@ -14,6 +14,8 @@ stages:
 build:
   stage: build
   extends: .maven
+  only:
+    - tags
   script:
     - script.sh $CI_COMMIT_TAG
 

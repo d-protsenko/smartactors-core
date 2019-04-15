@@ -9,7 +9,7 @@ update_rid_rurl() {
     local f_path=$2
     if [ "$f_branch" = "master" ]
     then
-        if [ "$f_path" = "CoreFeatures" -o "$f_path" = "SystemActors" -o "$f_path" = "CorePack" ]
+        if [ "$f_path" = "CoreFeatures" -o "$f_path" = "SystemActors" -o "$f_path" = "CorePack" -o "$f_path" = "Starters" ]
         then
             echo "1"
             rurl="https://features-library.7bits.it/artifactory/smartactors_core_and_core_features"
@@ -32,7 +32,7 @@ update_rid_rurl() {
         fi
     elif [ "$f_branch" = "develop" ]
     then
-        if [ "$f_path" = "CoreFeatures" -o "$f_path" = "SystemActors" -o "$f_path" = "CorePack" ]
+        if [ "$f_path" = "CoreFeatures" -o "$f_path" = "SystemActors" -o "$f_path" = "CorePack" -o "$f_path" = "Starters" ]
         then
             echo "5"
             rurl="https://features-library.7bits.it/artifactory/smartactors_core_and_core_features_dev"
@@ -99,6 +99,13 @@ then
     update_rid_rurl $branch CoreFeatures
     build CoreFeatures
     deploy CoreFeatures $rid $rurl
+
+    if [ "$version" < "v0.5.0" ]
+    then
+        update_rid_rurl $branch Starters
+        build Starters
+        deploy Starters $rid $rurl
+    fi
 
     update_rid_rurl $branch SystemActors
     build SystemActors
