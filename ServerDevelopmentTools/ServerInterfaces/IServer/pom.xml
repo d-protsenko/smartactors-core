@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
-        <artifactId>server-development-tools</artifactId>
+        <artifactId>server-interfaces</artifactId>
         <version>0.6.1</version>
     </parent>
     <artifactId>server-interfaces.interfaces.iserver</artifactId>
