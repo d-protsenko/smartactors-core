@@ -2,7 +2,6 @@ package info.smart_tools.smartactors.http_endpoint_plugins.http_client_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
-import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
@@ -29,6 +28,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
@@ -62,21 +62,17 @@ public class HttpClientPlugin implements IPlugin {
             exceptionalMessageMapId;
 
     @Override
+    @SuppressWarnings("unchecked")
     public void load() throws PluginException {
         try {
             IBootstrapItem<String> item = new BootstrapItem("CreateHttpClient");
             item
-//                    .after("IOC")
-//                    .after("message_processor")
-//                    .after("message_processing_sequence")
                     .after("response")
                     .after("response_content_strategy")
-//                    .after("FieldNamePlugin")
-//                    .before("starter")
                     .process(() -> {
                         try {
                             registerFieldNames();
-                            IOC.register(Keys.resolveByName(URI.class.getCanonicalName()), new CreateNewInstanceStrategy(
+                            IOC.register(Keys.resolveByName(URI.class.getCanonicalName()), new ApplyFunctionToArgumentsStrategy(
                                             (args) -> {
                                                 try {
                                                     return new URI((String) args[0]);
@@ -95,25 +91,35 @@ public class HttpClientPlugin implements IPlugin {
                                     )
                             );
 
-                            IOC.register(Keys.resolveByName("EmptyIObject"), new CreateNewInstanceStrategy(
+                            IOC.register(Keys.resolveByName("EmptyIObject"), new ApplyFunctionToArgumentsStrategy(
                                             (args) -> new DSObject()
                                     )
                             );
-                            IOC.register(Keys.resolveByName(IResponseHandler.class.getCanonicalName()), new CreateNewInstanceStrategy(
+
+                            IOC.register(Keys.resolveByName(
+                                    IResponseHandler.class.getCanonicalName()),
+                                    new ApplyFunctionToArgumentsStrategy(
                                             (args) -> {
                                                 try {
-                                                    IObject configuration = IOC.resolve(Keys.resolveByName("responseHandlerConfiguration"));
+                                                    IObject configuration = IOC.resolve(
+                                                            Keys.resolveByName("responseHandlerConfiguration")
+                                                    );
                                                     IObject request = (IObject) args[0];
-                                                    IResponseHandler responseHandler = new HttpResponseHandler(
+                                                    return new HttpResponseHandler(
                                                             (IQueue<ITask>) configuration.getValue(queueFieldName),
                                                             (Integer) configuration.getValue(stackDepthFieldName),
-                                                            (String)request.getValue(startChainNameFieldName),
+                                                            request.getValue(startChainNameFieldName),
                                                             request,
                                                             ScopeProvider.getCurrentScope(),
                                                             ModuleManager.getCurrentModule()
                                                     );
-                                                    return responseHandler;
-                                                } catch (ResponseHandlerException | ResolutionException |
+                                                } catch (ResolutionException exc) {
+                                                    throw new RuntimeException(
+                                                            "HTTP(S) client isn't configured: " +
+                                                                    "configuration section 'client' isn't found",
+                                                            exc
+                                                    );
+                                                } catch (ResponseHandlerException |
                                                         ReadValueException | InvalidArgumentException |
                                                         ScopeProviderException e) {
                                                     throw new RuntimeException(e);
@@ -121,10 +127,11 @@ public class HttpClientPlugin implements IPlugin {
                                             }
                                     )
                             );
+
                             IRequestMaker<FullHttpRequest> requestMaker = new HttpRequestMaker();
-                            IOC.register(Keys.resolveByName(IRequestMaker.class.getCanonicalName()), new SingletonStrategy(
-                                            requestMaker
-                                    )
+                            IOC.register(Keys.resolveByName(
+                                    IRequestMaker.class.getCanonicalName()),
+                                    new SingletonStrategy(requestMaker)
                             );
                             IOC.register(Keys.resolveByName(MessageToBytesMapper.class.getCanonicalName()),
                                     new SingletonStrategy(
@@ -158,12 +165,10 @@ public class HttpClientPlugin implements IPlugin {
                                                             Keys.resolveByName(IResponseHandler.class.getCanonicalName()),
                                                             request
                                                     );
-                                                    HttpClient client =
-                                                            new HttpClient(
-                                                                    URI.create((String) request.getValue(uriFieldName)),
-                                                                    responseHandler
-                                                            );
-                                                    return client;
+                                                    return new HttpClient(
+                                                            URI.create((String) request.getValue(uriFieldName)),
+                                                            responseHandler
+                                                    );
                                                 } catch (ReadValueException | ResolutionException | RequestSenderException e) {
                                                     throw new RuntimeException(e);
                                                 }
@@ -185,70 +190,70 @@ public class HttpClientPlugin implements IPlugin {
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "createTimerOnRequest";
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "getHttpClient";
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "sendHttpRequest";
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = MessageToBytesMapper.class.getCanonicalName();
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = IRequestMaker.class.getCanonicalName();
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = IResponseHandler.class.getCanonicalName();
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "EmptyIObject";
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "httpResponseResolver";
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = URI.class.getCanonicalName();
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
                     });
             bootstrap.add(item);
 
@@ -258,10 +263,12 @@ public class HttpClientPlugin implements IPlugin {
     }
 
     private void registerFieldNames() throws ResolutionException {
-        this.uriFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uri");
-        this.startChainNameFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "startChain");
-        this.queueFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "queue");
-        this.stackDepthFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "stackDepth");
-        this.exceptionalMessageMapId = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "exceptionalMessageMapId");
+        final IKey fieldNameKey = Keys.resolveByName(IFieldName.class.getCanonicalName());
+
+        this.uriFieldName =            IOC.resolve(fieldNameKey, "uri");
+        this.startChainNameFieldName = IOC.resolve(fieldNameKey, "startChain");
+        this.queueFieldName =          IOC.resolve(fieldNameKey, "queue");
+        this.stackDepthFieldName =     IOC.resolve(fieldNameKey, "stackDepth");
+        this.exceptionalMessageMapId = IOC.resolve(fieldNameKey, "exceptionalMessageMapId");
     }
 }

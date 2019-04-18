@@ -55,15 +55,19 @@ public class ThreadImplTest {
     @Test(expected = TaskExecutionException.class)
     public void Should_throwWhenAnotherTaskIsBeingExecuted()
             throws Exception {
-        thread.execute(() -> {
+        Object mutex = new Object();
+        ITask firstTask = () -> {
             try {
-                Thread.sleep(200);
+                mutex.wait();
             } catch (InterruptedException e) {
-                thread.interrupt();
+                e.printStackTrace();
             }
-        });
+        };
+        ITask secondTask = mutex::notify;
 
-        thread.execute(mock(ITask.class));
+        thread.execute(firstTask);
+
+        thread.execute(secondTask);
     }
 
     @Test(expected = TaskExecutionException.class)

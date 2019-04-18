@@ -54,6 +54,26 @@
                             <id>default-deploy</id>
                             <phase>none</phase>
                         </execution>
+                        <execution>
+                            <id>${feature.rid}</id>
+                            <phase>deploy</phase>
+                            <goals>
+                                <goal>deploy-file</goal>
+                            </goals>
+                            <inherited>false</inherited>
+                            <configuration>
+                                <generatePom>true</generatePom>
+                                <file>${project.parent.basedir}/project-distribution/${project.artifactId}-${project.version}.${deploy.format}</file>
+                                <url>${feature.rurl}</url>
+                                <repositoryId>${feature.rid}</repositoryId>
+                                <groupId>${project.groupId}</groupId>
+                                <artifactId>${project.artifactId}</artifactId>
+                                <version>${project.version}</version>
+                                <packaging>${deploy.format}</packaging>
+                                <description>This archive contains ...</description>
+                                <classifier>${deploy.classifier}</classifier>
+                            </configuration>
+                        </execution>
                     </executions>
                     <inherited>true</inherited>
                 </plugin>
