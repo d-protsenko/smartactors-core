@@ -5,8 +5,30 @@
 
 # Package Files #
 *.jar
+!PluginLoaderFormJar/src/test/resources/*.jar
+**/*.jar
+
+
 *.war
 *.ear
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+#idea
+.idea/
+*.iml
+
+#Maven
+targer/
+**/target/
+
+#Zip
+
+**/*.zip
+
+#Logs
+
+**/*.log
+
+**/db_connection.properties
