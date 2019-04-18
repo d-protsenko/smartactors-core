@@ -164,6 +164,7 @@ public class FeatureManagerActorTest {
         when(this.storage.resolve(chainId)).thenReturn(this.chain);
 
         when(feature1.getName()).thenReturn("feature 1");
+        when(feature1.getDisplayName()).thenReturn("feature 1");
         when(feature1.getGroupId()).thenReturn("groupId1");
         when(feature1.getDependencies())
                 .thenReturn(new HashSet<String>(){{add("groupId2:feature 2");}})
@@ -173,6 +174,7 @@ public class FeatureManagerActorTest {
         when(feature1.updateFromClone(any())).thenReturn(true);
         when(feature2.getGroupId()).thenReturn("groupId2");
         when(feature2.getName()).thenReturn("feature 2");
+        when(feature2.getDisplayName()).thenReturn("feature 2");
         when(feature2.updateFromClone(any())).thenReturn(true);
         when(feature2.getDependencies())
                 .thenReturn(new HashSet<>())
@@ -180,6 +182,7 @@ public class FeatureManagerActorTest {
                 .thenReturn(null);
         when(feature3.getGroupId()).thenReturn("groupId3");
         when(feature3.getName()).thenReturn("feature 3");
+        when(feature3.getDisplayName()).thenReturn("feature 3");
         when(feature3.updateFromClone(any())).thenReturn(true);
         when(feature3.getDependencies())
                 .thenReturn(new HashSet<String>(){{add("feature 2");}})

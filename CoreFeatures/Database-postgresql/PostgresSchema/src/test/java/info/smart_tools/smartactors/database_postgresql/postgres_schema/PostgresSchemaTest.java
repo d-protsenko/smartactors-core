@@ -143,15 +143,18 @@ public class PostgresSchemaTest {
     public void testCreate() throws QueryBuildException {
         PostgresSchema.create(statement, collection, null);
         assertEquals(
+        "BEGIN; SELECT pg_advisory_xact_lock(2142616274639426746); " +
                 "CREATE OR REPLACE FUNCTION parse_timestamp_immutable(source jsonb) RETURNS timestamptz AS $$ " +
                         "BEGIN RETURN source::text::timestamptz; END; " +
-                        "$$ LANGUAGE 'plpgsql' IMMUTABLE;\n" +
+                        "$$ LANGUAGE 'plpgsql' IMMUTABLE; COMMIT;\n" +
+                "BEGIN; SELECT pg_advisory_xact_lock(2142616274639426746); " +
                 "CREATE OR REPLACE FUNCTION bigint_to_jsonb_immutable(source bigint) RETURNS jsonb AS $$ " +
-                    "BEGIN RETURN to_json(source)::jsonb; END; " +
-                    "$$ LANGUAGE 'plpgsql' IMMUTABLE;\n" +
+                        "BEGIN RETURN to_json(source)::jsonb; END; " +
+                        "$$ LANGUAGE 'plpgsql' IMMUTABLE; COMMIT;\n" +
                 "CREATE TABLE test_collection (document jsonb NOT NULL);\n" +
                 "CREATE UNIQUE INDEX test_collection_pkey ON test_collection USING BTREE ((document#>'{test_collectionID}'));\n",
-                body.toString());
+                body.toString()
+        );
     }
 
     @Test
@@ -162,12 +165,14 @@ public class PostgresSchemaTest {
                 "}");
         PostgresSchema.create(statement, collection, options);
         assertEquals(
+                "BEGIN; SELECT pg_advisory_xact_lock(2142616274639426746); " +
                 "CREATE OR REPLACE FUNCTION parse_timestamp_immutable(source jsonb) RETURNS timestamptz AS $$ " +
                         "BEGIN RETURN source::text::timestamptz; END; " +
-                        "$$ LANGUAGE 'plpgsql' IMMUTABLE;\n" +
+                        "$$ LANGUAGE 'plpgsql' IMMUTABLE; COMMIT;\n" +
+                "BEGIN; SELECT pg_advisory_xact_lock(2142616274639426746); " +
                 "CREATE OR REPLACE FUNCTION bigint_to_jsonb_immutable(source bigint) RETURNS jsonb AS $$ " +
                         "BEGIN RETURN to_json(source)::jsonb; END; " +
-                        "$$ LANGUAGE 'plpgsql' IMMUTABLE;\n" +
+                        "$$ LANGUAGE 'plpgsql' IMMUTABLE; COMMIT;\n" +
                 "CREATE TABLE test_collection (document jsonb NOT NULL, fulltext tsvector);\n" +
                 "CREATE UNIQUE INDEX test_collection_pkey ON test_collection USING BTREE ((document#>'{test_collectionID}'));\n" +
                 "CREATE INDEX ON test_collection USING BTREE ((document#>'{a}'));\n" +

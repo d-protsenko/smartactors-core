@@ -9,6 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 /**
@@ -58,16 +59,17 @@ public class ThreadImplTest {
         Object mutex = new Object();
         ITask firstTask = () -> {
             try {
-                mutex.wait();
+                synchronized (mutex) {
+                    mutex.wait();
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         };
         ITask secondTask = mutex::notify;
-
         thread.execute(firstTask);
-
         thread.execute(secondTask);
+        fail();
     }
 
     @Test(expected = TaskExecutionException.class)

@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.message_processing.receiver_chain;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.dumpable_interface.idumpable.IDumpable;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -114,6 +115,7 @@ public class ImmutableReceiverChainTest extends PluginsLoadingTestBase {
     @Test
     public void Should_getExceptionalChainUsingMappingMap()
             throws Exception {
+        ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
         Map<Class<? extends Throwable>, IObject> mappingMap = new HashMap<Class<? extends Throwable>, IObject>() {{
             put(InvalidArgumentException.class, mock(IObject.class));
         }};
