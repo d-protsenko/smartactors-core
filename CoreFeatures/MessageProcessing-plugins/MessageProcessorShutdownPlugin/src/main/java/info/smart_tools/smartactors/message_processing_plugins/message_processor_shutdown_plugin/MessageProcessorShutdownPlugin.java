@@ -34,4 +34,8 @@ public class MessageProcessorShutdownPlugin extends BootstrapPlugin {
         ITaskProcessStrategy taskProcessStrategy = IOC.resolve(Keys.getOrAdd("notify task processing strategy"));
         strategy.register(MessageProcessor.class, new SingletonStrategy(taskProcessStrategy));
     }
+
+    @ItemRevert("message_processor_shutdown_strategy")
+    public void unregisterMessageProcessorShutdownStrategies() {
+    }
 }

@@ -64,6 +64,8 @@ public class ResponseSenderReceiverTest extends PluginsLoadingTestBase {
         receiver.receive(messageProcessorMock);
 
         verify(responseStrategyMock).sendResponse(same(envMock));
+
+        receiver.dispose();
     }
 
     @Test(expected = MessageReceiveException.class)

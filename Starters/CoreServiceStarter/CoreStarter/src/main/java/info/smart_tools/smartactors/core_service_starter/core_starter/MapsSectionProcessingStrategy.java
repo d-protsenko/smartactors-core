@@ -13,6 +13,7 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Creates and registers message maps (receiver chains) using configuration.
@@ -68,6 +69,33 @@ public class MapsSectionProcessingStrategy implements ISectionStrategy {
             }
         } catch (InvalidArgumentException | ResolutionException | ReadValueException e) {
             throw new ConfigurationProcessingException("Error occurred loading \"maps\" section of configuration.", e);
+        }
+    }
+
+    @Override
+    public void onRevertConfig(final IObject config)
+            throws ConfigurationProcessingException {
+        ConfigurationProcessingException exception = new ConfigurationProcessingException("Error occurred reverting \"maps\" configuration section.");
+        try {
+            List<IObject> section = (List<IObject>) config.getValue(name);
+            ListIterator<IObject> sectionIterator = section.listIterator(section.size());
+            IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
+            IObject mapDescription;
+
+            while (sectionIterator.hasPrevious()) {
+                mapDescription = sectionIterator.previous();
+                try {
+                    Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), mapDescription.getValue(mapIdFieldName));
+                    chainStorage.unregister(mapId);
+                } catch (InvalidArgumentException | ReadValueException | ResolutionException e) {
+                    exception.addSuppressed(e);
+                }
+            }
+        } catch (InvalidArgumentException | ResolutionException | ReadValueException e) {
+            exception.addSuppressed(e);
+        }
+        if (exception.getSuppressed().length > 0) {
+            throw exception;
         }
     }
 

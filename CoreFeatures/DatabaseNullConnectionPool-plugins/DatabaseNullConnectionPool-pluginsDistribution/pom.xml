@@ -5,7 +5,7 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>database-null-connection-pool-plugin</artifactId>
-        <version>0.3.3</version>
+        <version>0.4.0</version>
     </parent>
     <artifactId>database-null-connection-pool-plugin-distribution</artifactId>
     <packaging>pom</packaging>

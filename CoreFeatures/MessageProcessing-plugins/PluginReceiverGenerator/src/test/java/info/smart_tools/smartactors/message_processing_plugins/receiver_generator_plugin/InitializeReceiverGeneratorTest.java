@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.Bootst
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
@@ -98,6 +99,13 @@ public class InitializeReceiverGeneratorTest {
         item.executeProcess();
         IReceiverGenerator rg = IOC.resolve(Keys.getOrAdd(IReceiverGenerator.class.getCanonicalName()));
         assertNotNull(rg);
+
+        item.executeRevertProcess();
+        try {
+            IOC.resolve(Keys.getOrAdd(IReceiverGenerator.class.getCanonicalName()));
+            fail();
+        } catch(ResolutionException e) {}
+
         reset(bootstrap);
     }
 

@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
@@ -16,6 +17,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.object_creatio
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.exeptions.ReceiverObjectListenerException;
 
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Creates objects using configuration.
@@ -69,6 +71,34 @@ public class ObjectsSectionProcessingStrategy implements ISectionStrategy {
         } catch (InvalidReceiverPipelineException | ResolutionException | InvalidArgumentException | ReadValueException
                 | ReceiverObjectCreatorException | ReceiverObjectListenerException e) {
             throw new ConfigurationProcessingException("Error occurred loading \"objects\" configuration section.", e);
+        }
+    }
+
+    @Override
+    public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
+        ConfigurationProcessingException exception = new ConfigurationProcessingException("Error occurred reverting \"objects\" configuration section.");
+        try {
+            IRouter router = IOC.resolve(Keys.getOrAdd(IRouter.class.getCanonicalName()));
+            IFieldName objectNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+            List<IObject> section = (List<IObject>) config.getValue(name);
+            ListIterator<IObject> sectionIterator = section.listIterator(section.size());
+            Object objectName;
+            IObject objDesc;
+
+            while (sectionIterator.hasPrevious()) {
+                objDesc = sectionIterator.previous();
+                try {
+                    objectName = objDesc.getValue(objectNameFieldName);
+                    router.unregister(objectName);
+                } catch (InvalidArgumentException | ReadValueException e) {
+                    exception.addSuppressed(e);
+                }
+            }
+        } catch ( ResolutionException | InvalidArgumentException | ReadValueException e) {
+            exception.addSuppressed(e);
+        }
+        if (exception.getSuppressed().length > 0) {
+            throw exception;
         }
     }
 

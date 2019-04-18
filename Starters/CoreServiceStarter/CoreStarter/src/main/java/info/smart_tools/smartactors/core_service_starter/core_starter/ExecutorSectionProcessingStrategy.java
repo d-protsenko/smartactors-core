@@ -1,6 +1,9 @@
 //package info.smart_tools.smartactors.core_service_starter.core_starter;
 package info.smart_tools.smartactors.core_service_starter.core_starter;
 
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
@@ -8,6 +11,7 @@ import info.smart_tools.smartactors.configuration_manager.interfaces.iconfigurat
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -49,7 +53,8 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
     }
 
     @Override
-    public void onLoadConfig(final IObject config) throws ConfigurationProcessingException {
+    public void onLoadConfig(final IObject config)
+            throws ConfigurationProcessingException {
         try {
             IObject section = (IObject) config.getValue(name);
             int threadsCount = Integer.valueOf(String.valueOf(section.getValue(threadCountFieldName)));
@@ -77,13 +82,57 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
 
             IUpCounter rootUpCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
 
-            rootUpCounter.onShutdownComplete(() -> {
+            rootUpCounter.onShutdownComplete(taskDispatcher.toString(), () -> {
                 taskDispatcher.stop();
                 threadPool.terminate();
             });
         } catch (InvalidArgumentException | ResolutionException | RegistrationException | ReadValueException
                 | UpCounterCallbackExecutionException e) {
             throw new ConfigurationProcessingException(e);
+        }
+    }
+
+    @Override
+    public void onRevertConfig(final IObject config)
+            throws ConfigurationProcessingException {
+        ConfigurationProcessingException exception = new ConfigurationProcessingException("Error occurred reverting \"Executor\" configuration section.");
+        try {
+            ITaskDispatcher taskDispatcher = IOC.resolve(Keys.getOrAdd("task_dispatcher"));
+            taskDispatcher.stop();
+            IUpCounter rootUpCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
+            IPoorAction taskDispatcherShutdown = rootUpCounter.removeFromShutdownComplete(taskDispatcher.toString());
+            taskDispatcherShutdown.execute();
+        } catch (ResolutionException | ActionExecuteException e) {
+            exception.addSuppressed(e);
+        }
+        try {
+            IThreadPool threadPool = IOC.resolve(Keys.getOrAdd("thread_pool"));
+            threadPool.terminate();
+        } catch (ResolutionException e) {
+            exception.addSuppressed(e);
+        }
+        try {
+            IOC.remove(Keys.getOrAdd("default_stack_depth"));
+        } catch(ResolutionException | DeletionException e) {
+            exception.addSuppressed(e);
+        }
+        try {
+            IOC.remove(Keys.getOrAdd("thread_pool"));
+        } catch(ResolutionException | DeletionException e) {
+            exception.addSuppressed(e);
+        }
+        try {
+            IOC.remove(Keys.getOrAdd("task_queue"));
+        } catch(ResolutionException | DeletionException e) {
+            exception.addSuppressed(e);
+        }
+        try {
+            IOC.remove(Keys.getOrAdd("task_dispatcher"));
+        } catch(ResolutionException | DeletionException e) {
+            exception.addSuppressed(e);
+        }
+        if (exception.getSuppressed().length > 0) {
+            throw exception;
         }
     }
 

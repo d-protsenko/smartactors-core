@@ -81,6 +81,11 @@ public class InMemoryDBSectionProcessingStrategy implements ISectionStrategy {
     }
 
     @Override
+    public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
+        // ToDo: write corresponding revert code
+    }
+
+    @Override
     public IFieldName getSectionName() {
         return name;
     }

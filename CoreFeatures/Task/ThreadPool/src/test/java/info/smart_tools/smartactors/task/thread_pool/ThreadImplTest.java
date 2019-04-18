@@ -19,7 +19,7 @@ public class ThreadImplTest {
     public void setUp()
             throws Exception {
         threadPoolMock = mock(ThreadPool.class);
-        thread = new ThreadImpl(threadPoolMock);
+        thread = new ThreadImpl(threadPoolMock, "TestThread");
     }
 
     @After

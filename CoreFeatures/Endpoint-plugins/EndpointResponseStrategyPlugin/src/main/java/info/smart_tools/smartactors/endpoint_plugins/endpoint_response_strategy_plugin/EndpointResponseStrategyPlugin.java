@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonSt
 import info.smart_tools.smartactors.endpoint.response_strategy.EndpointResponseStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -22,8 +23,20 @@ public class EndpointResponseStrategyPlugin extends BootstrapPlugin {
     }
 
     @Item("http_response_strategy")
-    public void doSomeThing()
+    public void registerHttpResponseStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(Keys.getOrAdd("endpoint response strategy"), new SingletonStrategy(new EndpointResponseStrategy()));
+    }
+
+    @ItemRevert("http_response_strategy")
+    public void unregisterHttpResponseStrategy() {
+        String itemName = "http_response_strategy";
+        String keyName = "endpoint response strategy";
+
+        try {
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
     }
 }

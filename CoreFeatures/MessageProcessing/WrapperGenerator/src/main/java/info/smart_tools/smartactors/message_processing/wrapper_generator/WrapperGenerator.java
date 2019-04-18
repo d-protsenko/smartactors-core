@@ -74,6 +74,9 @@ public class WrapperGenerator implements IWrapperGenerator {
         try {
             Class<T> clazz = generateClass(targetInterface);
 
+            /*  This block is replaced by next one in order to prevent the registration of wrapper into IOC
+                and bypass the instance of the class directly to return
+
             // May be later CreateNewInstanceStrategy will be replaced by GetInstanceFromPoolStrategy
             // ToDo: replace this strategy to the future plugin for WrapperGenerator
             IOC.register(
@@ -92,6 +95,13 @@ public class WrapperGenerator implements IWrapperGenerator {
             return IOC.resolve(
                     IOC.resolve(IOC.getKeyForKeyStorage(), targetInterface.getCanonicalName() + "wrapper")
             );
+            */
+
+            try {
+                return clazz.newInstance();
+            } catch (Throwable e) {
+                throw new RuntimeException("Error on creation new instance.", e);
+            }
         } catch (Throwable e) {
             throw new WrapperGeneratorException(
                     "Could not implement wrapper interface because of the following error:",

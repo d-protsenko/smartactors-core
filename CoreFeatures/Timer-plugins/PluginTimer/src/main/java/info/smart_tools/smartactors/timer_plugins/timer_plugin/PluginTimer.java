@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.Bootst
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
@@ -39,25 +40,45 @@ public class PluginTimer implements IPlugin {
             IBootstrapItem<String> item = new BootstrapItem("timer");
 
             item.process(() -> {
-                        try {
-                            IOC.register(Keys.getOrAdd("timer"), new SingletonStrategy(
-                                    new TimerImpl(new Timer("Smart actors system timer", true))));
-                        } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
-                            throw new ActionExecuteException(e);
-                        }
-                    });
+                try {
+                    IOC.register(Keys.getOrAdd("timer"), new SingletonStrategy(
+                            new TimerImpl(new Timer("Smart actors system timer", true))));
+                } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
+                    throw new ActionExecuteException(e);
+                }
+            })
+            .revertProcess(() -> {
+                String itemName = "timer";
+                String keyName = "timer";
+
+                try {
+                    IOC.remove(Keys.getOrAdd(keyName));
+                } catch(DeletionException e) {
+                    System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                } catch (ResolutionException e) { }
+            });
 
             bootstrap.add(item);
 
             item = new BootstrapItem("time");
 
             item.process(() -> {
-                        try {
-                            IOC.register(Keys.getOrAdd("time"), new SingletonStrategy(new SystemTimeImpl()));
-                        } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
-                            throw new ActionExecuteException(e);
-                        }
-                    });
+                try {
+                    IOC.register(Keys.getOrAdd("time"), new SingletonStrategy(new SystemTimeImpl()));
+                } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
+                    throw new ActionExecuteException(e);
+                }
+            })
+            .revertProcess(() -> {
+                String itemName = "time";
+                String keyName = "time";
+
+                try {
+                    IOC.remove(Keys.getOrAdd(keyName));
+                } catch(DeletionException e) {
+                    System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                } catch (ResolutionException e) { }
+            });
 
             bootstrap.add(item);
         } catch (InvalidArgumentException e) {

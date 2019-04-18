@@ -39,4 +39,8 @@ public class SaveTimestampReceiver implements IMessageReceiver {
             throw new MessageReceiveException("Could not save current time in message context.", e);
         }
     }
+
+    @Override
+    public void dispose() {
+    }
 }

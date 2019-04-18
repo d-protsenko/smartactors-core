@@ -10,6 +10,7 @@ import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonSt
 import info.smart_tools.smartactors.base.up_counter.UpCounter;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -40,6 +41,23 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
     }
 
     /**
+     * Reverts root upcounter registrations.
+     *
+     */
+    @ItemRevert("root_upcounter")
+    public void unregisterRootUpcounter() {
+        String itemName = "root_upcounter";
+        String keyName = "";
+
+        try {
+            keyName = "root upcounter";
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
+    }
+
+    /**
      * Registers strategy for creation of new upcounters. Strategy takes one optional argument - the parent upcounter. By default the root
      * upcounter is used as parent.
      *
@@ -62,6 +80,23 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
                 throw new FunctionExecutionException(e);
             }
         }));
+    }
+
+    /**
+     * Reverts strategy for creation of new upcounters registration.
+     *
+     */
+    @ItemRevert("new_upcounter_creation_strategy")
+    public void unregisterNewUpcounterCreationStrategy() {
+        String itemName = "new_upcounter_creation_strategy";
+        String keyName;
+
+        keyName = "new upcounter";
+        try {
+            IOC.remove(Keys.getOrAdd(keyName));
+        } catch(DeletionException e) {
+            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+        } catch (ResolutionException e) { }
     }
 
     /**
@@ -103,16 +138,16 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
             throws ResolutionException, UpCounterCallbackExecutionException {
         IUpCounter upCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
 
-        upCounter.onShutdownRequest(mode -> {
+        upCounter.onShutdownRequest(this.toString(), mode -> {
             System.out.printf("Got shutdown request with mode=\"%s\"\n", mode);
         });
 
-        upCounter.onShutdownComplete(() -> {
+        upCounter.onShutdownComplete(this.toString(), () -> {
             System.out.println("Shutting down completely...");
         });
 
         // TODO:: Remove/move to separate feature if multiple instances will be able to run in the same JVM
-        upCounter.onShutdownComplete(() -> {
+        upCounter.onShutdownComplete(this.toString(), () -> {
             Thread thread = new Thread(() -> {
                 try {
                     Thread.sleep(TERMINATION_TIMEOUT / 2);
@@ -121,7 +156,7 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
                     System.out.println("Forcing JVM shutdown...");
                     System.exit(1);
                 } catch (InterruptedException ignore) { }
-            });
+            }, "onShutdownCompleteThread");
 
             thread.setDaemon(true);
             thread.start();

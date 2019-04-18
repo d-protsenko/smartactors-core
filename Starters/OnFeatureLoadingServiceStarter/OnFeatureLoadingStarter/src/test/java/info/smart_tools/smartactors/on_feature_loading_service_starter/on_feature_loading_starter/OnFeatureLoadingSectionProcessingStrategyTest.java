@@ -1,7 +1,9 @@
 package info.smart_tools.smartactors.on_feature_loading_service_starter.on_feature_loading_starter;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
@@ -10,6 +12,7 @@ import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject_extension.configuration_object.CObjectStrategy;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
@@ -125,6 +128,7 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
         IObject config = new DSObject("{\"onFeatureLoading\": [\n" +
                 "    {\n" +
                 "      \"chain\": \"chain1\",\n" +
+                "      \"revert\": false,\n" +
                 "      \"messages\": [\n" +
                 "        {\n" +
                 "          \"key\": \"value1\"\n" +
@@ -133,6 +137,19 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
                 "    },\n" +
                 "    {\n" +
                 "      \"chain\": \"chain2\",\n" +
+                "      \"revert\": false,\n" +
+                "      \"messages\": [\n" +
+                "        {\n" +
+                "          \"key\": \"value2\"\n" +
+                "        },\n" +
+                "        {\n" +
+                "          \"key\": \"value3\"\n" +
+                "        }\n" +
+                "      ]\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"chain\": \"chain3\",\n" +
+                "      \"revert\": true,\n" +
                 "      \"messages\": [\n" +
                 "        {\n" +
                 "          \"key\": \"value2\"\n" +
@@ -147,14 +164,19 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
         IObject message11 = ((List<IObject>)onFeatureLoadingConfigSection.get(0).getValue(new FieldName("messages"))).get(0);
         IObject message21 = ((List<IObject>)onFeatureLoadingConfigSection.get(1).getValue(new FieldName("messages"))).get(0);
         IObject message22 = ((List<IObject>)onFeatureLoadingConfigSection.get(1).getValue(new FieldName("messages"))).get(1);
+        IObject message31 = ((List<IObject>)onFeatureLoadingConfigSection.get(2).getValue(new FieldName("messages"))).get(0);
+        IObject message32 = ((List<IObject>)onFeatureLoadingConfigSection.get(2).getValue(new FieldName("messages"))).get(1);
 
         this.chainMapIdResolveStrategy = mock(IResolveDependencyStrategy.class);
         Object mapId1 = mock(Object.class);
         Object mapId2 = mock(Object.class);
+        Object mapId3 = mock(Object.class);
         IReceiverChain chain1 = mock(IReceiverChain.class);
         IReceiverChain chain2 = mock(IReceiverChain.class);
+        IReceiverChain chain3 = mock(IReceiverChain.class);
         when(this.chainMapIdResolveStrategy.resolve("chain1")).thenReturn(mapId1);
         when(this.chainMapIdResolveStrategy.resolve("chain2")).thenReturn(mapId2);
+        when(this.chainMapIdResolveStrategy.resolve("chain3")).thenReturn(mapId3);
 
         IKey chainIdFromMapNameKey = Keys.getOrAdd("chain_id_from_map_name");
         IOC.register(chainIdFromMapNameKey,
@@ -162,6 +184,7 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
 
         when(this.chainStorage.resolve(mapId1)).thenReturn(chain1);
         when(this.chainStorage.resolve(mapId2)).thenReturn(chain2);
+        when(this.chainStorage.resolve(mapId3)).thenReturn(chain3);
 
         this.sequenceResolveStrategy = mock(IResolveDependencyStrategy.class);
         IKey sequenceKey = Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence");
@@ -169,21 +192,47 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
         IOC.register(sequenceKey, this.sequenceResolveStrategy);
         when(this.sequenceResolveStrategy.resolve(this.stackDepth, chain1)).thenReturn(sequence);
         when(this.sequenceResolveStrategy.resolve(this.stackDepth, chain2)).thenReturn(sequence);
+        when(this.sequenceResolveStrategy.resolve(this.stackDepth, chain3)).thenReturn(sequence);
 
         strategy.onLoadConfig(config);
 
         verify(this.chainMapIdResolveStrategy, times(1)).resolve("chain1");
         verify(this.chainMapIdResolveStrategy, times(1)).resolve("chain2");
+        verify(this.chainMapIdResolveStrategy, times(0)).resolve("chain3");
 
         verify(this.chainStorage, times(1)).resolve(mapId1);
         verify(this.chainStorage, times(1)).resolve(mapId2);
+        verify(this.chainStorage, times(0)).resolve(mapId3);
 
         verify(this.sequenceResolveStrategy, times(1)).resolve(this.stackDepth, chain1);
         verify(this.sequenceResolveStrategy, times(2)).resolve(this.stackDepth, chain2);
+        verify(this.sequenceResolveStrategy, times(0)).resolve(this.stackDepth, chain3);
 
         verify(this.messageProcessor, times(1)).process(message11, this.context);
         verify(this.messageProcessor, times(1)).process(message21, this.context);
         verify(this.messageProcessor, times(1)).process(message22, this.context);
+        verify(this.messageProcessor, times(0)).process(message31, this.context);
+        verify(this.messageProcessor, times(0)).process(message32, this.context);
+
+        strategy.onRevertConfig(config);
+
+        verify(this.chainMapIdResolveStrategy, times(1)).resolve("chain1");
+        verify(this.chainMapIdResolveStrategy, times(1)).resolve("chain2");
+        verify(this.chainMapIdResolveStrategy, times(1)).resolve("chain3");
+
+        verify(this.chainStorage, times(1)).resolve(mapId1);
+        verify(this.chainStorage, times(1)).resolve(mapId2);
+        verify(this.chainStorage, times(1)).resolve(mapId3);
+
+        verify(this.sequenceResolveStrategy, times(1)).resolve(this.stackDepth, chain1);
+        verify(this.sequenceResolveStrategy, times(2)).resolve(this.stackDepth, chain2);
+        verify(this.sequenceResolveStrategy, times(2)).resolve(this.stackDepth, chain3);
+
+        verify(this.messageProcessor, times(1)).process(message11, this.context);
+        verify(this.messageProcessor, times(1)).process(message21, this.context);
+        verify(this.messageProcessor, times(1)).process(message22, this.context);
+        verify(this.messageProcessor, times(1)).process(message31, this.context);
+        verify(this.messageProcessor, times(1)).process(message32, this.context);
     }
 
     @Test (expected = ConfigurationProcessingException.class)
@@ -193,6 +242,7 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
         IObject config = new DSObject("{\"onFeatureLoading\": [\n" +
                 "    {\n" +
                 "      \"chain\": \"unknownChain\",\n" +
+                "      \"revert\": false,\n" +
                 "      \"messages\": [\n" +
                 "        {\n" +
                 "          \"key\": \"value\"\n" +

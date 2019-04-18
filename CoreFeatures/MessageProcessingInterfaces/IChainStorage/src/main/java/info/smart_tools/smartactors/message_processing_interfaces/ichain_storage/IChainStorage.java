@@ -22,6 +22,13 @@ public interface IChainStorage {
     void register(Object chainId, IObject description) throws ChainCreationException;
 
     /**
+     * Remove a chain with given identifier.
+     *
+     * @param chainId        identifier to store chain with
+     */
+    void unregister(Object chainId);
+
+    /**
      * Modify a chain and store the modified chain with the same identifier.
      *
      * @param chainId identifier of the chain to update

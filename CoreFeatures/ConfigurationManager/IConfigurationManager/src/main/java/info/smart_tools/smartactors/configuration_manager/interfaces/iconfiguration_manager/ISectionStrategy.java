@@ -12,10 +12,19 @@ public interface ISectionStrategy {
      * Called when configuration is loaded.
      *
      * @param config    the configuration object
-     * @throws ConfigurationProcessingException if any error occurs loading the configuration
+     * @throws ConfigurationProcessingException if any error occurs while loading the configuration
      * @see info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager
      */
     void onLoadConfig(final IObject config) throws ConfigurationProcessingException;
+
+    /**
+     * Called when configuration is reverted.
+     *
+     * @param config    the configuration object
+     * @throws ConfigurationProcessingException if any error occurs while reverting the configuration
+     * @see info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager
+     */
+    void onRevertConfig(final IObject config) throws ConfigurationProcessingException;
 
     /**
      * Return name of the configuration section processed by this strategy.

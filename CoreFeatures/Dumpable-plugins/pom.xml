@@ -5,11 +5,11 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>core-features</artifactId>
-        <version>0.3.3</version>
+        <version>0.4.0</version>
     </parent>
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>dumpable-plugins</artifactId>
-    <version>0.3.3</version>
+    <version>0.4.0</version>
     <packaging>pom</packaging>
     <modules>
         <module>PluginMakeDump</module>

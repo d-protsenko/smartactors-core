@@ -91,9 +91,12 @@ public class TestsSectionStrategyTest extends PluginsLoadingTestBase {
             return null;
         }).when(testRunnerMock).runTest(any(), any());
 
-        new TestsSectionStrategy().onLoadConfig(config);
+        TestsSectionStrategy strategy = new TestsSectionStrategy();
+        strategy.onLoadConfig(config);
 
         verify(testRunnerMock, times(1)).runTest(any(), any());
+
+        strategy.onRevertConfig(config);
     }
 
     @Test

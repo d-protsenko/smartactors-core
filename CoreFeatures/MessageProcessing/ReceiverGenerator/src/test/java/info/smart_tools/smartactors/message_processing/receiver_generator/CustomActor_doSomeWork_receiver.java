@@ -25,7 +25,9 @@ public class CustomActor_doSomeWork_receiver implements IMessageReceiver {
         } catch (Throwable e) {
             throw new MessageReceiveException("Could not execute receiver operation.", e);
         }
-
     }
 
+    @Override
+    public void dispose() {
+    }
 }

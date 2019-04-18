@@ -74,4 +74,13 @@ public class WrapperCreatorReceiverDecorator implements IMessageReceiver {
             throw new MessageReceiveException(e);
         }
     }
+
+    @Override
+    public void dispose() {
+        try {
+            underlyingReceiver.dispose();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
 }

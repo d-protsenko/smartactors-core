@@ -32,4 +32,8 @@ public class SkipReceiverExceptionHandler extends ExceptionHandlingReceiver {
             throw new MessageReceiveException("Exception occurred while skipping a receiver thrown exception", e);
         }
     }
+
+    @Override
+    public void dispose() {
+    }
 }

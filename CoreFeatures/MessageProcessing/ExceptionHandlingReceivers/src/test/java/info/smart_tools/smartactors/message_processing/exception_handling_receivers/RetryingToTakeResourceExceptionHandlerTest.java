@@ -71,6 +71,8 @@ public class RetryingToTakeResourceExceptionHandlerTest extends ExceptionHandlin
         } catch (ActionExecuteException e) {
             assertSame(asynchronousOperationException, e.getCause());
         }
+
+        receiver.dispose();
     }
 
     @Test

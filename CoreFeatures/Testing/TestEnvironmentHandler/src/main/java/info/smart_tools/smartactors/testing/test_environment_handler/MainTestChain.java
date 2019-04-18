@@ -13,6 +13,8 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageReceiveException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -30,23 +32,37 @@ public class MainTestChain implements IReceiverChain {
 
     private IFieldName chainFieldName;
 
-    private IMessageReceiver testChainRunnerReceiver = mp -> {
-        try {
-            mp.getSequence().callChain(this.testChain);
-        } catch (NestedChainStackOverflowException e) {
-            throw new MessageReceiveException(e);
-        }
-    };
-
-    private IMessageReceiver successfulReceiver = mp -> {
-        try {
-            if (isCompleted.compareAndSet(false, true)) {
-                completionCallback.execute(null);
+    private class TestChainRunnerReceiver implements IMessageReceiver {
+        public void receive(IMessageProcessor mp)
+                throws MessageReceiveException, AsynchronousOperationException {
+            try {
+                mp.getSequence().callChain(testChain);
+            } catch (NestedChainStackOverflowException e) {
+                throw new MessageReceiveException(e);
             }
-        } catch (ActionExecuteException | InvalidArgumentException e) {
-            throw new MessageReceiveException(e);
         }
-    };
+
+        public void dispose() { }
+    }
+
+    private TestChainRunnerReceiver testChainRunnerReceiver = new TestChainRunnerReceiver();
+
+    private class SuccessfulReceiver implements IMessageReceiver {
+        public void receive(IMessageProcessor mp)
+                throws MessageReceiveException, AsynchronousOperationException {
+            try {
+                if (isCompleted.compareAndSet(false, true)) {
+                    completionCallback.execute(null);
+                }
+            } catch (ActionExecuteException | InvalidArgumentException e) {
+                throw new MessageReceiveException(e);
+            }
+        }
+
+        public void dispose() { }
+    }
+
+    private IMessageReceiver successfulReceiver = new SuccessfulReceiver();
 
     /**
      * The constructor.

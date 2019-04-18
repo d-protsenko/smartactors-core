@@ -28,6 +28,15 @@ public class ActorCollectionRouter implements IRouter {
     }
 
     @Override
+    public void unregister(Object targetId) {
+        IMessageReceiver receiver = storage.remove(targetId);
+
+        if (null != receiver) {
+            receiver.dispose();
+        }
+    }
+
+    @Override
     public List<Object> enumerate() {
         return new ArrayList<>(storage.keySet());
     }

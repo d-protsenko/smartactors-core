@@ -75,11 +75,41 @@ public class OnShutdownRequestConfigurationSectionStrategy implements ISectionSt
                     actionKeyName = defaultActionKeyName;
                 }
 
-                upCounter.onShutdownRequest(IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), actionKeyName)));
+                upCounter.onShutdownRequest( "cfg-"+actionKeyName,
+                        IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), actionKeyName)));
             }
         } catch (ReadValueException | InvalidArgumentException | ClassCastException | ResolutionException
                 | UpCounterCallbackExecutionException e) {
             throw new ConfigurationProcessingException(e);
+        }
+    }
+
+    @Override
+    public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
+        ConfigurationProcessingException exception = new ConfigurationProcessingException("Error occurred reverting \"onShutdownRequest\" configuration section.");
+        try {
+            List<IObject> section = (List) config.getValue(sectionNameFieldName);
+
+            for (IObject obj : section) {
+                try {
+                    IUpCounter upCounter = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), obj.getValue(upcounterFieldName)));
+
+                    Object actionKeyName = obj.getValue(actionFieldName);
+
+                    if (null == actionKeyName) {
+                        actionKeyName = defaultActionKeyName;
+                    }
+
+                    upCounter.removeFromShutdownRequest("cfg-" + actionKeyName);
+                } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
+                    exception.addSuppressed(e);
+                }
+            }
+        } catch (ReadValueException | InvalidArgumentException | ClassCastException e) {
+            exception.addSuppressed(e);
+        }
+        if (exception.getSuppressed().length > 0) {
+            throw exception;
         }
     }
 

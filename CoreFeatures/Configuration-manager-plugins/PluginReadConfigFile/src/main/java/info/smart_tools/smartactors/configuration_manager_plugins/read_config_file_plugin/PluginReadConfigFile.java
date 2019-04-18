@@ -70,6 +70,33 @@ public class PluginReadConfigFile implements IPlugin {
                         } catch (ConfigurationProcessingException e) {
                             throw new ActionExecuteException("Error occurred processing configuration.", e);
                         }
+                    })
+                    .revertProcess(() -> {
+                        try {
+                            String fileName = System.getenv().getOrDefault("SM_CONFIG_FILE", "configuration.json");
+                            byte[] rawConfig = Files.readAllBytes(Paths.get(fileName));
+                            String configString = new String(rawConfig);
+
+                            IConfigurationManager configurationManager = IOC.resolve(
+                                    Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
+
+                            IObject cObject = IOC.resolve(Keys.getOrAdd("configuration object"), configString);
+
+                            configurationManager.revertConfig(cObject);
+                        } catch (FileNotFoundException e) {
+                            throw new ActionExecuteException("ReadConfigFile plugin can't revert: configuration file not found.", e);
+                        } catch (ResolutionException e) {
+                            throw new ActionExecuteException("ReadConfigFile plugin can't revert: can't get ReadConfigFile key", e);
+                        } catch (InvalidArgumentException e) {
+                            throw new ActionExecuteException("ReadConfigFile plugin can't revert: can't revert the strategy", e);
+                        } catch (IOException e) {
+                            throw new ActionExecuteException("ReadConfigFile plugin can't revert: can't read configuration file", e);
+                        } catch (ConfigurationProcessingException e) {
+                            /*  Now suppress all exceptions since we count revert successful
+                                even if not all actions done normally. Before it was:
+                                    throw new ActionExecuteException("Error occurred processing configuration.", e);
+                            */
+                        }
                     });
 
             bootstrap.add(readConfigItem);

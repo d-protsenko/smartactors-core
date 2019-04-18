@@ -223,7 +223,7 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
 
         ArgumentCaptor<IPoorAction> callbackCaptor = ArgumentCaptor.forClass(IPoorAction.class);
 
-        verify(upCounterMock).onShutdownComplete(callbackCaptor.capture());
+        verify(upCounterMock).onShutdownComplete(eq(actor.toString()), callbackCaptor.capture());
 
         callbackCaptor.getValue().execute();
         verify(service).stop();
@@ -245,7 +245,7 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
 
         ArgumentCaptor<IAction> callbackCaptor = ArgumentCaptor.forClass(IAction.class);
 
-        verify(upCounterMock).onShutdownRequest(callbackCaptor.capture());
+        verify(upCounterMock).onShutdownRequest(eq(actor.toString()), callbackCaptor.capture());
 
         callbackCaptor.getValue().execute(null);
 

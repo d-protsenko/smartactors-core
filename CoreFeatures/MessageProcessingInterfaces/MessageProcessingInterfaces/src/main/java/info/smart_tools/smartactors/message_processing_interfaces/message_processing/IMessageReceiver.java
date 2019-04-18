@@ -17,4 +17,12 @@ public interface IMessageReceiver {
      * @throws AsynchronousOperationException if error occurs starting asynchronous operation
      */
     void receive(IMessageProcessor processor) throws MessageReceiveException, AsynchronousOperationException;
+
+    /**
+     * Dispose the receiver.
+     *
+     * This method have to unregister all registrations in IOC done during receiver creation.
+     * Passes exception if any error occurs while disposing the receiver.
+     */
+    void dispose();
 }

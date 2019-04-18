@@ -157,7 +157,7 @@ public class RuntimeDirectoryFeatureTracker {
                     throw new RuntimeException(e);
                 }
             });
-            this.watchingThread = new Thread(task);
+            this.watchingThread = new Thread(task, "RuntimeDirectoryFeatureTracker");
             this.watchingThread.setDaemon(true);
             this.watchingThread.start();
         } catch (IOException | InitializationException e) {

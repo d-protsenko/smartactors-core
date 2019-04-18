@@ -35,4 +35,9 @@ public class ResponseSenderReceiver implements IMessageReceiver {
             throw new MessageReceiveException("Error occurred sending response.", e);
         }
     }
+
+    @Override
+    public void dispose() {
+        // do nothing
+    }
 }

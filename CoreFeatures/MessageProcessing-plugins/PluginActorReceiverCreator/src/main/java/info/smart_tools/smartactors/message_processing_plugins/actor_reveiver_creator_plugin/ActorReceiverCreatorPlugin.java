@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.message_processing_plugins.actor_reveiver_creator_plugin;
 
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.message_processing.actor_receiver_creator.ActorReceiverCreator;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
@@ -54,36 +55,56 @@ public class ActorReceiverCreatorPlugin  implements IPlugin {
                     .after("InitializeWrapperGenerator")
                     .after("IFieldPlugin")
                     .after("IFieldNamePlugin")
-                    .process(
-                            () -> {
-                                try {
-                                    IOC.register(
-                                            Keys.getOrAdd("actor_receiver_queue"),
-                                            new CreateNewInstanceStrategy(args -> new ConcurrentLinkedQueue()));
+                    .process(() -> {
+                        try {
+                            IOC.register(
+                                    Keys.getOrAdd("actor_receiver_queue"),
+                                    new CreateNewInstanceStrategy(args -> new ConcurrentLinkedQueue()));
 
-                                    IOC.register(
-                                            Keys.getOrAdd("actor_receiver_busyness_flag"),
-                                            new CreateNewInstanceStrategy(args -> new AtomicBoolean(false)));
+                            IOC.register(
+                                    Keys.getOrAdd("actor_receiver_busyness_flag"),
+                                    new CreateNewInstanceStrategy(args -> new AtomicBoolean(false)));
 
-                                    ActorReceiverCreator objectCreator = new ActorReceiverCreator();
-                                    IOC.register(
-                                            IOC.resolve(
-                                                    IOC.getKeyForKeyStorage(),
-                                                    IRoutedObjectCreator.class.getCanonicalName() + "#actor"
-                                            ),
-                                            new SingletonStrategy(objectCreator)
-                                    );
-                                } catch (ResolutionException e) {
-                                    throw new ActionExecuteException("ActorReceiverCreator plugin can't load: can't get ActorReceiverCreator key", e);
-                                } catch (InvalidArgumentException e) {
-                                    throw new ActionExecuteException("ActorReceiverCreator plugin can't load: can't create strategy", e);
-                                } catch (RegistrationException e) {
-                                    throw new ActionExecuteException("ActorReceiverCreator plugin can't load: can't register new strategy", e);
-                                } catch (ObjectCreationException e) {
-                                    throw new ActionExecuteException("ActorReceiverCreator plugin can't load: constructor error", e);
-                                }
-                            }
-                    );
+                            ActorReceiverCreator objectCreator = new ActorReceiverCreator();
+                            IOC.register(
+                                    Keys.getOrAdd(IRoutedObjectCreator.class.getCanonicalName() + "#actor"),
+                                    new SingletonStrategy(objectCreator)
+                            );
+                        } catch (ResolutionException e) {
+                            throw new ActionExecuteException("ActorReceiverCreator plugin can't load: can't get ActorReceiverCreator key", e);
+                        } catch (InvalidArgumentException e) {
+                            throw new ActionExecuteException("ActorReceiverCreator plugin can't load: can't create strategy", e);
+                        } catch (RegistrationException e) {
+                            throw new ActionExecuteException("ActorReceiverCreator plugin can't load: can't register new strategy", e);
+                        } catch (ObjectCreationException e) {
+                            throw new ActionExecuteException("ActorReceiverCreator plugin can't load: constructor error", e);
+                        }
+                    })
+                    .revertProcess(() -> {
+                        String itemName = "ActorReceiverCreator";
+                        String keyName = "";
+
+                        try {
+                            keyName = IRoutedObjectCreator.class.getCanonicalName() + "#actor";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = "actor_receiver_busyness_flag";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+
+                        try {
+                            keyName = "actor_receiver_queue";
+                            IOC.remove(Keys.getOrAdd(keyName));
+                        } catch(DeletionException e) {
+                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        } catch (ResolutionException e) { }
+                    });
             this.bootstrap.add(item);
         } catch (Throwable e) {
             throw new PluginException("Could not load 'ActorReceiverCreator plugin'", e);
