@@ -1,19 +1,19 @@
 package info.smart_tools.smartactors.debugger.actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.debugger.interfaces.exceptions.CommandExecutionException;
-import info.smart_tools.smartactors.debugger.interfaces.exceptions.InterruptProcessingException;
-import info.smart_tools.smartactors.debugger.interfaces.exceptions.SessionNotFoundException;
+import info.smart_tools.smartactors.debugger.actor.wrappers.CommandMessage;
+import info.smart_tools.smartactors.debugger.actor.wrappers.DebuggableMessage;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerCommand;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSequence;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSession;
-import info.smart_tools.smartactors.debugger.actor.wrappers.CommandMessage;
-import info.smart_tools.smartactors.debugger.actor.wrappers.DebuggableMessage;
+import info.smart_tools.smartactors.debugger.interfaces.exceptions.CommandExecutionException;
+import info.smart_tools.smartactors.debugger.interfaces.exceptions.InterruptProcessingException;
+import info.smart_tools.smartactors.debugger.interfaces.exceptions.SessionNotFoundException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +35,7 @@ public class DebuggerActor {
             String id = UUID.randomUUID().toString();
 
             try {
-                IDebuggerSession session = IOC.resolve(Keys.getOrAdd("debugger session"), id, debuggerAddress, arg);
+                IDebuggerSession session = IOC.resolve(Keys.resolveByName("debugger session"), id, debuggerAddress, arg);
 
                 sessions.put(id, session);
             } catch (ResolutionException e) {

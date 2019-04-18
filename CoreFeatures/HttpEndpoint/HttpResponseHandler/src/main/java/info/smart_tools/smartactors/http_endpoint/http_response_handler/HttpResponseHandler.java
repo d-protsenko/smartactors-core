@@ -1,6 +1,8 @@
 package info.smart_tools.smartactors.http_endpoint.http_response_handler;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.exceptions.DeserializationException;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IResponseHandler;
@@ -11,12 +13,9 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageProcessorProcessException;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
@@ -35,7 +34,7 @@ import java.util.ArrayList;
 public class HttpResponseHandler implements IResponseHandler<ChannelHandlerContext, FullHttpResponse> {
     private IQueue<ITask> taskQueue;
     private int stackDepth;
-    private IReceiverChain receiverChain;
+    private Object receiverMapName;
     private IObject request;
     private IFieldName messageFieldName;
     private IFieldName contextFieldName;
@@ -50,42 +49,41 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
     private Object uuid;
     private boolean isReceived;
     private IScope currentScope;
+    private IModule currentModule;
 
     /**
      * Constructor
      *
      * @param taskQueue     main queue of the {@link ITask}
      * @param stackDepth    depth of the stack for {@link io.netty.channel.ChannelOutboundBuffer.MessageProcessor}
-     * @param receiverChain chain, that should receive message
+     * @param mapName chain, that should receive message
      */
-    public HttpResponseHandler(final IQueue<ITask> taskQueue, final int stackDepth, final Object receiverChain,
-                               final IObject request, final IScope scope) throws ResponseHandlerException {
+    public HttpResponseHandler(final IQueue<ITask> taskQueue, final int stackDepth, final Object mapName,
+                               final IObject request, final IScope scope, IModule module) throws ResponseHandlerException {
         this.taskQueue = taskQueue;
         this.stackDepth = stackDepth;
 
         try {
-            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(),
-                    IChainStorage.class.getCanonicalName()));
-            Object mapId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), receiverChain);
-            this.receiverChain = chainStorage.resolve(mapId);
-            messageFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
-            contextFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context");
+            receiverMapName = mapName;
+            messageFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
+            contextFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context");
             httpResponseStatusCodeFieldName = IOC.resolve(
-                    Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                    Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                     "httpResponseStatusCode"
             );
-            responseFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "response");
-            headersFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "headers");
-            cookiesFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "cookies");
-            requestFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sendRequest");
-            messageMapIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "messageMapId");
-            uuidFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uuid");
+            responseFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "response");
+            headersFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "headers");
+            cookiesFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "cookies");
+            requestFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sendRequest");
+            messageMapIdFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "messageMapId");
+            uuidFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uuid");
             this.request = request;
             this.messageMapId = request.getValue(messageMapIdFieldName);
             this.uuid = request.getValue(uuidFieldName);
             isReceived = false;
             currentScope = scope;
-        } catch (ResolutionException | InvalidArgumentException | ReadValueException | ChainNotFoundException e) {
+            currentModule = module;
+        } catch (ResolutionException | InvalidArgumentException | ReadValueException e) {
             throw new ResponseHandlerException(e);
         }
     }
@@ -94,20 +92,18 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
     public void handle(final ChannelHandlerContext ctx, final FullHttpResponse response) throws ResponseHandlerException {
         try {
             ScopeProvider.setCurrentScope(currentScope);
-            IOC.resolve(Keys.getOrAdd("cancelTimerOnRequest"), uuid);
+            ModuleManager.setCurrentModule(currentModule);
+            IOC.resolve(Keys.resolveByName("cancelTimerOnRequest"), uuid);
             isReceived = true;
             FullHttpResponse responseCopy = response.copy();
             ITask task = () -> {
                 try {
                     IObject environment = getEnvironment(responseCopy);
-                    IMessageProcessingSequence processingSequence =
-                            IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), stackDepth, receiverChain);
-                    IMessageProcessor messageProcessor =
-                            IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), taskQueue, processingSequence);
-                    IFieldName messageFieldName = null;
-                    messageFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
-                    IFieldName contextFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context");
                     IObject message = (IObject) environment.getValue(messageFieldName);
+                    IMessageProcessingSequence processingSequence =
+                            IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"), stackDepth, receiverMapName, message);
+                    IMessageProcessor messageProcessor =
+                            IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), taskQueue, processingSequence);
                     message.setValue(messageMapIdFieldName, messageMapId);
                     IObject context = (IObject) environment.getValue(contextFieldName);
                     messageProcessor.process(message, context);
@@ -125,10 +121,10 @@ public class HttpResponseHandler implements IResponseHandler<ChannelHandlerConte
 
     private IObject getEnvironment(final FullHttpResponse response) throws ResponseHandlerException {
         try {
-            IDeserializeStrategy deserializeStrategy = IOC.resolve(Keys.getOrAdd("httpResponseResolver"), response);
+            IDeserializeStrategy deserializeStrategy = IOC.resolve(Keys.resolveByName("httpResponseResolver"), response);
             IObject message = deserializeStrategy.deserialize(response);
-            IObject environment = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
-            IObject context = IOC.resolve(Keys.getOrAdd("EmptyIObject"));
+            IObject environment = IOC.resolve(Keys.resolveByName("EmptyIObject"));
+            IObject context = IOC.resolve(Keys.resolveByName("EmptyIObject"));
             context.setValue(cookiesFieldName, new ArrayList<IObject>());
             context.setValue(headersFieldName, new ArrayList<IObject>());
             context.setValue(responseFieldName, response);

@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageReceiveException;
@@ -17,7 +17,6 @@ import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlu
 import info.smart_tools.smartactors.timer.interfaces.itimer.ITime;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -39,7 +38,7 @@ public class SaveTimestampReceiverTest extends PluginsLoadingTestBase {
     @Override
     protected void registerMocks() throws Exception {
         timeMock = mock(ITime.class);
-        IOC.register(Keys.getOrAdd("time"), new SingletonStrategy(timeMock));
+        IOC.register(Keys.resolveByName("time"), new SingletonStrategy(timeMock));
         when(timeMock.currentTimeMillis()).thenReturn(System.currentTimeMillis());
 
         timeFieldMock = mock(IFieldName.class);

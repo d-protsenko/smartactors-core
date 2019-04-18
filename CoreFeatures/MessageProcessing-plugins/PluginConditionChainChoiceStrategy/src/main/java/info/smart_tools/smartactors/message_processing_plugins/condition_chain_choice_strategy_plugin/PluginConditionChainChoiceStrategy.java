@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionExceptio
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing.condition_chain_choice_strategy.ConditionChainChoiceStrategy;
 
 /**
@@ -36,7 +36,7 @@ public class PluginConditionChainChoiceStrategy extends BootstrapPlugin {
     @BootstrapPlugin.Before({"ChainCallReceiver"})
     public void item()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("condition chain choice strategy"), new SingletonStrategy(new ConditionChainChoiceStrategy()));
+        IOC.register(Keys.resolveByName("condition chain choice strategy"), new SingletonStrategy(new ConditionChainChoiceStrategy()));
     }
 
     /**
@@ -47,9 +47,9 @@ public class PluginConditionChainChoiceStrategy extends BootstrapPlugin {
         String itemName = "condition_chain_choice_strategy";
         String keyName = "condition chain choice strategy";
         try {
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
     }
 }

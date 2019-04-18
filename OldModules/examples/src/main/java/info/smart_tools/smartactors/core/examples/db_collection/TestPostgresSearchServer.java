@@ -1,32 +1,32 @@
 package info.smart_tools.smartactors.core.examples.db_collection;
 
-import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
-import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
+import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
+import info.smart_tools.smartactors.base.pool_guard.exception.PoolGuardException;
 import info.smart_tools.smartactors.core.iserver.IServer;
 import info.smart_tools.smartactors.core.iserver.exception.ServerExecutionException;
 import info.smart_tools.smartactors.core.iserver.exception.ServerInitializeException;
-import info.smart_tools.smartactors.task.interfaces.itask.ITask;
-import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
-import info.smart_tools.smartactors.base.pool_guard.exception.PoolGuardException;
+import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrapper.ConnectionOptions;
-import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
-import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
-import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
-import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
-import info.smart_tools.smartactors.ioc_plugins.ioc_simple_container_plugin.PluginIOCSimpleContainer;
 import info.smart_tools.smartactors.database_postgresql_plugins.postgres_connection_pool_plugin.PostgresConnectionPoolPlugin;
 import info.smart_tools.smartactors.database_postgresql_plugins.postgres_db_tasks_plugin.PostgresDBTasksPlugin;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
+import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
+import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
+import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
+import info.smart_tools.smartactors.ioc_plugins.ioc_simple_container_plugin.PluginIOCSimpleContainer;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,8 +52,8 @@ public class TestPostgresSearchServer implements IServer {
             new PostgresDBTasksPlugin(bootstrap).load();
             bootstrap.start();
 
-            iObjectKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
-            iFieldKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+            iObjectKey = Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject");
+            iFieldKey = Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         } catch (Throwable e) {
             throw new ServerInitializeException("Server initialization failed", e);
         }
@@ -74,7 +74,7 @@ public class TestPostgresSearchServer implements IServer {
             document.setValue(modelField, "FVVEE1224");
 
             ConnectionOptions connectionOptions = new TestConnectionOptions();
-            IPool pool = IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool"), connectionOptions);
+            IPool pool = IOC.resolve(Keys.resolveByName("DatabaseConnectionPool"), connectionOptions);
 
             IFieldName fullTextField = IOC.resolve(iFieldKey, "fulltext");
             IFieldName languageField = IOC.resolve(iFieldKey, "language");
@@ -88,7 +88,7 @@ public class TestPostgresSearchServer implements IServer {
 
             try (PoolGuard guard = new PoolGuard(pool)) {
                 ITask task = IOC.resolve(
-                        Keys.getOrAdd("db.collection.create"),
+                        Keys.resolveByName("db.collection.create"),
                         guard.getObject(),
                         collection,
                         createOptions
@@ -98,7 +98,7 @@ public class TestPostgresSearchServer implements IServer {
 
             try (PoolGuard guard = new PoolGuard(pool)) {
                 ITask task = IOC.resolve(
-                        Keys.getOrAdd("db.collection.insert"),
+                        Keys.resolveByName("db.collection.insert"),
                         guard.getObject(),
                         collection,
                         document
@@ -134,7 +134,7 @@ public class TestPostgresSearchServer implements IServer {
             throws ResolutionException, TaskExecutionException, PoolGuardException {
         try (PoolGuard guard = new PoolGuard(pool)) {
             ITask task = IOC.resolve(
-                    Keys.getOrAdd("db.collection.search"),
+                    Keys.resolveByName("db.collection.search"),
                     guard.getObject(),
                     collection,
                     criteria,

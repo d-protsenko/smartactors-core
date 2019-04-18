@@ -11,10 +11,7 @@ import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlu
 import info.smart_tools.smartactors.statistics.sensors.interfaces.exceptions.SensorShutdownException;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * Test for {@link EmbeddedSensorHandle}.

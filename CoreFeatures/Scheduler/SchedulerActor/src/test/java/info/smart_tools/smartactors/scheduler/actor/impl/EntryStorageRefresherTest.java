@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.scheduler.actor.impl.refresher.EntryStorageRefresher;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.IRemoteEntryStorage;
@@ -84,14 +84,14 @@ public class EntryStorageRefresherTest extends PluginsLoadingTestBase {
 
         for (int i = 0; i < entries.length; i++) {
             entries[i] = mock(ISchedulerEntry.class);
-            states[i] = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+            states[i] = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                     String.format("{'entryId':'entry-%010d'}".replace('\'', '"'), i));
         }
 
-        IOC.register(Keys.getOrAdd("timer"), new SingletonStrategy(timerMock));
-        IOC.register(Keys.getOrAdd("time"), new SingletonStrategy(timeMock));
-        IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(taskQueueMock));
-        IOC.register(Keys.getOrAdd("restore scheduler entry"), restoreEntryStrategy);
+        IOC.register(Keys.resolveByName("timer"), new SingletonStrategy(timerMock));
+        IOC.register(Keys.resolveByName("time"), new SingletonStrategy(timeMock));
+        IOC.register(Keys.resolveByName("task_queue"), new SingletonStrategy(taskQueueMock));
+        IOC.register(Keys.resolveByName("restore scheduler entry"), restoreEntryStrategy);
     }
 
     @Test(expected = InvalidArgumentException.class)

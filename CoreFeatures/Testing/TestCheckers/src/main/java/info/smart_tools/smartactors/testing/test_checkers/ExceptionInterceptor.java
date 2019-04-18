@@ -1,11 +1,11 @@
 package info.smart_tools.smartactors.testing.test_checkers;
 
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.exceptions.RouteNotFoundException;
@@ -35,16 +35,16 @@ public class ExceptionInterceptor implements IResultChecker {
 
         try {
             Object expectedReceiverId = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "receiver_id_from_iobject"), description
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "receiver_id_from_iobject"), description
             );
             IRouter router = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IRouter.class.getCanonicalName())
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IRouter.class.getCanonicalName())
             );
 
             expectedReceiver = router.route(expectedReceiverId);
 
             IFieldName exceptionClassFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "class"
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "class"
             );
             expectedExceptionClassName = String.valueOf(description.getValue(exceptionClassFieldName));
 
@@ -100,7 +100,7 @@ public class ExceptionInterceptor implements IResultChecker {
 
         try {
             receiverId = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "receiver_id_from_iobject"), mp.getSequence().getCurrentReceiverArguments()
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "receiver_id_from_iobject"), mp.getSequence().getCurrentReceiverArguments()
             );
         } catch (ResolutionException e) {
             receiverId = "<cannot resolve id>";

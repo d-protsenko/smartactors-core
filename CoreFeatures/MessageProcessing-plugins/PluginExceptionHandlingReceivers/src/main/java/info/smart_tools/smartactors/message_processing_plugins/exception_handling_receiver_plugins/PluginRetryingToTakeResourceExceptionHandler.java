@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionExceptio
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing.exception_handling_receivers.RetryingToTakeResourceExceptionHandler;
 
 /**
@@ -35,7 +35,7 @@ public class PluginRetryingToTakeResourceExceptionHandler extends BootstrapPlugi
     @BootstrapPlugin.After({"IOC", "IFieldNamePlugin"})
     public void item()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("RetryingToTakeResourceExceptionHandler"),
+        IOC.register(Keys.resolveByName("RetryingToTakeResourceExceptionHandler"),
                 new SingletonStrategy(new RetryingToTakeResourceExceptionHandler()));
     }
 
@@ -48,9 +48,9 @@ public class PluginRetryingToTakeResourceExceptionHandler extends BootstrapPlugi
         String itemName = "PluginRetryingToTakeResourceExceptionHandler";
         String keyName = "RetryingToTakeResourceExceptionHandler";
         try {
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
     }
 }

@@ -1,6 +1,5 @@
 package info.smart_tools.smartactors.core.proof_of_assumption.perfomance_of_jackson;
 
-import org.junit.Before;
 import org.junit.Test;
 
 /**

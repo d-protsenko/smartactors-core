@@ -3,12 +3,11 @@ package info.smart_tools.smartactors.message_processing.wrapper_creator_receiver
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
@@ -55,7 +54,7 @@ public class WrapperCreatorReceiverDecoratorTest extends PluginsLoadingTestBase 
         stepConfMock = mock(IObject.class);
         wrapperConfMock = mock(IObject.class);
 
-        IOC.register(Keys.getOrAdd("the wrapper resolution strategy resolution strategy"),
+        IOC.register(Keys.resolveByName("the wrapper resolution strategy resolution strategy"),
                 wrapperResolutionStrategyResolutionStrategyMock);
 
         when(wrapperResolutionStrategyResolutionStrategyMock.resolve(same(wrapperConfMock)))
@@ -69,7 +68,7 @@ public class WrapperCreatorReceiverDecoratorTest extends PluginsLoadingTestBase 
                 .thenReturn(wrapperMock);
 
         when(sequenceMock.getCurrentReceiverArguments()).thenReturn(stepConfMock);
-        when(stepConfMock.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "wrapper"))).thenReturn(wrapperConfMock);
+        when(stepConfMock.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "wrapper"))).thenReturn(wrapperConfMock);
 
         receiverMock = mock(IMessageReceiver.class);
 

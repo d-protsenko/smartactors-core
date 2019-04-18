@@ -1,15 +1,18 @@
 package info.smart_tools.smartactors.message_processing.receiver_chain;
 
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.scope.iscope.IScope;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,10 +22,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.same;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -46,6 +48,8 @@ public class ImmutableReceiverChainResolutionStrategyTest {
     @Before
     public void setUp()
             throws Exception {
+
+        ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
         keyStorageKey = mock(IKey.class);
         fieldNameKey = mock(IKey.class);
         iobjectKey = mock(IKey.class);
@@ -58,9 +62,9 @@ public class ImmutableReceiverChainResolutionStrategyTest {
 
         mockStatic(IOC.class);
 
-        when(IOC.getKeyForKeyStorage()).thenReturn(keyStorageKey);
+        when(IOC.getKeyForKeyByNameResolutionStrategy()).thenReturn(keyStorageKey);
         when(IOC.resolve(keyStorageKey, "info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(fieldNameKey);
-        when(IOC.resolve(keyStorageKey, "chain_id")).thenReturn(chainIdKey);
+        when(IOC.resolve(keyStorageKey, "chain_id_from_map_name")).thenReturn(chainIdKey);
         when(IOC.resolve(keyStorageKey, "receiver_id_from_iobject")).thenReturn(receiverIdKey);
         when(IOC.resolve(keyStorageKey, "info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(iobjectKey);
 
@@ -78,6 +82,7 @@ public class ImmutableReceiverChainResolutionStrategyTest {
         List<IObject> steps = new LinkedList<>();
         List<IObject> exceptionals = new LinkedList<>();
         Object chainId = "chain";
+        Object chainName = "chainName";
 
         IReceiverChain exceptionalChain1 = mock(IReceiverChain.class);
         IReceiverChain exceptionalChain2 = mock(IReceiverChain.class);
@@ -85,11 +90,15 @@ public class ImmutableReceiverChainResolutionStrategyTest {
         IMessageReceiver receiver1 = mock(IMessageReceiver.class);
         IMessageReceiver receiver2 = mock(IMessageReceiver.class);
 
+        IScope scope = mock(IScope.class);
+        IModule module = ModuleManager.getCurrentModule();
+
         IObject step1 = mock(IObject.class);
         IObject step2 = mock(IObject.class);
 
         when(description.getValue(same(IOC.resolve(fieldNameKey, "steps")))).thenReturn(steps);
         when(description.getValue(same(IOC.resolve(fieldNameKey, "exceptional")))).thenReturn(exceptionals);
+        when(description.getValue(same(IOC.resolve(fieldNameKey, "id")))).thenReturn(chainName);
 
         steps.add(step1);
         steps.add(step2);
@@ -119,9 +128,12 @@ public class ImmutableReceiverChainResolutionStrategyTest {
         when(routerMock.route("rec1")).thenReturn(receiver1);
         when(routerMock.route("rec2")).thenReturn(receiver2);
 
-        IReceiverChain chain = new ImmutableReceiverChainResolutionStrategy().resolve(chainId, description, chainStorageMock, routerMock);
+        IReceiverChain chain = new ImmutableReceiverChainResolutionStrategy().resolve(chainId, description, routerMock, scope, module);
 
         assertNotNull(chain);
+        assertSame(chain.getName(), chainName);
+        assertSame(chain.getScope(), scope);
+        assertSame(chain.getModule(), module);
     }
 
     @Test(expected = ResolveDependencyStrategyException.class)
@@ -131,7 +143,6 @@ public class ImmutableReceiverChainResolutionStrategyTest {
 
         when(description.getValue(any())).thenThrow(ReadValueException.class);
 
-        new ImmutableReceiverChainResolutionStrategy()
-                .resolve("chain", description, chainStorageMock, routerMock);
+        new ImmutableReceiverChainResolutionStrategy().resolve("chain", description, routerMock, null, null);
     }
 }

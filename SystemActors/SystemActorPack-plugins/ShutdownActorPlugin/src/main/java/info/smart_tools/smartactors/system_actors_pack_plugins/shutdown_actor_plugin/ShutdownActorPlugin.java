@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.system_actors_pack.shutdown_actor.ShutdownActor;
 
 public class ShutdownActorPlugin extends BootstrapPlugin {
@@ -23,6 +23,6 @@ public class ShutdownActorPlugin extends BootstrapPlugin {
 
     @Item("shutdown_actor")
     public void registerActor() throws ResolutionException, InvalidArgumentException, RegistrationException {
-        IOC.register(Keys.getOrAdd("shutdown actor"), new SingletonStrategy(new ShutdownActor()));
+        IOC.register(Keys.resolveByName("shutdown actor"), new SingletonStrategy(new ShutdownActor()));
     }
 }

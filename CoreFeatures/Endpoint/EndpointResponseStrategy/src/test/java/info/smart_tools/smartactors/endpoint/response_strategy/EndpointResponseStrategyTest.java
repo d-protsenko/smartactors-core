@@ -2,26 +2,24 @@ package info.smart_tools.smartactors.endpoint.response_strategy;
 
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
-import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse.IResponse;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_content_strategy.IResponseContentStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_sender.IResponseSender;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_sender.exceptions.ResponseSendingException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.iresponse_strategy.exceptions.ResponseException;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
@@ -50,37 +48,37 @@ public class EndpointResponseStrategyTest extends PluginsLoadingTestBase {
 
     @Override
     protected void registerMocks() throws Exception {
-        environment = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
-        context = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
-        responseObj = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        environment = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        context = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        responseObj = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
         responseSender = mock(IResponseSender.class);
         channelHandler = mock(IChannelHandler.class);
         response = mock(IResponse.class);
         responseContentStrategy = mock(IResponseContentStrategy.class);
 
-        environment.setValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"), context);
-        environment.setValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "response"), responseObj);
-        context.setValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "endpointName"), "theEpName");
-        context.setValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "channel"), channelHandler);
+        environment.setValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"), context);
+        environment.setValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "response"), responseObj);
+        context.setValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "endpointName"), "theEpName");
+        context.setValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "channel"), channelHandler);
 
         request = mock(Object.class);
 
         IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
         when(strategy.resolve()).thenReturn(response).thenThrow(ResolveDependencyStrategyException.class);
-        IOC.register(Keys.getOrAdd(IResponse.class.getCanonicalName()), strategy);
+        IOC.register(Keys.resolveByName(IResponse.class.getCanonicalName()), strategy);
 
         strategy = mock(IResolveDependencyStrategy.class);
         when(strategy.resolve(same(environment))).thenReturn(responseContentStrategy);
-        IOC.register(Keys.getOrAdd(IResponseContentStrategy.class.getCanonicalName()), strategy);
+        IOC.register(Keys.resolveByName(IResponseContentStrategy.class.getCanonicalName()), strategy);
 
         strategy = mock(IResolveDependencyStrategy.class);
         when(strategy.resolve(same(request), eq("theEpName"))).thenReturn(responseSender);
-        IOC.register(Keys.getOrAdd(IResponseSender.class.getCanonicalName()), strategy);
+        IOC.register(Keys.resolveByName(IResponseSender.class.getCanonicalName()), strategy);
 
         strategy = mock(IResolveDependencyStrategy.class);
         when(strategy.resolve(same(environment))).thenReturn(request);
-        IOC.register(Keys.getOrAdd("http_request_key_for_response_sender"), strategy);
+        IOC.register(Keys.resolveByName("http_request_key_for_response_sender"), strategy);
     }
 
     @Test
@@ -91,7 +89,7 @@ public class EndpointResponseStrategyTest extends PluginsLoadingTestBase {
         verify(responseContentStrategy).setContent(responseObj, response);
         verify(responseSender).send(same(response), same(environment), same(channelHandler));
         assertEquals(Boolean.TRUE, context.getValue(
-                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sendResponseOnChainEnd")));
+                IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sendResponseOnChainEnd")));
     }
 
     @Test(expected = ResponseException.class)

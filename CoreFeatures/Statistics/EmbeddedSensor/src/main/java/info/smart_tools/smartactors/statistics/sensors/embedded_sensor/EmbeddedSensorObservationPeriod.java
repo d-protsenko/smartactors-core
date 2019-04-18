@@ -6,7 +6,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.statistics.sensors.embedded_sensor.interfaces.IEmbeddedSensorObservationPeriod;
 import info.smart_tools.smartactors.statistics.sensors.embedded_sensor.interfaces.IEmbeddedSensorStrategy;
@@ -52,9 +52,9 @@ public class EmbeddedSensorObservationPeriod<TState> implements IEmbeddedSensorO
         this.state = strategy.initPeriod();
         this.strategy = strategy;
 
-        periodStartFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "periodStart");
-        periodEndFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "periodEnd");
-        dataFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "data");
+        periodStartFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "periodStart");
+        periodEndFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "periodEnd");
+        dataFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "data");
     }
 
     @Override
@@ -110,7 +110,7 @@ public class EmbeddedSensorObservationPeriod<TState> implements IEmbeddedSensorO
     @Override
     public IObject createMessage()
             throws ResolutionException, ChangeValueException, InvalidArgumentException, EmbeddedSensorStrategyException {
-        IObject message = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject message = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
         message.setValue(periodStartFieldName, periodStart);
         message.setValue(periodEndFieldName, periodEnd);
         message.setValue(dataFieldName, extractData());

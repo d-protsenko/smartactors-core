@@ -6,7 +6,7 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionExceptio
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing.chain_modifications.ReplaceReceiversChainModificationStrategy;
 
 /**
@@ -32,7 +32,7 @@ public class ChainModificationStrategiesPlugin extends BootstrapPlugin {
     @After({"IFieldNamePlugin"})
     public void registerReceiverReplaceModification()
             throws ResolutionException, RegistrationException {
-        IOC.register(Keys.getOrAdd("chain modification: replace receivers"), new ReplaceReceiversChainModificationStrategy());
+        IOC.register(Keys.resolveByName("chain modification: replace receivers"), new ReplaceReceiversChainModificationStrategy());
     }
 
     /**
@@ -44,9 +44,9 @@ public class ChainModificationStrategiesPlugin extends BootstrapPlugin {
         String keyName = "chain modification: replace receivers";
 
         try {
-            IOC.remove(Keys.getOrAdd(keyName));
+            IOC.remove(Keys.resolveByName(keyName));
         } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
         } catch (ResolutionException e) { }
     }
 }

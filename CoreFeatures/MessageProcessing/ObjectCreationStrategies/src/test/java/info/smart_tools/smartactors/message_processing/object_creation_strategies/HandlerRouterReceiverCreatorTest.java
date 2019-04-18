@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.IReceiverObjectCreator;
@@ -63,7 +63,7 @@ public class HandlerRouterReceiverCreatorTest extends PluginsLoadingTestBase {
         };
 
         handlerRouterReceiverResolutionStrategy = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.getOrAdd("create handler router receiver"), handlerRouterReceiverResolutionStrategy);
+        IOC.register(Keys.resolveByName("create handler router receiver"), handlerRouterReceiverResolutionStrategy);
 
         when(handlerRouterReceiverResolutionStrategy.resolve(any())).thenReturn(receiverMocks[0]);
 

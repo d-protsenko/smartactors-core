@@ -1,26 +1,25 @@
 package info.smart_tools.smartactors.ioc_strategy_pack_plugins.resolve_iobject_strategies_plugin;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IBiFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.base.strategy.strategy_storage_with_cache_strategy.StrategyStorageWithCacheStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_strategy_pack.resolve_iobject_strategies.MapToIObjectResolveDependencyStrategy;
 import info.smart_tools.smartactors.ioc_strategy_pack.resolve_iobject_strategies.StringToIObjectResolveDependencyStrategy;
 
@@ -67,8 +66,8 @@ public class ResolveIObjectByTypeStrategiesPlugin implements IPlugin {
                             return strategy;
                         };
 
-                        IKey typeStrategy = Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject" + "convert");
-                        IKey expandableTypeStrategy = Keys.getOrAdd("expandable_strategy#" + "info.smart_tools.smartactors.iobject.iobject.IObject");
+                        IKey typeStrategy = Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject" + "convert");
+                        IKey expandableTypeStrategy = Keys.resolveByName("expandable_strategy#" + "info.smart_tools.smartactors.iobject.iobject.IObject");
                         IResolveDependencyStrategy resolveStrategy = new StrategyStorageWithCacheStrategy(argToKey, findValueByArgument);
                         ((IAdditionDependencyStrategy) resolveStrategy).register(Map.class, new MapToIObjectResolveDependencyStrategy());
                         ((IAdditionDependencyStrategy) resolveStrategy).register(String.class, new StringToIObjectResolveDependencyStrategy());
@@ -86,16 +85,16 @@ public class ResolveIObjectByTypeStrategiesPlugin implements IPlugin {
 
                     try {
                         keyName = "expandable_strategy#" + "info.smart_tools.smartactors.iobject.iobject.IObject";
-                        IOC.remove(Keys.getOrAdd(keyName));
+                        IOC.remove(Keys.resolveByName(keyName));
                     } catch(DeletionException e) {
-                        System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                     } catch (ResolutionException e) { }
 
                     try {
                         keyName = "info.smart_tools.smartactors.iobject.iobject.IObject" + "convert";
-                        IOC.remove(Keys.getOrAdd(keyName));
+                        IOC.remove(Keys.resolveByName(keyName));
                     } catch(DeletionException e) {
-                        System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                        System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                     } catch (ResolutionException e) { }
                 });
             bootstrap.add(item);

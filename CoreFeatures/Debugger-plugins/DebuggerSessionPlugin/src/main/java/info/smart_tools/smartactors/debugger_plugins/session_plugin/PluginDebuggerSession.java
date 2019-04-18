@@ -3,14 +3,13 @@ package info.smart_tools.smartactors.debugger_plugins.session_plugin;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
-import info.smart_tools.smartactors.debugger.interfaces.IDebuggerBreakpointsStorage;
 import info.smart_tools.smartactors.debugger.session_impl.DebuggerSessionImpl;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 /**
  *
@@ -36,7 +35,7 @@ public class PluginDebuggerSession extends BootstrapPlugin {
     @After({"debugger:sequence", "debugger:breakpoint_storage"})
     public void registerSessionStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("debugger session"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.resolveByName("debugger session"), new ApplyFunctionToArgumentsStrategy(args -> {
             String id = (String) args[0];
             Object addr = args[1];
 

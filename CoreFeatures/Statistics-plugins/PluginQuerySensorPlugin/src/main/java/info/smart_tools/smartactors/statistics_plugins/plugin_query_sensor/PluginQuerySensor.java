@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntryStorage;
 import info.smart_tools.smartactors.statistics.sensors.scheduled_query_sensor.QuerySensorCreationStrategy;
 import info.smart_tools.smartactors.statistics.sensors.scheduled_query_sensor.QuerySensorSchedulerAction;
@@ -36,7 +36,7 @@ public class PluginQuerySensor extends BootstrapPlugin {
     @After({"query_sensor_scheduler_storage", "query_sensor_scheduler_action"})
     public void registerQuerySensorStrategy()
             throws ResolutionException, RegistrationException {
-        IOC.register(Keys.getOrAdd("create query sensor"), new QuerySensorCreationStrategy());
+        IOC.register(Keys.resolveByName("create query sensor"), new QuerySensorCreationStrategy());
     }
 
     /**
@@ -50,8 +50,8 @@ public class PluginQuerySensor extends BootstrapPlugin {
     @After({"scheduler_entry_storage"})
     public void createSchedulerStorage()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        ISchedulerEntryStorage entryStorage = IOC.resolve(Keys.getOrAdd("local only scheduler entry storage"));
-        IOC.register(Keys.getOrAdd("query sensors scheduler storage"),
+        ISchedulerEntryStorage entryStorage = IOC.resolve(Keys.resolveByName("local only scheduler entry storage"));
+        IOC.register(Keys.resolveByName("query sensors scheduler storage"),
                 new SingletonStrategy(entryStorage));
     }
 
@@ -65,6 +65,6 @@ public class PluginQuerySensor extends BootstrapPlugin {
     @Item("query_sensor_scheduler_action")
     public void registerSchedulerAction()
             throws RegistrationException, ResolutionException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("query sensor scheduler action"), new SingletonStrategy(new QuerySensorSchedulerAction()));
+        IOC.register(Keys.resolveByName("query sensor scheduler action"), new SingletonStrategy(new QuerySensorSchedulerAction()));
     }
 }

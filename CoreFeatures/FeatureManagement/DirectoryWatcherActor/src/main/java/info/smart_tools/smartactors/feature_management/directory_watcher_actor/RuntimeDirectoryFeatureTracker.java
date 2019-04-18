@@ -3,6 +3,8 @@ package info.smart_tools.smartactors.feature_management.directory_watcher_actor;
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.feature_management.directory_watcher_actor.exception.WatchingServiceException;
 import info.smart_tools.smartactors.feature_management.directory_watcher_actor.wrapper.StartWatchingWrapper;
 import info.smart_tools.smartactors.feature_management.directory_watcher_actor.wrapper.StopWatchingWrapper;
@@ -12,12 +14,10 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageProcessorProcessException;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.WatchService;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,17 +40,18 @@ public class RuntimeDirectoryFeatureTracker {
     private IFieldName fileNameFieldName;
     private IFieldName observedDirectoryFieldName;
 
-    private IReceiverChain executionChain;
+    private String executionChainName;
 
     private IPath watchingDir;
 
     private Thread watchingThread;
     private WatchService watchingService;
     private IScope scope;
+    private IModule module;
 
     private final static String EXTENSION_SEPARATOR = ".";
     private final static String TASK_QUEUE_IOC_NAME = "task_queue";
-    private final static String CHAIN_ID_STORAGE_STRATEGY_NAME = "chain_id_from_map_name";
+    private final static String CHAIN_ID_STORAGE_STRATEGY_NAME = "chain_id_from_map_name_and_message";
     private final static String IOBJECT_FACTORY_STRATEGY_NAME = "info.smart_tools.smartactors.iobject.iobject.IObject";
     private final static String FIELD_NAME_FACTORY_STARTEGY_NAME =
             "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
@@ -94,54 +94,49 @@ public class RuntimeDirectoryFeatureTracker {
             throws WatchingServiceException {
         try {
             this.scope = ScopeProvider.getCurrentScope();
+            this.module = ModuleManager.getCurrentModule();
             this.watchingDir = new info.smart_tools.smartactors.base.path.Path(wrapper.getObservedDirectory());
             this.fileNameFieldName = IOC.resolve(
-                    Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), wrapper.getFileNameFieldName()
+                    Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), wrapper.getFileNameFieldName()
             );
             this.observedDirectoryFieldName = IOC.resolve(
-                    Keys.getOrAdd(FIELD_NAME_FACTORY_STARTEGY_NAME), wrapper.getObservedDirectoryFieldName()
+                    Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), wrapper.getObservedDirectoryFieldName()
             );
-            resolveChainByChainName(wrapper.getExecutionChain());
+            this.executionChainName = wrapper.getExecutionChain();
             startWatchingService(this.watchingDir);
-        } catch (ResolutionException | ChainNotFoundException | ReadValueException | ScopeProviderException e) {
+        } catch (ResolutionException | ReadValueException | ScopeProviderException e) {
             throw new WatchingServiceException(e);
         }
     }
 
-    private void resolveChainByChainName(final String chainName) throws ResolutionException, ChainNotFoundException {
-        Object chainId = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), CHAIN_ID_STORAGE_STRATEGY_NAME), chainName
-        );
-        IChainStorage chainStorage = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IChainStorage.class.getCanonicalName())
-        );
-        this.executionChain = chainStorage.resolve(chainId);
-    }
-
     private void startExecutionChain(final IPath newFilePath)
             throws ResolutionException, ChangeValueException, InvalidArgumentException,
-            ScopeProviderException, MessageProcessorProcessException {
+            ScopeProviderException, MessageProcessorProcessException, ChainNotFoundException {
         if (!FILE_TYPE_LIST.contains(getExtension(new File(newFilePath.getPath())))) {
             return;
         }
         ScopeProvider.setCurrentScope(this.scope);
-        IQueue queue = IOC.resolve(Keys.getOrAdd(TASK_QUEUE_IOC_NAME));
-        Integer stackDepth = IOC.resolve(Keys.getOrAdd("default_stack_depth"));
+        ModuleManager.setCurrentModule(this.module);
 
+        IObject context = IOC.resolve(Keys.resolveByName(IOBJECT_FACTORY_STRATEGY_NAME));
+        IObject message = IOC.resolve(Keys.resolveByName(IOBJECT_FACTORY_STRATEGY_NAME));
+        message.setValue(this.fileNameFieldName, newFilePath);
+        message.setValue(this.observedDirectoryFieldName, this.watchingDir);
+
+        Integer stackDepth = IOC.resolve(Keys.resolveByName("default_stack_depth"));
         IMessageProcessingSequence processingSequence = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), MESSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), MESSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME),
                 stackDepth,
-                this.executionChain
+                this.executionChainName,
+                message
         );
+
+        IQueue queue = IOC.resolve(Keys.resolveByName(TASK_QUEUE_IOC_NAME));
         IMessageProcessor messageProcessor = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), MESSAGE_PROCESSOR_FACTORY_STRATEGY_NAME),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), MESSAGE_PROCESSOR_FACTORY_STRATEGY_NAME),
                 queue,
                 processingSequence
         );
-        IObject context = IOC.resolve(Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME));
-        IObject message = IOC.resolve(Keys.getOrAdd(IOBJECT_FACTORY_STRATEGY_NAME));
-        message.setValue(this.fileNameFieldName, newFilePath);
-        message.setValue(this.observedDirectoryFieldName, this.watchingDir);
         messageProcessor.process(message, context);
     }
 

@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.task.itask_preprocess_strategy.ITaskProcessS
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 

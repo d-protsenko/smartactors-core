@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception.ProcessExecutionException;
@@ -16,7 +17,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_lo
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.exception.PluginLoaderException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader_visitor.IPluginLoaderVisitor;
 import info.smart_tools.smartactors.feature_loading_system.plugin_creator.PluginCreator;
-import info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar.ExpansibleURLClassLoader;
 import info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar.PluginLoader;
 import info.smart_tools.smartactors.feature_loading_system.plugin_loader_visitor_empty_implementation.PluginLoaderVisitor;
 import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.IServer;
@@ -26,7 +26,6 @@ import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.e
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
-import java.net.URL;
 import java.text.MessageFormat;
 import java.time.Duration;
 import java.time.LocalTime;
@@ -40,7 +39,6 @@ import java.util.List;
  *
  */
 public class Server implements IServer {
-    private ExpansibleURLClassLoader classLoader = new ExpansibleURLClassLoader(new URL[]{});
     private IPluginLoaderVisitor<String> pluginLoaderVisitor = new PluginLoaderVisitor<>();
     private IPluginCreator pluginCreator = new PluginCreator();
 
@@ -60,6 +58,8 @@ public class Server implements IServer {
     @Override
     public void initialize()
             throws ServerInitializeException {
+        Thread.currentThread().setName("BaseThread");
+        ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
     }
 
     @Override
@@ -112,7 +112,7 @@ public class Server implements IServer {
             throws InvalidArgumentException, PluginLoaderException, ProcessExecutionException {
         IBootstrap bootstrap = new Bootstrap();
         IPluginLoader<Collection<IPath>> pluginLoader = new PluginLoader(
-                classLoader,
+                ModuleManager.getCurrentClassLoader(),
                 clz -> {
                     try {
                         if (Modifier.isAbstract(clz.getModifiers())) {
@@ -125,7 +125,7 @@ public class Server implements IServer {
                     }
                 },
                 pluginLoaderVisitor);
-        pluginLoader.loadPlugin(jars);
+        pluginLoader.loadPlugins(jars);
         try {
             bootstrap.start();
         } catch (ProcessExecutionException e) {

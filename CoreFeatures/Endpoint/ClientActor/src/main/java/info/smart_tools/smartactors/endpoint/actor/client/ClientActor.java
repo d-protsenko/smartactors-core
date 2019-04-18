@@ -3,14 +3,12 @@ package info.smart_tools.smartactors.endpoint.actor.client;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.endpoint.actor.client.exception.RequestSenderActorException;
 import info.smart_tools.smartactors.endpoint.actor.client.wrapper.ClientActorMessage;
-import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.IRequestSender;
-import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.exception.RequestSenderException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_container.exception.SendingMessageException;
 import info.smart_tools.smartactors.message_bus.message_bus.MessageBus;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
@@ -37,8 +35,8 @@ public class ClientActor {
     public void sendRequest(final ClientActorMessage message)
             throws RequestSenderActorException {
         try {
-            IQueue<ITask> queue = IOC.resolve(Keys.getOrAdd("task_queue"));
-            IFieldName uidFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uid");
+            IQueue<ITask> queue = IOC.resolve(Keys.resolveByName("task_queue"));
+            IFieldName uidFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uid");
             ITask task =
                     () -> {
                         try {

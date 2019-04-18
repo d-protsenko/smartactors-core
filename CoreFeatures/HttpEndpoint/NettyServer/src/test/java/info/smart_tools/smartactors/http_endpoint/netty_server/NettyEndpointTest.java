@@ -1,19 +1,19 @@
 package info.smart_tools.smartactors.http_endpoint.netty_server;
 
 import com.google.common.util.concurrent.Uninterruptibles;
-import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
+import info.smart_tools.smartactors.http_endpoint.netty_client.NettyClient;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageReceiveException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.http_endpoint.netty_client.NettyClient;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandler;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -26,12 +26,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public abstract class NettyEndpointTest<TRequest, TResponse> {
     protected IMessageMapper<byte[]> mapperStub;
@@ -74,13 +70,13 @@ public abstract class NettyEndpointTest<TRequest, TResponse> {
 /*
     @Test
     public void whenEndpointReceivesRequest_ItShouldPlaceExchangeObjectIntoMessage_WhichCanBeUsedToSendResponse() throws Exception {
-        IMessage stubMessage = IOC.resolve(Keys.getOrAdd(IMessage.class.toString()));
+        IMessage stubMessage = IOC.resolve(Keys.resolveByName(IMessage.class.toString()));
         when(mapperStub.deserialize(any(byte[].class))).thenReturn(stubMessage);
         when(mapperStub.serialize(any(IMessage.class))).thenReturn("response".getBytes());
         stubClient((ctx, msg) -> {
             try {
                 String actualResponse = getResponseContent(msg);
-                stubMessage.setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.toString())), actualResponse);
+                stubMessage.setValue(IOC.resolve(Keys.resolveByName(IFieldName.class.toString())), actualResponse);
             } catch (ChangeValueException e) {
                 fail("Failed to change value in IObject", e);
             } catch (InvalidArgumentException | ResolutionException e) {
@@ -121,7 +117,7 @@ public abstract class NettyEndpointTest<TRequest, TResponse> {
             retries--;
             T result = null;
             try {
-                result = (T) obj.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.toString()), key));
+                result = (T) obj.getValue(IOC.resolve(Keys.resolveByName(IFieldName.class.toString()), key));
             } catch (ReadValueException e) {
                 throw new AssertionError("Failed to read value from IObject");
             } catch (InvalidArgumentException e) {

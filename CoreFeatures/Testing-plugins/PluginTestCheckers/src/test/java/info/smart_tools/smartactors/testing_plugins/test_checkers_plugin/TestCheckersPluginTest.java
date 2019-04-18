@@ -1,27 +1,26 @@
 package info.smart_tools.smartactors.testing_plugins.test_checkers_plugin;
 
-import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.iobject_extension.configuration_object.ConfigurationObject;
-import info.smart_tools.smartactors.iobject.ds_object.DSObject;
-import info.smart_tools.smartactors.iobject.field_name.FieldName;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
-import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
-import info.smart_tools.smartactors.scope.iscope.IScope;
-import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
-import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.iobject.ds_object.DSObject;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject_extension.configuration_object.ConfigurationObject;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
-import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
+import info.smart_tools.smartactors.scope.iscope.IScope;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.testing.interfaces.iassertion.IAssertion;
 import info.smart_tools.smartactors.testing.interfaces.iresult_checker.IResultChecker;
 import org.junit.Before;
@@ -32,14 +31,9 @@ import org.mockito.stubbing.Answer;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class TestCheckersPluginTest {
 
@@ -52,7 +46,7 @@ public class TestCheckersPluginTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameResolutionStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -63,7 +57,7 @@ public class TestCheckersPluginTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -74,7 +68,7 @@ public class TestCheckersPluginTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new ApplyFunctionToArgumentsStrategy(
                         (a) -> {
                             try {
@@ -86,7 +80,7 @@ public class TestCheckersPluginTest {
         );
         IOC.register(
                 IOC.resolve(
-                        IOC.getKeyForKeyStorage(), "configuration object"
+                        IOC.getKeyForKeyByNameResolutionStrategy(), "configuration object"
                 ),
                 new ApplyFunctionToArgumentsStrategy(
                         (a) -> {
@@ -107,15 +101,15 @@ public class TestCheckersPluginTest {
         );
         IAssertion assertionMock = mock(IAssertion.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "assertion of type myType"), new SingletonStrategy(assertionMock)
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "assertion of type myType"), new SingletonStrategy(assertionMock)
         );
         Object receiverIdStrategyMock = mock(Object.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "receiver_id_from_iobject"), new SingletonStrategy(receiverIdStrategyMock)
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "receiver_id_from_iobject"), new SingletonStrategy(receiverIdStrategyMock)
         );
         IRouter routerMock = mock(IRouter.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IRouter.class.getCanonicalName()), new IResolveDependencyStrategy() {
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IRouter.class.getCanonicalName()), new IResolveDependencyStrategy() {
             @Override
             public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
                 return (T) routerMock;
@@ -169,9 +163,9 @@ public class TestCheckersPluginTest {
         IObject interception = mock(IObject.class);
         when(interception.getValue(new FieldName("class"))).thenReturn(Integer.class.getCanonicalName());
         IResultChecker assertChecker = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IResultChecker.class.getCanonicalName() + "#assert"), assertions);
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IResultChecker.class.getCanonicalName() + "#assert"), assertions);
         IResultChecker interceptChecker = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IResultChecker.class.getCanonicalName() + "#intercept"), interception);
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IResultChecker.class.getCanonicalName() + "#intercept"), interception);
         assertNotNull(assertChecker);
         assertNotNull(interceptChecker);
     }

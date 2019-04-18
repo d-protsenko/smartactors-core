@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.field.field;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -58,7 +58,7 @@ public class Field implements IField {
         }
         try {
             return IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), type.getCanonicalName() + "convert"),
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), type.getCanonicalName() + "convert"),
                     value
             );
         } catch (Throwable e) {

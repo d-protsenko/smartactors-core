@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
@@ -43,9 +43,9 @@ public class ReplaceReceiversChainModificationStrategyTest extends PluginsLoadin
     @Override
     protected void registerMocks() throws Exception {
         replaceStrategy1 = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.getOrAdd("replacement 1 strategy"), replaceStrategy1);
+        IOC.register(Keys.resolveByName("replacement 1 strategy"), replaceStrategy1);
         replaceStrategy2 = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.getOrAdd("replacement 2 strategy"), replaceStrategy2);
+        IOC.register(Keys.resolveByName("replacement 2 strategy"), replaceStrategy2);
         originalChainMock = mock(IReceiverChain.class);
     }
 
@@ -55,7 +55,7 @@ public class ReplaceReceiversChainModificationStrategyTest extends PluginsLoadin
         when(originalChainMock.get(0)).thenReturn(receivers[0]);
 
         IReceiverChain decorated = new ReplaceReceiversChainModificationStrategy().resolve(originalChainMock,
-                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'replacements':[]}".replace('\'','"')));
+                IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'replacements':[]}".replace('\'','"')));
 
         assertSame(receivers[0], decorated.get(0));
 
@@ -65,16 +65,16 @@ public class ReplaceReceiversChainModificationStrategyTest extends PluginsLoadin
         verify(originalChainMock).getArguments(1);
         reset(originalChainMock);
 
-        decorated.getName();
-        verify(originalChainMock).getName();
+        decorated.getId();
+        verify(originalChainMock).getId();
         reset(originalChainMock);
 
-        decorated.getExceptionalChainAndEnvironments(null);
-        verify(originalChainMock).getExceptionalChainAndEnvironments(null);
+        decorated.getExceptionalChainNamesAndEnvironments(null);
+        verify(originalChainMock).getExceptionalChainNamesAndEnvironments(null);
         reset(originalChainMock);
 
-        decorated.getExceptionalChains();
-        verify(originalChainMock).getExceptionalChains();
+        decorated.getExceptionalChainNames();
+        verify(originalChainMock).getExceptionalChainNames();
         reset(originalChainMock);
 
         decorated.getChainDescription();
@@ -84,7 +84,7 @@ public class ReplaceReceiversChainModificationStrategyTest extends PluginsLoadin
     @Test
     public void Should_replaceReceivers()
             throws Exception {
-        IObject modDesc = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject modDesc = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{'replacements':[" +
                         "{" +
                         "'step':0," +
@@ -121,7 +121,7 @@ public class ReplaceReceiversChainModificationStrategyTest extends PluginsLoadin
     @Test(expected = ResolveDependencyStrategyException.class)
     public void Should_throwWhenReplacementStepIndexIsTooLarge()
             throws Exception {
-        IObject modDesc = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject modDesc = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{'replacements':[" +
                         "{" +
                         "'step':2," +

@@ -1,19 +1,19 @@
 package info.smart_tools.smartactors.iobject_plugins.iobject_simple_impl_plugin;
 
-import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject_simple_implementation.IObjectImpl;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.iobject.iobject_simple_implementation.IObjectImpl;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,9 +22,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.*;
 
@@ -43,7 +41,7 @@ public class IObjectSimpleImplPluginTest {
 
         IKey keyGeneral = mock(IKey.class);
         IKey keyPlugin = mock(IKey.class);
-        when(IOC.getKeyForKeyStorage()).thenReturn(keyGeneral);
+        when(IOC.getKeyForKeyByNameResolutionStrategy()).thenReturn(keyGeneral);
         when(IOC.resolve(eq(keyGeneral), eq("IObjectSimpleImplPlugin"))).thenReturn(keyPlugin);
 
         bootstrap = mock(IBootstrap.class);
@@ -54,7 +52,7 @@ public class IObjectSimpleImplPluginTest {
     public void ShouldCorrectLoadPlugin() throws Exception {
 
         IKey IObjectKey = mock(IKey.class);
-        when(Keys.getOrAdd(IObjectImpl.class.getCanonicalName())).thenReturn(IObjectKey);
+        when(Keys.resolveByName(IObjectImpl.class.getCanonicalName())).thenReturn(IObjectKey);
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("IObjectSimpleImplPlugin").thenReturn(bootstrapItem);
@@ -97,7 +95,7 @@ public class IObjectSimpleImplPluginTest {
     @Test
     public void ShouldThrowRuntimeException_When_processThrowsException() throws Exception {
 
-        when(Keys.getOrAdd(IObjectImpl.class.getCanonicalName())).thenThrow(new ResolutionException(""));
+        when(Keys.resolveByName(IObjectImpl.class.getCanonicalName())).thenThrow(new ResolutionException(""));
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("IObjectSimpleImplPlugin").thenReturn(bootstrapItem);

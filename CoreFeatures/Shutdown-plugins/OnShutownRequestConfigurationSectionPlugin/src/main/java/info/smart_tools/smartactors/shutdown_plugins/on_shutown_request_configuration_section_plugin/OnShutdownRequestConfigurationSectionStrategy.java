@@ -10,7 +10,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 import java.util.List;
 
@@ -56,9 +56,9 @@ public class OnShutdownRequestConfigurationSectionStrategy implements ISectionSt
     public OnShutdownRequestConfigurationSectionStrategy(final Object defaultActionKeyName)
             throws ResolutionException {
         this.defaultActionKeyName = defaultActionKeyName;
-        sectionNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "onShutdownRequest");
-        upcounterFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "upcounter");
-        actionFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "action");
+        sectionNameFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "onShutdownRequest");
+        upcounterFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "upcounter");
+        actionFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "action");
     }
 
     @Override
@@ -67,7 +67,7 @@ public class OnShutdownRequestConfigurationSectionStrategy implements ISectionSt
             List<IObject> section = (List) config.getValue(sectionNameFieldName);
 
             for (IObject obj : section) {
-                IUpCounter upCounter = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), obj.getValue(upcounterFieldName)));
+                IUpCounter upCounter = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), obj.getValue(upcounterFieldName)));
 
                 Object actionKeyName = obj.getValue(actionFieldName);
 
@@ -76,7 +76,7 @@ public class OnShutdownRequestConfigurationSectionStrategy implements ISectionSt
                 }
 
                 upCounter.onShutdownRequest( "cfg-"+actionKeyName,
-                        IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), actionKeyName)));
+                        IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), actionKeyName)));
             }
         } catch (ReadValueException | InvalidArgumentException | ClassCastException | ResolutionException
                 | UpCounterCallbackExecutionException e) {
@@ -92,7 +92,7 @@ public class OnShutdownRequestConfigurationSectionStrategy implements ISectionSt
 
             for (IObject obj : section) {
                 try {
-                    IUpCounter upCounter = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), obj.getValue(upcounterFieldName)));
+                    IUpCounter upCounter = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), obj.getValue(upcounterFieldName)));
 
                     Object actionKeyName = obj.getValue(actionFieldName);
 

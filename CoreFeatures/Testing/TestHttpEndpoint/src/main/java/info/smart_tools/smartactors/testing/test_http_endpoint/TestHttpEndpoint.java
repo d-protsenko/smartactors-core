@@ -1,19 +1,18 @@
 package info.smart_tools.smartactors.testing.test_http_endpoint;
 
+import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.endpoint.interfaces.iasync_service.IAsyncService;
 import info.smart_tools.smartactors.endpoint.interfaces.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.scope.iscope.IScope;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.testing.interfaces.isource.ISource;
 
@@ -80,13 +79,13 @@ public class TestHttpEndpoint implements IAsyncService {
         this.executorService = Executors.newSingleThreadExecutor();
         try {
             this.contentFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "content"
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "content"
             );
             this.chainFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainName"
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainName"
             );
             this.callbackFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "callback"
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "callback"
             );
         } catch (ResolutionException e) {
             throw new InitializationException("Could not create new instance of TestHttpEndpoint.", e);
@@ -113,7 +112,7 @@ public class TestHttpEndpoint implements IAsyncService {
                         this.rule.execute(obj);
                         handler.handle(
                                 (IObject) obj.getValue(this.contentFieldName),
-                                (IReceiverChain) obj.getValue(this.chainFieldName),
+                                obj.getValue(this.chainFieldName),
                                 (IAction<Throwable>) obj.getValue(this.callbackFieldName)
                         );
                     }
@@ -132,22 +131,22 @@ public class TestHttpEndpoint implements IAsyncService {
         return (iObject) -> {
             try {
                 IFieldName environmentFieldName = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "environment"
+                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "environment"
                 );
                 IFieldName contextFieldName = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"
+                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"
                 );
                 IFieldName requestFieldName = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "request"
+                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "request"
                 );
                 IFieldName channelFieldName = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "channel"
+                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "channel"
                 );
                 IFieldName headersFieldName = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "headers"
+                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "headers"
                 );
                 IFieldName cookiesFieldName = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "cookies"
+                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "cookies"
                 );
                 IObject content = (IObject) iObject.getValue(this.contentFieldName);
                 IObject environment = (IObject) content.getValue(environmentFieldName);
@@ -155,12 +154,12 @@ public class TestHttpEndpoint implements IAsyncService {
                 IObject context = (IObject) environment.getValue(contextFieldName);
                 if (null == context) {
                     context = IOC.resolve(
-                            IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject")
+                            IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject")
                     );
                 }
 
                 IChannelHandler channelHandler = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), TestChannelHandler.class.getCanonicalName()));
+                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), TestChannelHandler.class.getCanonicalName()));
                 context.setValue(channelFieldName, channelHandler);
 
                 context.setValue(cookiesFieldName, new ArrayList<IObject>());

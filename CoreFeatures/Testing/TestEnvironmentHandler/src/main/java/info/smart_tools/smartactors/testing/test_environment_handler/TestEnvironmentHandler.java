@@ -1,25 +1,25 @@
 package info.smart_tools.smartactors.testing.test_environment_handler;
 
+import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.exception.EnvironmentHandleException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageProcessorProcessException;
-import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
-import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageProcessorProcessException;
+import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.testing.interfaces.iresult_checker.IResultChecker;
 import info.smart_tools.smartactors.testing.test_environment_handler.exception.InvalidTestDescriptionException;
-
 
 import java.util.List;
 
@@ -45,13 +45,13 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
             throws InitializationException {
         try {
             environmentFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "environment"
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "environment"
             );
             messageFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message"
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message"
             );
             contextFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context"
             );
         } catch (ResolutionException e) {
             throw new InitializationException("Could not create new instance of TestEnvironmentHandler.", e);
@@ -59,7 +59,7 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
     }
 
     @Override
-    public void handle(final IObject environment, final IReceiverChain receiverChain, final IAction<Throwable> callback)
+    public void handle(final IObject environment, final Object receiverChainName, final IAction<Throwable> callback)
             throws EnvironmentHandleException, InvalidArgumentException {
         if (null == environment) {
             throw new InvalidArgumentException("Description should not be null.");
@@ -67,7 +67,7 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
         if (null == callback) {
             throw new InvalidArgumentException("Callback should not be null.");
         }
-        if (null == receiverChain) {
+        if (null == receiverChainName) {
             throw new InvalidArgumentException("Receiver chain should not be null.");
         }
 
@@ -88,26 +88,29 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
                 }
             };
             MainTestChain mainTestChain = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), MainTestChain.class.getCanonicalName()),
-                    receiverChain,
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), MainTestChain.class.getCanonicalName()),
+                    receiverChainName,
                     completionCallback,
-                    checker.getSuccessfulReceiverArguments()
+                    checker.getSuccessfulReceiverArguments(),
+                    ScopeProvider.getCurrentScope(),
+                    ModuleManager.getCurrentModule()
             );
             IMessageProcessingSequence sequence = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                     STACK_DEPTH, mainTestChain
             );
             IQueue<ITask> taskQueue = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "task_queue")
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "task_queue")
             );
 
             IMessageProcessor mp = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), taskQueue, sequence
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), taskQueue, sequence
             );
             fmp[0] = mp;
             mp.process(message, context);
 
-        } catch (ReadValueException | ResolutionException | MessageProcessorProcessException | InitializationException e) {
+        } catch (ReadValueException | ResolutionException | MessageProcessorProcessException |
+                InitializationException | ScopeProviderException e) {
             throw new EnvironmentHandleException(e);
         } catch (ClassCastException e) {
             throw new EnvironmentHandleException("Could not cast value to required type.", e);
@@ -118,10 +121,10 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
             throws InitializationException {
         try {
             IFieldName interceptFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "intercept"
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "intercept"
             );
             IFieldName assertFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "assert"
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "assert"
             );
 
             List<IObject> assertions = (List<IObject>) description.getValue(assertFieldName);
@@ -137,11 +140,11 @@ public class TestEnvironmentHandler implements IEnvironmentHandler {
 
             if (null != assertions) {
                 return (IResultChecker) IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), IResultChecker.class.getCanonicalName() + "#assert"), assertions
+                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IResultChecker.class.getCanonicalName() + "#assert"), assertions
                 );
             } else {
                 return (IResultChecker) IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), IResultChecker.class.getCanonicalName() + "#intercept"), intercept
+                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IResultChecker.class.getCanonicalName() + "#intercept"), intercept
                 );
             }
         } catch (ResolutionException | InvalidTestDescriptionException | InvalidArgumentException | ReadValueException e) {

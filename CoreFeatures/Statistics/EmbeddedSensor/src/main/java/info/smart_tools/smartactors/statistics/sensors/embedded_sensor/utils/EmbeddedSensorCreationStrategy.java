@@ -9,11 +9,11 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainModificationException;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.statistics.sensors.embedded_sensor.EmbeddedSensorHandle;
 
 import java.util.ArrayList;
@@ -66,43 +66,47 @@ public class EmbeddedSensorCreationStrategy implements IResolveDependencyStrateg
      */
     public EmbeddedSensorCreationStrategy()
             throws ResolutionException {
-        argsFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "args");
-        stepFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "step");
-        dependencyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
-        statisticsChainFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "statisticsChain");
-        replacementsFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "replacements");
-        modificationFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "modification");
-        embedFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "embed");
-        chainFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
+        argsFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "args");
+        stepFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "step");
+        dependencyFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
+        statisticsChainFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "statisticsChain");
+        replacementsFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "replacements");
+        modificationFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "modification");
+        embedFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "embed");
+        chainFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
     }
 
     @Override
     public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
         try {
-            Object statisticsChainId = args[CHAIN_ID_STRATEGY_ARGUMENT_INDEX];
+            Object statisticsChainName = args[CHAIN_ID_STRATEGY_ARGUMENT_INDEX];
             IObject conf = (IObject) args[CONFIG_STRATEGY_ARGUMENT_INDEX];
 
             IObject commonArgs = (IObject) conf.getValue(argsFieldName);
             Collection<IObject> embedConf = (Collection<IObject>) conf.getValue(embedFieldName);
             List<IObject> replacements = new ArrayList<>(embedConf.size());
 
-            Object targetChainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), conf.getValue(chainFieldName));
-            IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
+            // ToDo: check whether such way of chain Id resolution is correct for Embedded Sensors
+            Object targetChainId = IOC.resolve(
+                    Keys.resolveByName("chain_id_from_map_name"),
+                    conf.getValue(chainFieldName)
+            );
+            IChainStorage chainStorage = IOC.resolve(Keys.resolveByName(IChainStorage.class.getCanonicalName()));
 
             for (IObject embedItemConf : embedConf) {
                 IObject itemArgs = (IObject) embedItemConf.getValue(argsFieldName);
                 itemArgs = (itemArgs == null) ? commonArgs : itemArgs;
                 final Object itemDependency = embedItemConf.getValue(dependencyFieldName);
 
-                itemArgs.setValue(statisticsChainFieldName, statisticsChainId);
+                itemArgs.setValue(statisticsChainFieldName, statisticsChainName);
 
                 IMessageReceiver sensor = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(),
+                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(),
                                 (itemDependency == null) ? DEFAULT_RECEIVER_DEPENDENCY : itemDependency),
                             itemArgs
                         );
 
-                IObject replacement = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                IObject replacement = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                 replacement.setValue(stepFieldName, embedItemConf.getValue(stepFieldName));
                 replacement.setValue(dependencyFieldName, SENSOR_RECEIVER_REPLACEMENT_DEPENDENCY);
@@ -111,7 +115,7 @@ public class EmbeddedSensorCreationStrategy implements IResolveDependencyStrateg
                 replacements.add(replacement);
             }
 
-            IObject modification = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject modification = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             modification.setValue(modificationFieldName, RECEIVER_REPLACEMENT_MODIFICATION_DEPENDENCY);
             modification.setValue(replacementsFieldName, replacements);

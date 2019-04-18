@@ -1,10 +1,9 @@
 package info.smart_tools.smartactors.http_endpoint.completable_netty_future;
 
-import java.util.concurrent.CompletableFuture;
-
-
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.FutureListener;
+
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Adapter from netty {@link Future} to java {@link CompletableFuture}

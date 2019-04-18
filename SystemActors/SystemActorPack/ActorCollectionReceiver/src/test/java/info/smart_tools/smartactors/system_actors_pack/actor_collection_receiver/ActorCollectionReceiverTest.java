@@ -4,12 +4,11 @@ package info.smart_tools.smartactors.system_actors_pack.actor_collection_receive
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
@@ -63,19 +62,19 @@ public class ActorCollectionReceiverTest extends PluginsLoadingTestBase {
             when(processorMocks[i].getSequence()).thenReturn(mock(IMessageProcessingSequence.class));
             when(processorMocks[i].getSequence().getCurrentReceiverArguments()).thenReturn(mock(IObject.class));
             when(processorMocks[i].getSequence().getCurrentReceiverArguments()
-                    .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "new")))
+                    .getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "new")))
                     .thenReturn(childObjectConfigMocks[i]);
             when(processorMocks[i].getSequence().getCurrentReceiverArguments()
-                    .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "key")))
+                    .getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "key")))
                     .thenReturn("in_keyField");
             when(processorMocks[i].getEnvironment()).thenReturn(mock(IObject.class));
             when(processorMocks[i].getEnvironment()
-                    .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "in_keyField")))
+                    .getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "in_keyField")))
                     .thenReturn(String.valueOf(i));
 
             creatorMocks[i] = mock(IReceiverObjectCreator.class);
             when(fullCreatorResolutionStrategy.resolve(same(processorMocks[i].getSequence().getCurrentReceiverArguments()
-                    .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "new")))))
+                    .getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "new")))))
                     .thenReturn(creatorMocks[i]);
             childReceiverMocks[i] = mock(IMessageReceiver.class);
             doAnswer(invocation -> {
@@ -85,7 +84,7 @@ public class ActorCollectionReceiverTest extends PluginsLoadingTestBase {
             }).when(creatorMocks[i]).create(any(), any(), any());
         }
 
-        IOC.register(Keys.getOrAdd("full receiver object creator"), fullCreatorResolutionStrategy);
+        IOC.register(Keys.resolveByName("full receiver object creator"), fullCreatorResolutionStrategy);
     }
 
     @Test(expected = InvalidArgumentException.class)

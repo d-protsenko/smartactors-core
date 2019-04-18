@@ -20,7 +20,7 @@ You should do the following to perform a database query.
 1. Resolve [IoC](IOCExample.html) dependency to take command object which interacts with DB.
 
         ITask task = IOC.resolve(
-            Keys.getOrAdd("command_name"),          // each command has it's own unique name
+            Keys.resolveByName("command_name"),          // each command has it's own unique name
             connection,                             // object - connection to the DB
             "collection_name",                      // each document belongs to the collection
             other comma-separated parameters        // the set of parameters depends on the command
@@ -91,7 +91,7 @@ When the document is successfully inserted, the command adds the field "collecti
 #### Example
 
     ITask task = IOC.resolve(
-            Keys.getOrAdd("db.collection.upsert"),
+            Keys.resolveByName("db.collection.upsert"),
             connection,
             collectionName,
             document
@@ -127,7 +127,7 @@ If the document is absent in the collection, no error appears because the absenc
 #### Example
  
     ITask task = IOC.resolve(
-            Keys.getOrAdd("db.collection.delete"),
+            Keys.resolveByName("db.collection.delete"),
             connection,
             collectionName,
             document
@@ -150,7 +150,7 @@ If the document with such id does not exist, the `TaskExecutionException` is thr
 #### Example
 
     ITask task = IOC.resolve(
-            Keys.getOrAdd("db.collection.getbyid"),
+            Keys.resolveByName("db.collection.getbyid"),
             connection,
             collectionName,
             documentiId,
@@ -310,7 +310,7 @@ You define the pair: the document field name and the sort direction: "asc" or "d
 #### Example
     
     ITask task = IOC.resolve(
-            Keys.getOrAdd("db.collection.search"),
+            Keys.resolveByName("db.collection.search"),
             connection,
             collectionName,
             new DSObject(String.format(
@@ -365,11 +365,11 @@ Get the document by id.
 
         void Handle(final IGetDocumentMessage mes) {
     
-            IPool pool = IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool"));
+            IPool pool = IOC.resolve(Keys.resolveByName("DatabaseConnectionPool"));
             try (PoolGuard guard = new PoolGuard(pool)) {
                  
                 ITask task = IOC.resolve(
-                    Keys.getOrAdd("db.collection.getbyid"),
+                    Keys.resolveByName("db.collection.getbyid"),
                     guard.getObject(),
                     mes.collectionName(),
                     mes.id(),

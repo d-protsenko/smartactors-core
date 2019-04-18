@@ -2,11 +2,11 @@ package info.smart_tools.smartactors.database_postgresql_create_collection_if_no
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
-import info.smart_tools.smartactors.database_postgresql_create_collection_if_not_exists.create_collection_task.CreateIfNotExistsCollectionMessage;
-import info.smart_tools.smartactors.database_postgresql_create_collection_if_not_exists.create_collection_task.PostgresCreateIfNotExistsTask;
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
+import info.smart_tools.smartactors.database_postgresql_create_collection_if_not_exists.create_collection_task.CreateIfNotExistsCollectionMessage;
+import info.smart_tools.smartactors.database_postgresql_create_collection_if_not_exists.create_collection_task.PostgresCreateIfNotExistsTask;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.iobject.ifield.IField;
@@ -15,7 +15,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 /**
  * Plugin with IOC-strategies for database tasks
@@ -36,12 +36,12 @@ public class CreateCollectionPlugin extends BootstrapPlugin {
     @Before("")
     public void registerCreateIfNotExistsTask() throws ResolutionException, RegistrationException, InvalidArgumentException {
         IField collectionNameField = IOC.resolve(
-                Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+                Keys.resolveByName(IField.class.getCanonicalName()), "collectionName");
         IField optionsField = IOC.resolve(
-                Keys.getOrAdd(IField.class.getCanonicalName()), "options");
+                Keys.resolveByName(IField.class.getCanonicalName()), "options");
 
         IOC.register(
-                Keys.getOrAdd(CreateIfNotExistsCollectionMessage.class.getCanonicalName()),
+                Keys.resolveByName(CreateIfNotExistsCollectionMessage.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             IObject message = (IObject) args[0];
@@ -67,7 +67,7 @@ public class CreateCollectionPlugin extends BootstrapPlugin {
                 )
         );
         IOC.register(
-                Keys.getOrAdd("db.collection.create-if-not-exists"),
+                Keys.resolveByName("db.collection.create-if-not-exists"),
                 //TODO:: use smth like ResolveByNameStrategy, but this caching strategy should call prepare always
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
@@ -80,7 +80,7 @@ public class CreateCollectionPlugin extends BootstrapPlugin {
                                 }
                                 IDatabaseTask task = new PostgresCreateIfNotExistsTask(connection);
 
-                                IObject query = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+                                IObject query = IOC.resolve(Keys.resolveByName(IObject.class.getCanonicalName()));
 
                                 collectionNameField.out(query, collectionName);
                                 optionsField.out(query, options);

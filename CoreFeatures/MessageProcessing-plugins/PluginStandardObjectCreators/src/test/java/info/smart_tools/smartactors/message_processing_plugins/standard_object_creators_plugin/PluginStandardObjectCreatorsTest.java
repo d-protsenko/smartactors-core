@@ -9,7 +9,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.ex
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
@@ -38,7 +38,7 @@ public class PluginStandardObjectCreatorsTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameResolutionStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -49,7 +49,7 @@ public class PluginStandardObjectCreatorsTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -100,14 +100,14 @@ public class PluginStandardObjectCreatorsTest {
         IBootstrapItem<String> item = itemList.get(0);
         item.executeProcess();
         IRoutedObjectCreator objectCreator = IOC.resolve(
-                Keys.getOrAdd(IRoutedObjectCreator.class.getCanonicalName() + "#raw")
+                Keys.resolveByName(IRoutedObjectCreator.class.getCanonicalName() + "#raw")
         );
         assertNotNull(objectCreator);
 
         item.executeRevertProcess();
 
         try {
-            IOC.resolve(Keys.getOrAdd(IRoutedObjectCreator.class.getCanonicalName() + "#raw"));
+            IOC.resolve(Keys.resolveByName(IRoutedObjectCreator.class.getCanonicalName() + "#raw"));
             fail();
         } catch (ResolutionException e) {}
 

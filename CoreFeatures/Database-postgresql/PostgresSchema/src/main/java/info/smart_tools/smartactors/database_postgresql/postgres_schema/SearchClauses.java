@@ -1,16 +1,16 @@
 package info.smart_tools.smartactors.database_postgresql.postgres_schema;
 
 import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.QueryStatement;
 import info.smart_tools.smartactors.database_postgresql.postgres_schema.search.OrderWriter;
 import info.smart_tools.smartactors.database_postgresql.postgres_schema.search.PagingWriter;
 import info.smart_tools.smartactors.database_postgresql.postgres_schema.search.PostgresQueryWriterResolver;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -34,7 +34,7 @@ final class SearchClauses {
      * @throws Exception if the clause cannot be written
      */
     static void writeSearchWhere(final QueryStatement statement, final IObject criteria) throws Exception {
-        IKey fieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey fieldNameKey = Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         Writer body = statement.getBodyWriter();
         try {
             IFieldName filterField = IOC.resolve(fieldNameKey, "filter");
@@ -57,7 +57,7 @@ final class SearchClauses {
      * @throws Exception if the clause cannot be written
      */
     static void writeSearchOrder(final QueryStatement statement, final IObject criteria) throws Exception {
-        IKey fieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey fieldNameKey = Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         Writer body = statement.getBodyWriter();
         try {
             IFieldName sortField = IOC.resolve(fieldNameKey, "sort");
@@ -80,7 +80,7 @@ final class SearchClauses {
      * @throws Exception if the clause cannot be written
      */
     static void writeSearchPaging(final QueryStatement statement, final IObject criteria) throws Exception {
-        IKey fieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey fieldNameKey = Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         Writer body = statement.getBodyWriter();
         try {
             IFieldName pageField = IOC.resolve(fieldNameKey, "page");

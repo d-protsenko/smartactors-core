@@ -2,13 +2,13 @@ package info.smart_tools.smartactors.database_postgresql.postgres_schema.indexes
 
 import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.database_postgresql.postgres_schema.PostgresSchema;
 import info.smart_tools.smartactors.database_postgresql.postgres_schema.search.FieldPath;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -21,7 +21,7 @@ import java.util.List;
 class FulltextIndexWriter implements IndexWriter {
 
     static IndexWriter resolve(IObject options) throws Exception {
-        IKey fieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey fieldNameKey = Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         IFieldName languageField = IOC.resolve(fieldNameKey, "language");
         String language = (String) options.getValue(languageField);
         if (language == null) {

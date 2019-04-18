@@ -10,7 +10,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.statistics.sensors.interfaces.ISensorHandle;
 import info.smart_tools.smartactors.statistics.sensors.interfaces.exceptions.SensorShutdownException;
 import info.smart_tools.smartactors.statistics.statistics_manager.exceptions.CommandExecutionException;
@@ -18,16 +18,7 @@ import info.smart_tools.smartactors.statistics.statistics_manager.exceptions.Com
 import info.smart_tools.smartactors.statistics.statistics_manager.wrappers.StatisticsCommandWrapper;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Statistics manager actor manages sensors (accessible through {@link ISensorHandle sensor handles}), data collectors (represented as
@@ -142,7 +133,7 @@ public class StatisticsManagerActor {
     private IObject toConfigObject(final IObject object)
             throws SerializeException, ResolutionException {
         String serialized = object.serialize();
-        return IOC.resolve(Keys.getOrAdd("configuration object"), serialized);
+        return IOC.resolve(Keys.resolveByName("configuration object"), serialized);
     }
 
     private void invalidateChainFor(final String sensorId) {
@@ -151,7 +142,7 @@ public class StatisticsManagerActor {
 
     private IObject createChainConfigForSensor(final String sensorId)
             throws ResolutionException, ChangeValueException, InvalidArgumentException {
-        IObject chainConfig = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject chainConfig = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
         chainConfig.setValue(chainIdFieldName, sensors.get(sensorId).getChainName());
         chainConfig.setValue(exceptionalFieldName, Collections.EMPTY_LIST);
 
@@ -169,7 +160,7 @@ public class StatisticsManagerActor {
     private void rebuildChains()
             throws ChangeValueException, ResolutionException, InvalidArgumentException, ConfigurationProcessingException,
             SerializeException {
-        IObject rootObject = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject rootObject = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
         List<IObject> chainsSection = new ArrayList<>(invalidSensorChains.size());
 
@@ -179,7 +170,7 @@ public class StatisticsManagerActor {
 
         rootObject.setValue(chainsSectionFieldName, chainsSection);
 
-        IConfigurationManager configurationManager = IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
+        IConfigurationManager configurationManager = IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
 
         configurationManager.applyConfig(toConfigObject(rootObject));
 
@@ -190,7 +181,7 @@ public class StatisticsManagerActor {
                                        final String queryChainName, final IObject queryStepConfig)
             throws ChangeValueException, InvalidArgumentException, ConfigurationProcessingException, ResolutionException,
             SerializeException {
-        IObject responseStepConfigObject = IOC.resolve(Keys.getOrAdd("configuration object"),
+        IObject responseStepConfigObject = IOC.resolve(Keys.resolveByName("configuration object"),
                 ("{\n" +
                         "\"target\": \"respond\",\n" +
                         "\"handler\": \"sendResponse\"\n" +
@@ -199,19 +190,19 @@ public class StatisticsManagerActor {
         objectConfig.setValue(objectNameFieldName, objectName);
         queryStepConfig.setValue(targetFieldName, objectName);
 
-        IObject chainConfig = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject chainConfig = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
         chainConfig.setValue(chainIdFieldName, queryChainName);
         chainConfig.setValue(chainStepsFieldName, Arrays.asList(queryStepConfig, responseStepConfigObject));
         chainConfig.setValue(exceptionalFieldName, Collections.EMPTY_LIST);
         chainConfig.setValue(externalAccessFieldName, Boolean.TRUE);
 
-        IObject rootConfigObject = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject rootConfigObject = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
         rootConfigObject.setValue(objectsSectionFieldName, Collections.singletonList(objectConfig));
         rootConfigObject.setValue(chainsSectionFieldName, Collections.singletonList(chainConfig));
 
-        IConfigurationManager configurationManager = IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
+        IConfigurationManager configurationManager = IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
 
         configurationManager.applyConfig(toConfigObject(rootConfigObject));
     }
@@ -235,21 +226,21 @@ public class StatisticsManagerActor {
      */
     public StatisticsManagerActor()
             throws ResolutionException {
-        chainsSectionFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maps");
-        objectsSectionFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "objects");
-        chainIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id");
-        exceptionalFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "exceptional");
-        externalAccessFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "externalAccess");
-        chainStepsFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "steps");
-        dependencyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
-        argsFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "args");
-        idFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id");
-        sensorFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sensor");
-        collectorFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collector");
-        stepConfigFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "stepConfig");
-        objectNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
-        targetFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "target");
-        queryStepConfigFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "queryStepConfig");
+        chainsSectionFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "maps");
+        objectsSectionFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "objects");
+        chainIdFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id");
+        exceptionalFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "exceptional");
+        externalAccessFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "externalAccess");
+        chainStepsFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "steps");
+        dependencyFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
+        argsFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "args");
+        idFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id");
+        sensorFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sensor");
+        collectorFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collector");
+        stepConfigFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "stepConfig");
+        objectNameFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+        targetFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "target");
+        queryStepConfigFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "queryStepConfig");
 
         sensors = new HashMap<>();
         collectors = new HashMap<>();
@@ -324,8 +315,8 @@ public class StatisticsManagerActor {
             }
 
             ISensorHandle handle = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), args.getValue(dependencyFieldName)),
-                    IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName),
+                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), args.getValue(dependencyFieldName)),
+                    IOC.resolve(Keys.resolveByName("chain_id_from_map_name"), chainName),
                     args.getValue(argsFieldName)
             );
 
@@ -509,7 +500,7 @@ public class StatisticsManagerActor {
             List<IObject> sensorsList = new ArrayList<>(sensors.size());
 
             for (Map.Entry<String, SensorInfo> entry : sensors.entrySet()) {
-                IObject sensorView = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                IObject sensorView = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                 sensorView.setValue(idFieldName, entry.getKey());
                 sensorView.setValue(dependencyFieldName, entry.getValue().getOriginalDependency());
@@ -596,7 +587,7 @@ public class StatisticsManagerActor {
             List<IObject> collectorsList = new ArrayList<>(collectors.size());
 
             for (Map.Entry<String, CollectorInfo> entry : collectors.entrySet()) {
-                IObject collectorView = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                IObject collectorView = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                 collectorView.setValue(idFieldName, entry.getKey());
                 collectorView.setValue(argsFieldName, entry.getValue().getOriginalConfig());
@@ -657,7 +648,7 @@ public class StatisticsManagerActor {
         try {
             for (Map.Entry<String, SensorInfo> sensorEntry : sensors.entrySet()) {
                 for (Map.Entry<String, IObject> collectorLinkEntry : sensorEntry.getValue().getConnectedCollectors().entrySet()) {
-                    IObject linkView = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                    IObject linkView = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
                     linkView.setValue(sensorFieldName, sensorEntry.getKey());
                     linkView.setValue(collectorFieldName, collectorLinkEntry.getKey());

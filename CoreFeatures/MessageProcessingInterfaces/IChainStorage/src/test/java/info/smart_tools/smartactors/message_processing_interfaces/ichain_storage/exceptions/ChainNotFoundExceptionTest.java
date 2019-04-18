@@ -1,5 +1,6 @@
 package info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions;
 
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

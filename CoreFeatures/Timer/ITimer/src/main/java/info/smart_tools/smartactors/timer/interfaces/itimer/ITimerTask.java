@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.timer.interfaces.itimer;
 
-import info.smart_tools.smartactors.timer.interfaces.itimer.exceptions.TaskScheduleException;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.timer.interfaces.itimer.exceptions.TaskScheduleException;
 
 /**
  * Object associated with a {@link ITask} scheduled on a {@link ITimer}.

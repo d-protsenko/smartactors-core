@@ -1,18 +1,18 @@
 package info.smart_tools.smartactors.database_postgresql_plugins.connection_options_plugin;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrapper.ConnectionOptions;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrapper.ConnectionOptions;
-import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 /**
  * Plugin for resolving connection options from properties
@@ -31,12 +31,12 @@ public class ConnectionOptionsPlugin extends BootstrapPlugin {
     @Item("PostgresConnectionOptionsPlugin")
     public void registerCanonizationStrategies()
             throws ResolutionException, InvalidArgumentException,RegistrationException {
-        IField urlF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "url");
-        IField usernameF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "username");
-        IField passwordF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "password");
-        IField maxConnectionsF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "maxConnections");
+        IField urlF = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "url");
+        IField usernameF = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "username");
+        IField passwordF = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "password");
+        IField maxConnectionsF = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "maxConnections");
 
-        IOC.register(Keys.getOrAdd("PostgresConnectionOptionsStrategy"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(Keys.resolveByName("PostgresConnectionOptionsStrategy"), new ApplyFunctionToArgumentsStrategy(
                 (args) -> {
                     IObject opts = (IObject) args[0];
                     return new ConnectionOptions() {

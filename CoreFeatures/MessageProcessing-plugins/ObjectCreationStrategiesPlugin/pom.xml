@@ -5,10 +5,10 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>message-processing-plugins</artifactId>
-        <version>0.4.0</version>
+        <version>0.5.0</version>
     </parent>
     <artifactId>message-processing-plugins.object-creation-strategies-plugin</artifactId>
-    <version>0.4.0</version>
+    <version>0.5.0</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
@@ -62,7 +62,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>ioc.named-keys-storage</artifactId>
+            <artifactId>ioc.key-tools</artifactId>
             <version>[0.1.0, 1.0.0)</version>
         </dependency>
         <dependency>

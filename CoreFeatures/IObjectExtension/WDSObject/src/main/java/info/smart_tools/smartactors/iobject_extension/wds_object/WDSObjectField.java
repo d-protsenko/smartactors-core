@@ -1,17 +1,17 @@
 package info.smart_tools.smartactors.iobject_extension.wds_object;
 
-import info.smart_tools.smartactors.iobject.field_name.FieldName;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,7 +62,7 @@ public class WDSObjectField implements IField {
                 strategies.put(
                         name,
                         null == this.strategyExecutors.get(name) ?
-                                IOC.resolve(Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName()), name) :
+                                IOC.resolve(Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName()), name) :
                                 null
                 );
             }
@@ -135,10 +135,10 @@ public class WDSObjectField implements IField {
         try {
             String[] separated = location.split(SPLITTER);
             if (separated.length == 1) {
-                return source.getValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), separated[0]));
+                return source.getValue(IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), separated[0]));
             }
             return getNestedIObject(source, separated).getValue(
-                    IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), separated[separated.length - 1])
+                    IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), separated[separated.length - 1])
             );
         } catch (Throwable e) {
             throw new ReadValueException("Could not read " + location + " from IObject", e);
@@ -149,11 +149,11 @@ public class WDSObjectField implements IField {
             throws Exception {
         try {
             IObject nestedObject = (IObject) source.getValue(
-                    IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), separatedPath[0])
+                    IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), separatedPath[0])
             );
             for (int i = 1; i < separatedPath.length - 1; ++i) {
                 nestedObject = (IObject) nestedObject.getValue(
-                        IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), separatedPath[i])
+                        IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), separatedPath[i])
                 );
             }
 
@@ -177,7 +177,7 @@ public class WDSObjectField implements IField {
                             String fieldName = split[split.length - 1];
                             String path = source.substring(0, source.lastIndexOf(SLASH));
                             ((IObject) getValueFromNestedIObject(o.getEnv(), path)).setValue(
-                                    IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), fieldName), value
+                                    IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), fieldName), value
                             );
 
                             return null;

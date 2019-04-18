@@ -1,9 +1,10 @@
 package info.smart_tools.smartactors.feature_loading_system.plugin_loader_from_jar;
 
-import com.sun.org.apache.bcel.internal.util.ClassLoader;
-import info.smart_tools.smartactors.base.path.Path;
-import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
+import info.smart_tools.smartactors.base.path.Path;
+import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.IPluginLoader;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader.exception.PluginLoaderException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_loader_visitor.IPluginLoaderVisitor;
@@ -26,7 +27,8 @@ public class PluginLoaderTest {
     public void checkPluginLoaderCreation()
             throws Exception {
         Checker checker = new Checker();
-        ExpansibleURLClassLoader cl = new ExpansibleURLClassLoader(new URL[]{});
+        ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
+        ISmartactorsClassLoader cl = ModuleManager.getCurrentClassLoader();
         IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
         IPluginLoader<Collection<IPath>> pl = new PluginLoader(
                 cl,
@@ -43,7 +45,7 @@ public class PluginLoaderTest {
             fail();
         }
         Collection<IPath> files = new ArrayList<IPath>(){{add(new Path(url.getPath()));}};
-        pl.loadPlugin(files);
+        pl.loadPlugins(files);
         assertTrue(checker.wasCalled);
     }
 
@@ -54,17 +56,11 @@ public class PluginLoaderTest {
         fail();
     }
 
-    @Test (expected = InvalidArgumentException.class)
-    public void checkInvalidArgumentExceptionOnInvalidClassLoader()
-            throws Exception {
-        new PluginLoader(new ClassLoader(), (t)->{}, mock(IPluginLoaderVisitor.class));
-        fail();
-    }
-
     @Test (expected = PluginLoaderException.class)
     public void checkPluginLoaderException()
             throws Exception {
-        ExpansibleURLClassLoader cl = new ExpansibleURLClassLoader(new URL[]{});
+        ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
+        ISmartactorsClassLoader cl = ModuleManager.getCurrentClassLoader();
         IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
         IPluginLoader<Collection<IPath>> pl = new PluginLoader(
                 cl,
@@ -72,7 +68,7 @@ public class PluginLoaderTest {
                     throw new RuntimeException("Could not create instance of IPlugin");
                 },
                 visitor);
-        pl.loadPlugin(null);
+        pl.loadPlugins(null);
         fail();
     }
 
@@ -80,7 +76,8 @@ public class PluginLoaderTest {
     public void checkPluginLoaderOnLoadBrokenJarFile()
             throws Exception {
         Checker checker = new Checker();
-        ExpansibleURLClassLoader cl = new ExpansibleURLClassLoader(new URL[]{});
+        ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
+        ISmartactorsClassLoader cl = ModuleManager.getCurrentClassLoader();
         IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
         IPluginLoader<Collection<IPath>> pl = new PluginLoader(
                 cl,
@@ -97,7 +94,7 @@ public class PluginLoaderTest {
             fail();
         }
         Collection<IPath> files = new ArrayList<IPath>(){{add(new Path(url.getPath()));}};
-        pl.loadPlugin(files);
+        pl.loadPlugins(files);
         assertTrue(checker.wasCalled);
         fail();
     }
@@ -107,7 +104,7 @@ public class PluginLoaderTest {
 //    public void checkPluginLoaderOnLoadJarWithBrokenClassFile()
 //            throws Exception {
 //        Checker checker = new Checker();
-//        ExpansibleURLClassLoader cl = new ExpansibleURLClassLoader(new URL[]{});
+//        ExtendedURLClassLoader cl = new ExtendedURLClassLoader(new URL[]{});
 //        IPluginLoaderVisitor<String> visitor = mock(IPluginLoaderVisitor.class);
 //        IPluginLoader<Collection<IPath>> pl = new PluginLoader(
 //                cl,
@@ -124,7 +121,7 @@ public class PluginLoaderTest {
 //            fail();
 //        }
 //        Collection<IPath> files = new ArrayList<IPath>(){{add(new Path(url.getPath()));}};
-//        pl.loadPlugin(files);
+//        pl.loadPlugins(files);
 //        assertTrue(checker.wasCalled);
 //        fail();
 //    }

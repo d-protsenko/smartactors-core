@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.email.email_actor;
 
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.email.email_actor.email.MessageAttributeSetters;
 import info.smart_tools.smartactors.email.email_actor.email.MessagePartCreators;
 import info.smart_tools.smartactors.email.email_actor.email.SMTPMessageAdaptor;
@@ -9,13 +10,12 @@ import info.smart_tools.smartactors.email.email_actor.exception.SendFailureExcep
 import info.smart_tools.smartactors.email.email_actor.wrapper.MailingMessage;
 import info.smart_tools.smartactors.field.field.Field;
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import me.normanmaurer.niosmtp.delivery.Authentication;
 import me.normanmaurer.niosmtp.delivery.DeliveryRecipientStatus;
 import me.normanmaurer.niosmtp.delivery.SMTPDeliveryAgent;
@@ -91,18 +91,18 @@ public class MailingActor {
     public MailingActor(final IObject params) throws MailingActorException {
         try {
             //Fields initialize
-            serverURI_ActorParams_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "server");
-            senderAddress_Context_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "senderAddress");
-            senderAddress_ActorParams_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "senderAddress");
-            userName_ActorParams_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "username");
-            password_ActorParams_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "password");
-            authenticationMode_ActorParams_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "authenticationMode");
-            SSLProtocol_ActorParams_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "sslProtocol");
-            senderAddress_Context_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "senderAddress");
-            recipientF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "recipient");
-            typeF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "type");
+            serverURI_ActorParams_F = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "server");
+            senderAddress_Context_F = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "senderAddress");
+            senderAddress_ActorParams_F = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "senderAddress");
+            userName_ActorParams_F = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "username");
+            password_ActorParams_F = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "password");
+            authenticationMode_ActorParams_F = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "authenticationMode");
+            SSLProtocol_ActorParams_F = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "sslProtocol");
+            senderAddress_Context_F = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "senderAddress");
+            recipientF = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "recipient");
+            typeF = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "type");
 
-            mailingContext = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            mailingContext = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             serverUri = new URI(serverURI_ActorParams_F.in(params, String.class));
             serverHost = new InetSocketAddress(serverUri.getHost(), serverUri.getPort());

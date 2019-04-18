@@ -8,7 +8,6 @@ import info.smart_tools.smartactors.task.itask_preprocess_strategy.exceptions.Ta
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
 

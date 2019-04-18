@@ -11,7 +11,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryNotFoundException;
@@ -52,10 +52,10 @@ public class DatabaseRemoteStorageTest extends PluginsLoadingTestBase {
 
         try (IPoolGuard guard = new PoolGuard(connectionPool)) {
             ITask createTask = IOC.resolve(
-                    Keys.getOrAdd("db.collection.create"),
+                    Keys.resolveByName("db.collection.create"),
                     guard.getObject(),
                     "scheduler_collection",
-                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
+                    IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
 
             createTask.execute();
         }
@@ -65,7 +65,7 @@ public class DatabaseRemoteStorageTest extends PluginsLoadingTestBase {
         for (int i = 0; i < entries.length; i++) {
             entries[i] = mock(ISchedulerEntry.class);
             when(entries[i].getLastTime()).thenReturn(100L * i);
-            when(entries[i].getState()).thenReturn(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+            when(entries[i].getState()).thenReturn(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                     String.format(("{" +
                             "'entryId':'entry-%010d'" +
                             "}").replace('\'', '"'), i)));

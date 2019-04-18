@@ -3,17 +3,17 @@ if "%1" == "make" (
     if "%2" == "jar" (
         if "%3" == "source" (
             echo "make project jars (source)"
-            mvn clean install package -Dbuild.format=jar -Dbuild.unpack=true -Dbuild.includeBaseDirectory=false -Dbuild.exclude=
+            mvn clean install -Dbuild.format=jar -Dbuild.unpack=true -Dbuild.includeBaseDirectory=false -Dbuild.exclude=
         ) else (
             echo "make project jars"
-            mvn clean install package -Dbuild.format=jar -Dbuild.unpack=true -Dbuild.includeBaseDirectory=false -Dbuild.exclude=**/**
+            mvn clean install -Dbuild.format=jar -Dbuild.unpack=true -Dbuild.includeBaseDirectory=false -Dbuild.exclude=**/**
         )
     ) else if "%2" == "zip" (
         echo "make project zips"
-        mvn clean install package -Dbuild.format=zip -Dbuild.unpack=false -Dbuild.includeBaseDirectory=true -Dbuild.exclude=**/**
+        mvn clean install -Dbuild.format=zip -Dbuild.unpack=false -Dbuild.includeBaseDirectory=true -Dbuild.exclude=**/**
     ) else (
         echo "make project zips"
-        mvn clean install package -Dbuild.format=zip -Dbuild.unpack=false -Dbuild.includeBaseDirectory=true -Dbuild.exclude=**/**
+        mvn clean install -Dbuild.format=zip -Dbuild.unpack=false -Dbuild.includeBaseDirectory=true -Dbuild.exclude=**/**
     )
 ) else if "%1" == "deploy" (
     if "%2" == "jar" (

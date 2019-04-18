@@ -6,7 +6,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExec
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
@@ -24,7 +24,7 @@ public class ResponseSenderReceiver implements IMessageReceiver {
      * @throws ResolutionException if error occurs resolving any dependency
      */
     public ResponseSenderReceiver() throws ResolutionException {
-        action = IOC.resolve(Keys.getOrAdd("send response action"));
+        action = IOC.resolve(Keys.resolveByName("send response action"));
     }
 
     @Override

@@ -11,7 +11,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -34,12 +34,12 @@ public class CreateAsyncOperationActor {
      */
     public CreateAsyncOperationActor(final IObject params) throws CreateAsyncOperationActorException {
         try {
-            formatter = IOC.resolve(Keys.getOrAdd("datetime_formatter"));
-            IField collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
-            IField databaseOptionsF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "databaseOptions");
-            Object connectionOpts =  IOC.resolve(Keys.getOrAdd(databaseOptionsF.in(params)));
+            formatter = IOC.resolve(Keys.resolveByName("datetime_formatter"));
+            IField collectionNameField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "collectionName");
+            IField databaseOptionsF = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "databaseOptions");
+            Object connectionOpts =  IOC.resolve(Keys.resolveByName(databaseOptionsF.in(params)));
             collection = IOC.resolve(
-                Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName()), connectionOpts, collectionNameField.in(params)
+                Keys.resolveByName(IAsyncOperationCollection.class.getCanonicalName()), connectionOpts, collectionNameField.in(params)
             );
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new CreateAsyncOperationActorException("Can't read collection name from message", e);
@@ -60,7 +60,7 @@ public class CreateAsyncOperationActor {
     public void create(final CreateAsyncOperationMessage message) throws CreateAsyncOperationActorException {
 
         try {
-            String token = IOC.resolve(Keys.getOrAdd("db.collection.nextid"));
+            String token = IOC.resolve(Keys.resolveByName("db.collection.nextid"));
             Integer amountOfHoursToExpireFromNow = message.getExpiredTime();
             String expiredTime = LocalDateTime.now().plusHours(amountOfHoursToExpireFromNow).format(formatter);
             message.setSessionIdInData(message.getSessionId());

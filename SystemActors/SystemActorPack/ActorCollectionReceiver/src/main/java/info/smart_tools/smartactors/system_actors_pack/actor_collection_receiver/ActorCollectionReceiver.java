@@ -9,7 +9,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
@@ -86,9 +86,9 @@ public class ActorCollectionReceiver implements IMessageReceiver {
 
         this.childReceivers = childStorage;
 
-        this.keyFieldName  = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "key");
-        this.newFieldName  = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "new");
-        this.deletionActionFieldName  = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "deletionAction");
+        this.keyFieldName  = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "key");
+        this.newFieldName  = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "new");
+        this.deletionActionFieldName  = IOC.resolve(Keys.resolveByName(IFieldName.class.getCanonicalName()), "deletionAction");
 
         this.deletionAction = ctx -> {
             try {
@@ -104,11 +104,11 @@ public class ActorCollectionReceiver implements IMessageReceiver {
                 ReceiverObjectCreatorException , InvalidReceiverPipelineException, ChangeValueException {
         IObject newObjectConfig = (IObject) stepConf.getValue(newFieldName);
 
-        IObject context = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject context = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
         context.setValue(keyFieldName, id);
         context.setValue(deletionActionFieldName, deletionAction);
 
-        IReceiverObjectCreator creator = IOC.resolve(Keys.getOrAdd("full receiver object creator"), newObjectConfig);
+        IReceiverObjectCreator creator = IOC.resolve(Keys.resolveByName("full receiver object creator"), newObjectConfig);
 
         CollectionReceiverReceiverListener listener = new CollectionReceiverReceiverListener();
 
@@ -146,7 +146,7 @@ public class ActorCollectionReceiver implements IMessageReceiver {
             IObject stepConf = processor.getSequence().getCurrentReceiverArguments();
 
             IFieldName fieldNameForKeyName = IOC.resolve(
-                    Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                    Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                     stepConf.getValue(this.keyFieldName));
 
             Object id =  processor.getEnvironment().getValue(fieldNameForKeyName);

@@ -10,7 +10,6 @@ import info.smart_tools.smartactors.statistics.sensors.embedded_sensor.interface
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Implementation of embedded sensor strategy that records difference between current time and time saved in specified field of message

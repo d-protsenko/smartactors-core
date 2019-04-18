@@ -3,10 +3,12 @@ package info.smart_tools.smartactors.message_processing.handler_routing_receiver
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
+import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
+import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
 import info.smart_tools.smartactors.message_processing.handler_routing_receiver.HandlerRoutingReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.ireceiver_generator.IReceiverGenerator;
 import info.smart_tools.smartactors.message_processing_interfaces.iroutable_object_creator.exceptions.ObjectCreationException;
@@ -16,18 +18,13 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.scope.iscope.IScope;
-import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
-import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
-import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -45,7 +42,7 @@ public class HandlerRoutingReceiverCreatorTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameResolutionStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -61,7 +58,7 @@ public class HandlerRoutingReceiverCreatorTest {
     public void checkCreationAndExecution()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -74,7 +71,7 @@ public class HandlerRoutingReceiverCreatorTest {
         );
         IField field = mock(IField.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IField.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IField.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             return field;
@@ -85,7 +82,7 @@ public class HandlerRoutingReceiverCreatorTest {
         when(objectSection.getValue(new FieldName("name"))).thenReturn("actorID");
         when(objectSection.getValue(new FieldName("dependency"))).thenReturn("createSampleActorStrategy");
         IResolveDependencyStrategy createSampleActorStrategy = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.getOrAdd("createSampleActorStrategy"), createSampleActorStrategy);
+        IOC.register(Keys.resolveByName("createSampleActorStrategy"), createSampleActorStrategy);
         ConstructorWrapperImpl wrapperImpl = new ConstructorWrapperImpl();
         CustomActor a = new CustomActor(wrapperImpl);
         when(createSampleActorStrategy.resolve(objectSection))
@@ -94,14 +91,14 @@ public class HandlerRoutingReceiverCreatorTest {
         // register wrapper generator
         IResolveDependencyStrategy wgs = mock(IResolveDependencyStrategy.class);
         IWrapperGenerator wg = mock(IWrapperGenerator.class);
-        IOC.register(Keys.getOrAdd(IWrapperGenerator.class.getCanonicalName()), wgs);
+        IOC.register(Keys.resolveByName(IWrapperGenerator.class.getCanonicalName()), wgs);
         when(wgs.resolve()).thenReturn(wg);
         MethodWrapper mw = new MethodWrapper();
         when(wg.generate(IMethodWrapper.class)).thenReturn(mw);
         // register receiver generator
         IResolveDependencyStrategy rgs = mock(IResolveDependencyStrategy.class);
         IReceiverGenerator rg = mock(IReceiverGenerator.class);
-        IOC.register(Keys.getOrAdd(IReceiverGenerator.class.getCanonicalName()), rgs);
+        IOC.register(Keys.resolveByName(IReceiverGenerator.class.getCanonicalName()), rgs);
         when(rgs.resolve()).thenReturn(rg);
         IMessageReceiver mr = mock(IMessageReceiver.class);
         when(rg.generate(any(CustomActor.class), any(IResolveDependencyStrategy.class), any(String.class)))
@@ -150,7 +147,7 @@ public class HandlerRoutingReceiverCreatorTest {
     public void checkCreationExceptionOnWrongFieldNameStrategy()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -169,7 +166,7 @@ public class HandlerRoutingReceiverCreatorTest {
     public void checkMethodExceptionOnWrongArgs()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {

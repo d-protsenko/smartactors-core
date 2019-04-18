@@ -15,4 +15,5 @@ public interface DownloadFeatureWrapper {
      */
     IFeature getFeature()
             throws ReadValueException;
+
 }

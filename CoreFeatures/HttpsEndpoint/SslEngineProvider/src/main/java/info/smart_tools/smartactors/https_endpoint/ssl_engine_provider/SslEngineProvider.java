@@ -6,7 +6,7 @@ import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.handler.ssl.ClientAuth;
 import io.netty.handler.ssl.SslContext;
@@ -15,7 +15,6 @@ import io.netty.handler.ssl.SslProvider;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLParameters;
 import java.io.File;
 import java.util.Arrays;
 
@@ -51,8 +50,8 @@ public class SslEngineProvider implements ISslEngineProvider {
         IFieldName certPassFieldName = null;
         IFieldName certPathFieldName = null;
         try {
-            certPassFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "certPass");
-            certPathFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "certPath");
+            certPassFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "certPass");
+            certPathFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "certPath");
         } catch (ResolutionException e) {
             throw new SSLEngineProviderException("An exception on resolving \"FieldName\"", e);
         }

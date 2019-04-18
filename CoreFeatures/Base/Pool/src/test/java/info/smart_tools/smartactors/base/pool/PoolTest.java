@@ -3,11 +3,10 @@ package info.smart_tools.smartactors.base.pool;
 import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolTakeException;
 import org.junit.Test;
+
 import java.util.function.Supplier;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**

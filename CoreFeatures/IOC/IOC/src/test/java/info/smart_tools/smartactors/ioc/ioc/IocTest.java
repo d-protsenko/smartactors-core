@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.ioc.ioc;
 
+import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.ioc.iioccontainer.IContainer;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,11 +11,7 @@ import java.lang.reflect.Field;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests for IOC
@@ -75,10 +71,10 @@ public class IocTest {
     }
 
     @Test
-    public void checkGetKeyForKeyStorage()
+    public void checkgetKeyForKeyByNameResolutionStrategy()
             throws Exception {
-        when(container.getKeyForKeyStorage()).thenReturn(mock(IKey.class));
-        IKey key = IOC.getKeyForKeyStorage();
+        when(container.getKeyForKeyByNameResolutionStrategy()).thenReturn(mock(IKey.class));
+        IKey key = IOC.getKeyForKeyByNameResolutionStrategy();
         assertNotNull(key);
     }
 

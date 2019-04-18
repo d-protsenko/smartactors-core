@@ -4,16 +4,9 @@
 
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>smartactors-core</artifactId>
-    <version>0.3.3</version>
+    <version>0.5.0</version>
 
     <packaging>pom</packaging>
-
-    <repositories>
-        <repository>
-            <id>smartactors-modules</id>
-            <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
-        </repository>
-    </repositories>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,9 +16,8 @@
     <modules>
         <module>CommonFeatures</module>
         <module>CoreFeatures</module>
-        <module>CorePack</module>
         <module>ServerDevelopmentTools</module>
-        <module>Starters</module>
+        <module>CorePack</module>
         <module>Servers/Server2</module>
         <module>SystemActors</module>
         <module>das</module>
@@ -34,19 +26,6 @@
     <build>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <version>3.0.0</version>
-                    <executions>
-                        <execution>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>single</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>

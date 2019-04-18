@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.IReceiverObjectCreator;
 
 import java.util.List;
@@ -45,8 +45,8 @@ public class FullObjectCreatorResolutionStrategy implements IResolveDependencySt
 
     public FullObjectCreatorResolutionStrategy()
             throws ResolutionException {
-        filtersFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "filters");
-        dependencyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
+        filtersFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "filters");
+        dependencyFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
     }
 
     @Override
@@ -60,7 +60,7 @@ public class FullObjectCreatorResolutionStrategy implements IResolveDependencySt
             for (IObject fDesc : filtersList) {
                 creator = IOC.resolve(
                         IOC.resolve(
-                                IOC.getKeyForKeyStorage(),
+                                IOC.getKeyForKeyByNameResolutionStrategy(),
                                 fDesc.getValue(dependencyFieldName)
                         ),
                         creator,

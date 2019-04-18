@@ -11,7 +11,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerService;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
@@ -38,10 +38,10 @@ public class CheckpointAutoStartupPlugin extends BootstrapPlugin {
     @Item("checkpoint_actor_delayed_startup_action")
     public void doSomeThing()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("scheduler service activation action for checkpoint actor"),
+        IOC.register(Keys.resolveByName("scheduler service activation action for checkpoint actor"),
                 new SingletonStrategy((IAction<ISchedulerService>) service -> {
                     try {
-                        IQueue<ITask> featureLoadCompletionQueue = IOC.resolve(Keys.getOrAdd("feature group load completion task queue"));
+                        IQueue<ITask> featureLoadCompletionQueue = IOC.resolve(Keys.resolveByName("feature group load completion task queue"));
                         featureLoadCompletionQueue.put(() -> {
                             try {
                                 service.start();

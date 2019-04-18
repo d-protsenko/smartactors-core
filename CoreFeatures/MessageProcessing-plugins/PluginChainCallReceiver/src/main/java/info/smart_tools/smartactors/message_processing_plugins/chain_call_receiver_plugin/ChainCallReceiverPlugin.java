@@ -1,21 +1,20 @@
 package info.smart_tools.smartactors.message_processing_plugins.chain_call_receiver_plugin;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.message_processing.chain_call_receiver.ChainCallReceiver;
-import info.smart_tools.smartactors.message_processing.chain_call_receiver.IChainChoiceStrategy;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import info.smart_tools.smartactors.message_processing.chain_call_receiver.ChainCallReceiver;
+import info.smart_tools.smartactors.message_processing.chain_call_receiver.IChainChoiceStrategy;
 
 /**
  * Implementation of {@link IPlugin}.
@@ -55,7 +54,7 @@ public class ChainCallReceiverPlugin implements IPlugin {
                         try {
                             IOC.register(
                                     IOC.resolve(
-                                            IOC.getKeyForKeyStorage(),
+                                            IOC.getKeyForKeyByNameResolutionStrategy(),
                                             ChainCallReceiver.class.getCanonicalName()
                                     ),
                                     new ApplyFunctionToArgumentsStrategy(
@@ -63,24 +62,18 @@ public class ChainCallReceiverPlugin implements IPlugin {
                                                 try {
                                                     IFieldName fieldName = IOC.resolve(
                                                             IOC.resolve(
-                                                                    IOC.getKeyForKeyStorage(),
+                                                                    IOC.getKeyForKeyByNameResolutionStrategy(),
                                                                     "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"
                                                             ),
                                                             "strategyDependency"
                                                     );
                                                     IChainChoiceStrategy strategy = IOC.resolve(
                                                             IOC.resolve(
-                                                                    IOC.getKeyForKeyStorage(),
+                                                                    IOC.getKeyForKeyByNameResolutionStrategy(),
                                                                     ((IObject) args[0]).getValue(fieldName)
                                                             )
                                                     );
-                                                    IChainStorage storage = IOC.resolve(
-                                                            IOC.resolve(
-                                                                    IOC.getKeyForKeyStorage(),
-                                                                    IChainStorage.class.getCanonicalName()
-                                                            )
-                                                    );
-                                                    return new ChainCallReceiver(storage, strategy);
+                                                    return new ChainCallReceiver(strategy);
                                                 } catch (Exception e) {
                                                     throw new RuntimeException(e);
                                                 }
@@ -98,9 +91,9 @@ public class ChainCallReceiverPlugin implements IPlugin {
                         String keyName = ChainCallReceiver.class.getCanonicalName();
 
                         try {
-                            IOC.remove(Keys.getOrAdd(keyName));
+                            IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
                     });
             this.bootstrap.add(item);

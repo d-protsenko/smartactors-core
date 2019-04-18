@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.testing.test_data_source_string_array;
 
-import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.testing.interfaces.isource.ISource;
 

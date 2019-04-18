@@ -2,11 +2,11 @@ package info.smart_tools.smartactors.database_postgresql.postgres_schema;
 
 import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
-import info.smart_tools.smartactors.database_postgresql.postgres_schema.search.PostgresFieldPath;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.QueryStatement;
 import info.smart_tools.smartactors.database_postgresql.postgres_schema.indexes.IndexCreators;
 import info.smart_tools.smartactors.database_postgresql.postgres_schema.search.FieldPath;
+import info.smart_tools.smartactors.database_postgresql.postgres_schema.search.PostgresFieldPath;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 import java.io.IOException;
 import java.io.Writer;

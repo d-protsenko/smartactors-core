@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.ioc.ioc.IOC;
 /**
  * Service locator for storing named instances of {@link IKey}
  */
+@Deprecated
 public final class Keys {
 
     /**
@@ -21,6 +22,7 @@ public final class Keys {
      * @throws ResolutionException if dependency resolution has been failed
      * @return instance of {@link IKey}
      */
+    @Deprecated
     public static IKey getOrAdd(final String keyName)
             throws ResolutionException {
         return (IKey) IOC.resolve(IOC.getKeyForKeyStorage(), keyName);

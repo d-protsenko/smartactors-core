@@ -1,16 +1,9 @@
 package info.smart_tools.smartactors.database_postgresql_plugins.postgres_db_tasks_plugin;
 
-import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
-import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception.ProcessExecutionException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.database_postgresql.postgres_count_task.CountMessage;
 import info.smart_tools.smartactors.database_postgresql.postgres_count_task.PostgresCountTask;
 import info.smart_tools.smartactors.database_postgresql.postgres_create_task.CreateCollectionMessage;
@@ -25,9 +18,16 @@ import info.smart_tools.smartactors.database_postgresql.postgres_search_task.Pos
 import info.smart_tools.smartactors.database_postgresql.postgres_search_task.SearchMessage;
 import info.smart_tools.smartactors.database_postgresql.postgres_upsert_task.PostgresUpsertTask;
 import info.smart_tools.smartactors.database_postgresql.postgres_upsert_task.UpsertMessage;
-import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception.ProcessExecutionException;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_simple_container_plugin.PluginIOCSimpleContainer;
 import org.junit.Before;
@@ -64,76 +64,76 @@ public class PostgresDBTasksPluginTest {
 
     @Test
     public void testCreateTaskInitialized() throws ResolutionException {
-        assertTrue(IOC.resolve(Keys.getOrAdd(CreateCollectionMessage.class.getCanonicalName()), message)
+        assertTrue(IOC.resolve(Keys.resolveByName(CreateCollectionMessage.class.getCanonicalName()), message)
                 instanceof CreateCollectionMessage);
         IObject options = mock(IObject.class);
-        assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.create"), connection, collection, options)
+        assertTrue(IOC.resolve(Keys.resolveByName("db.collection.create"), connection, collection, options)
                 instanceof PostgresCreateTask);
     }
 
     @Test
     public void testCreateTaskInitializedWithoutOptions() throws ResolutionException {
-        assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.create"), connection, collection)
+        assertTrue(IOC.resolve(Keys.resolveByName("db.collection.create"), connection, collection)
                 instanceof PostgresCreateTask);
     }
 
     @Test
     public void testUpsertTaskInitialized() throws ResolutionException {
-        assertTrue(IOC.resolve(Keys.getOrAdd(UpsertMessage.class.getCanonicalName()), message)
+        assertTrue(IOC.resolve(Keys.resolveByName(UpsertMessage.class.getCanonicalName()), message)
                 instanceof UpsertMessage);
-        assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.nextid")) instanceof String);
-        assertNotEquals(IOC.resolve(Keys.getOrAdd("db.collection.nextid")), IOC.resolve(Keys.getOrAdd("db.collection.nextid")));
+        assertTrue(IOC.resolve(Keys.resolveByName("db.collection.nextid")) instanceof String);
+        assertNotEquals(IOC.resolve(Keys.resolveByName("db.collection.nextid")), IOC.resolve(Keys.resolveByName("db.collection.nextid")));
         IObject document = mock(IObject.class);
-        assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.upsert"), connection, collection, document)
+        assertTrue(IOC.resolve(Keys.resolveByName("db.collection.upsert"), connection, collection, document)
                 instanceof PostgresUpsertTask);
     }
 
     @Test
     public void testGetByIdTaskInitialized() throws ResolutionException {
-        assertTrue(IOC.resolve(Keys.getOrAdd(GetByIdMessage.class.getCanonicalName()), message)
+        assertTrue(IOC.resolve(Keys.resolveByName(GetByIdMessage.class.getCanonicalName()), message)
                 instanceof GetByIdMessage);
         Object id = new Object();
         IAction callback = mock(IAction.class);
-        assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.getbyid"), connection, collection, id, callback)
+        assertTrue(IOC.resolve(Keys.resolveByName("db.collection.getbyid"), connection, collection, id, callback)
                 instanceof PostgresGetByIdTask);
     }
 
     @Test
     public void testSearchTaskInitialized() throws ResolutionException {
-        assertTrue(IOC.resolve(Keys.getOrAdd(SearchMessage.class.getCanonicalName()), message)
+        assertTrue(IOC.resolve(Keys.resolveByName(SearchMessage.class.getCanonicalName()), message)
                 instanceof SearchMessage);
         IObject criteria = mock(IObject.class);
         IAction callback = mock(IAction.class);
-        assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.search"), connection, collection, criteria, callback)
+        assertTrue(IOC.resolve(Keys.resolveByName("db.collection.search"), connection, collection, criteria, callback)
                 instanceof PostgresSearchTask);
     }
 
     @Test
     public void testDeleteTaskInitialized() throws ResolutionException {
-        assertTrue(IOC.resolve(Keys.getOrAdd(DeleteMessage.class.getCanonicalName()), message)
+        assertTrue(IOC.resolve(Keys.resolveByName(DeleteMessage.class.getCanonicalName()), message)
                 instanceof DeleteMessage);
         IObject document = mock(IObject.class);
-        assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.delete"), connection, collection, document)
+        assertTrue(IOC.resolve(Keys.resolveByName("db.collection.delete"), connection, collection, document)
                 instanceof PostgresDeleteTask);
     }
 
     @Test
     public void testInsertTaskInitialized() throws ResolutionException {
-        assertTrue(IOC.resolve(Keys.getOrAdd(InsertMessage.class.getCanonicalName()), message)
+        assertTrue(IOC.resolve(Keys.resolveByName(InsertMessage.class.getCanonicalName()), message)
                 instanceof InsertMessage);
-        assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.nextid")) instanceof String);
+        assertTrue(IOC.resolve(Keys.resolveByName("db.collection.nextid")) instanceof String);
         IObject document = mock(IObject.class);
-        assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.insert"), connection, collection, document)
+        assertTrue(IOC.resolve(Keys.resolveByName("db.collection.insert"), connection, collection, document)
                 instanceof PostgresInsertTask);
     }
 
     @Test
     public void testCountTaskInitialized() throws ResolutionException {
-        assertTrue(IOC.resolve(Keys.getOrAdd(CountMessage.class.getCanonicalName()), message)
+        assertTrue(IOC.resolve(Keys.resolveByName(CountMessage.class.getCanonicalName()), message)
                 instanceof CountMessage);
         IObject criteria = mock(IObject.class);
         IAction callback = mock(IAction.class);
-        assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.count"), connection, collection, criteria, callback)
+        assertTrue(IOC.resolve(Keys.resolveByName("db.collection.count"), connection, collection, criteria, callback)
                 instanceof PostgresCountTask);
     }
 

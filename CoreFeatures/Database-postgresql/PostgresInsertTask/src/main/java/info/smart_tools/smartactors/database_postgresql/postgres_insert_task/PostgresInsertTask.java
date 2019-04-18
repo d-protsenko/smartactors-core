@@ -4,18 +4,18 @@ import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBu
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
-import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.JDBCCompiledQuery;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.QueryStatement;
 import info.smart_tools.smartactors.database_postgresql.postgres_schema.PostgresSchema;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -59,10 +59,10 @@ public class PostgresInsertTask implements IDatabaseTask {
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-            InsertMessage message = IOC.resolve(Keys.getOrAdd(InsertMessage.class.getCanonicalName()), query);
+            InsertMessage message = IOC.resolve(Keys.resolveByName(InsertMessage.class.getCanonicalName()), query);
             collection = message.getCollectionName();
             idField = IOC.resolve(
-                    Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                    Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                     String.format(PostgresSchema.ID_FIELD_PATTERN, collection.toString()));
             document = message.getDocument();
 
@@ -126,7 +126,7 @@ public class PostgresInsertTask implements IDatabaseTask {
      * @return the new ID for the document
      */
     private Object nextId() throws ResolutionException {
-        return IOC.resolve(Keys.getOrAdd("db.collection.nextid"));
+        return IOC.resolve(Keys.resolveByName("db.collection.nextid"));
     }
 
 }

@@ -1,18 +1,18 @@
 package info.smart_tools.smartactors.database.async_operation_collection.task;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.exception.TaskPrepareException;
+import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
-import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
+import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +47,7 @@ public class DeleteAsyncOperationTaskTest {
         collectionNameField = mock(IField.class);
 
         Key fieldKey = mock(Key.class);
-        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(fieldKey);
+        when(Keys.resolveByName(IField.class.getCanonicalName())).thenReturn(fieldKey);
 
         when(IOC.resolve(fieldKey, "document")).thenReturn(documentField);
         when(IOC.resolve(fieldKey, "collectionName")).thenReturn(collectionNameField);
@@ -55,7 +55,7 @@ public class DeleteAsyncOperationTaskTest {
         testTask = new DeleteAsyncOperationTask(connection);
 
         verifyStatic(times(2));
-        Keys.getOrAdd(IField.class.getCanonicalName());
+        Keys.resolveByName(IField.class.getCanonicalName());
 
         verifyStatic();
         IOC.resolve(fieldKey, "document");
@@ -75,14 +75,14 @@ public class DeleteAsyncOperationTaskTest {
         when(documentField.in(query)).thenReturn(document);
 
         IKey upsertTaskKey = mock(IKey.class);
-        when(Keys.getOrAdd("db.collection.delete")).thenReturn(upsertTaskKey);
+        when(Keys.resolveByName("db.collection.delete")).thenReturn(upsertTaskKey);
 
         when(IOC.resolve(upsertTaskKey, connection, collectionName, document)).thenReturn(targetTask);
 
         testTask.prepare(query);
 
         verifyStatic();
-        Keys.getOrAdd("db.collection.delete");
+        Keys.resolveByName("db.collection.delete");
 
         verify(collectionNameField).in(query);
         verify(documentField).in(query);
@@ -92,16 +92,16 @@ public class DeleteAsyncOperationTaskTest {
     }
 
     @Test
-    public void MustInCorrectPrepareWhenKeysGetOrAddThrowException() throws ResolutionException {
+    public void MustInCorrectPrepareWhenKeysgetKeyByNameThrowException() throws ResolutionException {
         IObject query = mock(IObject.class);
 
-        when(Keys.getOrAdd("db.collection.delete")).thenThrow(new ResolutionException(""));
+        when(Keys.resolveByName("db.collection.delete")).thenThrow(new ResolutionException(""));
 
         try {
             testTask.prepare(query);
         } catch (TaskPrepareException e) {
             verifyStatic();
-            Keys.getOrAdd("db.collection.delete");
+            Keys.resolveByName("db.collection.delete");
             return;
         }
         assertTrue(false);
@@ -114,14 +114,14 @@ public class DeleteAsyncOperationTaskTest {
         when(collectionNameField.in(query)).thenThrow(new ReadValueException());
 
         IKey upsertTaskKey = mock(IKey.class);
-        when(Keys.getOrAdd("db.collection.delete")).thenReturn(upsertTaskKey);
+        when(Keys.resolveByName("db.collection.delete")).thenReturn(upsertTaskKey);
 
         try {
             testTask.prepare(query);
         } catch (TaskPrepareException e) {
 
             verifyStatic();
-            Keys.getOrAdd("db.collection.delete");
+            Keys.resolveByName("db.collection.delete");
 
             verify(collectionNameField).in(query);
             return;
@@ -136,14 +136,14 @@ public class DeleteAsyncOperationTaskTest {
         when(collectionNameField.in(query)).thenThrow(new InvalidArgumentException(""));
 
         IKey upsertTaskKey = mock(IKey.class);
-        when(Keys.getOrAdd("db.collection.delete")).thenReturn(upsertTaskKey);
+        when(Keys.resolveByName("db.collection.delete")).thenReturn(upsertTaskKey);
 
         try {
             testTask.prepare(query);
         } catch (TaskPrepareException e) {
 
             verifyStatic();
-            Keys.getOrAdd("db.collection.delete");
+            Keys.resolveByName("db.collection.delete");
 
             verify(collectionNameField).in(query);
             return;
@@ -162,7 +162,7 @@ public class DeleteAsyncOperationTaskTest {
         when(documentField.in(query)).thenReturn(document);
 
         IKey upsertTaskKey = mock(IKey.class);
-        when(Keys.getOrAdd("db.collection.delete")).thenReturn(upsertTaskKey);
+        when(Keys.resolveByName("db.collection.delete")).thenReturn(upsertTaskKey);
 
         when(IOC.resolve(upsertTaskKey, connection, collectionName, document)).thenThrow(new ResolutionException(""));
 
@@ -170,7 +170,7 @@ public class DeleteAsyncOperationTaskTest {
             testTask.prepare(query);
         } catch (TaskPrepareException e) {
             verifyStatic();
-            Keys.getOrAdd("db.collection.delete");
+            Keys.resolveByName("db.collection.delete");
 
             verify(collectionNameField).in(query);
             verify(documentField).in(query);

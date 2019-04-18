@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObje
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
@@ -16,12 +16,8 @@ import info.smart_tools.smartactors.task.itask_execution_state.ITaskExecutionSta
 import info.smart_tools.smartactors.task.itask_preprocess_strategy.ITaskProcessStrategy;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Test for {@link CompositeStrategy}.
@@ -48,7 +44,7 @@ public class CompositeStrategyTest extends PluginsLoadingTestBase {
         strategyStrategy = mock(IResolveDependencyStrategy.class);
         defaultStrategyMock = mock(ITaskProcessStrategy.class);
         customStrategyMock = mock(ITaskProcessStrategy.class);
-        strategyStrategyKey = Keys.getOrAdd("key");
+        strategyStrategyKey = Keys.resolveByName("key");
         taskExecutionState = mock(ITaskExecutionState.class);
 
         IOC.register(strategyStrategyKey, strategyStrategy);

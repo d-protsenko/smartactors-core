@@ -6,21 +6,26 @@
 
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>core-pack-for-server-2</artifactId>
-    <version>0.3.3</version>
+    <version>0.5.0</version>
 
     <packaging>pom</packaging>
 
     <properties>
-        <core.version>0.3.3</core.version>
-        <feature.version>0.3.3</feature.version>
+        <feature.rurl>http://archiva.smart-tools.info/repository/smartactors-features/</feature.rurl>
+        <feature.rid>archiva.smartactors-features</feature.rid>
+        <module.rurl>${feature.rurl}</module.rurl>
+        <module.rid>${feature.rid}</module.rid>
+
+        <core.version>0.5.0</core.version>
+        <feature.version>0.5.0</feature.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <repositories>
         <repository>
-            <id>archiva.smartactors-features</id>
-            <url>http://archiva.smart-tools.info/repository/smartactors-features/</url>
+            <id>${feature.rid}</id>
+            <url>${feature.rurl}</url>
         </repository>
     </repositories>
 
@@ -177,7 +182,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>utility-tools</artifactId>
+            <artifactId>class-management</artifactId>
             <version>${core.version}</version>
             <type>zip</type>
         </dependency>
@@ -233,8 +238,8 @@
                 <configuration>
                     <generatePom>false</generatePom>
                     <file>${basedir}/target/${project.artifactId}-${feature.version}-archive.zip</file>
-                    <url>http://archiva.smart-tools.info/repository/smartactors-features/</url>
-                    <repositoryId>archiva.smartactors-features</repositoryId>
+                    <url>${feature.rurl}</url>
+                    <repositoryId>${feature.rid}</repositoryId>
 
                     <groupId>info.smart_tools.smartactors</groupId>
                     <artifactId>${project.artifactId}</artifactId>

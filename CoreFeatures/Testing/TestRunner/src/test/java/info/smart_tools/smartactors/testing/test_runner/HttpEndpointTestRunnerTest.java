@@ -8,7 +8,6 @@ import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -30,11 +29,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests for {@link HttpEndpointTestRunner}.
@@ -42,10 +37,10 @@ import static org.mockito.Mockito.when;
 public class HttpEndpointTestRunnerTest {
 
     private IStrategyContainer container = new StrategyContainer();
-    private Object chainId = mock(Object.class);
-    private IChainStorage chainStorage = mock(IChainStorage.class);
-    private IReceiverChain receiverChain = mock(IReceiverChain.class);
+    private Object chainName = mock(Object.class);
     private IObject sourceObject = mock(IObject.class);
+    private IObject message = mock(IObject.class);
+    private IObject environment = mock(IObject.class);
     private ISource source = mock(ISource.class);
 
     @Before
@@ -57,7 +52,7 @@ public class HttpEndpointTestRunnerTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameResolutionStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -68,7 +63,7 @@ public class HttpEndpointTestRunnerTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ApplyFunctionToArgumentsStrategy(
                         (a) -> {
                             try {
@@ -80,7 +75,7 @@ public class HttpEndpointTestRunnerTest {
                 )
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new ApplyFunctionToArgumentsStrategy(
                         (a) -> {
                             try {
@@ -92,20 +87,9 @@ public class HttpEndpointTestRunnerTest {
                 )
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "chain_id_from_map_name"),
-                new ApplyFunctionToArgumentsStrategy((a) -> {
-                    return this.chainId;
-                })
-        );
-        IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IChainStorage.class.getCanonicalName()),
-                new SingletonStrategy(this.chainStorage)
-        );
-        IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "test_data_source"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "test_data_source"),
                 new SingletonStrategy(this.source)
         );
-        when(this.chainStorage.resolve(this.chainId)).thenReturn(this.receiverChain);
     }
 
     @Test
@@ -126,12 +110,12 @@ public class HttpEndpointTestRunnerTest {
                     throws ActionExecuteException, InvalidArgumentException {
             }
         };
-        when(desc.getValue(new FieldName("chainName"))).thenReturn("chain");
+        when(desc.getValue(new FieldName("chainName"))).thenReturn(this.chainName);
         runner.runTest(desc, callback);
         verify(this.source, times(1)).setSource(this.sourceObject);
         verify(this.sourceObject, times(1)).setValue(new FieldName("content"), desc);
         verify(this.sourceObject, times(1)).setValue(new FieldName("callback"), callback);
-        verify(this.sourceObject, times(1)).setValue(new FieldName("chainName"), this.receiverChain);
+        verify(this.sourceObject, times(1)).setValue(new FieldName("chainName"), this.chainName);
     }
 
     @Test (expected = InvalidArgumentException.class)
@@ -162,7 +146,7 @@ public class HttpEndpointTestRunnerTest {
         IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
         doThrow(ResolutionException.class).when(strategy).resolve(any());
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 strategy
         );
         new HttpEndpointTestRunner();
@@ -180,7 +164,9 @@ public class HttpEndpointTestRunnerTest {
                     throws ActionExecuteException, InvalidArgumentException {
             }
         };
-        when(desc.getValue(new FieldName("chainName"))).thenReturn("chain");
+        when(desc.getValue(new FieldName("chainName"))).thenReturn(chainName);
+        when(desc.getValue(new FieldName("environment"))).thenReturn(environment);
+        when(environment.getValue(new FieldName("message"))).thenReturn(message);
         doThrow(SourceExtractionException.class).when(this.source).setSource(this.sourceObject);
         runner.runTest(desc, callback);
         fail();

@@ -1,18 +1,18 @@
 package info.smart_tools.smartactors.message_processing_plugins.chain_choice_strategy_plugin;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.message_processing.chain_call_receiver.IChainChoiceStrategy;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import info.smart_tools.smartactors.message_processing.chain_call_receiver.IChainChoiceStrategy;
 
 /**
  * Implementation of {@link IPlugin}.
@@ -48,23 +48,24 @@ public class ChainChoiceStrategyPlugin implements IPlugin {
                     .after("IFieldNamePlugin")
                     .process(() -> {
                         try {
+                            IFieldName messageMapIdFieldName =
+                                    IOC.resolve(
+                                            IOC.resolve(
+                                                    IOC.getKeyForKeyByNameResolutionStrategy(),
+                                                    "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"
+                                            ),
+                                            "messageMapId"
+                                    );
                             IChainChoiceStrategy strategy = (a) -> {
                                 try {
-                                    return a.getMessage().getValue(
-                                            IOC.resolve(
-                                                    IOC.resolve(
-                                                            IOC.getKeyForKeyStorage(),
-                                                            "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"
-                                                    ), "messageMapId"
-                                            )
-                                    );
+                                    return a.getMessage().getValue(messageMapIdFieldName);
                                 } catch (Exception e) {
                                     throw new RuntimeException("Could not execute chain choice strategy.");
                                 }
                             };
 
                             IOC.register(
-                                    IOC.resolve(IOC.getKeyForKeyStorage(), "chain choice strategy"),
+                                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "chain choice strategy"),
                                     new SingletonStrategy(strategy));
                         } catch (Exception e) {
                             throw new RuntimeException(
@@ -76,9 +77,9 @@ public class ChainChoiceStrategyPlugin implements IPlugin {
                         String itemName = "ChainChoiceStrategy";
                         String keyName = "chain choice strategy";
                         try {
-                            IOC.remove(Keys.getOrAdd(keyName));
+                            IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregitration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
+                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
                         } catch (ResolutionException e) { }
                     });
             this.bootstrap.add(item);

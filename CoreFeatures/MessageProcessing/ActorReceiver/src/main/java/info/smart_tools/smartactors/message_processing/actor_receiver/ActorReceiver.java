@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_processing.actor_receiver;
 
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
@@ -42,8 +42,8 @@ public class ActorReceiver implements IMessageReceiver {
 
         this.childReceiver = childReceiver;
 
-        this.queue = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "actor_receiver_queue"));
-        this.isBusy = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "actor_receiver_busyness_flag"));
+        this.queue = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "actor_receiver_queue"));
+        this.isBusy = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "actor_receiver_busyness_flag"));
     }
 
     @Override

@@ -7,7 +7,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-actors/"
 } ],
   "rawName" : "PluginCheckValidityAsyncOperationActor",
-  "version" : "0.3.3"
+  "version" : "0.5.0"
 }, {
   "artifactId" : "async-operations-plugins.close-async-operation-actor-plugin",
   "uploadRepositories" : [ {
@@ -15,7 +15,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-actors/"
 } ],
   "rawName" : "PluginCloseAsyncOperationActor",
-  "version" : "0.3.3"
+  "version" : "0.5.0"
 }, {
   "artifactId" : "async-operations-plugins.get-async-operation-actor-plugin",
   "uploadRepositories" : [ {
@@ -23,7 +23,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-actors/"
 } ],
   "rawName" : "PluginGetAsyncOperationActor",
-  "version" : "0.3.3"
+  "version" : "0.5.0"
 }, {
   "artifactId" : "async-operations-plugins.create-async-operation-actor-plugin",
   "uploadRepositories" : [ {
@@ -31,7 +31,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-actors/"
 } ],
   "rawName" : "PluginCreateAsyncOperationActor",
-  "version" : "0.3.3"
+  "version" : "0.5.0"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.common-features",
@@ -41,7 +41,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "async-operations-plugins",
   "rawName" : "AsyncOperations-plugins",
-  "version" : "0.3.3"
+  "version" : "0.5.0"
 }, {
   "actors" : [ {
   "artifactId" : "email.email-actor",
@@ -50,7 +50,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-actors/"
 } ],
   "rawName" : "EmailActor",
-  "version" : "0.3.3"
+  "version" : "0.5.0"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.common-features",
@@ -60,7 +60,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "email",
   "rawName" : "Email",
-  "version" : "0.3.3"
+  "version" : "0.5.0"
 }, {
   "actors" : [ {
   "artifactId" : "async-operations.get-async-operation",
@@ -69,7 +69,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-actors/"
 } ],
   "rawName" : "GetAsyncOperationActor",
-  "version" : "0.3.3"
+  "version" : "0.5.0"
 }, {
   "artifactId" : "async-operations.create-async-operation",
   "uploadRepositories" : [ {
@@ -77,7 +77,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-actors/"
 } ],
   "rawName" : "CreateAsyncOperationActor",
-  "version" : "0.3.3"
+  "version" : "0.5.0"
 }, {
   "artifactId" : "async-operations.check-validity-async-operation",
   "uploadRepositories" : [ {
@@ -85,7 +85,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-actors/"
 } ],
   "rawName" : "CheckValidityAsyncOperationActor",
-  "version" : "0.3.3"
+  "version" : "0.5.0"
 }, {
   "artifactId" : "async-operations.close-async-operation",
   "uploadRepositories" : [ {
@@ -93,7 +93,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-actors/"
 } ],
   "rawName" : "CloseAsyncOperationActor",
-  "version" : "0.3.3"
+  "version" : "0.5.0"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.common-features",
@@ -103,7 +103,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "async-operations",
   "rawName" : "AsyncOperations",
-  "version" : "0.3.3"
+  "version" : "0.5.0"
 }, {
   "actors" : [ {
   "artifactId" : "email-plugins.email-actor-plugin",
@@ -112,7 +112,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-actors/"
 } ],
   "rawName" : "PluginEmailActor",
-  "version" : "0.3.3"
+  "version" : "0.5.0"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.common-features",
@@ -122,35 +122,35 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "email-plugins",
   "rawName" : "Email-plugins",
-  "version" : "0.3.3"
+  "version" : "0.5.0"
 }, {
   "actors" : [ {
   "artifactId" : "postgres-create-collection-if-not-exists-task",
   "uploadRepositories" : [ ],
   "rawName" : "PostgresCreateCollectionIfNotExistsTask",
-  "version" : "0.3.3"
+  "version" : "0.5.0"
 }, {
   "artifactId" : "create-collection-actor",
   "uploadRepositories" : [ ],
   "rawName" : "CreateCollectionActor",
-  "version" : "0.3.3"
+  "version" : "0.5.0"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ {
   "artifactId" : "create-collection-plugin",
   "uploadRepositories" : [ ],
   "rawName" : "CreateCollectionPlugin",
-  "version" : "0.3.3"
+  "version" : "0.5.0"
 }, {
   "artifactId" : "create-collection-actor-plugin",
   "uploadRepositories" : [ ],
   "rawName" : "CreateCollectionActorPlugin",
-  "version" : "0.3.3"
+  "version" : "0.5.0"
 } ],
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "database-postgresql-create-collection-if-not-exists",
   "rawName" : "DatabasePostgresqlCreateCollectionIfNotExists",
-  "version" : "0.3.3"
+  "version" : "0.5.0"
 } ],
   "on-actor-creation-upload-repositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
@@ -166,5 +166,5 @@
 } ],
   "groupId" : "info.smart_tools.smartactors",
   "name" : "CommonFeatures",
-  "version" : "0.3.3"
+  "version" : "0.5.0"
 }

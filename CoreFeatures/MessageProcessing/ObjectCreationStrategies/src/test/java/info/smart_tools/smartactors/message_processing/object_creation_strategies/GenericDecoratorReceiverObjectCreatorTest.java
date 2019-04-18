@@ -3,12 +3,11 @@ package info.smart_tools.smartactors.message_processing.object_creation_strategi
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.IReceiverObjectCreator;
@@ -54,12 +53,12 @@ public class GenericDecoratorReceiverObjectCreatorTest extends PluginsLoadingTes
         objectConfig = mock(IObject.class);
         context = mock(IObject.class);
 
-        IOC.register(Keys.getOrAdd("create some receiver decorator"), decoratorReceiverResolutionStrategy);
+        IOC.register(Keys.resolveByName("create some receiver decorator"), decoratorReceiverResolutionStrategy);
 
         when(decoratorReceiverResolutionStrategy.resolve(
                 same(receiverMocks[0]), same(filterConfig), same(objectConfig), same(context))).thenReturn(receiverMocks[1]);
 
-        when(filterConfig.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "decoratorDependency")))
+        when(filterConfig.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "decoratorDependency")))
                 .thenReturn("create some receiver decorator");
 
         doAnswer(invocation -> {

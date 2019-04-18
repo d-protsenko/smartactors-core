@@ -1,16 +1,16 @@
 package info.smart_tools.smartactors.http_endpoint.deserialize_strategy_get;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
-import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_get.parse_tree.IParseTree;
 import info.smart_tools.smartactors.endpoint.interfaces.iadd_request_parameters_to_iobject.IAddRequestParametersToIObject;
 import info.smart_tools.smartactors.endpoint.interfaces.iadd_request_parameters_to_iobject.exception.AddRequestParametersToIObjectException;
+import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
+import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_get.parse_tree.IParseTree;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 
@@ -28,7 +28,7 @@ public class DeserializeStrategyGet implements IAddRequestParametersToIObject {
      * @throws ResolutionException if there are IOC problems
      */
     public DeserializeStrategyGet(final List<String> templates) throws ResolutionException {
-        this.tree = IOC.resolve(Keys.getOrAdd(IParseTree.class.getCanonicalName()));
+        this.tree = IOC.resolve(Keys.resolveByName(IParseTree.class.getCanonicalName()));
         if (null == templates) {
             return;
         }
@@ -48,7 +48,7 @@ public class DeserializeStrategyGet implements IAddRequestParametersToIObject {
         decoder.parameters().forEach(
                 (k, v) -> {
                     try {
-                        IFieldName fieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), k);
+                        IFieldName fieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), k);
                         message.setValue(fieldName, v.get(0));
                     } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
                         throw new RuntimeException(e);
@@ -59,7 +59,7 @@ public class DeserializeStrategyGet implements IAddRequestParametersToIObject {
         parameters.forEach(
                 (k, v) -> {
                     try {
-                        IFieldName fieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), k);
+                        IFieldName fieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), k);
                         message.setValue(fieldName, v);
                     } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
                         throw new RuntimeException(e);

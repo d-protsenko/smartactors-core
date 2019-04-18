@@ -6,9 +6,16 @@
 
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>core-pack</artifactId>
-    <version>0.3.3</version>
+    <version>0.5.0</version>
 
     <packaging>pom</packaging>
+
+    <properties>
+        <feature.rurl>http://archiva.smart-tools.info/repository/smartactors-features/</feature.rurl>
+        <feature.rid>archiva.smartactors-features</feature.rid>
+        <module.rurl>${feature.rurl}</module.rurl>
+        <module.rid>${feature.rid}</module.rid>
+    </properties>
 
     <dependencies>
     </dependencies>
@@ -25,15 +32,15 @@
                 <configuration>
                     <generatePom>true</generatePom>
                     <file>${basedir}/core.json</file>
-                    <url>http://archiva.smart-tools.info/repository/smartactors-features/</url>
-                    <repositoryId>archiva.smartactors-features</repositoryId>
+                    <url>${feature.rurl}</url>
+                    <repositoryId>${feature.rid}</repositoryId>
                     <groupId>info.smart_tools.smartactors</groupId>
                     <artifactId>${project.artifactId}</artifactId>
                     <version>${project.version}</version>
                     <packaging>json</packaging>
                     <description>The artifact contains default feature list of server core: base, configuration-manager and plugins, core-service-starter, dumpable-interface,
                         feature-loading-system, feature-management, field and plugins, iobject and plugins, iobject-extension and plugins, ioc and plugins, ioc-strategy-pack and plugins,
-                        message-processing-interfaces, message-processing and plugins, on-feature-loading-service-starter, scope and plugins, task and plugins, utility-tools
+                        message-processing-interfaces, message-processing and plugins, on-feature-loading-service-starter, scope and plugins, task and plugins, class-management
                     </description>
                 </configuration>
             </plugin>

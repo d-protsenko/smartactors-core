@@ -9,7 +9,7 @@ import info.smart_tools.smartactors.https_endpoint.interfaces.issl_engine_provid
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -18,10 +18,7 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObjectAggregator;
-import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.SslHandler;
-import io.netty.handler.ssl.SslProvider;
 
 import javax.net.ssl.SSLEngine;
 import java.net.URI;
@@ -36,7 +33,7 @@ public class HttpsClient extends NettyClient<FullHttpRequest> {
 
     static {
         try {
-            sslEngineProvider = IOC.resolve(Keys.getOrAdd(ISslEngineProvider.class.getCanonicalName()));
+            sslEngineProvider = IOC.resolve(Keys.resolveByName(ISslEngineProvider.class.getCanonicalName()));
         } catch (ResolutionException e) {
             e.printStackTrace();
         }
@@ -76,7 +73,7 @@ public class HttpsClient extends NettyClient<FullHttpRequest> {
     @Override
     public void sendRequest(final IObject request) throws RequestSenderException {
         try {
-            IRequestMaker<FullHttpRequest> requestMaker = IOC.resolve(Keys.getOrAdd(IRequestMaker.class.getCanonicalName()));
+            IRequestMaker<FullHttpRequest> requestMaker = IOC.resolve(Keys.resolveByName(IRequestMaker.class.getCanonicalName()));
             FullHttpRequest httpRequest = requestMaker.make(request);
             send(httpRequest);
         } catch (RequestMakerException | ResolutionException e) {
