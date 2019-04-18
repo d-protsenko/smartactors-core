@@ -166,7 +166,9 @@ public class FeatureManagerActor {
                 this.failedFeatures.put(feature.getId(), feature);
 
             } else {
-                this.loadedFeatures.put(feature.getId(), feature);
+                if (null != ModuleManager.getModuleById(feature.getId())) {
+                    this.loadedFeatures.put(feature.getId(), feature);
+                }
                 for (IFeature processingFeature : this.featuresInProgress.values()) {
                     removeLoadedFeaturesFromFeatureDependencies(processingFeature);
                 }
@@ -252,22 +254,43 @@ public class FeatureManagerActor {
             Set<String> featureDependencies = feature.getDependencies();
 
             if (null != featureDependencies) {
-                ModuleManager.addModule(
-                        feature.getId(),
-                        emptify(feature.getGroupId()) + FEATURE_NAME_DELIMITER + emptify(feature.getName()),
-                        emptify(feature.getVersion())
-                );
+                boolean hasDuplicate = false;
+                // check if feature with same name/version has already been loaded
+                for (IFeature loadedFeature : this.loadedFeatures.values()) {
+                    if (loadedFeature.getDisplayName().equals(feature.getDisplayName())) {
+                        hasDuplicate = true;
+                        break;
+                    }
+                }
+                // or in progress
+                for (IFeature featureInProgress : this.featuresInProgress.values()) {
+                    if (featureInProgress.getDisplayName().equals(feature.getDisplayName()) &&
+                            featureInProgress.getId() != feature.getId() &&
+                            null != ModuleManager.getModuleById(featureInProgress.getId())  &&
+                            !featureInProgress.isFailed()) {
+                        hasDuplicate = true;
+                        break;
+                    }
+                }
 
-                removeLoadedFeaturesFromFeatureDependencies(feature);
+                if (!hasDuplicate) {
+                    ModuleManager.addModule(
+                            feature.getId(),
+                            emptify(feature.getGroupId()) + FEATURE_NAME_DELIMITER + emptify(feature.getName()),
+                            emptify(feature.getVersion())
+                    );
 
-                if (featureDependencies.isEmpty()) {
-                    ModuleManager.finalizeModuleDependencies(feature.getId());
-                } else {
-                    IMessageProcessor mp = wrapper.getMessageProcessor();
-                    mp.pauseProcess();
-                    this.featuresPaused.put(mp, feature);
-                    if (this.featuresPaused.size() == this.featuresInProgress.size()) {
-                        checkUnresolved();
+                    removeLoadedFeaturesFromFeatureDependencies(feature);
+
+                    if (featureDependencies.isEmpty()) {
+                        ModuleManager.finalizeModuleDependencies(feature.getId());
+                    } else {
+                        IMessageProcessor mp = wrapper.getMessageProcessor();
+                        mp.pauseProcess();
+                        this.featuresPaused.put(mp, feature);
+                        if (this.featuresPaused.size() == this.featuresInProgress.size()) {
+                            checkUnresolved();
+                        }
                     }
                 }
             }
@@ -321,7 +344,8 @@ public class FeatureManagerActor {
             throws FeatureManagementException {
 
         Set<String> featureDependencies = feature.getDependencies();
-        if (null != featureDependencies) {
+        // check if feature has dependencies and not skipped
+        if (null != featureDependencies && null != ModuleManager.getModuleById(feature.getId())) {
             for (Iterator<String> iterator = featureDependencies.iterator(); iterator.hasNext(); ) {
 
                 String dependency = iterator.next();

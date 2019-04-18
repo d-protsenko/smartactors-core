@@ -224,15 +224,24 @@
       "chain":"loadCoreFeaturesAndFeatures"
     },
     {
-      "messages":[
+      "chain": "runDirectoryWatcher",
+      "revert": false,
+      "messages": [
         {
-          "observerDirectoryFieldName":"observedDirectory",
-          "observedDirectory":"features",
-          "executionChain":"onNewFile",
-          "fileNameFieldName":"fileName"
+          "observedDirectory": "features",
+          "executionChain": "onNewFile",
+          "fileNameFieldName": "fileName",
+          "observedDirectoryFieldName": "observedDirectory"
         }
-      ],
-      "chain":"runDirectoryWatcher"
+      ]
+    },
+    {
+      "chain": "stopDirectoryWatcher",
+      "revert": true,
+      "messages": [
+        {
+        }
+      ]
     }
   ]
 }

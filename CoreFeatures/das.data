@@ -763,7 +763,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PostgresCountTask",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "database-postgresql.postgres-insert-task",
   "uploadRepositories" : [ {
@@ -771,7 +771,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PostgresInsertTask",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "database-postgresql.postgres-delete-task",
   "uploadRepositories" : [ {
@@ -779,7 +779,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PostgresDeleteTask",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "database-postgresql.postgres-schema",
   "uploadRepositories" : [ {
@@ -787,7 +787,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PostgresSchema",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "database-postgresql.postgres-search-task",
   "uploadRepositories" : [ {
@@ -795,7 +795,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PostgresSearchTask",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "database-postgresql.postgres-connection",
   "uploadRepositories" : [ {
@@ -803,7 +803,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PostgresConnection",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "database-postgresql.postgres-getbyid-task",
   "uploadRepositories" : [ {
@@ -811,7 +811,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PostgresGetByIdTask",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "database-postgresql.postgres-create-task",
   "uploadRepositories" : [ {
@@ -819,7 +819,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PostgresCreateCollectionTask",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "database-postgresql.postgres-upsert-task",
   "uploadRepositories" : [ {
@@ -827,7 +827,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PostgresUpsertTask",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -837,7 +837,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "database-postgresql",
   "rawName" : "Database-postgresql",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "actors" : [ {
   "artifactId" : "iobject-extension-plugins.configuration-object-plugin",
@@ -1603,7 +1603,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "DirectoryWatcherActor",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "feature-management.feature-management-plugins",
   "uploadRepositories" : [ {
@@ -1611,7 +1611,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "FeatureManagementPlugins",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "feature-management.all-in-directory-feature-tracker",
   "uploadRepositories" : [ {
@@ -1619,7 +1619,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "AllInDirectoryFeatureTracker",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "feature-management.feature",
   "uploadRepositories" : [ {
@@ -1627,7 +1627,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "Feature",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "feature-management.interfaces.ifeature",
   "uploadRepositories" : [ {
@@ -1635,7 +1635,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "IFeature",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "feature-management.download-feature-actor",
   "uploadRepositories" : [ {
@@ -1643,7 +1643,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "DownloadFeatureActor",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "feature-management.feature-creator-actor",
   "uploadRepositories" : [ {
@@ -1651,7 +1651,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "FeatureCreatorActor",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "feature-management.unzip-feature-actor",
   "uploadRepositories" : [ {
@@ -1659,7 +1659,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "UnzipFeatureActor",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "feature-management.load-feature-actor",
   "uploadRepositories" : [ {
@@ -1667,7 +1667,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "LoadFeatureActor",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "feature-management.feature-manager-actor",
   "uploadRepositories" : [ {
@@ -1675,12 +1675,12 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "FeatureManagerActor",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "artifactId" : "after-features-callback-storage",
   "uploadRepositories" : [ ],
   "rawName" : "AfterFeaturesCallbackStorage",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -1690,7 +1690,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "feature-management",
   "rawName" : "FeatureManagement",
-  "version" : "0.5.1"
+  "version" : "0.5.2"
 }, {
   "actors" : [ {
   "artifactId" : "helpers.plugins-loading-test-base",
@@ -2023,7 +2023,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "ObjectCreationStrategies",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "message-processing.null-response-strategy",
   "uploadRepositories" : [ {
@@ -2031,7 +2031,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "NullResponseStrategy",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "message-processing.wrapper-generator",
   "uploadRepositories" : [ {
@@ -2039,7 +2039,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "WrapperGenerator",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "message-processing.response-sender-receiver",
   "uploadRepositories" : [ {
@@ -2047,7 +2047,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "ResponseSenderReceiver",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "message-processing.message-processing-sequence",
   "uploadRepositories" : [ {
@@ -2055,7 +2055,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "MessageProcessingSequence",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "message-processing.message-processor",
   "uploadRepositories" : [ {
@@ -2063,7 +2063,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "MessageProcessor",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "message-processing.handler-routing-receiver",
   "uploadRepositories" : [ {
@@ -2071,7 +2071,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "HandlerRoutingReceiver",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "message-processing.receiver-generator",
   "uploadRepositories" : [ {
@@ -2079,7 +2079,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "ReceiverGenerator",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "message-processing.chain-storage",
   "uploadRepositories" : [ {
@@ -2087,7 +2087,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "ChainStorage",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "message-processing.actor-receiver-creator",
   "uploadRepositories" : [ {
@@ -2095,7 +2095,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "ActorReceiverCreator",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "message-processing.exception-handling-receivers",
   "uploadRepositories" : [ {
@@ -2103,7 +2103,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "ExceptionHandlingReceivers",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "message-processing.handler-routing-receiver-creator",
   "uploadRepositories" : [ {
@@ -2111,7 +2111,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "HandlerRoutingReceiverCreator",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "message-processing.actor-receiver",
   "uploadRepositories" : [ {
@@ -2119,7 +2119,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "ActorReceiver",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "message-processing.constant-chain-choice-strategy",
   "uploadRepositories" : [ {
@@ -2127,7 +2127,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "ConstantChainChoiceStrategy",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "message-processing.chain-call-receiver",
   "uploadRepositories" : [ {
@@ -2135,7 +2135,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "ChainCallReceiver",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "message-processing.map-router",
   "uploadRepositories" : [ {
@@ -2143,7 +2143,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "MapRouter",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "message-processing.condition-chain-choice-strategy",
   "uploadRepositories" : [ {
@@ -2151,7 +2151,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "ConditionChainChoiceStrategy",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "message-processing.immutable-receiver-chain",
   "uploadRepositories" : [ {
@@ -2159,17 +2159,17 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "ReceiverChain",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "signals",
   "uploadRepositories" : [ ],
   "rawName" : "Signals",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "wrapper-creator-receiver-decorator",
   "uploadRepositories" : [ ],
   "rawName" : "WrapperCreatorReceiverDecorator",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "artifactId" : "message-processing.chain-modifications",
   "uploadRepositories" : [ {
@@ -2177,7 +2177,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "ChainModifications",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -2187,7 +2187,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "message-processing",
   "rawName" : "MessageProcessing",
-  "version" : "0.5.0"
+  "version" : "0.5.1"
 }, {
   "actors" : [ {
   "artifactId" : "https-endpoint.https-request-sender-actor",

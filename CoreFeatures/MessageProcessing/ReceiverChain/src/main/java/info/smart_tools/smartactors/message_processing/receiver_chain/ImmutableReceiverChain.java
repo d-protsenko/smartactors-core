@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.message_processing.receiver_chain;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.dumpable_interface.idumpable.IDumpable;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -13,10 +14,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Basic implementation of {@link IReceiverChain} -- immutable sequence of receivers.
@@ -126,11 +124,21 @@ public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
     @Override
     public IObject getExceptionalChainNamesAndEnvironments(final Throwable exception) {
         Throwable e;
+        ArrayList<Class> exceptionClasses = new ArrayList<Class>();
+        int i;
 
         for (Map.Entry<Class<? extends Throwable>, IObject> entry : this.exceptionalChainNamesAndEnv.entrySet()) {
             e = exception;
+            i = 0;
             while (null != e) {
-                if (entry.getKey().isAssignableFrom(e.getClass())) {
+                if (exceptionClasses.size() == i ) {
+                    try {
+                        exceptionClasses.add(ModuleManager.getCurrentClassLoader().loadClass(e.getClass().getName()));
+                    }catch (ClassNotFoundException cnf) {
+                        exceptionClasses.add(e.getClass());
+                    }
+                }
+                if (entry.getKey().isAssignableFrom(exceptionClasses.get(i))) {
                     return entry.getValue();
                 }
                 Throwable cause = e.getCause();
@@ -138,6 +146,7 @@ public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
                     break;
                 }
                 e = cause;
+                i++;
             }
         }
 

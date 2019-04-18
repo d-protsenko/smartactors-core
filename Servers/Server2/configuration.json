@@ -231,26 +231,6 @@
       "messages": [
         {}
       ]
-    },
-    {
-      "chain": "runDirectoryWatcher",
-      "revert": false,
-      "messages": [
-        {
-          "observedDirectory": "features",
-          "executionChain": "onNewFile",
-          "fileNameFieldName": "fileName",
-          "observedDirectoryFieldName": "observedDirectory"
-        }
-      ]
-    },
-    {
-      "chain": "stopDirectoryWatcher",
-      "revert": true,
-      "messages": [
-        {
-        }
-      ]
     }
   ],
   "executor": {
