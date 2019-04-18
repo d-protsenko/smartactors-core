@@ -6,9 +6,7 @@ import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strate
 import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
-import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
-import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
@@ -32,7 +30,6 @@ import info.smart_tools.smartactors.http_endpoint.http_response_sender.HttpRespo
 import info.smart_tools.smartactors.http_endpoint.message_to_bytes_mapper.MessageToBytesMapper;
 import info.smart_tools.smartactors.http_endpoint.respons_status_extractor.ResponseStatusExtractor;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
-import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -43,12 +40,11 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionExcept
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.key_tools.Keys;
-import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpHeaderNames;
 
 import java.util.List;
 
@@ -59,7 +55,6 @@ public class HttpEndpointPlugin implements IPlugin {
 
     private final IBootstrap<IBootstrapItem<String>> bootstrap;
 
-    private IFieldName typeFieldName;
     private IFieldName portFieldName;
     private IFieldName startChainNameFieldName;
     private IFieldName stackDepthFieldName;
@@ -79,6 +74,8 @@ public class HttpEndpointPlugin implements IPlugin {
     }
 
     @Override
+    // ToDo: replace duplicate code
+    @SuppressWarnings({"unchecked", "Duplicates"})
     public void load() throws PluginException {
         try {
             IBootstrapItem<String> item = new BootstrapItem("CreateHttpEndpoint");
@@ -90,19 +87,22 @@ public class HttpEndpointPlugin implements IPlugin {
                     .process(() -> {
                         try {
                             initializeFieldNames();
+
                             IKey httpEndpointKey = Keys.resolveByName("http_endpoint");
+
                             registerCookiesSetter();
                             registerHeadersExtractor();
                             registerResponseStatusExtractor();
                             registerExceptionalResponse();
+
                             IOC.register(
                                     Keys.resolveByName(IEnvironmentHandler.class.getCanonicalName()),
-                                    new CreateNewInstanceStrategy(
+                                    new ApplyFunctionToArgumentsStrategy(
                                             (args) -> {
                                                 IObject configuration = (IObject) args[0];
-                                                IQueue queue = null;
-                                                Integer stackDepth = null;
-                                                Boolean scopeSwitching = null;
+                                                IQueue queue;
+                                                Integer stackDepth;
+                                                Boolean scopeSwitching;
                                                 try {
                                                     queue = (IQueue) configuration.getValue(queueFieldName);
                                                     stackDepth =
@@ -120,24 +120,33 @@ public class HttpEndpointPlugin implements IPlugin {
                             );
 
                             IOC.register(httpEndpointKey,
-                                    new CreateNewInstanceStrategy(
+                                    new ApplyFunctionToArgumentsStrategy(
                                             (args) -> {
                                                 IObject configuration = (IObject) args[0];
+
                                                 try {
+                                                    String endpointName = (String) configuration.getValue(endpointNameFieldName);
 
                                                     IOC.resolve(
                                                             Keys.resolveByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
                                                             "HTTP_GET",
-                                                            configuration.getValue(endpointNameFieldName),
-                                                            configuration.getValue(templatesFieldName));
+                                                            endpointName,
+                                                            configuration.getValue(templatesFieldName)
+                                                    );
                                                     IOC.resolve(
                                                             Keys.resolveByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
                                                             "HTTP_application/json",
-                                                            configuration.getValue(endpointNameFieldName));
+                                                            endpointName
+                                                    );
                                                     IOC.resolve(
                                                             Keys.resolveByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
                                                             "HTTP_application/x-www-form-urlencoded",
-                                                            configuration.getValue(endpointNameFieldName));
+                                                            endpointName
+                                                    );
+                                                    IOC.register(
+                                                            Keys.resolveByName(endpointName + "_endpoint-config"),
+                                                            new SingletonStrategy(configuration)
+                                                    );
 
                                                     IUpCounter upCounter = IOC.resolve(Keys.resolveByName("root upcounter"));
 
@@ -157,25 +166,27 @@ public class HttpEndpointPlugin implements IPlugin {
                                                     upCounter.onShutdownComplete(this.toString(), endpoint::stop);
 
                                                     return endpoint;
-                                                } catch (ReadValueException | InvalidArgumentException
-                                                        | ScopeProviderException | ResolutionException
-                                                        | UpCounterCallbackExecutionException e) {
+                                                } catch (Exception e) {
                                                     throw new RuntimeException(e);
                                                 }
                                             }
                                     )
                             );
+
                             registerDeserializationStrategies();
                             registerResponseSenders();
+
                             IKey emptyIObjectKey = Keys.resolveByName("EmptyIObject");
-                            IOC.register(emptyIObjectKey, new CreateNewInstanceStrategy(
-                                            (args) -> new DSObject()
-                                    )
+                            IOC.register(
+                                    emptyIObjectKey,
+                                    new ApplyFunctionToArgumentsStrategy((args) -> new DSObject())
                             );
 
-                            IKey channelHandlerNettyKey = Keys.resolveByName("info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty");
+                            IKey channelHandlerNettyKey = Keys.resolveByName(
+                                    "info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty"
+                            );
                             IOC.register(channelHandlerNettyKey,
-                                    new CreateNewInstanceStrategy(
+                                    new ApplyFunctionToArgumentsStrategy(
                                             (args) -> {
                                                 ChannelHandlerNetty channelHandlerNetty = new ChannelHandlerNetty();
                                                 channelHandlerNetty.init((ChannelHandlerContext) args[0]);
@@ -200,98 +211,98 @@ public class HttpEndpointPlugin implements IPlugin {
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "EmptyIObject";
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "http_request_key_for_response_sender";
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = IParseTree.class.getCanonicalName();
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "http_request_key_for_deserialize";
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "http_endpoint";
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = IEnvironmentHandler.class.getCanonicalName();
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "HttpShuttingDownException";
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "HttpInternalException";
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "HttpRequestParametersToIObjectException";
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "HttpPostParametersToIObjectException";
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "key_for_response_status_setter";
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "key_for_headers_extractor";
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
 
                         try {
                             keyName = "key_for_cookies_extractor";
                             IOC.remove(Keys.resolveByName(keyName));
                         } catch(DeletionException e) {
                             System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException ignored) { }
                     });
 
             bootstrap.add(item);
@@ -301,11 +312,6 @@ public class HttpEndpointPlugin implements IPlugin {
     }
 
     private void initializeFieldNames() throws ResolutionException {
-        typeFieldName =
-                IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
-                        "type"
-                );
         portFieldName =
                 IOC.resolve(
                         IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
@@ -359,7 +365,7 @@ public class HttpEndpointPlugin implements IPlugin {
         );
 
         responseSenderChooser.register("HTTP_POST",
-                new CreateNewInstanceStrategy(
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             //args[0] - type of the request
                             //args[1] - name of the endpoint
@@ -373,24 +379,19 @@ public class HttpEndpointPlugin implements IPlugin {
         );
     }
 
-    private void registerCookiesSetter() throws ResolutionException, InvalidArgumentException, RegistrationException,
-            AdditionDependencyStrategyException {
+    private void registerCookiesSetter() throws ResolutionException, InvalidArgumentException,
+            RegistrationException, AdditionDependencyStrategyException {
+
         IAdditionDependencyStrategy cookiesSetterChooser =
                 IOC.resolve(Keys.resolveByName("CookiesSetterChooser"));
 
-        IOC.register(Keys.resolveByName("key_for_cookies_extractor"), new ApplyFunctionToArgumentsStrategy(
-                        (args) ->
-                                "HTTP"
-                )
+        IOC.register(
+                Keys.resolveByName("key_for_cookies_extractor"),
+                new ApplyFunctionToArgumentsStrategy((args) -> "HTTP")
         );
 
-        cookiesSetterChooser.register("HTTP",
-                new CreateNewInstanceStrategy(
-                        (args) -> new CookiesSetter()
-                )
-        );
+        cookiesSetterChooser.register("HTTP", new SingletonStrategy(new CookiesSetter()));
     }
-
 
     private void registerHeadersExtractor() throws ResolutionException, InvalidArgumentException, RegistrationException,
             AdditionDependencyStrategyException {
@@ -403,27 +404,23 @@ public class HttpEndpointPlugin implements IPlugin {
                 )
         );
 
-        cookiesSetterChooser.register("HTTP",
-                new CreateNewInstanceStrategy(
-                        (args) -> new HttpHeadersExtractor()
-                )
-        );
+        cookiesSetterChooser.register("HTTP", new SingletonStrategy(new HttpHeadersExtractor()));
     }
 
 
-    private void registerResponseStatusExtractor() throws ResolutionException, InvalidArgumentException, RegistrationException,
-            AdditionDependencyStrategyException {
+    private void registerResponseStatusExtractor() throws ResolutionException, InvalidArgumentException,
+            RegistrationException, AdditionDependencyStrategyException {
+
         IAdditionDependencyStrategy cookiesSetterChooser =
                 IOC.resolve(Keys.resolveByName("ResponseStatusSetter"));
 
-        IOC.register(Keys.resolveByName("key_for_response_status_setter"), new ApplyFunctionToArgumentsStrategy(
-                        (args) ->
-                                "HTTP"
-                )
+        IOC.register(
+                Keys.resolveByName("key_for_response_status_setter"),
+                new ApplyFunctionToArgumentsStrategy((args) -> "HTTP")
         );
 
         cookiesSetterChooser.register("HTTP",
-                new CreateNewInstanceStrategy(
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
                                 return new ResponseStatusExtractor();
@@ -435,7 +432,10 @@ public class HttpEndpointPlugin implements IPlugin {
         );
     }
 
-    private void registerDeserializationStrategies() throws ResolutionException, InvalidArgumentException, RegistrationException, AdditionDependencyStrategyException {
+    @SuppressWarnings("unchecked")
+    private void registerDeserializationStrategies() throws ResolutionException, InvalidArgumentException,
+            RegistrationException, AdditionDependencyStrategyException {
+
         IAdditionDependencyStrategy deserializationStrategyChooser =
                 IOC.resolve(Keys.resolveByName("DeserializationStrategyChooser"));
 
@@ -447,27 +447,27 @@ public class HttpEndpointPlugin implements IPlugin {
                             if (request.method().toString().equals("GET")) {
                                 return "HTTP_GET";
                             }
-                            return "HTTP_" + ((HttpHeaders) request.headers()).get(HttpHeaders.Names.CONTENT_TYPE);
+                            return "HTTP_" + request.headers().get(HttpHeaderNames.CONTENT_TYPE);
                         }
                 )
         );
 
         deserializationStrategyChooser.register("HTTP_application/json",
-                new CreateNewInstanceStrategy(
+                new ApplyFunctionToArgumentsStrategy(
                         //args[0] - type of the request
                         //args[1] - name of the endpoint
                         (args) -> new DeserializeStrategyPostJson(messageMapper)
                 )
         );
         deserializationStrategyChooser.register("HTTP_application/x-www-form-urlencoded",
-                new CreateNewInstanceStrategy(
+                new ApplyFunctionToArgumentsStrategy(
                         //args[0] - type of the request
                         //args[1] - name of the endpoint
                         (args) -> new DeserializeStrategyPostFormUrlencoded()
                 )
         );
         deserializationStrategyChooser.register("HTTP_GET",
-                new CreateNewInstanceStrategy(
+                new ApplyFunctionToArgumentsStrategy(
                         //args[0] - type of the request
                         //args[1] - name of the endpoint
                         (args) -> {
