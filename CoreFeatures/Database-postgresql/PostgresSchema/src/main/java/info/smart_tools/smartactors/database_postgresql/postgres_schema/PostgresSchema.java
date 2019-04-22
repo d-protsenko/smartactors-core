@@ -85,7 +85,8 @@ public final class PostgresSchema {
      * @throws QueryBuildException if the path is invalid
      */
     public static FieldPath getIdFieldPath(final CollectionName collection) throws QueryBuildException {
-        return PostgresFieldPath.fromString(String.format(ID_FIELD_PATTERN, collection.toString()));
+        String rawCollectionName = collection.toString().replaceAll("\"", "");
+        return PostgresFieldPath.fromString(String.format(ID_FIELD_PATTERN, rawCollectionName));
     }
 
     /**
