@@ -22,17 +22,18 @@ public final class CreateIndexIfNotExistsSchema {
      */
     static void writePrimaryKeyIfNotExists(final Writer body, final CollectionName collection) throws IOException, QueryBuildException {
         String collectionName = collection.toString();
+        String rawCollectionName = collectionName.replaceAll("\"", "");
         FieldPath idPath = PostgresSchema.getIdFieldPath(collection);
         body.write(String.format(
                 "do\n" +
                         "$$\n" +
                         "BEGIN\n" +
                         "IF to_regclass('%1$s_pkey') IS NULL THEN\n" +
-                        "    CREATE UNIQUE INDEX %1$s_pkey ON %1$s USING BTREE ((%2$s));\n" +
+                        "    CREATE UNIQUE INDEX %1$s_pkey ON %2$s USING BTREE ((%3$s));\n" +
                         "end if;\n" +
                         "end \n" +
                         "$$;",
-                collectionName, idPath.toSQL())
+                rawCollectionName, collectionName, idPath.toSQL())
         );
     }
 }
