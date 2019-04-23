@@ -86,7 +86,7 @@ public abstract class NettyClient<TRequest> implements IClient<TRequest>, IReque
             public void operationComplete(final ChannelFuture future) throws Exception {
                 if (!future.isSuccess()) {
                     //TODO:: send message about connection failed
-                    System.out.println("Connection to '" + serverUri.getHost() + ":" + port + "' failed!");
+                    System.out.println("Connection failed!!!");
                 }
                 me.channel = future.channel();
             }

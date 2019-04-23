@@ -1008,7 +1008,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "IDatabaseTask",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "database.interfaces.istorage-connection",
   "uploadRepositories" : [ {
@@ -1016,7 +1016,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "IStorageConnection",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "database.async-operation-collection",
   "uploadRepositories" : [ {
@@ -1024,7 +1024,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "AsyncOperationCollection",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "database.interfaces.idatabase",
   "uploadRepositories" : [ {
@@ -1032,7 +1032,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "IDatabase",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "database.sql-commons",
   "uploadRepositories" : [ {
@@ -1040,7 +1040,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "SqlCommons",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "database.cached-collection",
   "uploadRepositories" : [ {
@@ -1048,7 +1048,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "CachedCollection",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "database.database-storage",
   "uploadRepositories" : [ {
@@ -1056,7 +1056,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "DatabaseStorage",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -1066,7 +1066,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "database",
   "rawName" : "Database",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "actors" : [ {
   "artifactId" : "endpoint.response_strategy",

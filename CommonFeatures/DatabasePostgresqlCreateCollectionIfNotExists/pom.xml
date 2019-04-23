@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>common-features</artifactId>
         <version>0.6.0</version>
     </parent>
-
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>database-postgresql-create-collection-if-not-exists</artifactId>
-    <version>0.6.0</version>
-
+    <version>0.6.1</version>
     <packaging>pom</packaging>
-
     <modules>
         <module>CreateCollectionTask</module>
         <module>CreateCollectionPlugin</module>
@@ -21,12 +18,10 @@
         <module>CreateCollectionActorPlugin</module>
         <module>DatabasePostgresqlCreateCollectionIfNotExistsDistribution</module>
     </modules>
-
     <build>
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.5.1</version>
                     <configuration>
@@ -42,10 +37,8 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>3.1.0</version>
-                    <inherited>true</inherited>
                     <executions>
                         <execution>
                             <phase>package</phase>
@@ -54,11 +47,10 @@
                             </goals>
                         </execution>
                     </executions>
+                    <inherited>true</inherited>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <inherited>true</inherited>
                     <version>2.8.2</version>
                     <executions>
                         <execution>
@@ -86,9 +78,9 @@
                             </configuration>
                         </execution>
                     </executions>
+                    <inherited>true</inherited>
                 </plugin>
             </plugins>
         </pluginManagement>
     </build>
-
 </project>
