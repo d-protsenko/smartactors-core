@@ -10,42 +10,42 @@ import java.util.Map;
 /**
  * Implementation of {@link IEventHandler} which output data of {@link IEvent} to system console.
  */
-public final class PrintToConsoleEventHandler implements IEventHandler, IExtendedEventHandler {
+public final class PrintToConsoleEventHandler implements IExtendedEventHandler {
 
     private String eventHandlerKey;
-    private IAction<IEvent> defaultExecutor;
-    private Map<String, IAction<IEvent>> executors = new HashMap<>();
+    private IAction<IEvent> defaultProcessor;
+    private Map<String, IAction<IEvent>> processors = new HashMap<>();
 
     /**
      * The constructor
      * @param eventHandlerKey the key of created instance of {@link PrintToConsoleEventHandler}
-     * @param defaultExecutor the default executor for event processing
+     * @param defaultProcessor the default processor for event processing
      */
-    public PrintToConsoleEventHandler(final String eventHandlerKey, final IAction<IEvent> defaultExecutor) {
+    public PrintToConsoleEventHandler(final String eventHandlerKey, final IAction<IEvent> defaultProcessor) {
         this.eventHandlerKey = eventHandlerKey;
-        this.defaultExecutor = defaultExecutor;
+        this.defaultProcessor = defaultProcessor;
     }
 
     /**
      * The constructor
      * @param eventHandlerKey the key of created instance of {@link PrintToConsoleEventHandler}
-     * @param defaultExecutor the default executor for event processing
-     * @param executors initialization map of executors
+     * @param defaultProcessor the default processor for event processing
+     * @param processors initialization map of processors
      */
     public PrintToConsoleEventHandler(
             final String eventHandlerKey,
-            final IAction<IEvent> defaultExecutor,
-            final Map<Object, Object> executors
+            final IAction<IEvent> defaultProcessor,
+            final Map<Object, Object> processors
             ) {
         this.eventHandlerKey = eventHandlerKey;
-        this.defaultExecutor = defaultExecutor;
+        this.defaultProcessor = defaultProcessor;
 
-        executors.forEach((type, executor) -> {
+        processors.forEach((type, processor) -> {
             try {
-                this.addExecutor(type, executor);
+                this.addProcessor(type, processor);
             } catch (Exception e) {
                 throw new RuntimeException(
-                        "PrintToConsoleEventHandler: One of the executors cannot be casted to a specified type", e
+                        "PrintToConsoleEventHandler: One of the processors cannot be casted to a specified type", e
                 );
             }
         });
@@ -59,9 +59,9 @@ public final class PrintToConsoleEventHandler implements IEventHandler, IExtende
             return;
         }
         String type = event.getBody().getClass().getCanonicalName();
-        IAction<IEvent> exec = executors.getOrDefault(type, defaultExecutor);
+        IAction<IEvent> processor = processors.getOrDefault(type, defaultProcessor);
         try {
-            exec.execute(event);
+            processor.execute(event);
         } catch (Exception e) {
             throw new EventHandlerException(
                     String.format("PrintToConsoleEventHandler: Event handler action '%s' throws exception.", type),
@@ -77,25 +77,26 @@ public final class PrintToConsoleEventHandler implements IEventHandler, IExtende
     }
 
     @Override
-    public void addExecutor(final Object eventType, final Object executor)
+    public void addProcessor(final Object eventKey, final Object processor)
             throws ExtendedEventHandlerException {
-        String castedEventType = castEventType(eventType);
-        IAction<IEvent> castedExecutor = castExecutor(executor);
+        String castedEventKey = castEventKey(eventKey);
+        IAction<IEvent> castedProcessor = castProcessor(processor);
 
-        executors.put(castedEventType, castedExecutor);
+        processors.put(castedEventKey, castedProcessor);
     }
 
     @Override
-    public Object removeExecutor(final Object eventType) throws ExtendedEventHandlerException {
-        String castedEventType = castEventType(eventType);
+    public Object removeProcessor(final Object eventKey)
+            throws ExtendedEventHandlerException {
+        String castedEventKey = castEventKey(eventKey);
 
-        return executors.remove(castedEventType);
+        return processors.remove(castedEventKey);
     }
 
-    private String castEventType(final Object eventType)
+    private String castEventKey(final Object eventKey)
             throws ExtendedEventHandlerException {
         try {
-            return  (String) eventType;
+            return  (String) eventKey;
         } catch (Exception e) {
             throw new ExtendedEventHandlerException(
                     "PrintToConsoleEventHandler: Could not cast event type to String.", e
@@ -104,13 +105,13 @@ public final class PrintToConsoleEventHandler implements IEventHandler, IExtende
     }
 
     @SuppressWarnings("unchecked")
-    private IAction<IEvent> castExecutor(final Object executor)
+    private IAction<IEvent> castProcessor(final Object processor)
             throws ExtendedEventHandlerException {
         try {
-            return  (IAction<IEvent>) executor;
+            return  (IAction<IEvent>) processor;
         } catch (Exception e) {
             throw new ExtendedEventHandlerException(
-                    "PrintToConsoleEventHandler: Could not cast executor to IAction<IEvent>.", e
+                    "PrintToConsoleEventHandler: Could not cast processor to IAction<IEvent>.", e
             );
         }
     }

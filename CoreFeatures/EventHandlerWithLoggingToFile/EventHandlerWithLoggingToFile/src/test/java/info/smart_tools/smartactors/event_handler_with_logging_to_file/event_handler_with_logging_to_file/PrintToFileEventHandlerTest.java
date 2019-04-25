@@ -43,12 +43,12 @@ public class PrintToFileEventHandlerTest {
         );
         assertNotNull(handler);
         assertNotNull("test2", handler.getEventHandlerKey());
-        Object removedAction = ((IExtendedEventHandler) handler).removeExecutor("action");
+        Object removedAction = ((IExtendedEventHandler) handler).removeProcessor("action");
         assertEquals(testAction, removedAction);
     }
 
     @Test(expected = RuntimeException.class)
-    public void should_throw_exception_on_creating_with_invalid_executor() {
+    public void should_throw_exception_on_creating_with_invalid_processor() {
         IEventHandler handler = new PrintToFileEventHandler(
                 "test",
                 (params) -> {},
@@ -60,7 +60,7 @@ public class PrintToFileEventHandlerTest {
     }
 
     @Test (expected = EventHandlerException.class)
-    public void should_throw_the_specified_exception_on_an_exception_in_an_executor()
+    public void should_throw_the_specified_exception_on_an_exception_in_an_processor()
             throws Exception {
         IActionTwoArgs<IEvent, PrintWriter> testAction = mock(IActionTwoArgs.class);
 
@@ -93,7 +93,7 @@ public class PrintToFileEventHandlerTest {
             while (!params.getQueue().isEmpty()) {
                 IEvent event = params.getQueue().poll();
                 params
-                        .getExecutors()
+                        .getProcessors()
                         .get(event.getBody().getClass().getCanonicalName())
                         .execute(event, null);
             }
@@ -130,7 +130,7 @@ public class PrintToFileEventHandlerTest {
             } catch (Exception ignored) {}
         });
         thread2.start();
-        Thread.sleep(200);
+        Thread.sleep(300);
         verify(event1, times(1)).getBody();
         verify(event2, times(1)).getBody();
         // The writer must be called only once
@@ -138,7 +138,7 @@ public class PrintToFileEventHandlerTest {
     }
 
     @Test
-    public void should_throw_specified_exception_with_event_on_invalid_executor_calling()
+    public void should_throw_specified_exception_with_event_on_invalid_processor_calling()
             throws Exception {
         IActionTwoArgs<IEvent, PrintWriter> testAction = mock(IActionTwoArgs.class);
 
@@ -175,16 +175,16 @@ public class PrintToFileEventHandlerTest {
         IEventHandler handler = new PrintToFileEventHandler(
                 "test", (params) -> {}, (event, writer) -> {}
                 );
-        ((IExtendedEventHandler) handler).addExecutor(5, mock(IActionTwoArgs.class));
+        ((IExtendedEventHandler) handler).addProcessor(5, mock(IActionTwoArgs.class));
     }
 
     @Test (expected = ExtendedEventHandlerException.class)
-    public void should_throw_specified_exception_on_invalid_executor()
+    public void should_throw_specified_exception_on_invalid_processor()
             throws Exception {
         IEventHandler handler = new PrintToFileEventHandler(
                 "test", (params) -> {}, (event, writer) -> {}
         );
-        ((IExtendedEventHandler) handler).addExecutor("test", 5);
+        ((IExtendedEventHandler) handler).addProcessor("test", 5);
     }
 }
 

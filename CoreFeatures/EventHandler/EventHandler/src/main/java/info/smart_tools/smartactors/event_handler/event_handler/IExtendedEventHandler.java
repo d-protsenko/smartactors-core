@@ -7,21 +7,21 @@ import info.smart_tools.smartactors.event_handler.event_handler.exception.Extend
  * interface provide an ability to add and remove any actions to processing specific types of
  * {@link IEvent}.
  */
-public interface IExtendedEventHandler {
+public interface IExtendedEventHandler extends IEventHandler {
 
     /**
-     * registers given executor with given event key to the instance of {@link EventHandler}
-     * @param eventType the event type
-     * @param executor the executor
+     * registers given processor with given event key to the instance of {@link EventHandler}
+     * @param eventKey the event key
+     * @param processor the processor
      * @throws ExtendedEventHandlerException should be thrown if any errors were occurring
      */
-    void addExecutor(Object eventType, Object executor) throws ExtendedEventHandlerException;
+    void addProcessor(Object eventKey, Object processor) throws ExtendedEventHandlerException;
 
     /**
      * unregisters an executor by given event key from the instance of {@link EventHandler}
-     * @param eventType the event type
-     * @return unregistered executor
+     * @param eventKey the event key
+     * @return unregistered processor
      * @throws ExtendedEventHandlerException should be thrown if any errors were occurring
      */
-    Object removeExecutor(Object eventType) throws ExtendedEventHandlerException;
+    Object removeProcessor(Object eventKey) throws ExtendedEventHandlerException;
 }

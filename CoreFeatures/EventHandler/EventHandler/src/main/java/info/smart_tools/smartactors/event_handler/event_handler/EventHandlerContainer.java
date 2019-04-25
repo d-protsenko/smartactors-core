@@ -16,7 +16,7 @@ import java.util.List;
  * This container expanded by interface {@link IExtendedEventHandlerContainer} that provides to add custom implementations of {@link IEventHandler}
  * and remove handler by its key.
  */
-public class EventHandlerContainer implements IEventHandlerContainer, IExtendedEventHandlerContainer {
+public class EventHandlerContainer implements IExtendedEventHandlerContainer {
 
     private LinkedList<IEventHandler> handlers = new LinkedList<>(
             Collections.singletonList(

@@ -35,7 +35,7 @@ public class PrintToConsoleEventHandlerTest {
     }
 
     @Test(expected = RuntimeException.class)
-    public void should_throw_exception_on_creating_with_invalid_executor() {
+    public void should_throw_exception_on_creating_with_invalid_processor() {
         IEventHandler handler = new PrintToConsoleEventHandler(
                 "test",
                 (event) -> {}, new HashMap<Object, Object>(){{
@@ -45,7 +45,7 @@ public class PrintToConsoleEventHandlerTest {
     }
 
     @Test
-    public void should_call_specific_executor_or_default()
+    public void should_call_specific_processor_or_default()
             throws Exception {
         IAction<IEvent> defaultAction = mock(IAction.class);
         IAction<IEvent> testAction = mock(IAction.class);
@@ -66,12 +66,12 @@ public class PrintToConsoleEventHandlerTest {
         handler.handle(event);
         verify(testAction, times(0)).execute(event);
         verify(defaultAction, times(1)).execute(event);
-        Object action = ((PrintToConsoleEventHandler) handler).removeExecutor(TestClass1.class.getCanonicalName());
+        Object action = ((PrintToConsoleEventHandler) handler).removeProcessor(TestClass1.class.getCanonicalName());
         assertEquals(testAction, action);
     }
 
     @Test (expected = EventHandlerException.class)
-    public void should_throw_the_specified_exception_on_an_exception_in_an_executor()
+    public void should_throw_the_specified_exception_on_an_exception_in_an_processor()
             throws Exception {
         IAction<IEvent> testAction = mock(IAction.class);
         IEventHandler handler = new PrintToConsoleEventHandler(
@@ -98,14 +98,14 @@ public class PrintToConsoleEventHandlerTest {
     public void should_throw_specified_exception_on_invalid_key()
             throws Exception {
         IEventHandler handler = new PrintToConsoleEventHandler("test", (event) -> {});
-        ((IExtendedEventHandler) handler).addExecutor(5, mock(IAction.class));
+        ((IExtendedEventHandler) handler).addProcessor(5, mock(IAction.class));
     }
 
     @Test (expected = ExtendedEventHandlerException.class)
-    public void should_throw_specified_exception_on_invalid_executor()
+    public void should_throw_specified_exception_on_invalid_processor()
             throws Exception {
         IEventHandler handler = new PrintToConsoleEventHandler("test", (event) -> {});
-        ((IExtendedEventHandler) handler).addExecutor("test", 5);
+        ((IExtendedEventHandler) handler).addProcessor("test", 5);
     }
 }
 

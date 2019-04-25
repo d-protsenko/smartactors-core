@@ -5,7 +5,7 @@ package info.smart_tools.smartactors.event_handler.event_handler;
  * interface provide an ability to add and remove any instances of {@link IEventHandler}
  * to the {@link EventHandler} container.
  */
-public interface IExtendedEventHandlerContainer {
+public interface IExtendedEventHandlerContainer extends IEventHandlerContainer {
 
     /**
      * registers given instance of {@link IEventHandler} to the {@link EventHandler} container.

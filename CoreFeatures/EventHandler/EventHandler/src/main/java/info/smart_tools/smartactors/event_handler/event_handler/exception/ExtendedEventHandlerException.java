@@ -2,8 +2,8 @@ package info.smart_tools.smartactors.event_handler.event_handler.exception;
 
 /**
  * The checked exception that signals about incorrect execution of methods
- * {@link info.smart_tools.smartactors.event_handler.event_handler.IExtendedEventHandler#addExecutor(Object, Object)} or
- * {@link info.smart_tools.smartactors.event_handler.event_handler.IExtendedEventHandler#removeExecutor(Object)}
+ * {@link info.smart_tools.smartactors.event_handler.event_handler.IExtendedEventHandler#addProcessor(Object, Object)} or
+ * {@link info.smart_tools.smartactors.event_handler.event_handler.IExtendedEventHandler#removeProcessor(Object)}
  *
  */
 public class ExtendedEventHandlerException extends Exception {

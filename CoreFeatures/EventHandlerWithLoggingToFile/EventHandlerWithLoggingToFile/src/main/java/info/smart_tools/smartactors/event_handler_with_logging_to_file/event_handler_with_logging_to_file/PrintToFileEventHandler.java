@@ -21,14 +21,14 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Implementation of {@link IEventHandler} which output data of {@link IEvent} to the file.
  */
-public final class PrintToFileEventHandler implements IEventHandler, IExtendedEventHandler {
+public final class PrintToFileEventHandler implements IExtendedEventHandler {
 
     private String eventHandlerKey;
     private Queue<IEvent> queue = new ConcurrentLinkedQueue<>();
     private ReentrantLock writeLock = new ReentrantLock();
     private static final String FILENAME = "server.log";
-    private IActionTwoArgs<IEvent, PrintWriter> defaultExecutor;
-    private Map<String, IActionTwoArgs<IEvent, PrintWriter>> executors = new HashMap<>();
+    private IActionTwoArgs<IEvent, PrintWriter> defaultProcessor;
+    private Map<String, IActionTwoArgs<IEvent, PrintWriter>> processors = new HashMap<>();
 
     // Default writer
     private IAction<PrintToFileWriterParameters> writer = (params) -> {
@@ -37,10 +37,10 @@ public final class PrintToFileEventHandler implements IEventHandler, IExtendedEv
             while (!params.getQueue().isEmpty()) {
                 event = params.getQueue().poll();
                 String eventType = event.getBody().getClass().getCanonicalName();
-                IActionTwoArgs<IEvent, PrintWriter> exec = params
-                        .getExecutors()
-                        .getOrDefault(eventType, params.getDefaultExecutor());
-                exec.execute(event, writer);
+                IActionTwoArgs<IEvent, PrintWriter> processor = params
+                        .getProcessors()
+                        .getOrDefault(eventType, params.getDefaultProcessor());
+                processor.execute(event, writer);
             }
         } catch (Exception e) {
             throw new EventHandlerException(
@@ -53,45 +53,45 @@ public final class PrintToFileEventHandler implements IEventHandler, IExtendedEv
      * The constructor
      * @param eventHandlerKey the key of created instance of {@link PrintToFileEventHandler}
      * @param writer the action for writing event data
-     * @param defaultExecutor the default executor for event processing
+     * @param defaultProcessor the default processor for event processing
      */
     public PrintToFileEventHandler(
             final String eventHandlerKey,
             final IAction<PrintToFileWriterParameters> writer,
-            final IActionTwoArgs<IEvent, PrintWriter> defaultExecutor
+            final IActionTwoArgs<IEvent, PrintWriter> defaultProcessor
     ) {
         this.eventHandlerKey = eventHandlerKey;
         if (null != writer) {
             this.writer = writer;
         }
-        this.defaultExecutor = defaultExecutor;
+        this.defaultProcessor = defaultProcessor;
     }
 
     /**
      * The constructor
      * @param eventHandlerKey the key of created instance of {@link PrintToFileEventHandler}
      * @param writer the action for writing event data
-     * @param defaultExecutor the default executor for event processing
-     * @param executors initialization map of executors
+     * @param defaultProcessor the default processor for event processing
+     * @param processors initialization map of processors
      */
     public PrintToFileEventHandler(
             final String eventHandlerKey,
             final IAction<PrintToFileWriterParameters> writer,
-            final IActionTwoArgs<IEvent, PrintWriter> defaultExecutor,
-            final Map<Object, Object> executors
+            final IActionTwoArgs<IEvent, PrintWriter> defaultProcessor,
+            final Map<Object, Object> processors
     ) {
         this.eventHandlerKey = eventHandlerKey;
         if (null != writer) {
             this.writer = writer;
         }
-        this.defaultExecutor = defaultExecutor;
+        this.defaultProcessor = defaultProcessor;
 
-        executors.forEach((type, executor) -> {
+        processors.forEach((type, processor) -> {
             try {
-                this.addExecutor(type, executor);
+                this.addProcessor(type, processor);
             } catch (Exception e) {
                 throw new RuntimeException(
-                        "PrintToFileEventHandler: One of the executors cannot be casted to a specified type", e
+                        "PrintToFileEventHandler: One of the processors cannot be casted to a specified type", e
                 );
             }
         });
@@ -127,33 +127,33 @@ public final class PrintToFileEventHandler implements IEventHandler, IExtendedEv
     }
 
     @Override
-    public void addExecutor(final Object eventType, final Object executor)
+    public void addProcessor(final Object eventKey, final Object processor)
             throws ExtendedEventHandlerException {
-        String castedEventType = castEventType(eventType);
-        IActionTwoArgs<IEvent, PrintWriter> castedExecutor = castExecutor(executor);
+        String castedEventKey = castEventKey(eventKey);
+        IActionTwoArgs<IEvent, PrintWriter> castedProcessor = castProcessor(processor);
 
-        executors.put(castedEventType, castedExecutor);
+        processors.put(castedEventKey, castedProcessor);
     }
 
     @Override
-    public Object removeExecutor(final Object eventType)
+    public Object removeProcessor(final Object eventKey)
             throws ExtendedEventHandlerException {
-        String castedEventType = castEventType(eventType);
+        String castedEventKey = castEventKey(eventKey);
 
-        return executors.remove(castedEventType);
+        return processors.remove(castedEventKey);
     }
 
     private void writeToFile()
             throws ActionExecutionException, InvalidArgumentException {
         this.writer.execute(
-                new PrintToFileWriterParameters(this.queue, this.executors, this.defaultExecutor, FILENAME)
+                new PrintToFileWriterParameters(this.queue, this.processors, this.defaultProcessor, FILENAME)
         );
     }
 
-    private String castEventType(final Object eventType)
+    private String castEventKey(final Object eventKey)
             throws ExtendedEventHandlerException {
         try {
-            return  (String) eventType;
+            return  (String) eventKey;
         } catch (Exception e) {
             throw new ExtendedEventHandlerException(
                     "PrintToFileEventHandler: Could not cast event type to String.", e
@@ -162,13 +162,13 @@ public final class PrintToFileEventHandler implements IEventHandler, IExtendedEv
     }
 
     @SuppressWarnings("unchecked")
-    private IActionTwoArgs<IEvent, PrintWriter> castExecutor(final Object executor)
+    private IActionTwoArgs<IEvent, PrintWriter> castProcessor(final Object processor)
             throws ExtendedEventHandlerException {
         try {
-            return  (IActionTwoArgs<IEvent, PrintWriter>) executor;
+            return  (IActionTwoArgs<IEvent, PrintWriter>) processor;
         } catch (Exception e) {
             throw new ExtendedEventHandlerException(
-                    "PrintToFileEventHandler: Could not cast executor to IActionTwoArgs<IEvent, PrintWriter>.", e
+                    "PrintToFileEventHandler: Could not cast processor to IActionTwoArgs<IEvent, PrintWriter>.", e
             );
         }
     }

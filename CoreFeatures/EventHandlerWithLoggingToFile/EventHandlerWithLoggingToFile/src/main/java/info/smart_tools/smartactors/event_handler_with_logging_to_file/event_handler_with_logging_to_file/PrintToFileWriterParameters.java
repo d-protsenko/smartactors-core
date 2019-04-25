@@ -14,8 +14,8 @@ import java.util.Queue;
 final class PrintToFileWriterParameters {
 
     private Queue<IEvent> queue;
-    private Map<String, IActionTwoArgs<IEvent, PrintWriter>> executors;
-    private IActionTwoArgs<IEvent, PrintWriter> defaultExecutor;
+    private Map<String, IActionTwoArgs<IEvent, PrintWriter>> processors;
+    private IActionTwoArgs<IEvent, PrintWriter> defaultProcessor;
     private String fileName;
 
     /**
@@ -27,23 +27,23 @@ final class PrintToFileWriterParameters {
     /**
      * The constructor
      * @param queue the queue
-     * @param executors the list of executors
-     * @param defaultExecutor the default executor
+     * @param processors the list of processors
+     * @param defaultProcessor the default processor
      * @param fileName the name of file
      * @throws InvalidArgumentException if incoming arguments are incorrect
      */
     PrintToFileWriterParameters(
             final Queue<IEvent> queue,
-            final Map<String, IActionTwoArgs<IEvent, PrintWriter>> executors,
-            final IActionTwoArgs<IEvent, PrintWriter> defaultExecutor,
+            final Map<String, IActionTwoArgs<IEvent, PrintWriter>> processors,
+            final IActionTwoArgs<IEvent, PrintWriter> defaultProcessor,
             final String fileName
     ) throws InvalidArgumentException {
-        if (null == queue || null == executors || null == defaultExecutor || null == fileName) {
+        if (null == queue || null == processors || null == defaultProcessor || null == fileName) {
             throw new InvalidArgumentException("All arguments should be not null.");
         }
         this.queue = queue;
-        this.executors = executors;
-        this.defaultExecutor = defaultExecutor;
+        this.processors = processors;
+        this.defaultProcessor = defaultProcessor;
         this.fileName = fileName;
     }
 
@@ -51,12 +51,12 @@ final class PrintToFileWriterParameters {
         return queue;
     }
 
-    Map<String, IActionTwoArgs<IEvent, PrintWriter>> getExecutors() {
-        return executors;
+    Map<String, IActionTwoArgs<IEvent, PrintWriter>> getProcessors() {
+        return processors;
     }
 
-    IActionTwoArgs<IEvent, PrintWriter> getDefaultExecutor() {
-        return defaultExecutor;
+    IActionTwoArgs<IEvent, PrintWriter> getDefaultProcessor() {
+        return defaultProcessor;
     }
 
     String getFileName() {
