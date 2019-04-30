@@ -14,13 +14,13 @@
     </properties>
 
     <modules>
-        <module>CommonFeatures</module>
+        <module>das</module>
         <module>CoreFeatures</module>
+        <module>CommonFeatures</module>
         <module>ServerDevelopmentTools</module>
         <module>CorePack</module>
         <module>Servers/Server2</module>
         <module>SystemActors</module>
-        <module>das</module>
     </modules>
 
     <build>
