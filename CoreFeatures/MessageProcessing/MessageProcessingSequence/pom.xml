@@ -143,25 +143,7 @@
                             <id>default-deploy</id>
                             <phase>none</phase>
                         </execution>
-                        <execution>
-                            <id>${module.rid}</id>
-                            <phase>deploy</phase>
-                            <goals>
-                                <goal>deploy-file</goal>
-                            </goals>
-                            <inherited>false</inherited>
-                            <configuration>
-                                <generatePom>true</generatePom>
-                                <file>${project.basedir}/target/${project.artifactId}-${project.version}.jar</file>
-                                <url>${module.rurl}</url>
-                                <repositoryId>${module.rid}</repositoryId>
-                                <groupId>${project.groupId}</groupId>
-                                <artifactId>${project.artifactId}</artifactId>
-                                <version>${project.version}</version>
-                                <packaging>jar</packaging>
-                                <description>This package contains ...</description>
-                            </configuration>
-                        </execution>
+
                     </executions>
                     <inherited>false</inherited>
                 </plugin>
