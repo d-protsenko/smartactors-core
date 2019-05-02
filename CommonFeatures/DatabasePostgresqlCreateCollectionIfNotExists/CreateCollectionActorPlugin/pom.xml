@@ -183,14 +183,6 @@
                             <id>default-deploy</id>
                             <phase>none</phase>
                         </execution>
-                        <execution>
-                            <id>archiva.common-actors</id>
-                            <phase>deploy</phase>
-                            <goals>
-                                <goal>deploy-file</goal>
-                            </goals>
-                            <inherited>false</inherited>
-                        </execution>
                     </executions>
                     <inherited>false</inherited>
                 </plugin>

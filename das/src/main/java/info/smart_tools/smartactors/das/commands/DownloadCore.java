@@ -31,8 +31,8 @@ public class DownloadCore implements IAction {
     private static final String defGroupId = "info.smart_tools.smartactors";
     private static final String defArtifactId = "core-pack";
     private static final String defVersion = "RELEASE";
-    private static final String defRepositoryId = "archiva.smartactors-features";
-    private static final String defRepositoryUrl = "http://archiva.smart-tools.info/repository/smartactors-features/";
+    private static final String defRepositoryId = "smartactors_core_and_core_features";
+    private static final String defRepositoryUrl = "https://repository.smart-tools.info/artifactory/smartactors_core_and_core_features/";
     private static final String defDirectoryName = "core";
     private static final String defPackageType = "jar";
 

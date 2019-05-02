@@ -1,7 +1,7 @@
 Installation:
 
 Download and install debian package from:
-http://archiva.smart-tools.info/#artifact~server-dev-tools/info.smart_tools.smartactors/das
+https://repository.smart-tools.info/artifactory/#artifact~smartactors_development_tools/das
     > sudo dpkg -i das-${version}.deb
 
 Convention:
@@ -59,36 +59,36 @@ new plugin creation:
 
 add or update upload repository to the feature:
     in the project directory:
-    > das afr -fn FeatureName -rid archiva.my-feature-upload-repository -rurl http://archiva.smart-tools.info/repository/archiva.my-feature-upload-repository/
+    > das afr -fn FeatureName -rid my-feature-upload-repository -rurl https://repository.smart-tools.info/artifactory/my-feature-upload-repository/
 add or update upload repository to all features:
-    > das afr -fn all -rid archiva.my-feature-upload-repository -rurl http://archiva.smart-tools.info/repository/archiva.my-feature-upload-repository/
+    > das afr -fn all -rid my-feature-upload-repository -rurl https://repository.smart-tools.info/artifactory/my-feature-upload-repository/
 
 
 add or update upload repository to the actor:
-    > das aar -an ActorName -fn FeatureName -rid archiva.my-actor-upload-repository -rurl http://archiva.smart-tools.info/repository/archiva.my-actor-upload-repository/
+    > das aar -an ActorName -fn FeatureName -rid my-actor-upload-repository -rurl https://repository.smart-tools.info/artifactory/my-actor-upload-repository/
 add or update upload repository to all actors of specific feature:
-    > das aar -an all -fn FeatureName -rid archiva.my-actor-upload-repository -rurl http://archiva.smart-tools.info/repository/archiva.my-actor-upload-repository/
+    > das aar -an all -fn FeatureName -rid my-actor-upload-repository -rurl https://repository.smart-tools.info/artifactory/my-actor-upload-repository/
 add or update upload repository to all actors of all features:
-    > das aar -an all -fn all -rid archiva.my-actor-upload-repository -rurl http://archiva.smart-tools.info/repository/archiva.my-actor-upload-repository/
+    > das aar -an all -fn all -rid my-actor-upload-repository -rurl https://repository.smart-tools.info/artifactory/my-actor-upload-repository/
 
 add or update upload repository to the plugin:
-    > das aplr -pln PluginName -fn FeatureName -rid archiva.my-plugin-upload-repository -rurl http://archiva.smart-tools.info/repository/archiva.my-plugin-upload-repository/
+    > das aplr -pln PluginName -fn FeatureName -rid my-plugin-upload-repository -rurl https://repository.smart-tools.info/artifactory/my-plugin-upload-repository/
 add or update upload repository to all plugins of specific feature:
-    > das aar -pln all -fn FeatureName -rid archiva.my-plugin-upload-repository -rurl http://archiva.smart-tools.info/repository/archiva.my-plugin-upload-repository/
+    > das aar -pln all -fn FeatureName -rid my-plugin-upload-repository -rurl https://repository.smart-tools.info/artifactory/my-plugin-upload-repository/
 add or update upload repository to all plugins of all features:
-    > das aar -pln all -fn all -rid archiva.my-plugin-upload-repository -rurl http://archiva.smart-tools.info/repository/archiva.my-plugin-upload-repository/
+    > das aar -pln all -fn all -rid my-plugin-upload-repository -rurl https://repository.smart-tools.info/artifactory/my-plugin-upload-repository/
 
 
 add or update upload repository to feature on feature creation:
-    > das aofcur -rid archiva.my-feature-upload-repository -rurl http://archiva.smart-tools.info/repository/archiva.my-feature-upload-repository/
+    > das aofcur -rid my-feature-upload-repository -rurl https://repository.smart-tools.info/artifactory/my-feature-upload-repository/
 
 
 add or update upload repository to actor on actor creation:
-    > das aoacur -rid archiva.my-actor-upload-repository -rurl http://archiva.smart-tools.info/repository/archiva.my-actor-upload-repository/
+    > das aoacur -rid my-actor-upload-repository -rurl https://repository.smart-tools.info/artifactory/my-actor-upload-repository/
 
 
 add or update upload repository to plugin on plugin creation:
-    > das aoplcur -rid archiva.my-plugin-upload-repository -rurl http://archiva.smart-tools.info/repository/archiva.my-plugin-upload-repository/
+    > das aoplcur -rid my-plugin-upload-repository -rurl https://repository.smart-tools.info/artifactory/my-plugin-upload-repository/
 
 
 update feature version:
@@ -113,25 +113,25 @@ update version of all plugins for all features:
 
 
 create server:
-    > das cs -aid artifactId -g groupId -v version -path serverDestination -sn ServerName -rid archiva.servers -rurl http://archiva.smart-tools.info/repository/archiva.servers/
+    > das cs -aid artifactId -g groupId -v version -path serverDestination -sn ServerName -rid smartactors_servers -rurl https://repository.smart-tools.info/artifactory/smartactors_servers/
     Default for:
         aid  - servers.server2
         g    - info.smart_tools.smartactors
         v    - RELEASE
         path - current directory
         sn   - server
-        rid  - archiva.servers
-        rurl - http://archiva.smart-tools.info/repository/servers/
+        rid  - smartactors_servers
+        rurl - https://repository.smart-tools.info/artifactory/smartactors_servers/
 
 
 download server core:
-    > das dc -aid coreListArtifactId -g coreListGroupId -v coreListVersion -path ServerLocation -rid archiva.core-pack -rurl http://archiva.smart-tools.info/repository/archiva.core-pack/
+    > das dc -aid coreListArtifactId -g coreListGroupId -v coreListVersion -path ServerLocation -rid core-pack -rurl https://repository.smart-tools.info/artifactory/smartactors_core_and_core_features/
     Default for:
         aid  - core-pack
         g    - info.smart_tools.smartactors
         v    - RELEASE
-        rid  - archiva.smartactors-features
-        rurl - http://archiva.smart-tools.info/repository/smartactors-features/
+        rid  - smartactors_core_and_core_features
+        rurl - https://repository.smart-tools.info/artifactory/smartactors_core_and_core_features/
         path - current directory
 download specific core:
     > das dc -path ServerLocation -sl coreListFileLocation

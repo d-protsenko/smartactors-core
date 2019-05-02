@@ -10,8 +10,8 @@
       "name": "cs",
       "v": "RELEASE",
       "g": "info.smart_tools.smartactors",
-      "rid": "archiva.servers",
-      "rurl": "http://archiva.smart-tools.info/repository/servers/",
+      "rid": "smartactors_servers",
+      "rurl": "https://repository.smart-tools.info/artifactory/smartactors_servers/",
       "sn": "server",
       "aid": "servers.server2"
     },
@@ -19,8 +19,8 @@
       "name": "dc",
       "v": "RELEASE",
       "g": "info.smart_tools.smartactors",
-      "rid": "archiva.smartactors-features",
-      "rurl": "http://archiva.smart-tools.info/repository/smartactors-features/",
+      "rid": "smartactors_core_and_core_features",
+      "rurl": "https://repository.smart-tools.info/artifactory/smartactors_core_and_core_features/",
       "aid": "core-pack"
     },
     {

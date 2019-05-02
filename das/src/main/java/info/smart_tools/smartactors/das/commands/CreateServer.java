@@ -25,8 +25,8 @@ public class CreateServer implements IAction {
     private static final String defGroupId = "info.smart_tools.smartactors";
     private static final String defArtifactId = "servers.server2";
     private static final String defVersion = "RELEASE";
-    private static final String defRepositoryId = "archiva.servers";
-    private static final String defRepositoryUrl = "http://archiva.smart-tools.info/repository/servers/";
+    private static final String defRepositoryId = "smartactors_servers";
+    private static final String defRepositoryUrl = "https://repository.smart-tools.info/artifactory/smartactors_servers/";
     private static final String defDirectoryName = "server";
 
     @Override

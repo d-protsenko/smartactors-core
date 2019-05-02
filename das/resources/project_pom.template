@@ -34,7 +34,7 @@
         <!-- Old library repository -->
         <!--<repository>-->
             <!--<id>smartactors-features</id>-->
-            <!--<url>http://archiva.smart-tools.info/repository/smartactors-features/</url>-->
+            <!--<url>https://repository.smart-tools.info/artifactory/smartactors_core_and_core_features/</url>-->
         <!--</repository>-->
     </repositories>
 

@@ -37,7 +37,7 @@
                             <phase>none</phase>
                         </execution>
                         <execution>
-                            <id>archiva.server-dev-tools</id>
+                            <id>smartactors_development_tools</id>
                             <phase>deploy</phase>
                             <goals>
                                 <goal>deploy-file</goal>

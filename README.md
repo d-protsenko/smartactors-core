@@ -10,7 +10,7 @@ Java library to develop server-side applications strongly following [SOLID](http
 
 ## Binaries
 
-* [Apache Archiva repository](https://archiva.smart-tools.info/#browse~smartactors-core/info.smart_tools.smartactors)
+* [Apache repository](https://repository.smart-tools.info/artifactory/#browse~smartactors_core_and_core_features)
 
 ### Use in Maven
 
@@ -28,9 +28,9 @@ You should also add a repository URL to allow Maven to download JARs:
 
     <repositories>
         <repository>
-            <id>archiva.smartactors-core</id>
+            <id>smartactors_core_and_core_features</id>
             <name>Smart Actors Core Repository</name>
-            <url>http://archiva.smart-tools.info/repository/smartactors-core/</url>
+            <url>https://repository.smart-tools.info/artifactory/</url>
         </repository>
     </repositories>
 

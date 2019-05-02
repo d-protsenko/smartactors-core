@@ -3,39 +3,39 @@
   "actors" : [ {
   "artifactId" : "async-operations-plugins.check-validity-async-operation-plugin",
   "uploadRepositories" : [ {
-  "uploadRepositoryId" : "archiva.common-actors",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-actors/"
+  "uploadRepositoryId" : "smartactors_common_features",
+  "uploadRepositoryUrl" : "https://repository.smart-tools.info/artifactory/smartactors_common_features/"
 } ],
   "rawName" : "PluginCheckValidityAsyncOperationActor",
   "version" : "0.6.0"
 }, {
   "artifactId" : "async-operations-plugins.close-async-operation-actor-plugin",
   "uploadRepositories" : [ {
-  "uploadRepositoryId" : "archiva.common-actors",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-actors/"
+  "uploadRepositoryId" : "smartactors_common_features",
+  "uploadRepositoryUrl" : "https://repository.smart-tools.info/artifactory/smartactors_common_features/"
 } ],
   "rawName" : "PluginCloseAsyncOperationActor",
   "version" : "0.6.0"
 }, {
   "artifactId" : "async-operations-plugins.get-async-operation-actor-plugin",
   "uploadRepositories" : [ {
-  "uploadRepositoryId" : "archiva.common-actors",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-actors/"
+  "uploadRepositoryId" : "smartactors_common_features",
+  "uploadRepositoryUrl" : "https://repository.smart-tools.info/artifactory/smartactors_common_features/"
 } ],
   "rawName" : "PluginGetAsyncOperationActor",
   "version" : "0.6.0"
 }, {
   "artifactId" : "async-operations-plugins.create-async-operation-actor-plugin",
   "uploadRepositories" : [ {
-  "uploadRepositoryId" : "archiva.common-actors",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-actors/"
+  "uploadRepositoryId" : "smartactors_common_features",
+  "uploadRepositoryUrl" : "https://repository.smart-tools.info/artifactory/smartactors_common_features/"
 } ],
   "rawName" : "PluginCreateAsyncOperationActor",
   "version" : "0.6.0"
 } ],
   "uploadRepositories" : [ {
-  "uploadRepositoryId" : "archiva.common-features",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-features/"
+  "uploadRepositoryId" : "smartactors_common_features",
+  "uploadRepositoryUrl" : "https://repository.smart-tools.info/artifactory/smartactors_common_features/"
 } ],
   "plugins" : [ ],
   "groupId" : "info.smart_tools.smartactors",
@@ -46,15 +46,15 @@
   "actors" : [ {
   "artifactId" : "email.email-actor",
   "uploadRepositories" : [ {
-  "uploadRepositoryId" : "archiva.common-actors",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-actors/"
+  "uploadRepositoryId" : "smartactors_common_features",
+  "uploadRepositoryUrl" : "https://repository.smart-tools.info/artifactory/smartactors_common_features/"
 } ],
   "rawName" : "EmailActor",
   "version" : "0.6.0"
 } ],
   "uploadRepositories" : [ {
-  "uploadRepositoryId" : "archiva.common-features",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-features/"
+  "uploadRepositoryId" : "smartactors_common_features",
+  "uploadRepositoryUrl" : "https://repository.smart-tools.info/artifactory/smartactors_common_features/"
 } ],
   "plugins" : [ ],
   "groupId" : "info.smart_tools.smartactors",
@@ -65,39 +65,39 @@
   "actors" : [ {
   "artifactId" : "async-operations.get-async-operation",
   "uploadRepositories" : [ {
-  "uploadRepositoryId" : "archiva.common-actors",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-actors/"
+  "uploadRepositoryId" : "smartactors_common_features",
+  "uploadRepositoryUrl" : "https://repository.smart-tools.info/artifactory/smartactors_common_features/"
 } ],
   "rawName" : "GetAsyncOperationActor",
   "version" : "0.6.0"
 }, {
   "artifactId" : "async-operations.create-async-operation",
   "uploadRepositories" : [ {
-  "uploadRepositoryId" : "archiva.common-actors",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-actors/"
+  "uploadRepositoryId" : "smartactors_common_features",
+  "uploadRepositoryUrl" : "https://repository.smart-tools.info/artifactory/smartactors_common_features/"
 } ],
   "rawName" : "CreateAsyncOperationActor",
   "version" : "0.6.0"
 }, {
   "artifactId" : "async-operations.check-validity-async-operation",
   "uploadRepositories" : [ {
-  "uploadRepositoryId" : "archiva.common-actors",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-actors/"
+  "uploadRepositoryId" : "smartactors_common_features",
+  "uploadRepositoryUrl" : "https://repository.smart-tools.info/artifactory/smartactors_common_features/"
 } ],
   "rawName" : "CheckValidityAsyncOperationActor",
   "version" : "0.6.0"
 }, {
   "artifactId" : "async-operations.close-async-operation",
   "uploadRepositories" : [ {
-  "uploadRepositoryId" : "archiva.common-actors",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-actors/"
+  "uploadRepositoryId" : "smartactors_common_features",
+  "uploadRepositoryUrl" : "https://repository.smart-tools.info/artifactory/smartactors_common_features/"
 } ],
   "rawName" : "CloseAsyncOperationActor",
   "version" : "0.6.0"
 } ],
   "uploadRepositories" : [ {
-  "uploadRepositoryId" : "archiva.common-features",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-features/"
+  "uploadRepositoryId" : "smartactors_common_features",
+  "uploadRepositoryUrl" : "https://repository.smart-tools.info/artifactory/smartactors_common_features/"
 } ],
   "plugins" : [ ],
   "groupId" : "info.smart_tools.smartactors",
@@ -108,15 +108,15 @@
   "actors" : [ {
   "artifactId" : "email-plugins.email-actor-plugin",
   "uploadRepositories" : [ {
-  "uploadRepositoryId" : "archiva.common-actors",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-actors/"
+  "uploadRepositoryId" : "smartactors_common_features",
+  "uploadRepositoryUrl" : "https://repository.smart-tools.info/artifactory/smartactors_common_features/"
 } ],
   "rawName" : "PluginEmailActor",
   "version" : "0.6.0"
 } ],
   "uploadRepositories" : [ {
-  "uploadRepositoryId" : "archiva.common-features",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/common-features/"
+  "uploadRepositoryId" : "smartactors_common_features",
+  "uploadRepositoryUrl" : "https://repository.smart-tools.info/artifactory/smartactors_common_features/"
 } ],
   "plugins" : [ ],
   "groupId" : "info.smart_tools.smartactors",
@@ -153,16 +153,16 @@
   "version" : "0.6.0"
 } ],
   "on-actor-creation-upload-repositories" : [ {
-  "uploadRepositoryId" : "archiva.smartactors-modules",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+  "uploadRepositoryId" : "smartactors_core_and_core_features",
+  "uploadRepositoryUrl" : "https://repository.smart-tools.info/artifactory/smartactors_core_and_core_features/"
 } ],
   "on-feature-creation-upload-repositories" : [ {
-  "uploadRepositoryId" : "archiva.smartactors-features",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-features/"
+  "uploadRepositoryId" : "smartactors_core_and_core_features",
+  "uploadRepositoryUrl" : "https://repository.smart-tools.info/artifactory/smartactors_core_and_core_features/"
 } ],
   "on-plugin-creation-upload-repositories" : [ {
-  "uploadRepositoryId" : "archiva.smartactors-modules",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+  "uploadRepositoryId" : "smartactors_core_and_core_features",
+  "uploadRepositoryUrl" : "https://repository.smart-tools.info/artifactory/smartactors_core_and_core_features/"
 } ],
   "groupId" : "info.smart_tools.smartactors",
   "name" : "CommonFeatures",

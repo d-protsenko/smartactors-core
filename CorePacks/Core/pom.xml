@@ -11,8 +11,8 @@
     <packaging>pom</packaging>
 
     <properties>
-        <feature.rurl>http://archiva.smart-tools.info/repository/smartactors-features/</feature.rurl>
-        <feature.rid>archiva.smartactors-features</feature.rid>
+        <feature.rurl>https://repository.smart-tools.info/artifactory/smartactors_core_and_core_features/</feature.rurl>
+        <feature.rid>smartactors_core_and_core_features</feature.rid>
         <module.rurl>${feature.rurl}</module.rurl>
         <module.rid>${feature.rid}</module.rid>
 

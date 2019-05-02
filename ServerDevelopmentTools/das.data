@@ -3,8 +3,8 @@
   "actors" : [ {
   "artifactId" : "server-developing-tools.interfaces.iserver",
   "uploadRepositories" : [ {
-  "uploadRepositoryId" : "archiva.server-dev-tools",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/server-dev-tools/"
+  "uploadRepositoryId" : "smartactors_development_tools",
+  "uploadRepositoryUrl" : "https://repository.smart-tools.info/artifactory/smartactors_development_tools/"
 } ],
   "rawName" : "IServer",
   "version" : "0.6.0"
@@ -17,16 +17,16 @@
   "version" : "0.6.0"
 } ],
   "on-actor-creation-upload-repositories" : [ {
-  "uploadRepositoryId" : "archiva.smartactors-modules",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+  "uploadRepositoryId" : "smartactors_core_and_core_features",
+  "uploadRepositoryUrl" : "https://repository.smart-tools.info/artifactory/smartactors_core_and_core_features/"
 } ],
   "on-feature-creation-upload-repositories" : [ {
-  "uploadRepositoryId" : "archiva.smartactors-features",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-features/"
+  "uploadRepositoryId" : "smartactors_core_and_core_features",
+  "uploadRepositoryUrl" : "https://repository.smart-tools.info/artifactory/smartactors_core_and_core_features/"
 } ],
   "on-plugin-creation-upload-repositories" : [ {
-  "uploadRepositoryId" : "archiva.smartactors-modules",
-  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+  "uploadRepositoryId" : "smartactors_core_and_core_features",
+  "uploadRepositoryUrl" : "https://repository.smart-tools.info/artifactory/smartactors_core_and_core_features/"
 } ],
   "groupId" : "info.smart_tools.smartactors",
   "name" : "ServerDevelopmentTools",
