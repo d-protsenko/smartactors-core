@@ -11,8 +11,6 @@
     <properties>
             <feature.rurl></feature.rurl>
             <feature.rid></feature.rid>
-            <module.rurl>${feature.rurl}</module.rurl>
-            <module.rid>${feature.rid}</module.rid>
 
             <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
             <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

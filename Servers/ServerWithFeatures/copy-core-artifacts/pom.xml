@@ -28,8 +28,8 @@
 
     <repositories>
         <repository>
-            <id>${module.rid}</id>
-            <url>${module.rurl}</url>
+            <id>${featurerid}</id>
+            <url>${feature.rurl}</url>
         </repository>
     </repositories>
 

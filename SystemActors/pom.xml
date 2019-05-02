@@ -11,14 +11,13 @@
     <properties>
         <feature.rurl>https://repository.smart-tools.info/artifactory/smartactors_core_and_core_features/</feature.rurl>
         <feature.rid>smartactors_core_and_core_features</feature.rid>
-        <module.rurl>${feature.rurl}</module.rurl>
-        <module.rid>${feature.rid}</module.rid>
+
     </properties>
 
     <repositories>
         <repository>
-            <id>${module.rid}</id>
-            <url>${module.rurl}</url>
+            <id>${feature.rid}</id>
+            <url>${feature.rurl}</url>
         </repository>
     </repositories>
 

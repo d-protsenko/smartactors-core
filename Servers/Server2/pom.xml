@@ -17,18 +17,13 @@
     <properties>
         <feature.rurl>https://repository.smart-tools.info/artifactory/smartactors_servers/</feature.rurl>
         <feature.rid>smartactors_servers</feature.rid>
-        <module.rurl>${feature.rurl}</module.rurl>
-        <module.rid>${feature.rid}</module.rid>
+
     </properties>
 
     <repositories>
         <repository>
             <id>${feature.rid}</id>
             <url>${feature.rurl}</url>
-        </repository>
-        <repository>
-            <id>${module.rid}</id>
-            <url>${module.rurl}</url>
         </repository>
     </repositories>
 

@@ -13,8 +13,7 @@
     <properties>
         <feature.rurl>https://repository.smart-tools.info/artifactory/smartactors_core_and_core_features/</feature.rurl>
         <feature.rid>smartactors_core_and_core_features</feature.rid>
-        <module.rurl>${feature.rurl}</module.rurl>
-        <module.rid>${feature.rid}</module.rid>
+
 
         <core.version>0.6.0</core.version>
         <feature.version>0.6.0</feature.version>

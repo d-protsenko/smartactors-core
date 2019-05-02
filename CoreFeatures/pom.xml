@@ -11,8 +11,7 @@
     <properties>
         <feature.rurl>https://repository.smart-tools.info/artifactory/smartactors_core_and_core_features/</feature.rurl>
         <feature.rid>smartactors_core_and_core_features</feature.rid>
-        <module.rurl>${feature.rurl}</module.rurl>
-        <module.rid>${feature.rid}</module.rid>
+
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

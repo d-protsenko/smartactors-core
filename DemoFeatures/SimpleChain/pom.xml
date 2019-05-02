@@ -13,8 +13,7 @@
     <properties>
         <feature.rurl>https://repository.smart-tools.info/artifactory/smartactors_core_and_core_features/</feature.rurl>
         <feature.rid>smartactors_core_and_core_features</feature.rid>
-        <module.rurl>${feature.rurl}</module.rurl>
-        <module.rid>${feature.rid}</module.rid>
+
 
         <core.version>0.2.0-SNAPSHOT</core.version>
         <feature.version>0.2.0-SNAPSHOT</feature.version>
@@ -30,8 +29,8 @@
 
     <repositories>
         <repository>
-            <id>${module.rid}</id>
-            <url>${module.rurl}</url>
+            <id>${feature.rid}</id>
+            <url>${feature.rurl}</url>
         </repository>
     </repositories>
 
@@ -87,8 +86,8 @@
 
     <distributionManagement>
         <repository>
-            <id>${module.rid}</id>
-            <url>${module.rurl}</url>
+            <id>${feature.rid}</id>
+            <url>${feature.rurl}</url>
         </repository>
     </distributionManagement>
 
