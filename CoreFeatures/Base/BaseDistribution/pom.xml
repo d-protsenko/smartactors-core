@@ -55,6 +55,56 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <artifactId>maven-install-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-install</id>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>install</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <artifactId>${project.parent.artifactId}</artifactId>
+                            <groupId>${project.parent.groupId}</groupId>
+                            <file>../../project-distribution/${project.parent.artifactId}-${project.parent.version}.${build.format}</file>
+                            <packaging>${build.format}</packaging>
+                            <version>${project.parent.version}</version>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-install-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-install</id>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>install</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <artifactId>${project.parent.artifactId}</artifactId>
+                            <groupId>${project.parent.groupId}</groupId>
+                            <file>../../project-distribution/${project.parent.artifactId}-${project.parent.version}.${build.format}</file>
+                            <packaging>${build.format}</packaging>
+                            <version>${project.parent.version}</version>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
