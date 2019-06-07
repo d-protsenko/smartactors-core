@@ -11,6 +11,8 @@ import info.smart_tools.smartactors.database_postgresql.postgres_count_task.Coun
 import info.smart_tools.smartactors.database_postgresql.postgres_count_task.PostgresCountTask;
 import info.smart_tools.smartactors.database_postgresql.postgres_create_task.CreateCollectionMessage;
 import info.smart_tools.smartactors.database_postgresql.postgres_create_task.PostgresCreateTask;
+import info.smart_tools.smartactors.database_postgresql.postgres_add_fulltext_task.AddFulltextMessage;
+import info.smart_tools.smartactors.database_postgresql.postgres_add_fulltext_task.PostgresAddFulltextTask;
 import info.smart_tools.smartactors.database_postgresql.postgres_delete_task.DeleteMessage;
 import info.smart_tools.smartactors.database_postgresql.postgres_delete_task.PostgresDeleteTask;
 import info.smart_tools.smartactors.database_postgresql.postgres_getbyid_task.GetByIdMessage;
@@ -62,6 +64,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                 .process(() -> {
                     try {
                         registerCreateTask();
+                        registerAddFulltextTask();
                         registerNextIdStrategy();
                         registerUpsertTask();
                         registerInsertTask();
@@ -128,6 +131,66 @@ public class PostgresDBTasksPlugin implements IPlugin {
                                      options = (IObject) args[2];
                                 }
                                 IDatabaseTask task = new PostgresCreateTask(connection);
+
+                                IObject query = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+
+                                collectionNameField.out(query, collectionName);
+                                optionsField.out(query, options);
+
+                                task.prepare(query);
+                                return task;
+                            } catch (Exception e) {
+                                throw new RuntimeException("Can't resolve create db task.", e);
+                            }
+                        }
+                )
+        );
+    }
+
+    private void registerAddFulltextTask() throws RegistrationException, ResolutionException, InvalidArgumentException {
+        IField collectionNameField = IOC.resolve(
+                Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
+        IField optionsField = IOC.resolve(
+                Keys.getKeyByName(IField.class.getCanonicalName()), "options");
+
+        IOC.register(
+                Keys.getKeyByName(AddFulltextMessage.class.getCanonicalName()),
+                new ApplyFunctionToArgumentsStrategy(
+                        (args) -> {
+                            IObject message = (IObject) args[0];
+                            return new AddFulltextMessage() {
+                                @Override
+                                public CollectionName getCollectionName() throws ReadValueException {
+                                    try {
+                                        return (CollectionName) collectionNameField.in(message);
+                                    } catch (Exception e) {
+                                        throw new ReadValueException(e);
+                                    }
+                                }
+                                @Override
+                                public IObject getOptions() throws ReadValueException {
+                                    try {
+                                        return (IObject) optionsField.in(message);
+                                    } catch (Exception e) {
+                                        throw new ReadValueException(e);
+                                    }
+                                }
+                            };
+                        }
+                )
+        );
+        IOC.register(
+                Keys.getKeyByName("db.collection.addfulltext"),
+                new ApplyFunctionToArgumentsStrategy(
+                        (args) -> {
+                            try {
+                                IStorageConnection connection = (IStorageConnection) args[0];
+                                CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
+                                IObject options = null;
+                                if (args.length > 2) {
+                                    options = (IObject) args[2];
+                                }
+                                IDatabaseTask task = new PostgresAddFulltextTask(connection);
 
                                 IObject query = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
