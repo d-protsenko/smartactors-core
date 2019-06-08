@@ -25,7 +25,7 @@ class FulltextIndexWriter implements IndexWriter {
         IFieldName languageField = IOC.resolve(fieldNameKey, "language");
         String language = (String) options.getValue(languageField);
         if (language == null) {
-            throw new QueryBuildException("Language is required for fulltext index");
+            return new FulltextIndexWriter(PostgresSchema.DEFAULT_FTS_DICTIONARY);
         }
         return new FulltextIndexWriter(language);
     }
@@ -47,17 +47,19 @@ class FulltextIndexWriter implements IndexWriter {
         body.write("CREATE INDEX ON ");
         body.write(collection.toString());
         body.write(" USING GIN (");
-        body.write(PostgresSchema.FULLTEXT_COLUMN);
+        body.write(PostgresSchema.FULLTEXT_COLUMN + "_" + language);
         body.write(");\n");
     }
 
     private void writeCreateFunction(final Writer body, final CollectionName collection, final List<FieldPath> fields) throws IOException {
         body.write("CREATE FUNCTION ");
         body.write(collection.toString());
-        body.write("_fulltext_update_trigger() RETURNS trigger AS $$\n");
+        body.write("_fulltext_");
+        body.write(language);
+        body.write("_update_trigger() RETURNS trigger AS $$\n");
         body.write("begin\n");
         body.write("new.");
-        body.write(PostgresSchema.FULLTEXT_COLUMN);
+        body.write(PostgresSchema.FULLTEXT_COLUMN + "_" + language);
         body.write(" := ");
         body.write("to_tsvector('");
         body.write(language);   // TODO: avoid SQL injection
@@ -82,11 +84,15 @@ class FulltextIndexWriter implements IndexWriter {
         String collectionName = collection.toString();
         body.write("CREATE TRIGGER ");
         body.write(collectionName);
-        body.write("_fulltext_update_trigger BEFORE INSERT OR UPDATE ON ");
+        body.write("_fulltext_");
+        body.write(language);
+        body.write("_update_trigger BEFORE INSERT OR UPDATE ON ");
         body.write(collectionName);
         body.write(" FOR EACH ROW EXECUTE PROCEDURE ");
         body.write(collectionName);
-        body.write("_fulltext_update_trigger();\n");
+        body.write("_fulltext_");
+        body.write(language);
+        body.write("_update_trigger();\n");
     }
 
 }

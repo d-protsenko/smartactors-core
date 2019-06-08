@@ -36,7 +36,7 @@ public final class PostgresSchema {
      * Dictionary for Full Text Search
      * TODO: don't hardcode Russian
      */
-    public static final String FTS_DICTIONARY = "russian";
+    public static final String DEFAULT_FTS_DICTIONARY = "english";
 
     /**
      * Default page size. How many documents to return when the paging is not defined.
@@ -70,6 +70,36 @@ public final class PostgresSchema {
             CreateClauses.writeFullTextColumn(body, options);
             body.write(");\n");
             CreateClauses.writePrimaryKey(body, collection);
+            if (options != null) {
+                IndexCreators.writeIndexes(body, collection, options);
+            }
+        } catch (Exception e) {
+            throw new QueryBuildException("Failed to build create body", e);
+        }
+    }
+
+    /**
+     * Fills the statement body with the ALTER TABLE ADD COLUMN sentence and
+     * CREATE INDEX sentences to add the column and corresponding index for
+     * full text search operation with desired language.
+     * @param statement statement to fill the body
+     * @param collection collection name to use to construct the sequence name
+     * @param options document describing a set of options for the collection creation
+     * @throws QueryBuildException if the statement body cannot be built
+     */
+    public static void addFulltext(final QueryStatement statement, final CollectionName collection, final IObject options)
+            throws QueryBuildException {
+        try {
+            Writer body = statement.getBodyWriter();
+            body.write("ALTER TABLE ");
+            body.write(collection.toString());
+            body.write(" ADD COLUMN IF NOT EXIST ");
+            AlterClauses.writeFullTextColumn(body, options);
+            body.write(" DEFAULT NULL;\n");
+            body.write("UPDATE TABLE ");
+            body.write(collection.toString());
+            body.write(" SET ADD COLUMN IF NOT EXIST ");
+            // ToDo here
             if (options != null) {
                 IndexCreators.writeIndexes(body, collection, options);
             }

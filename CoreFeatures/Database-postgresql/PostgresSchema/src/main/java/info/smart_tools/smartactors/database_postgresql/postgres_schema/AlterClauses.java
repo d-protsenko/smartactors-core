@@ -18,58 +18,18 @@ import java.io.Writer;
 import java.util.Properties;
 
 /**
- * A set of methods to write some SQL statements during the collection/table creation.
+ * A set of methods to write some SQL statements during the collection/table altering.
  */
-public final class CreateClauses {
-
-    private static final Properties INIT_PROPS = new Properties();
-    static {
-        try (InputStream src = CreateClauses.class.getResourceAsStream("db-init.properties")) {
-            INIT_PROPS.load(src);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+public final class AlterClauses {
 
     /**
      * Private constructor to avoid instantiation.
      */
-    private CreateClauses() {
+    private AlterClauses() {
     }
 
     /**
-     * Writes a set of common functions.
-     * @param body body of SQL query to write
-     * @throws IOException if failed to write to body
-     */
-    public static void writeFunctions(final Writer body) throws IOException {
-        for (Object key : INIT_PROPS.keySet()) {
-            body.write(INIT_PROPS.getProperty((String) key));
-            body.write("\n");
-        }
-    }
-
-    /**
-     * Writes the primary key definition.
-     * @param body body of SQL query to write
-     * @param collection name of the collection/table
-     * @throws IOException if write to body is not possible
-     * @throws QueryBuildException if there is a syntax error
-     */
-    public static void writePrimaryKey(final Writer body, final CollectionName collection) throws IOException, QueryBuildException {
-        String collectionName = collection.toString();
-        FieldPath idPath = PostgresSchema.getIdFieldPath(collection);
-        body.write("CREATE UNIQUE INDEX ");
-        body.write(collectionName);
-        body.write("_pkey ON ");
-        body.write(collectionName);
-        body.write(" USING BTREE ((");
-        body.write(idPath.toSQL());
-        body.write("));\n");
-    }
-
-    /**
-     * Writes definition of full text column, i.e. ", fulltext_english tsvector".
+     * Writes definition of full text column, i.e. "fulltext_english tsvector".
      * @param body SQL query body to write
      * @param options collection create options to check for fulltext index
      * @throws ResolutionException if failed to resolve field names from IOC
@@ -99,7 +59,6 @@ public final class CreateClauses {
         } catch (ReadValueException e) {
             // ignoring absence of fulltext option
         }
-        body.write(", ");
         body.write(PostgresSchema.FULLTEXT_COLUMN + "_" + fullTextLanguage);
         body.write(" tsvector");
     }
