@@ -42,7 +42,7 @@ public class PostgresAddFulltextTaskTest {
 
     private IDatabaseTask task;
     private IStorageConnection connection;
-    private CreateCollectionMessage message;
+    private AddFulltextMessage message;
     private JDBCCompiledQuery compiledQuery;
     private PreparedStatement sqlStatement;
 
@@ -66,20 +66,20 @@ public class PostgresAddFulltextTaskTest {
         connection = mock(IStorageConnection.class);
         when(connection.compileQuery(any())).thenReturn(compiledQuery);
 
-        task = new PostgresCreateTask(connection);
+        task = new PostgresAddFulltextTask(connection);
 
-        message = mock(CreateCollectionMessage.class);
+        message = mock(AddFulltextMessage.class);
         when(message.getCollectionName()).thenReturn(CollectionName.fromString("test"));
 
         IOC.register(
-                Keys.getKeyByName(CreateCollectionMessage.class.getCanonicalName()),
+                Keys.getKeyByName(AddFulltextMessage.class.getCanonicalName()),
                 new SingletonStrategy(message)
         );
     }
 
     @Test
-    public void testCreate() throws TaskPrepareException, TaskExecutionException, StorageException, SQLException, InvalidArgumentException, ReadValueException {
-        when(message.getOptions()).thenReturn(new DSObject("{}"));
+    public void testAddFulltext() throws TaskPrepareException, TaskExecutionException, StorageException, SQLException, InvalidArgumentException, ReadValueException {
+        when(message.getOptions()).thenReturn(new DSObject("{ \"fulltext\":\"text\", \"language\":\"russian\"}"));
 
         task.prepare(null); // the message will be resolved by IOC
         task.execute();
@@ -90,7 +90,8 @@ public class PostgresAddFulltextTaskTest {
     }
 
     @Test
-    public void testCreateFailure() throws SQLException, TaskPrepareException, StorageException {
+    public void testAddFulltextFailure() throws InvalidArgumentException, ReadValueException, SQLException, TaskPrepareException, StorageException {
+        when(message.getOptions()).thenReturn(new DSObject("{ \"fulltext\":\"text\", \"language\":\"russian\"}"));
         when(sqlStatement.execute()).thenThrow(SQLException.class);
 
         task.prepare(null); // the message will be resolved by IOC
@@ -107,8 +108,8 @@ public class PostgresAddFulltextTaskTest {
     }
 
     @Test
-    public void testCreateWithNullOptions() throws TaskPrepareException, StorageException, ReadValueException, TaskExecutionException, SQLException {
-        when(message.getOptions()).thenReturn(null);
+    public void testAddFulltextWithoutLanguage() throws InvalidArgumentException, TaskPrepareException, StorageException, ReadValueException, TaskExecutionException, SQLException {
+        when(message.getOptions()).thenReturn(new DSObject("{ \"fulltext\":\"text\"}"));
 
         task.prepare(null); // the message will be resolved by IOC
         task.execute();
@@ -119,8 +120,8 @@ public class PostgresAddFulltextTaskTest {
     }
 
     @Test
-    public void testCreateWithInvalidOptions() throws SQLException, TaskPrepareException, StorageException, InvalidArgumentException, ReadValueException {
-        when(message.getOptions()).thenReturn(new DSObject("{ \"ordered\": 123 }"));
+    public void testAddFulltextWithInvalidOptions() throws SQLException, TaskPrepareException, StorageException, InvalidArgumentException, ReadValueException {
+        when(message.getOptions()).thenReturn(new DSObject("{ \"fulltext\":123, \"language\":\"russian\"}"));
 
         try {
             task.prepare(null); // the message will be resolved by IOC

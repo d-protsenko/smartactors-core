@@ -91,18 +91,37 @@ public final class PostgresSchema {
             throws QueryBuildException {
         try {
             Writer body = statement.getBodyWriter();
+            AddFulltextClauses addFulltextClausesWriter = new AddFulltextClauses(options);
             body.write("ALTER TABLE ");
             body.write(collection.toString());
             body.write(" ADD COLUMN IF NOT EXIST ");
-            AlterClauses.writeFullTextColumn(body, options);
+            addFulltextClausesWriter.writeFulltextColumn(body);
             body.write(" DEFAULT NULL;\n");
-            body.write("UPDATE TABLE ");
-            body.write(collection.toString());
-            body.write(" SET ADD COLUMN IF NOT EXIST ");
-            // ToDo here
-            if (options != null) {
-                IndexCreators.writeIndexes(body, collection, options);
-            }
+            addFulltextClausesWriter.writeFulltextColumnUpdate(body, collection);
+            addFulltextClausesWriter.writeFulltextIndex(body, collection, options);
+        } catch (Exception e) {
+            throw new QueryBuildException("Failed to build create body", e);
+        }
+    }
+
+    /**
+     * Fills the statement body with the ALTER TABLE ADD COLUMN sentence and
+     * CREATE INDEX sentences to add the column and corresponding index for
+     * full text search operation with desired language.
+     * @param statement statement to fill the body
+     * @param collection collection name to use to construct the sequence name
+     * @param options document describing a set of options for the collection creation
+     * @throws QueryBuildException if the statement body cannot be built
+     */
+    public static void addFulltextSafe(final QueryStatement statement, final CollectionName collection, final IObject options)
+            throws QueryBuildException {
+        try {
+            Writer body = statement.getBodyWriter();
+            body.write("BEGIN;");
+            addFulltext(statement, collection, options);
+            body.write("COMMIT;");
+        } catch (QueryBuildException e) {
+            throw e;
         } catch (Exception e) {
             throw new QueryBuildException("Failed to build create body", e);
         }

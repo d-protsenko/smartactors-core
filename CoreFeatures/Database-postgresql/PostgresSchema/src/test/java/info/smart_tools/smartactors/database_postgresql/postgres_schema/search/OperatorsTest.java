@@ -61,7 +61,7 @@ public class OperatorsTest {
                         "(parse_timestamp_immutable(document#>'{date-from}')>=(?)::timestamp)",
                         "(parse_timestamp_immutable(document#>'{date-to}')<=(?)::timestamp)",
                         "((document#>'{hasTag}')??(?))",
-                        "fulltext@@(to_tsquery('russian',?))"));
+                        "fulltext@@(to_tsquery('english',?))"));
 
         for (int i = 0; i < OPERATORS_NUMBER; ++i) {
             StringWriter body = new StringWriter();

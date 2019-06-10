@@ -60,6 +60,18 @@ public class IndexCreators {
         }
     }
 
+    /**
+     * Writes statements for fulltext search index creation to the SQL statement body.
+     * @param body where to write SQL
+     * @param collection name of the collection
+     * @param options document describing create collection options
+     * @throws Exception when something goes wrong
+     */
+    public static void writeFulltextIndex(Writer body, CollectionName collection, IObject options, final List<FieldPath> fields)
+            throws Exception {
+        INDEX_WRITERS.get("fulltext").resolve(options).write(body, collection, fields);
+    }
+
     private static void writeCreateIndex(final String indexType, final Writer body, final CollectionName collection, IObject options)
             throws Exception {
         IKey fieldNameKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");

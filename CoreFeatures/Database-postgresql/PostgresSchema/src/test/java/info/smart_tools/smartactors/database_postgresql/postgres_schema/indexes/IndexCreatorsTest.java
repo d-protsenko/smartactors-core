@@ -12,6 +12,7 @@ import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_simple_container_plugin.PluginIOCSimpleContainer;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.StringWriter;
@@ -99,17 +100,17 @@ public class IndexCreatorsTest {
                 "\"language\": \"russian\"" +
                 "}");
         IndexCreators.writeIndexes(body, collection, options);
-        assertEquals("CREATE INDEX ON test_collection USING GIN (fulltext);\n" +
-                        "CREATE FUNCTION test_collection_fulltext_update_trigger() RETURNS trigger AS $$\n" +
+        assertEquals("CREATE INDEX ON test_collection USING GIN (fulltext_russian);\n" +
+                        "CREATE FUNCTION test_collection_fulltext_russian_update_trigger() RETURNS trigger AS $$\n" +
                         "begin\n" +
-                        "new.fulltext := " +
+                        "new.fulltext_russian := " +
                         "to_tsvector('russian', coalesce((new.document#>'{a}')::text,'') || ' ' || coalesce((new.document#>'{b}')::text,''));\n" +
                         "return new;\n" +
                         "end\n" +
                         "$$ LANGUAGE plpgsql;\n" +
-                        "CREATE TRIGGER test_collection_fulltext_update_trigger BEFORE INSERT OR UPDATE " +
+                        "CREATE TRIGGER test_collection_fulltext_russian_update_trigger BEFORE INSERT OR UPDATE " +
                         "ON test_collection FOR EACH ROW EXECUTE PROCEDURE " +
-                        "test_collection_fulltext_update_trigger();\n",
+                        "test_collection_fulltext_russian_update_trigger();\n",
                 body.toString());
     }
 
@@ -120,20 +121,21 @@ public class IndexCreatorsTest {
                 "\"language\": \"russian\"" +
                 "}");
         IndexCreators.writeIndexes(body, collection, options);
-        assertEquals("CREATE INDEX ON test_collection USING GIN (fulltext);\n" +
-                        "CREATE FUNCTION test_collection_fulltext_update_trigger() RETURNS trigger AS $$\n" +
+        assertEquals("CREATE INDEX ON test_collection USING GIN (fulltext_russian);\n" +
+                        "CREATE FUNCTION test_collection_fulltext_russian_update_trigger() RETURNS trigger AS $$\n" +
                         "begin\n" +
-                        "new.fulltext := " +
+                        "new.fulltext_russian := " +
                         "to_tsvector('russian', coalesce((new.document#>'{text}')::text,''));\n" +
                         "return new;\n" +
                         "end\n" +
                         "$$ LANGUAGE plpgsql;\n" +
-                        "CREATE TRIGGER test_collection_fulltext_update_trigger BEFORE INSERT OR UPDATE " +
+                        "CREATE TRIGGER test_collection_fulltext_russian_update_trigger BEFORE INSERT OR UPDATE " +
                         "ON test_collection FOR EACH ROW EXECUTE PROCEDURE " +
-                        "test_collection_fulltext_update_trigger();\n",
+                        "test_collection_fulltext_russian_update_trigger();\n",
                 body.toString());
     }
 
+    @Ignore("Now default value 'english' defined for language option")
     @Test(expected = Exception.class)
     public void testFullTextIndexWithoutLanguage() throws Exception {
         IObject options = new DSObject("{ \"fulltext\": \"text\" }");

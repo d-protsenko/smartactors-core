@@ -173,20 +173,20 @@ public class PostgresSchemaTest {
                 "CREATE OR REPLACE FUNCTION bigint_to_jsonb_immutable(source bigint) RETURNS jsonb AS $$ " +
                         "BEGIN RETURN to_json(source)::jsonb; END; " +
                         "$$ LANGUAGE 'plpgsql' IMMUTABLE; COMMIT;\n" +
-                "CREATE TABLE test_collection (document jsonb NOT NULL, fulltext tsvector);\n" +
+                "CREATE TABLE test_collection (document jsonb NOT NULL, fulltext_english tsvector);\n" +
                 "CREATE UNIQUE INDEX test_collection_pkey ON test_collection USING BTREE ((document#>'{test_collectionID}'));\n" +
                 "CREATE INDEX ON test_collection USING BTREE ((document#>'{a}'));\n" +
-                "CREATE INDEX ON test_collection USING GIN (fulltext);\n" +
-                "CREATE FUNCTION test_collection_fulltext_update_trigger() RETURNS trigger AS $$\n" +
+                "CREATE INDEX ON test_collection USING GIN (fulltext_english);\n" +
+                "CREATE FUNCTION test_collection_fulltext_english_update_trigger() RETURNS trigger AS $$\n" +
                 "begin\n" +
-                "new.fulltext := " +
+                "new.fulltext_english := " +
                 "to_tsvector('english', coalesce((new.document#>'{b}')::text,''));\n" +
                 "return new;\n" +
                 "end\n" +
                 "$$ LANGUAGE plpgsql;\n" +
-                "CREATE TRIGGER test_collection_fulltext_update_trigger BEFORE INSERT OR UPDATE " +
+                "CREATE TRIGGER test_collection_fulltext_english_update_trigger BEFORE INSERT OR UPDATE " +
                 "ON test_collection FOR EACH ROW EXECUTE PROCEDURE " +
-                "test_collection_fulltext_update_trigger();\n",
+                "test_collection_fulltext_english_update_trigger();\n",
                 body.toString());
     }
 
