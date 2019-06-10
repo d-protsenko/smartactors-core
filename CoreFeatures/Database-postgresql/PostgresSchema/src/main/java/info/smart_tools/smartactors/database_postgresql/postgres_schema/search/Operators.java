@@ -1,12 +1,22 @@
 package info.smart_tools.smartactors.database_postgresql.postgres_schema.search;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.QueryStatement;
 import info.smart_tools.smartactors.database_postgresql.postgres_schema.PostgresSchema;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A set of methods which writes query parts for comparison operators and their parameters.
@@ -48,8 +58,9 @@ final class Operators {
         resolver.addQueryWriter("$hasTag", formattedCheckWriter("((%s)??(?))"));
 
         // Fulltext search
-        resolver.addQueryWriter("$fulltext", formattedCheckWriter(
-                String.format("%s@@(to_tsquery('%s',?))", PostgresSchema.FULLTEXT_COLUMN, PostgresSchema.DEFAULT_FTS_DICTIONARY)));
+        //resolver.addQueryWriter("$fulltext", formattedCheckWriter(
+        //        String.format("%s@@(to_tsquery('%s',?))", PostgresSchema.FULLTEXT_COLUMN, PostgresSchema.DEFAULT_FTS_DICTIONARY)));
+        resolver.addQueryWriter("$fulltext", formattedCheckWriterForFulltext("%s@@(to_tsquery('%s','%s'))"));
     }
 
     /**
@@ -60,6 +71,52 @@ final class Operators {
     private static QueryWriter formattedCheckWriter(final String format) {
         return (query, resolver, contextFieldPath, queryParameter) ->
                 writeFieldCheckCondition(format, query, contextFieldPath, queryParameter);
+    }
+
+    /**
+     * Creates the condition writer based on the format string.
+     * @param format format string, contains '%s' for field path and '?' for parameters
+     * @return the condition writer ready to be added to basic resolver
+     */
+    private static QueryWriter formattedCheckWriterForFulltext(final String format) {
+        return (query, resolver, contextFieldPath, queryParameter) -> {
+            Writer writer = query.getBodyWriter();
+
+            try {
+                String language = PostgresSchema.DEFAULT_FTS_DICTIONARY;
+                if (queryParameter instanceof String) {
+                    writer.write(String.format(format,
+                            PostgresSchema.FULLTEXT_COLUMN + "_" + language, language, queryParameter));
+
+                } else if (queryParameter instanceof IObject) {
+                    IKey fieldNameKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+
+                    IFieldName languageFieldName = IOC.resolve(fieldNameKey, "language");
+                    String fulltextLanguage = (String)((IObject) queryParameter).getValue(languageFieldName);
+                    if (fulltextLanguage != null) {
+                        language = fulltextLanguage;
+                    }
+
+                    IFieldName queryFieldName = IOC.resolve(fieldNameKey, "query");
+                    Object queryField = ((IObject) queryParameter).getValue(queryFieldName);
+                    if (queryField == null) {
+                        throw new QueryBuildException("Error while writing a query string: can't find 'query' parameter in 'fulltext' filter.");
+                    }
+                    if (queryField instanceof String) {
+                        writer.write(String.format(format,
+                                PostgresSchema.FULLTEXT_COLUMN + "_" + language, language, queryField));
+                    } else if (queryField instanceof IObject) {
+                        String fmt = String.format(format,
+                                PostgresSchema.FULLTEXT_COLUMN + "_" + language, language, "?");
+                        writeFieldCheckCondition(fmt, query, contextFieldPath, queryField);
+                    }
+                } else {
+                    throw new QueryBuildException("Composite node value should be an node or a string");
+                }
+            } catch (ReadValueException | InvalidArgumentException | ResolutionException | IOException e) {
+                throw new QueryBuildException("Error while writing a query string", e);
+            }
+        };
     }
 
     /**
