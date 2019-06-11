@@ -274,23 +274,23 @@ public class PostgresSchemaTest {
     public void testSearchWithFulltext() throws InvalidArgumentException, QueryBuildException {
         IObject criteria = new DSObject("{ \"filter\": { \"$fulltext\": \"term1 term2\" } }");
         PostgresSchema.search(statement, collection, criteria);
-        assertEquals("SELECT document FROM test_collection WHERE (fulltext_english@@(to_tsquery('english','term1 term2'))) LIMIT(?)OFFSET(?)", body.toString());
-        verify(statement, times(1)).pushParameterSetter(any());
+        assertEquals("SELECT document FROM test_collection WHERE " +
+                "(fulltext_english@@(to_tsquery(?,?))) LIMIT(?)OFFSET(?)", body.toString());
+        verify(statement, times(2)).pushParameterSetter(any());
     }
 
     @Test
     public void testSearchWithFulltextWithLanguage() throws InvalidArgumentException, QueryBuildException {
         IObject criteria = new DSObject("{ \"filter\": { \"$fulltext\": { \"query\":\"term1 term2\", \"language\":\"russian\" } } }");
         PostgresSchema.search(statement, collection, criteria);
-        assertEquals("SELECT document FROM test_collection WHERE (fulltext_russian@@(to_tsquery('russian','term1 term2'))) LIMIT(?)OFFSET(?)", body.toString());
-        verify(statement, times(1)).pushParameterSetter(any());
+        assertEquals("SELECT document FROM test_collection WHERE " +
+                "(fulltext_russian@@(to_tsquery(?,?))) LIMIT(?)OFFSET(?)", body.toString());
+        verify(statement, times(2)).pushParameterSetter(any());
     }
 
-    @Test
+    @Test(expected = QueryBuildException.class)
     public void testSearchWithFulltextComplex() throws InvalidArgumentException, QueryBuildException {
         IObject criteria = new DSObject("{ \"filter\": { \"$fulltext\": { \"query\":{ \"$or\": [ \"term1\", \"term2\" ] }, \"language\":\"russian\" } } }");
         PostgresSchema.search(statement, collection, criteria);
-        assertEquals("SELECT document FROM test_collection WHERE (fulltext_russian@@(to_tsquery('russian','term1 term2'))) LIMIT(?)OFFSET(?)", body.toString());
-        verify(statement, times(1)).pushParameterSetter(any());
     }
 }

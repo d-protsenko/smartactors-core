@@ -58,9 +58,7 @@ final class Operators {
         resolver.addQueryWriter("$hasTag", formattedCheckWriter("((%s)??(?))"));
 
         // Fulltext search
-        //resolver.addQueryWriter("$fulltext", formattedCheckWriter(
-        //        String.format("%s@@(to_tsquery('%s',?))", PostgresSchema.FULLTEXT_COLUMN, PostgresSchema.DEFAULT_FTS_DICTIONARY)));
-        resolver.addQueryWriter("$fulltext", formattedCheckWriterForFulltext("%s@@(to_tsquery('%s','%s'))"));
+        resolver.addQueryWriter("$fulltext", formattedCheckWriterForFulltext("%s@@(to_tsquery(?,?))"));
     }
 
     /**
@@ -83,32 +81,44 @@ final class Operators {
             Writer writer = query.getBodyWriter();
 
             try {
-                String language = PostgresSchema.DEFAULT_FTS_DICTIONARY;
                 if (queryParameter instanceof String) {
                     writer.write(String.format(format,
-                            PostgresSchema.FULLTEXT_COLUMN + "_" + language, language, queryParameter));
-
+                            PostgresSchema.FULLTEXT_COLUMN + "_" + PostgresSchema.DEFAULT_FTS_DICTIONARY));
+                    query.pushParameterSetter((statement, index) -> {
+                        statement.setString(index++, PostgresSchema.DEFAULT_FTS_DICTIONARY);
+                        statement.setString(index++, (String) queryParameter);
+                        return index;
+                    });
                 } else if (queryParameter instanceof IObject) {
                     IKey fieldNameKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
 
                     IFieldName languageFieldName = IOC.resolve(fieldNameKey, "language");
                     String fulltextLanguage = (String)((IObject) queryParameter).getValue(languageFieldName);
-                    if (fulltextLanguage != null) {
-                        language = fulltextLanguage;
-                    }
+                    final String language = fulltextLanguage != null ? fulltextLanguage : PostgresSchema.DEFAULT_FTS_DICTIONARY;
 
                     IFieldName queryFieldName = IOC.resolve(fieldNameKey, "query");
                     Object queryField = ((IObject) queryParameter).getValue(queryFieldName);
                     if (queryField == null) {
-                        throw new QueryBuildException("Error while writing a query string: can't find 'query' parameter in 'fulltext' filter.");
+                        throw new QueryBuildException("Error while writing a query string: can't find 'query' parameter in 'fulltext' filter");
                     }
                     if (queryField instanceof String) {
                         writer.write(String.format(format,
-                                PostgresSchema.FULLTEXT_COLUMN + "_" + language, language, queryField));
+                                PostgresSchema.FULLTEXT_COLUMN + "_" + language));
+                        query.pushParameterSetter((statement, index) -> {
+                            statement.setString(index++, language);
+                            statement.setString(index++, (String) queryField);
+                            return index;
+                        });
                     } else if (queryField instanceof IObject) {
+                        throw new QueryBuildException("Composite condition is not supported for fulltext");
+                        /*
                         String fmt = String.format(format,
                                 PostgresSchema.FULLTEXT_COLUMN + "_" + language, language, "?");
-                        writeFieldCheckCondition(fmt, query, contextFieldPath, queryField);
+                        //writeFieldCheckCondition(fmt, query, contextFieldPath, queryField);
+                        resolver.resolve(null).write(query, resolver, null, queryField);
+                         */
+                    } else {
+                        throw new QueryBuildException("Unknown type of 'query' option for fulltext");
                     }
                 } else {
                     throw new QueryBuildException("Composite node value should be an node or a string");
