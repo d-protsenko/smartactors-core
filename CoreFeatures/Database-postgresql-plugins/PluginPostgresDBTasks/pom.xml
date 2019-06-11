@@ -133,6 +133,17 @@
             <artifactId>database-postgresql.postgres-add-fulltext-task</artifactId>
             <version>0.6.0</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>database-postgresql.postgres-add-indexes-task</artifactId>
+            <version>0.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>database-postgresql</artifactId>
+            <version>0.6.0</version>
+        </dependency>
     </dependencies>
     <build>
         <pluginManagement>

@@ -191,6 +191,34 @@ public class PostgresSchemaTest {
     }
 
     @Test
+    public void testAddIndexes() throws QueryBuildException, InvalidArgumentException {
+        IObject options = new DSObject("{ \"ordered\": \"a\"," +
+                "\"fulltext\": \"b\"," +
+                "\"datetime\": \"date\"," +
+                "\"tags\": \"tags\"," +
+                "\"language\": \"russian\"" +
+                "}");
+        PostgresSchema.addIndexes(statement, collection, options);
+        assertEquals("ALTER TABLE test_collection ADD COLUMN IF NOT EXIST fulltext_russian tsvector DEFAULT NULL;\n" +
+                        "UPDATE test_collection SET fulltext_russian := to_tsvector('russian', coalesce((document#>'{b}')::text,''));\n" +
+                        "CREATE INDEX ON test_collection USING BTREE ((document#>'{a}'));\n" +
+                        "CREATE INDEX ON test_collection USING BTREE ((parse_timestamp_immutable(document#>'{date}')));\n" +
+                        "CREATE INDEX ON test_collection USING GIN (fulltext_russian);\n" +
+                        "CREATE FUNCTION test_collection_fulltext_russian_update_trigger() RETURNS trigger AS $$\n" +
+                        "begin\n" +
+                        "new.fulltext_russian := " +
+                        "to_tsvector('russian', coalesce((new.document#>'{b}')::text,''));\n" +
+                        "return new;\n" +
+                        "end\n" +
+                        "$$ LANGUAGE plpgsql;\n" +
+                        "CREATE TRIGGER test_collection_fulltext_russian_update_trigger BEFORE INSERT OR UPDATE " +
+                        "ON test_collection FOR EACH ROW EXECUTE PROCEDURE " +
+                        "test_collection_fulltext_russian_update_trigger();\n" +
+                        "CREATE INDEX ON test_collection USING GIN ((document#>'{tags}'));\n",
+                body.toString());
+    }
+
+    @Test
     public void testDelete() throws QueryBuildException {
         PostgresSchema.delete(statement, collection);
         assertEquals("DELETE FROM test_collection " +

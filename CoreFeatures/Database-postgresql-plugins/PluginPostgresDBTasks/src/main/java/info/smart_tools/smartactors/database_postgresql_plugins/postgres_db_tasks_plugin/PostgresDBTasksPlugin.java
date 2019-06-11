@@ -7,13 +7,13 @@ import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.Ap
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
-import info.smart_tools.smartactors.database_postgresql.postgres_add_fulltext_task.PostgresAddFulltextSafeTask;
+import info.smart_tools.smartactors.database_postgresql.postgres_add_indexes_task.PostgresAddIndexesSafeTask;
 import info.smart_tools.smartactors.database_postgresql.postgres_count_task.CountMessage;
 import info.smart_tools.smartactors.database_postgresql.postgres_count_task.PostgresCountTask;
 import info.smart_tools.smartactors.database_postgresql.postgres_create_task.CreateCollectionMessage;
 import info.smart_tools.smartactors.database_postgresql.postgres_create_task.PostgresCreateTask;
-import info.smart_tools.smartactors.database_postgresql.postgres_add_fulltext_task.AddFulltextMessage;
-import info.smart_tools.smartactors.database_postgresql.postgres_add_fulltext_task.PostgresAddFulltextTask;
+import info.smart_tools.smartactors.database_postgresql.postgres_add_indexes_task.AddIndexesMessage;
+import info.smart_tools.smartactors.database_postgresql.postgres_add_indexes_task.PostgresAddIndexesTask;
 import info.smart_tools.smartactors.database_postgresql.postgres_delete_task.DeleteMessage;
 import info.smart_tools.smartactors.database_postgresql.postgres_delete_task.PostgresDeleteTask;
 import info.smart_tools.smartactors.database_postgresql.postgres_getbyid_task.GetByIdMessage;
@@ -155,11 +155,11 @@ public class PostgresDBTasksPlugin implements IPlugin {
                 Keys.getKeyByName(IField.class.getCanonicalName()), "options");
 
         IOC.register(
-                Keys.getKeyByName(AddFulltextMessage.class.getCanonicalName()),
+                Keys.getKeyByName(AddIndexesMessage.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             IObject message = (IObject) args[0];
-                            return new AddFulltextMessage() {
+                            return new AddIndexesMessage() {
                                 @Override
                                 public CollectionName getCollectionName() throws ReadValueException {
                                     try {
@@ -181,7 +181,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                 )
         );
         IOC.register(
-                Keys.getKeyByName("db.collection.addfulltext"),
+                Keys.getKeyByName("db.collection.addindexes"),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
@@ -191,7 +191,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                                 if (args.length > 2) {
                                     options = (IObject) args[2];
                                 }
-                                IDatabaseTask task = new PostgresAddFulltextTask(connection);
+                                IDatabaseTask task = new PostgresAddIndexesTask(connection);
 
                                 IObject query = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
@@ -207,7 +207,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                 )
         );
         IOC.register(
-                Keys.getKeyByName("db.collection.addfulltextsafe"),
+                Keys.getKeyByName("db.collection.addindexessafe"),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
@@ -217,7 +217,7 @@ public class PostgresDBTasksPlugin implements IPlugin {
                                 if (args.length > 2) {
                                     options = (IObject) args[2];
                                 }
-                                IDatabaseTask task = new PostgresAddFulltextSafeTask(connection);
+                                IDatabaseTask task = new PostgresAddIndexesSafeTask(connection);
 
                                 IObject query = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 

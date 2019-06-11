@@ -20,7 +20,7 @@
         <module>PostgresConnection</module>
         <module>PostgresGetByIdTask</module>
         <module>PostgresCreateCollectionTask</module>
-        <module>PostgresAddFulltextTask</module>
+        <module>PostgresAddIndexesTask</module>
         <module>PostgresUpsertTask</module>
         <module>Database-postgresqlDistribution</module>
     </modules>

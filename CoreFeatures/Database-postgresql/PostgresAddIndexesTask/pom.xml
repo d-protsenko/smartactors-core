@@ -7,7 +7,7 @@
         <artifactId>database-postgresql</artifactId>
         <version>0.6.0</version>
     </parent>
-    <artifactId>database-postgresql.postgres-add-fulltext-task</artifactId>
+    <artifactId>database-postgresql.postgres-add-indexes-task</artifactId>
     <version>0.6.0</version>
     <dependencies>
         <dependency>

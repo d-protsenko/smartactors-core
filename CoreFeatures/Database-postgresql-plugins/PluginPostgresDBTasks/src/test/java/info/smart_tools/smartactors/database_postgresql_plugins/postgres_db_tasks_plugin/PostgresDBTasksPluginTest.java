@@ -4,6 +4,9 @@ import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
+import info.smart_tools.smartactors.database_postgresql.postgres_add_indexes_task.AddIndexesMessage;
+import info.smart_tools.smartactors.database_postgresql.postgres_add_indexes_task.PostgresAddIndexesSafeTask;
+import info.smart_tools.smartactors.database_postgresql.postgres_add_indexes_task.PostgresAddIndexesTask;
 import info.smart_tools.smartactors.database_postgresql.postgres_count_task.CountMessage;
 import info.smart_tools.smartactors.database_postgresql.postgres_count_task.PostgresCountTask;
 import info.smart_tools.smartactors.database_postgresql.postgres_create_task.CreateCollectionMessage;
@@ -69,6 +72,24 @@ public class PostgresDBTasksPluginTest {
         IObject options = mock(IObject.class);
         assertTrue(IOC.resolve(Keys.getKeyByName("db.collection.create"), connection, collection, options)
                 instanceof PostgresCreateTask);
+    }
+
+    @Test
+    public void testAddIndexesTaskInitialized() throws ResolutionException {
+        assertTrue(IOC.resolve(Keys.getKeyByName(AddIndexesMessage.class.getCanonicalName()), message)
+                instanceof AddIndexesMessage);
+        IObject options = mock(IObject.class);
+        assertTrue(IOC.resolve(Keys.getKeyByName("db.collection.addindexes"), connection, collection, options)
+                instanceof PostgresAddIndexesTask);
+    }
+
+    @Test
+    public void testAddIndexesSafeTaskInitialized() throws ResolutionException {
+        assertTrue(IOC.resolve(Keys.getKeyByName(AddIndexesMessage.class.getCanonicalName()), message)
+                instanceof AddIndexesMessage);
+        IObject options = mock(IObject.class);
+        assertTrue(IOC.resolve(Keys.getKeyByName("db.collection.addindexessafe"), connection, collection, options)
+                instanceof PostgresAddIndexesSafeTask);
     }
 
     @Test

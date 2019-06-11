@@ -87,18 +87,12 @@ public final class PostgresSchema {
      * @param options document describing a set of options for the collection creation
      * @throws QueryBuildException if the statement body cannot be built
      */
-    public static void addFulltext(final QueryStatement statement, final CollectionName collection, final IObject options)
+    public static void addIndexes(final QueryStatement statement, final CollectionName collection, final IObject options)
             throws QueryBuildException {
         try {
             Writer body = statement.getBodyWriter();
-            AddFulltextClauses addFulltextClausesWriter = new AddFulltextClauses(options);
-            body.write("ALTER TABLE ");
-            body.write(collection.toString());
-            body.write(" ADD COLUMN IF NOT EXIST ");
-            addFulltextClausesWriter.writeFulltextColumn(body);
-            body.write(" DEFAULT NULL;\n");
-            addFulltextClausesWriter.writeFulltextColumnUpdate(body, collection);
-            addFulltextClausesWriter.writeFulltextIndex(body, collection, options);
+            AddIndexesClauses.writeFulltextColumn(body, collection, options);
+            IndexCreators.writeIndexes(body, collection, options);
         } catch (Exception e) {
             throw new QueryBuildException("Failed to build create body", e);
         }
@@ -113,12 +107,12 @@ public final class PostgresSchema {
      * @param options document describing a set of options for the collection creation
      * @throws QueryBuildException if the statement body cannot be built
      */
-    public static void addFulltextSafe(final QueryStatement statement, final CollectionName collection, final IObject options)
+    public static void addIndexesSafe(final QueryStatement statement, final CollectionName collection, final IObject options)
             throws QueryBuildException {
         try {
             Writer body = statement.getBodyWriter();
             body.write("BEGIN;");
-            addFulltext(statement, collection, options);
+            addIndexes(statement, collection, options);
             body.write("COMMIT;");
         } catch (QueryBuildException e) {
             throw e;

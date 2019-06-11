@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.database_postgresql.postgres_add_fulltext_task;
+package info.smart_tools.smartactors.database_postgresql.postgres_add_indexes_task;
 
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
@@ -17,22 +17,25 @@ import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutio
 import java.sql.PreparedStatement;
 
 /**
- * The database task which is create documents collection in Postgres database.
+ * The database task which adds indexes to collection in Postgres database.
  */
-public class PostgresAddFulltextSafeTask implements IDatabaseTask {
+public class PostgresAddIndexesTask implements IDatabaseTask {
 
     /**
      * Connection to the database.
      */
     private IStorageConnection connection;
+
     /**
      * Name of the collection.
      */
     private CollectionName collection;
+
     /**
-     * Collection creation options.
+     * Index options.
      */
     private IObject options;
+
     /**
      * Query, prepared during prepare(), to be compiled during execute().
      */
@@ -42,18 +45,18 @@ public class PostgresAddFulltextSafeTask implements IDatabaseTask {
      * Creates the task
      * @param connection the database connection
      */
-    public PostgresAddFulltextSafeTask(final IStorageConnection connection) {
+    public PostgresAddIndexesTask(final IStorageConnection connection) {
         this.connection = connection;
     }
 
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-            AddFulltextMessage message = IOC.resolve(Keys.getKeyByName(AddFulltextMessage.class.getCanonicalName()), query);
+            AddIndexesMessage message = IOC.resolve(Keys.getKeyByName(AddIndexesMessage.class.getCanonicalName()), query);
             collection = message.getCollectionName();
             options = message.getOptions();
             preparedQuery = new QueryStatement();
-            PostgresSchema.addFulltextSafe(preparedQuery, collection, options);
+            PostgresSchema.addIndexes(preparedQuery, collection, options);
         } catch (Exception e) {
             throw new TaskPrepareException(e);
         }
@@ -73,10 +76,10 @@ public class PostgresAddFulltextSafeTask implements IDatabaseTask {
                 // ignoring rollback failure
             }
             try {
-                throw new TaskExecutionException("Add fulltext column to " + collection + " collection failed, options: " +
+                throw new TaskExecutionException("Index creation on '" + collection + "' collection failed, options: " +
                         (options != null ? options.serialize() : "null"), e);
             } catch (SerializeException se) {
-                throw new TaskExecutionException("Add fulltext column to " + collection + " collection failed", e);
+                throw new TaskExecutionException("Index creation on '" + collection + "' collection failed", e);
             }
         }
     }

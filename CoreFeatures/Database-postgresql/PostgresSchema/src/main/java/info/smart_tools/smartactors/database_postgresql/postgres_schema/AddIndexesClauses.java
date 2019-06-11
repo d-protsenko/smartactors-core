@@ -23,41 +23,43 @@ import java.util.List;
 /**
  * A set of methods to write some SQL statements during the collection/table altering.
  */
-final class AddFulltextClauses {
+final class AddIndexesClauses {
 
-    private final String language;
-    private final String columnName;
-    private List<FieldPath> fields;
 
     /**
-     * The constructor to get and store params.
-     * @param options 'add fulltext' options to store
-     * @throws QueryBuildException if failed to write the body
-     * @throws ResolutionException if failed to resolve field names from IOC
-     * @throws InvalidArgumentException if failed to get fulltext field from options
+     * Private constructor to prevent instantiation.
      */
-    AddFulltextClauses(final IObject options)
-            throws QueryBuildException, ResolutionException, InvalidArgumentException {
+    private AddIndexesClauses() {
+    }
+
+    /**
+     * Writes expression for fulltext column creation and update,
+     * i.e. "ALTER TABLE collectionName ADD COLUMN ...; UPDATE collectionName SET fulltext_english := to_tsvector('english', ...)".
+     * @param body SQL query body to write
+     * @throws IOException if failed to write the body
+     */
+    static void writeFulltextColumn(final Writer body, final CollectionName collection, final IObject options)
+            throws QueryBuildException, IOException {
         if (options == null) {
             throw new QueryBuildException("Failed to build 'add fulltext' body");
         }
+        String language;
+        String columnName;
+        List<FieldPath> fields;
         try {
             IKey fieldKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
-
-            IFieldName languageField = IOC.resolve(fieldKey, "language");
-            String fullTextLanguage = (String) options.getValue(languageField);
-            if (fullTextLanguage == null) {
-                language = PostgresSchema.DEFAULT_FTS_DICTIONARY;
-            } else {
-                language = fullTextLanguage;
-            }
-            columnName = PostgresSchema.FULLTEXT_COLUMN + "_" + language;
 
             IFieldName fulltextDefinitionField = IOC.resolve(fieldKey, "fulltext");
             Object fulltextFields = options.getValue(fulltextDefinitionField);
             if (fulltextFields == null) {
-                throw new QueryBuildException("Failed to build 'add fulltext' body");
+                // if no fulltext option just skip
+                return;
             }
+
+            IFieldName languageField = IOC.resolve(fieldKey, "language");
+            String fullTextLanguage = (String) options.getValue(languageField);
+            language = fullTextLanguage == null ? PostgresSchema.DEFAULT_FTS_DICTIONARY : fullTextLanguage;
+            columnName = PostgresSchema.FULLTEXT_COLUMN + "_" + language;
 
             fields = new ArrayList<>();
             if (fulltextFields instanceof String) {
@@ -69,30 +71,15 @@ final class AddFulltextClauses {
             } else {
                 throw new QueryBuildException("Unknown definition for 'fulltext' option: " + fulltextFields);
             }
-        } catch (ReadValueException e) {
+        } catch (ResolutionException | InvalidArgumentException | ReadValueException e) {
             throw new QueryBuildException("Failed to build 'add fulltext' body", e);
         }
-    }
 
-    /**
-     * Writes definition of full text column, i.e. "fulltext_english tsvector".
-     * @param body SQL query body to write
-     * @throws IOException if failed to write the body
-     */
-    void writeFulltextColumn(final Writer body)
-            throws IOException {
+        body.write("ALTER TABLE ");
+        body.write(collection.toString());
+        body.write(" ADD COLUMN IF NOT EXIST ");
         body.write(columnName);
-        body.write(" tsvector");
-    }
-
-    /**
-     * Writes expression for fulltext column update,
-     * i.e. "UPDATE collectionName SET fulltext_english := to_tsvector('english', ...)".
-     * @param body SQL query body to write
-     * @throws IOException if failed to write the body
-     */
-    void writeFulltextColumnUpdate(final Writer body, final CollectionName collection)
-            throws IOException {
+        body.write(" tsvector DEFAULT NULL;\n");
         body.write("UPDATE ");
         body.write(collection.toString());
         body.write(" SET ");
@@ -111,15 +98,5 @@ final class AddFulltextClauses {
             }
         }
         body.write(");\n");
-    }
-
-    /**
-     * Writes expression of fulltext index creation.
-     * @param body SQL query body to write
-     * @throws Exception if failed to write the body
-     */
-    void writeFulltextIndex(final Writer body, final CollectionName collection, final IObject options)
-            throws Exception {
-        IndexCreators.writeFulltextIndex(body, collection, options, fields);
     }
 }

@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.database_postgresql.postgres_add_fulltext_task;
+package info.smart_tools.smartactors.database_postgresql.postgres_add_indexes_task;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
@@ -36,13 +36,13 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 /**
- * Tests for PostgresAddFulltextTask.
+ * Tests for PostgresAddIndexesTask.
  */
-public class PostgresAddFulltextTaskTest {
+public class PostgresAddIndexesTaskTest {
 
     private IDatabaseTask task;
     private IStorageConnection connection;
-    private AddFulltextMessage message;
+    private AddIndexesMessage message;
     private JDBCCompiledQuery compiledQuery;
     private PreparedStatement sqlStatement;
 
@@ -66,13 +66,13 @@ public class PostgresAddFulltextTaskTest {
         connection = mock(IStorageConnection.class);
         when(connection.compileQuery(any())).thenReturn(compiledQuery);
 
-        task = new PostgresAddFulltextTask(connection);
+        task = new PostgresAddIndexesTask(connection);
 
-        message = mock(AddFulltextMessage.class);
+        message = mock(AddIndexesMessage.class);
         when(message.getCollectionName()).thenReturn(CollectionName.fromString("test"));
 
         IOC.register(
-                Keys.getKeyByName(AddFulltextMessage.class.getCanonicalName()),
+                Keys.getKeyByName(AddIndexesMessage.class.getCanonicalName()),
                 new SingletonStrategy(message)
         );
     }
