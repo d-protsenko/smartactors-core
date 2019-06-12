@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.database_postgresql.postgres_add_indexes_task;
+package info.smart_tools.smartactors.database_postgresql.postgres_drop_indexes_task;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
@@ -36,13 +36,13 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 /**
- * Tests for PostgresAddIndexesTask.
+ * Tests for PostgresDropIndexesTask.
  */
-public class PostgresAddIndexesTaskTest {
+public class PostgresDropIndexesTaskTest {
 
     private IDatabaseTask task;
     private IStorageConnection connection;
-    private AddIndexesMessage message;
+    private DropIndexesMessage message;
     private JDBCCompiledQuery compiledQuery;
     private PreparedStatement sqlStatement;
 
@@ -66,19 +66,19 @@ public class PostgresAddIndexesTaskTest {
         connection = mock(IStorageConnection.class);
         when(connection.compileQuery(any())).thenReturn(compiledQuery);
 
-        task = new PostgresAddIndexesTask(connection);
+        task = new PostgresDropIndexesTask(connection);
 
-        message = mock(AddIndexesMessage.class);
+        message = mock(DropIndexesMessage.class);
         when(message.getCollectionName()).thenReturn(CollectionName.fromString("test"));
 
         IOC.register(
-                Keys.getKeyByName(AddIndexesMessage.class.getCanonicalName()),
+                Keys.getKeyByName(DropIndexesMessage.class.getCanonicalName()),
                 new SingletonStrategy(message)
         );
     }
 
     @Test
-    public void testAddIndexes() throws TaskPrepareException, TaskExecutionException, StorageException, SQLException, InvalidArgumentException, ReadValueException {
+    public void testDropIndexes() throws TaskPrepareException, TaskExecutionException, StorageException, SQLException, InvalidArgumentException, ReadValueException {
         when(message.getOptions()).thenReturn(new DSObject("{ \"fulltext\":\"text\", \"language\":\"russian\"}"));
 
         task.prepare(null); // the message will be resolved by IOC
@@ -90,7 +90,7 @@ public class PostgresAddIndexesTaskTest {
     }
 
     @Test
-    public void testAddIndexesFailure() throws InvalidArgumentException, ReadValueException, SQLException, TaskPrepareException, StorageException {
+    public void testDropIndexesFailure() throws InvalidArgumentException, ReadValueException, SQLException, TaskPrepareException, StorageException {
         when(message.getOptions()).thenReturn(new DSObject("{ \"fulltext\":\"text\", \"language\":\"russian\"}"));
         when(sqlStatement.execute()).thenThrow(SQLException.class);
 
@@ -108,7 +108,7 @@ public class PostgresAddIndexesTaskTest {
     }
 
     @Test
-    public void testAddIndexesWithoutLanguage() throws InvalidArgumentException, TaskPrepareException, StorageException, ReadValueException, TaskExecutionException, SQLException {
+    public void testDropIndexesWithoutLanguage() throws InvalidArgumentException, TaskPrepareException, StorageException, ReadValueException, TaskExecutionException, SQLException {
         when(message.getOptions()).thenReturn(new DSObject("{ \"fulltext\":\"text\"}"));
 
         task.prepare(null); // the message will be resolved by IOC
@@ -120,7 +120,7 @@ public class PostgresAddIndexesTaskTest {
     }
 
     @Test
-    public void testAddIndexesWithInvalidOptions() throws SQLException, TaskPrepareException, StorageException, InvalidArgumentException, ReadValueException {
+    public void testDropIndexesWithInvalidOptions() throws SQLException, TaskPrepareException, StorageException, InvalidArgumentException, ReadValueException {
         when(message.getOptions()).thenReturn(new DSObject("{ \"fulltext\":123, \"language\":\"russian\"}"));
 
         try {

@@ -175,8 +175,8 @@ public class PostgresSchemaTest {
                         "$$ LANGUAGE 'plpgsql' IMMUTABLE; COMMIT;\n" +
                 "CREATE TABLE test_collection (document jsonb NOT NULL, fulltext_english tsvector);\n" +
                 "CREATE UNIQUE INDEX test_collection_pkey ON test_collection USING BTREE ((document#>'{test_collectionID}'));\n" +
-                "CREATE INDEX ON test_collection USING BTREE ((document#>'{a}'));\n" +
-                "CREATE INDEX ON test_collection USING GIN (fulltext_english);\n" +
+                "CREATE INDEX test_collection_a_ordered_index ON test_collection USING BTREE ((document#>'{a}'));\n" +
+                "CREATE INDEX test_collection_fulltext_english_index ON test_collection USING GIN (fulltext_english);\n" +
                 "CREATE FUNCTION test_collection_fulltext_english_update_trigger() RETURNS trigger AS $$\n" +
                 "begin\n" +
                 "new.fulltext_english := " +
@@ -199,11 +199,11 @@ public class PostgresSchemaTest {
                 "\"language\": \"russian\"" +
                 "}");
         PostgresSchema.addIndexes(statement, collection, options);
-        assertEquals("ALTER TABLE test_collection ADD COLUMN IF NOT EXIST fulltext_russian tsvector DEFAULT NULL;\n" +
+        assertEquals("ALTER TABLE test_collection ADD COLUMN fulltext_russian tsvector DEFAULT NULL;\n" +
                         "UPDATE test_collection SET fulltext_russian := to_tsvector('russian', coalesce((document#>'{b}')::text,''));\n" +
-                        "CREATE INDEX ON test_collection USING BTREE ((document#>'{a}'));\n" +
-                        "CREATE INDEX ON test_collection USING BTREE ((parse_timestamp_immutable(document#>'{date}')));\n" +
-                        "CREATE INDEX ON test_collection USING GIN (fulltext_russian);\n" +
+                        "CREATE INDEX test_collection_a_ordered_index ON test_collection USING BTREE ((document#>'{a}'));\n" +
+                        "CREATE INDEX test_collection_date_datetime_index ON test_collection USING BTREE ((parse_timestamp_immutable(document#>'{date}')));\n" +
+                        "CREATE INDEX test_collection_fulltext_russian_index ON test_collection USING GIN (fulltext_russian);\n" +
                         "CREATE FUNCTION test_collection_fulltext_russian_update_trigger() RETURNS trigger AS $$\n" +
                         "begin\n" +
                         "new.fulltext_russian := " +
@@ -214,7 +214,26 @@ public class PostgresSchemaTest {
                         "CREATE TRIGGER test_collection_fulltext_russian_update_trigger BEFORE INSERT OR UPDATE " +
                         "ON test_collection FOR EACH ROW EXECUTE PROCEDURE " +
                         "test_collection_fulltext_russian_update_trigger();\n" +
-                        "CREATE INDEX ON test_collection USING GIN ((document#>'{tags}'));\n",
+                        "CREATE INDEX test_collection_tags_tags_index ON test_collection USING GIN ((document#>'{tags}'));\n",
+                body.toString());
+    }
+
+    @Test
+    public void testDropIndexes() throws QueryBuildException, InvalidArgumentException {
+        IObject options = new DSObject("{ \"ordered\": \"a\"," +
+                "\"fulltext\": \"b\"," +
+                "\"datetime\": \"date\"," +
+                "\"tags\": \"tags\"," +
+                "\"language\": \"russian\"" +
+                "}");
+        PostgresSchema.dropIndexes(statement, collection, options);
+        assertEquals("DROP INDEX test_collection_a_ordered_index;\n" +
+                        "DROP INDEX test_collection_date_datetime_index;\n" +
+                        "DROP TRIGGER test_collection_fulltext_russian_update_trigger ON test_collection;\n" +
+                        "DROP FUNCTION test_collection_fulltext_russian_update_trigger();\n" +
+                        "DROP INDEX test_collection_fulltext_russian_index;\n" +
+                        "DROP INDEX test_collection_tags_tags_index;\n" +
+                        "ALTER TABLE test_collection DROP COLUMN fulltext_russian;\n",
                 body.toString());
     }
 

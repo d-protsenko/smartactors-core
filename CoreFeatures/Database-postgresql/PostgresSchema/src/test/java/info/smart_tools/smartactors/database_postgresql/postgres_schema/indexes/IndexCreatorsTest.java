@@ -45,51 +45,51 @@ public class IndexCreatorsTest {
     @Test
     public void testOrderedIndex() throws Exception {
         IObject options = new DSObject("{ \"ordered\": [ \"a\", \"b\" ] }");
-        IndexCreators.writeIndexes(body, collection, options);
-        assertEquals("CREATE INDEX ON test_collection USING BTREE ((document#>'{a}'));\n" +
-                     "CREATE INDEX ON test_collection USING BTREE ((document#>'{b}'));\n",
+        IndexCreators.writeCreateIndexes(body, collection, options);
+        assertEquals("CREATE INDEX test_collection_a_ordered_index ON test_collection USING BTREE ((document#>'{a}'));\n" +
+                     "CREATE INDEX test_collection_b_ordered_index ON test_collection USING BTREE ((document#>'{b}'));\n",
                 body.toString());
     }
 
     @Test
     public void testOrderedIndexForOneField() throws Exception {
         IObject options = new DSObject("{ \"ordered\": \"a\" }");
-        IndexCreators.writeIndexes(body, collection, options);
-        assertEquals("CREATE INDEX ON test_collection USING BTREE ((document#>'{a}'));\n",
+        IndexCreators.writeCreateIndexes(body, collection, options);
+        assertEquals("CREATE INDEX test_collection_a_ordered_index ON test_collection USING BTREE ((document#>'{a}'));\n",
                 body.toString());
     }
 
     @Test
     public void testDatetimeIndex() throws Exception {
         IObject options = new DSObject("{ \"datetime\": [ \"a\", \"b\" ] }");
-        IndexCreators.writeIndexes(body, collection, options);
-        assertEquals("CREATE INDEX ON test_collection USING BTREE ((parse_timestamp_immutable(document#>'{a}')));\n" +
-                     "CREATE INDEX ON test_collection USING BTREE ((parse_timestamp_immutable(document#>'{b}')));\n",
+        IndexCreators.writeCreateIndexes(body, collection, options);
+        assertEquals("CREATE INDEX test_collection_a_datetime_index ON test_collection USING BTREE ((parse_timestamp_immutable(document#>'{a}')));\n" +
+                     "CREATE INDEX test_collection_b_datetime_index ON test_collection USING BTREE ((parse_timestamp_immutable(document#>'{b}')));\n",
                 body.toString());
     }
 
     @Test
     public void testDatetimeIndexForOneField() throws Exception {
         IObject options = new DSObject("{ \"datetime\": \"a\" }");
-        IndexCreators.writeIndexes(body, collection, options);
-        assertEquals("CREATE INDEX ON test_collection USING BTREE ((parse_timestamp_immutable(document#>'{a}')));\n",
+        IndexCreators.writeCreateIndexes(body, collection, options);
+        assertEquals("CREATE INDEX test_collection_a_datetime_index ON test_collection USING BTREE ((parse_timestamp_immutable(document#>'{a}')));\n",
                 body.toString());
     }
 
     @Test
     public void testTagsIndex() throws Exception {
         IObject options = new DSObject("{ \"tags\": [ \"a\", \"b\" ] }");
-        IndexCreators.writeIndexes(body, collection, options);
-        assertEquals("CREATE INDEX ON test_collection USING GIN ((document#>'{a}'));\n" +
-                     "CREATE INDEX ON test_collection USING GIN ((document#>'{b}'));\n",
+        IndexCreators.writeCreateIndexes(body, collection, options);
+        assertEquals("CREATE INDEX test_collection_a_tags_index ON test_collection USING GIN ((document#>'{a}'));\n" +
+                     "CREATE INDEX test_collection_b_tags_index ON test_collection USING GIN ((document#>'{b}'));\n",
                 body.toString());
     }
 
     @Test
     public void testTagsIndexForOneField() throws Exception {
         IObject options = new DSObject("{ \"tags\": \"a\" }");
-        IndexCreators.writeIndexes(body, collection, options);
-        assertEquals("CREATE INDEX ON test_collection USING GIN ((document#>'{a}'));\n",
+        IndexCreators.writeCreateIndexes(body, collection, options);
+        assertEquals("CREATE INDEX test_collection_a_tags_index ON test_collection USING GIN ((document#>'{a}'));\n",
                 body.toString());
     }
 
@@ -99,8 +99,8 @@ public class IndexCreatorsTest {
                 "\"fulltext\": [ \"a\", \"b\" ]," +
                 "\"language\": \"russian\"" +
                 "}");
-        IndexCreators.writeIndexes(body, collection, options);
-        assertEquals("CREATE INDEX ON test_collection USING GIN (fulltext_russian);\n" +
+        IndexCreators.writeCreateIndexes(body, collection, options);
+        assertEquals("CREATE INDEX test_collection_fulltext_russian_index ON test_collection USING GIN (fulltext_russian);\n" +
                         "CREATE FUNCTION test_collection_fulltext_russian_update_trigger() RETURNS trigger AS $$\n" +
                         "begin\n" +
                         "new.fulltext_russian := " +
@@ -120,8 +120,8 @@ public class IndexCreatorsTest {
                 "\"fulltext\": \"text\"," +
                 "\"language\": \"russian\"" +
                 "}");
-        IndexCreators.writeIndexes(body, collection, options);
-        assertEquals("CREATE INDEX ON test_collection USING GIN (fulltext_russian);\n" +
+        IndexCreators.writeCreateIndexes(body, collection, options);
+        assertEquals("CREATE INDEX test_collection_fulltext_russian_index ON test_collection USING GIN (fulltext_russian);\n" +
                         "CREATE FUNCTION test_collection_fulltext_russian_update_trigger() RETURNS trigger AS $$\n" +
                         "begin\n" +
                         "new.fulltext_russian := " +
@@ -135,17 +135,10 @@ public class IndexCreatorsTest {
                 body.toString());
     }
 
-    @Ignore("Now default value 'english' defined for language option")
-    @Test(expected = Exception.class)
-    public void testFullTextIndexWithoutLanguage() throws Exception {
-        IObject options = new DSObject("{ \"fulltext\": \"text\" }");
-        IndexCreators.writeIndexes(body, collection, options);
-    }
-
     @Test(expected = Exception.class)
     public void testWrongIndexFormat() throws Exception {
         IObject options = new DSObject("{ \"ordered\": 123 }");
-        IndexCreators.writeIndexes(body, collection, options);
+        IndexCreators.writeCreateIndexes(body, collection, options);
     }
 
 }

@@ -5,10 +5,10 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>database-postgresql-plugins</artifactId>
-        <version>0.6.0</version>
+        <version>0.6.1</version>
     </parent>
     <artifactId>database-postgresql-plugins.postgres-db-tasks-plugin</artifactId>
-    <version>0.6.0</version>
+    <version>0.6.1</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
@@ -132,6 +132,12 @@
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>database-postgresql.postgres-add-indexes-task</artifactId>
             <version>0.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>database-postgresql.postgres-drop-indexes-task</artifactId>
+            <version>0.6.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
     <build>

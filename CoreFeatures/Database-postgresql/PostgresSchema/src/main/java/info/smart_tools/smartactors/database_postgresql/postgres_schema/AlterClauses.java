@@ -23,13 +23,12 @@ import java.util.List;
 /**
  * A set of methods to write some SQL statements during the collection/table altering.
  */
-final class AddIndexesClauses {
-
+final class AlterClauses {
 
     /**
      * Private constructor to prevent instantiation.
      */
-    private AddIndexesClauses() {
+    private AlterClauses() {
     }
 
     /**
@@ -38,13 +37,13 @@ final class AddIndexesClauses {
      * @param body SQL query body to write
      * @throws IOException if failed to write the body
      */
-    static void writeFulltextColumn(final Writer body, final CollectionName collection, final IObject options)
+    static void writeAddFulltextColumn(final Writer body, final CollectionName collection, final IObject options)
             throws QueryBuildException, IOException {
         if (options == null) {
-            throw new QueryBuildException("Failed to build 'add fulltext' body");
+            // if no fulltext option just skip
+            return;
         }
         String language;
-        String columnName;
         List<FieldPath> fields;
         try {
             IKey fieldKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
@@ -57,9 +56,10 @@ final class AddIndexesClauses {
             }
 
             IFieldName languageField = IOC.resolve(fieldKey, "language");
-            String fullTextLanguage = (String) options.getValue(languageField);
-            language = fullTextLanguage == null ? PostgresSchema.DEFAULT_FTS_DICTIONARY : fullTextLanguage;
-            columnName = PostgresSchema.FULLTEXT_COLUMN + "_" + language;
+            language = (String) options.getValue(languageField);
+            if (language == null) {
+                language = PostgresSchema.DEFAULT_FTS_DICTIONARY;
+            }
 
             fields = new ArrayList<>();
             if (fulltextFields instanceof String) {
@@ -77,13 +77,17 @@ final class AddIndexesClauses {
 
         body.write("ALTER TABLE ");
         body.write(collection.toString());
-        body.write(" ADD COLUMN IF NOT EXIST ");
-        body.write(columnName);
+        body.write(" ADD COLUMN ");
+        body.write(PostgresSchema.FULLTEXT_COLUMN);
+        body.write("_");
+        body.write(language);
         body.write(" tsvector DEFAULT NULL;\n");
         body.write("UPDATE ");
         body.write(collection.toString());
         body.write(" SET ");
-        body.write(columnName);
+        body.write(PostgresSchema.FULLTEXT_COLUMN);
+        body.write("_");
+        body.write(language);
         body.write(" := to_tsvector('");
         body.write(language);   // TODO: avoid SQL injection
         body.write("', ");
@@ -98,5 +102,44 @@ final class AddIndexesClauses {
             }
         }
         body.write(");\n");
+    }
+
+    /**
+     * Writes expression for fulltext column dropping, i.e. "ALTER TABLE collectionName DROP COLUMN ...
+     * @param body SQL query body to write
+     * @throws IOException if failed to write the body
+     */
+    static void writeDropFulltextColumn(final Writer body, final CollectionName collection, final IObject options)
+            throws QueryBuildException, IOException {
+        if (options == null) {
+            return;
+        }
+        String language;
+        try {
+            IKey fieldKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+
+            IFieldName fulltextDefinitionField = IOC.resolve(fieldKey, "fulltext");
+            Object fulltextFields = options.getValue(fulltextDefinitionField);
+            if (fulltextFields == null) {
+                // if no fulltext option just skip
+                return;
+            }
+
+            IFieldName languageField = IOC.resolve(fieldKey, "language");
+            language = (String) options.getValue(languageField);
+            if (language == null) {
+                language = PostgresSchema.DEFAULT_FTS_DICTIONARY;
+            }
+        } catch (ResolutionException | InvalidArgumentException | ReadValueException e) {
+            throw new QueryBuildException("Failed to build 'add fulltext' body", e);
+        }
+
+        body.write("ALTER TABLE ");
+        body.write(collection.toString());
+        body.write(" DROP COLUMN ");
+        body.write(PostgresSchema.FULLTEXT_COLUMN);
+        body.write("_");
+        body.write(language);
+        body.write(";\n");
     }
 }

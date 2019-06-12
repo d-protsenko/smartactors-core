@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBu
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.QueryStatement;
 import info.smart_tools.smartactors.database_postgresql.postgres_schema.indexes.IndexCreators;
+import info.smart_tools.smartactors.database_postgresql.postgres_schema.indexes.IndexDroppers;
 import info.smart_tools.smartactors.database_postgresql.postgres_schema.search.FieldPath;
 import info.smart_tools.smartactors.database_postgresql.postgres_schema.search.PostgresFieldPath;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -71,7 +72,7 @@ public final class PostgresSchema {
             body.write(");\n");
             CreateClauses.writePrimaryKey(body, collection);
             if (options != null) {
-                IndexCreators.writeIndexes(body, collection, options);
+                IndexCreators.writeCreateIndexes(body, collection, options);
             }
         } catch (Exception e) {
             throw new QueryBuildException("Failed to build create body", e);
@@ -90,9 +91,35 @@ public final class PostgresSchema {
     public static void addIndexes(final QueryStatement statement, final CollectionName collection, final IObject options)
             throws QueryBuildException {
         try {
+            if (options == null) {
+                throw new QueryBuildException("Options for db.collection.addindexes must not be null");
+            }
             Writer body = statement.getBodyWriter();
-            AddIndexesClauses.writeFulltextColumn(body, collection, options);
-            IndexCreators.writeIndexes(body, collection, options);
+            AlterClauses.writeAddFulltextColumn(body, collection, options);
+            IndexCreators.writeCreateIndexes(body, collection, options);
+        } catch (Exception e) {
+            throw new QueryBuildException("Failed to build create body", e);
+        }
+    }
+
+    /**
+     * Fills the statement body with the ALTER TABLE DROP COLUMN sentence and
+     * DROP INDEX sentences to drop the column and corresponding index for
+     * full text search operation with desired language.
+     * @param statement statement to fill the body
+     * @param collection collection name to use to construct the sequence name
+     * @param options document describing a set of options for the collection creation
+     * @throws QueryBuildException if the statement body cannot be built
+     */
+    public static void dropIndexes(final QueryStatement statement, final CollectionName collection, final IObject options)
+            throws QueryBuildException {
+        try {
+            if (options == null) {
+                throw new QueryBuildException("Options for db.collection.dropindexes must not be null");
+            }
+            Writer body = statement.getBodyWriter();
+            IndexDroppers.writeDropIndexes(body, collection, options);
+            AlterClauses.writeDropFulltextColumn(body, collection, options);
         } catch (Exception e) {
             throw new QueryBuildException("Failed to build create body", e);
         }

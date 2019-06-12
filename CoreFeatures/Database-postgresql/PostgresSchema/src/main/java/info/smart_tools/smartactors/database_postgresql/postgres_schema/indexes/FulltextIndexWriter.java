@@ -18,37 +18,68 @@ import java.util.List;
 /**
  * Writes fulltext index and appropriate trigger definitions.
  */
-class FulltextIndexWriter implements IndexWriter {
+class FulltextIndexWriter {
 
-    static IndexWriter resolve(IObject options) throws Exception {
+    static IndexWriter resolveAdd(IObject options) throws Exception {
         IKey fieldNameKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         IFieldName languageField = IOC.resolve(fieldNameKey, "language");
         String language = (String) options.getValue(languageField);
         if (language == null) {
-            return new FulltextIndexWriter(PostgresSchema.DEFAULT_FTS_DICTIONARY);
+            language = PostgresSchema.DEFAULT_FTS_DICTIONARY;
         }
-        return new FulltextIndexWriter(language);
+        return (new FulltextIndexWriter(language))::writeAdd;
+    }
+
+    static IndexWriter resolveDrop(IObject options) throws Exception {
+        IKey fieldNameKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IFieldName languageField = IOC.resolve(fieldNameKey, "language");
+        String language = (String) options.getValue(languageField);
+        if (language == null) {
+            language = PostgresSchema.DEFAULT_FTS_DICTIONARY;
+        }
+        return (new FulltextIndexWriter(language))::writeDrop;
     }
 
     private final String language;
+    private final String columnName;
 
     private FulltextIndexWriter(final String language) {
         this.language = language;
+        this.columnName = PostgresSchema.FULLTEXT_COLUMN + "_" + language;
     }
 
-    @Override
-    public void write(final Writer body, final CollectionName collection, final List<FieldPath> fields) throws IOException {
+    private void writeAdd(final Writer body, final CollectionName collection, final List<FieldPath> fields)
+            throws IOException {
         writeCreateIndex(body, collection);
         writeCreateFunction(body, collection, fields);
         writeCreateTrigger(body, collection);
     }
 
+    private void writeDrop(final Writer body, final CollectionName collection, final List<FieldPath> fields)
+            throws IOException {
+        writeDropTrigger(body, collection);
+        writeDropFunction(body, collection, fields);
+        writeDropIndex(body, collection);
+    }
+
     private void writeCreateIndex(final Writer body, final CollectionName collection) throws IOException {
-        body.write("CREATE INDEX ON ");
+        body.write("CREATE INDEX ");
+        body.write(collection.toString());
+        body.write("_");
+        body.write(columnName);
+        body.write("_index ON ");
         body.write(collection.toString());
         body.write(" USING GIN (");
-        body.write(PostgresSchema.FULLTEXT_COLUMN + "_" + language);
+        body.write(columnName);
         body.write(");\n");
+    }
+
+    private void writeDropIndex(final Writer body, final CollectionName collection) throws IOException {
+        body.write("DROP INDEX ");
+        body.write(collection.toString());
+        body.write("_");
+        body.write(columnName);
+        body.write("_index;\n");
     }
 
     private void writeCreateFunction(final Writer body, final CollectionName collection, final List<FieldPath> fields) throws IOException {
@@ -59,7 +90,7 @@ class FulltextIndexWriter implements IndexWriter {
         body.write("_update_trigger() RETURNS trigger AS $$\n");
         body.write("begin\n");
         body.write("new.");
-        body.write(PostgresSchema.FULLTEXT_COLUMN + "_" + language);
+        body.write(columnName);
         body.write(" := ");
         body.write("to_tsvector('");
         body.write(language);   // TODO: avoid SQL injection
@@ -80,6 +111,14 @@ class FulltextIndexWriter implements IndexWriter {
         body.write("$$ LANGUAGE plpgsql;\n");
     }
 
+    private void writeDropFunction(final Writer body, final CollectionName collection, final List<FieldPath> fields) throws IOException {
+        body.write("DROP FUNCTION ");
+        body.write(collection.toString());
+        body.write("_fulltext_");
+        body.write(language);
+        body.write("_update_trigger();\n");
+    }
+
     private void writeCreateTrigger(final Writer body, final CollectionName collection) throws IOException {
         String collectionName = collection.toString();
         body.write("CREATE TRIGGER ");
@@ -93,6 +132,17 @@ class FulltextIndexWriter implements IndexWriter {
         body.write("_fulltext_");
         body.write(language);
         body.write("_update_trigger();\n");
+    }
+
+    private void writeDropTrigger(final Writer body, final CollectionName collection) throws IOException {
+        String collectionName = collection.toString();
+        body.write("DROP TRIGGER ");
+        body.write(collectionName);
+        body.write("_fulltext_");
+        body.write(language);
+        body.write("_update_trigger ON ");
+        body.write(collectionName);
+        body.write(";\n");
     }
 
 }

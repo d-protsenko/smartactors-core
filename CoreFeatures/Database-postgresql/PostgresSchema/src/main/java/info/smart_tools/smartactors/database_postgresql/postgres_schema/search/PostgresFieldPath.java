@@ -9,15 +9,18 @@ import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBu
  */
 public class PostgresFieldPath implements FieldPath {
     private String path;
+    private String id;
 
     private PostgresFieldPath(final String[] parts) {
         this.path = String.format("%s#>\'{%s}\'",
                 "document",
                 String.join(",", parts));
+        this.id = String.join("_", parts);
     }
 
     private PostgresFieldPath(final String column, final String castFunction) {
         this.path = String.format("%s(%s)", castFunction, column);
+        this.id = String.format("%s_%s", castFunction, column);
     }
 
     /**
@@ -26,6 +29,14 @@ public class PostgresFieldPath implements FieldPath {
      */
     public String toSQL() {
         return this.path;
+    }
+
+    /**
+     * {@see FieldPath#getId()} {@link FieldPath#getId()}
+     * @return valid representation of field path id.
+     */
+    public String getId() {
+        return this.id;
     }
 
     public static PostgresFieldPath fromString(final String path)

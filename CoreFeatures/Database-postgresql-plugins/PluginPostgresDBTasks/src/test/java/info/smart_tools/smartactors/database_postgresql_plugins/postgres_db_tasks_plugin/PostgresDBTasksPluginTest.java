@@ -13,6 +13,8 @@ import info.smart_tools.smartactors.database_postgresql.postgres_create_task.Cre
 import info.smart_tools.smartactors.database_postgresql.postgres_create_task.PostgresCreateTask;
 import info.smart_tools.smartactors.database_postgresql.postgres_delete_task.DeleteMessage;
 import info.smart_tools.smartactors.database_postgresql.postgres_delete_task.PostgresDeleteTask;
+import info.smart_tools.smartactors.database_postgresql.postgres_drop_indexes_task.DropIndexesMessage;
+import info.smart_tools.smartactors.database_postgresql.postgres_drop_indexes_task.PostgresDropIndexesTask;
 import info.smart_tools.smartactors.database_postgresql.postgres_getbyid_task.GetByIdMessage;
 import info.smart_tools.smartactors.database_postgresql.postgres_getbyid_task.PostgresGetByIdTask;
 import info.smart_tools.smartactors.database_postgresql.postgres_insert_task.InsertMessage;
@@ -75,6 +77,12 @@ public class PostgresDBTasksPluginTest {
     }
 
     @Test
+    public void testCreateTaskInitializedWithoutOptions() throws ResolutionException {
+        assertTrue(IOC.resolve(Keys.getKeyByName("db.collection.create"), connection, collection)
+                instanceof PostgresCreateTask);
+    }
+
+    @Test
     public void testAddIndexesTaskInitialized() throws ResolutionException {
         assertTrue(IOC.resolve(Keys.getKeyByName(AddIndexesMessage.class.getCanonicalName()), message)
                 instanceof AddIndexesMessage);
@@ -93,9 +101,12 @@ public class PostgresDBTasksPluginTest {
     }
 
     @Test
-    public void testCreateTaskInitializedWithoutOptions() throws ResolutionException {
-        assertTrue(IOC.resolve(Keys.getKeyByName("db.collection.create"), connection, collection)
-                instanceof PostgresCreateTask);
+    public void testDropIndexesTaskInitialized() throws ResolutionException {
+        assertTrue(IOC.resolve(Keys.getKeyByName(DropIndexesMessage.class.getCanonicalName()), message)
+                instanceof DropIndexesMessage);
+        IObject options = mock(IObject.class);
+        assertTrue(IOC.resolve(Keys.getKeyByName("db.collection.dropindexes"), connection, collection, options)
+                instanceof PostgresDropIndexesTask);
     }
 
     @Test

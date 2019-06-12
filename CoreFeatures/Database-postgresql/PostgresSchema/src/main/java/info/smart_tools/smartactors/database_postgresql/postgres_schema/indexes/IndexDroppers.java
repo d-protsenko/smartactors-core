@@ -21,46 +21,46 @@ import java.util.Map;
 /**
  * A set of classes to write CREATE INDEX SQL statements.
  */
-public class IndexCreators {
+public class IndexDroppers {
 
     /**
      * Set of index creation functions.
      */
     private static final Map<String, IndexWriterResolver> INDEX_WRITERS = new HashMap<String, IndexWriterResolver>() {{
-        put("ordered", (indexDefinition) -> IndexCreators::writeOrderedIndex);
-        put("datetime", (indexDefinition) -> IndexCreators::writeDatetimeIndex);
-        put("tags", (indexDefinition) -> IndexCreators::writeTagsIndex);
-        put("fulltext", FulltextIndexWriter::resolveAdd);
+        put("ordered", (indexDefinition) -> IndexDroppers::writeOrderedIndex);
+        put("datetime", (indexDefinition) -> IndexDroppers::writeDatetimeIndex);
+        put("tags", (indexDefinition) -> IndexDroppers::writeTagsIndex);
+        put("fulltext", FulltextIndexWriter::resolveDrop);
     }};
 
     /**
      * Private constructor to avoid instantiation.
      */
-    private IndexCreators() {
+    private IndexDroppers() {
     }
 
     /**
-     * Writes CREATE INDEX statements to the SQL statement body.
+     * Writes DROP INDEX statements to the SQL statement body.
      * @param body where to write SQL
      * @param collection name of the collection
-     * @param options document describing index creation options
+     * @param options document describing dropping indexes
      * @throws Exception when something goes wrong
      */
-    public static void writeCreateIndexes(Writer body, CollectionName collection, IObject options) throws Exception {
+    public static void writeDropIndexes(Writer body, CollectionName collection, IObject options) throws Exception {
         try {
             if (options == null) {
                 // no indexes definition, ignoring
                 return;
             }
             for (String indexType : INDEX_WRITERS.keySet()) {
-                writeCreateIndex(indexType, body, collection, options);
+                writeDropIndex(indexType, body, collection, options);
             }
         } catch (ReadValueException e) {
             // no indexes definition, ignoring
         }
     }
 
-    private static void writeCreateIndex(final String indexType, final Writer body, final CollectionName collection, IObject options)
+    private static void writeDropIndex(final String indexType, final Writer body, final CollectionName collection, IObject options)
             throws Exception {
         IKey fieldNameKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         Object indexFields = null;
@@ -73,15 +73,15 @@ public class IndexCreators {
         }
 
         List<FieldPath> fieldPaths = new ArrayList<>();
-        if (indexFields instanceof String) {
+        if (indexFields == null) {
+            // ignoring absence of this index type definition
+            return;
+        } else if (indexFields instanceof String) {
             fieldPaths.add(PostgresFieldPath.fromString((String) indexFields));
         } else if (indexFields instanceof List) {
             for (Object fieldName : (List) indexFields) {
                 fieldPaths.add(PostgresFieldPath.fromString((String) fieldName));
             }
-        } else if (indexFields == null) {
-            // ignoring absence of this index type definition
-            return;
         } else {
             throw new QueryBuildException("Unknown index definition for " + indexType + ": " + indexFields);
         }
@@ -92,45 +92,33 @@ public class IndexCreators {
     private static void writeOrderedIndex(final Writer body, final CollectionName collection,
                                           final List<FieldPath> fields) throws IOException {
         for (FieldPath field : fields) {
-            body.write("CREATE INDEX ");
+            body.write("DROP INDEX ");
             body.write(collection.toString());
             body.write("_");
             body.write(field.getId());
-            body.write("_ordered_index ON ");
-            body.write(collection.toString());
-            body.write(" USING BTREE ((");
-            body.write(field.toSQL());
-            body.write("));\n");
+            body.write("_ordered_index;\n");
         }
     }
 
     private static void writeDatetimeIndex(final Writer body, final CollectionName collection,
                                            final List<FieldPath> fields) throws IOException {
         for (FieldPath field : fields) {
-            body.write("CREATE INDEX ");
+            body.write("DROP INDEX ");
             body.write(collection.toString());
             body.write("_");
             body.write(field.getId());
-            body.write("_datetime_index ON ");
-            body.write(collection.toString());
-            body.write(" USING BTREE ((parse_timestamp_immutable(");
-            body.write(field.toSQL());
-            body.write(")));\n");
+            body.write("_datetime_index;\n");
         }
     }
 
     private static void writeTagsIndex(final Writer body, final CollectionName collection,
                                        final List<FieldPath> fields) throws IOException {
         for (FieldPath field : fields) {
-            body.write("CREATE INDEX ");
+            body.write("DROP INDEX ");
             body.write(collection.toString());
             body.write("_");
             body.write(field.getId());
-            body.write("_tags_index ON ");
-            body.write(collection.toString());
-            body.write(" USING GIN ((");
-            body.write(field.toSQL());
-            body.write("));\n");
+            body.write("_tags_index;\n");
         }
     }
 }
