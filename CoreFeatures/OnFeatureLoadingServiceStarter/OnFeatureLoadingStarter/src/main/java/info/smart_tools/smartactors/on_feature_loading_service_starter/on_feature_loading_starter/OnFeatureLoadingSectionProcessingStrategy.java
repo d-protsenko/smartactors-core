@@ -77,7 +77,10 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                 IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "messages"
         );
-        this.scopeSwitchingFieldName = FieldNames.getFieldNameByName("scopeSwitching");
+        this.scopeSwitchingFieldName = IOC.resolve(
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                "scopeSwitching"
+        );
     }
 
     @Override

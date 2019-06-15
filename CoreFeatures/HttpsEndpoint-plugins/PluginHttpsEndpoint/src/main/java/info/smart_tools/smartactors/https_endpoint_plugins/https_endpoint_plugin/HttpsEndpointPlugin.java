@@ -184,7 +184,12 @@ public class HttpsEndpointPlugin implements IPlugin {
                         IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "templates"
                 );
-        scopeSwitchingFieldName = FieldNames.getFieldNameByName("scopeSwitching");
+
+        scopeSwitchingFieldName =
+                IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        "scopeSwitching"
+                );
     }
 
 
