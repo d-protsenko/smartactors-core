@@ -908,7 +908,15 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "WDSObject",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
+}, {
+  "artifactId" : "iobject-extension.field-name-tools",
+  "uploadRepositories" : [ {
+  "uploadRepositoryId" : "archiva.smartactors-modules",
+  "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
+} ],
+  "rawName" : "FieldNameTools",
+  "version" : "0.6.1"
 }, {
   "artifactId" : "iobject-extension.configuration-object",
   "uploadRepositories" : [ {
@@ -916,7 +924,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "CObject",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -926,7 +934,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "iobject-extension",
   "rawName" : "IObjectExtension",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "actors" : [ {
   "artifactId" : "configuration-manager-plugins.configuration-manager-plugin",
