@@ -32,7 +32,7 @@ public class CheckpointSchedulerEntryStorageObserver implements ISchedulerEntryS
      */
     public CheckpointSchedulerEntryStorageObserver()
             throws ResolutionException {
-        prevCheckpointEntryIdFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointEntryId");
+        prevCheckpointEntryIdFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointEntryId");
     }
 
     @Override

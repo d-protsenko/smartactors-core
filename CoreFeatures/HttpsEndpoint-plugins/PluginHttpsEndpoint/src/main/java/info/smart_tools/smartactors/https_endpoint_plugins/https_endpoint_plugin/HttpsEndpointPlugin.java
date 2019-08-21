@@ -67,7 +67,7 @@ public class HttpsEndpointPlugin implements IPlugin {
             item.process(() -> {
                 try {
                     initializeFieldNames();
-                    IOC.register(Keys.resolveByName(ISslEngineProvider.class.getCanonicalName()),
+                    IOC.register(Keys.getKeyByName(ISslEngineProvider.class.getCanonicalName()),
                             new ApplyFunctionToArgumentsStrategy(
                                     (args) -> {
                                         ISslEngineProvider sslContextProvider = new SslEngineProvider();
@@ -85,7 +85,7 @@ public class HttpsEndpointPlugin implements IPlugin {
                     );
 
                     IOC.register(
-                            Keys.resolveByName(IEnvironmentHandler.class.getCanonicalName()),
+                            Keys.getKeyByName(IEnvironmentHandler.class.getCanonicalName()),
                             new ApplyFunctionToArgumentsStrategy(
                                     (args) -> {
                                         IObject configuration = (IObject) args[0];
@@ -110,7 +110,7 @@ public class HttpsEndpointPlugin implements IPlugin {
                     );
                     registerHttpsEndpoint();
 
-                    IOC.register(Keys.resolveByName(FileInputStream.class.getCanonicalName()),
+                    IOC.register(Keys.getKeyByName(FileInputStream.class.getCanonicalName()),
                             new ApplyFunctionToArgumentsStrategy(
                                     (args) -> {
                                         try {
@@ -120,13 +120,13 @@ public class HttpsEndpointPlugin implements IPlugin {
                                         return null;
                                     }
                             ));
-                    IKey emptyIObjectKey = Keys.resolveByName("EmptyIObject");
+                    IKey emptyIObjectKey = Keys.getKeyByName("EmptyIObject");
                     IOC.register(emptyIObjectKey, new ApplyFunctionToArgumentsStrategy(
                                     (args) -> new DSObject()
                             )
                     );
 
-                    IKey channelHandlerNettyKey = Keys.resolveByName("info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty");
+                    IKey channelHandlerNettyKey = Keys.getKeyByName("info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty");
                     IOC.register(channelHandlerNettyKey,
                             new ApplyFunctionToArgumentsStrategy(
                                     (args) -> {
@@ -149,47 +149,47 @@ public class HttpsEndpointPlugin implements IPlugin {
     private void initializeFieldNames() throws ResolutionException {
         portFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "port"
                 );
         startChainNameFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "startChain"
                 );
         stackDepthFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "stackDepth"
                 );
         maxContentLengthFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "maxContentLength"
                 );
         endpointNameFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "endpointName"
                 );
 
         queueFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "queue"
                 );
 
         templatesFieldName =
                 IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "templates"
                 );
-        scopeSwitchingFieldName = FieldNames.resolveByName("scopeSwitching");
+        scopeSwitchingFieldName = FieldNames.getFieldNameByName("scopeSwitching");
     }
 
 
     private void registerHttpsEndpoint() throws InvalidArgumentException, RegistrationException, ResolutionException {
-        IKey httpsEndpointKey = Keys.resolveByName("https_endpoint");
+        IKey httpsEndpointKey = Keys.getKeyByName("https_endpoint");
         IOC.register(httpsEndpointKey,
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
@@ -199,31 +199,31 @@ public class HttpsEndpointPlugin implements IPlugin {
                                 String endpointName = (String) configuration.getValue(endpointNameFieldName);
 
                                 IOC.resolve(
-                                        Keys.resolveByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
+                                        Keys.getKeyByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
                                         "HTTP_GET",
                                         endpointName,
                                         configuration.getValue(templatesFieldName)
                                 );
                                 IOC.resolve(
-                                        Keys.resolveByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
+                                        Keys.getKeyByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
                                         "HTTP_POST",
                                         endpointName
                                 );
                                 IOC.register(
-                                        Keys.resolveByName(endpointName + "_endpoint-config"),
+                                        Keys.getKeyByName(endpointName + "_endpoint-config"),
                                         new SingletonStrategy(configuration)
                                 );
 
                                 IEnvironmentHandler environmentHandler = IOC.resolve(
-                                        Keys.resolveByName(IEnvironmentHandler.class.getCanonicalName()),
+                                        Keys.getKeyByName(IEnvironmentHandler.class.getCanonicalName()),
                                         configuration);
                                 ISslEngineProvider sslContextProvider =
                                         IOC.resolve(
-                                                Keys.resolveByName(ISslEngineProvider.class.getCanonicalName()),
+                                                Keys.getKeyByName(ISslEngineProvider.class.getCanonicalName()),
                                                 configuration
                                         );
 
-                                IUpCounter upCounter = IOC.resolve(Keys.resolveByName("root upcounter"));
+                                IUpCounter upCounter = IOC.resolve(Keys.getKeyByName("root upcounter"));
 
                                 HttpsEndpoint endpoint = new HttpsEndpoint(
                                         (Integer) configuration.getValue(portFieldName),

@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.servers.server_with_features;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
 import info.smart_tools.smartactors.feature_loader.interfaces.ifeature_loader.GlobalFeatureLoader;
@@ -84,11 +84,11 @@ public class ServerWithFeatures implements IServer {
 
     private void loadStage2()
             throws ServerExecutionException {
-        IPoorAction loadUserFeatures = () -> loadFeatureGroup(new Path("features"), () -> { }, "2.2 (user features)");
+        IActionNoArgs loadUserFeatures = () -> loadFeatureGroup(new Path("features"), () -> { }, "2.2 (user features)");
         loadFeatureGroup(new Path("corefeatures"), loadUserFeatures, "2.1 (core features)");
     }
 
-    private void loadFeatureGroup(final IPath groupPath, final IPoorAction onSuccess, final String stageTitle) {
+    private void loadFeatureGroup(final IPath groupPath, final IActionNoArgs onSuccess, final String stageTitle) {
         try {
             GlobalFeatureLoader.get().loadGroup(groupPath).whenDone(err -> {
                 if (err == null) {
@@ -101,7 +101,7 @@ public class ServerWithFeatures implements IServer {
                 err.printStackTrace(System.err);
                 System.exit(1);
             });
-        } catch (FeatureLoadException | ActionExecuteException e) {
+        } catch (FeatureLoadException | ActionExecutionException e) {
             System.err.println(MessageFormat.format("Could not start stage {0} because of exception:", stageTitle));
             e.printStackTrace(System.err);
             System.exit(1);
@@ -142,7 +142,7 @@ public class ServerWithFeatures implements IServer {
                         IPlugin plugin = pluginCreator.create(clz, bootstrap);
                         plugin.load();
                     } catch (PluginCreationException | PluginException e) {
-                        throw new ActionExecuteException(e);
+                        throw new ActionExecutionException(e);
                     }
                 },
                 pluginLoaderVisitor);

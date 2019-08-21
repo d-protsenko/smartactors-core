@@ -1,14 +1,13 @@
 package info.smart_tools.smartactors.iobject_plugins.fieldname_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
@@ -41,7 +40,7 @@ public class FieldNamePlugin implements IPlugin {
                     .after("IOC")
                     .process(() -> {
                         try {
-                            IKey fieldNameKey = Keys.resolveByName(FieldName.class.getCanonicalName());
+                            IKey fieldNameKey = Keys.getKeyByName(FieldName.class.getCanonicalName());
                             IOC.register(fieldNameKey,
                                     new ResolveByNameIocStrategy(
                                             (args) -> {
@@ -65,30 +64,19 @@ public class FieldNamePlugin implements IPlugin {
                                     )
                             );
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("FieldName plugin can't load: can't get FieldName key");
+                            throw new ActionExecutionException("FieldName plugin can't load: can't get FieldName key");
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("FieldName plugin can't load: can't create strategy");
+                            throw new ActionExecutionException("FieldName plugin can't load: can't create strategy");
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("FieldName plugin can't load: can't register new strategy");
+                            throw new ActionExecutionException("FieldName plugin can't load: can't register new strategy");
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "FieldNamePlugin";
-                        String keyName = "";
-
-                        try {
-                            keyName = FieldName.class.getCanonicalName();
-                            IOC.remove(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        keyName = "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
-                        try {
-                            IOC.remove(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] keyNames = {
+                                FieldName.class.getCanonicalName(),
+                                "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"
+                        };
+                        Keys.unregisterByNames(keyNames);
                     });
             bootstrap.add(item);
         } catch (InvalidArgumentException e) {

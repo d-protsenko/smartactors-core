@@ -72,7 +72,7 @@ public class PostgresCreateTaskTest {
         when(message.getCollectionName()).thenReturn(CollectionName.fromString("test"));
 
         IOC.register(
-                Keys.resolveByName(CreateCollectionMessage.class.getCanonicalName()),
+                Keys.getKeyByName(CreateCollectionMessage.class.getCanonicalName()),
                 new SingletonStrategy(message)
         );
     }

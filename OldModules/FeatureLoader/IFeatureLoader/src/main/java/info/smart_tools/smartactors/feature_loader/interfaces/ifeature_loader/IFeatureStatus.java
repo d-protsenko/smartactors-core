@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.feature_loader.interfaces.ifeature_loader;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 
 /**
@@ -48,7 +48,7 @@ public interface IFeatureStatus {
      * </p>
      *
      * @param action    the action to execute when feature load will be completed
-     * @throws ActionExecuteException if synchronous execution of callback throws exception
+     * @throws ActionExecutionException if synchronous execution of callback throws exception
      */
-    void whenDone(final IAction<Throwable> action) throws ActionExecuteException;
+    void whenDone(final IAction<Throwable> action) throws ActionExecutionException;
 }

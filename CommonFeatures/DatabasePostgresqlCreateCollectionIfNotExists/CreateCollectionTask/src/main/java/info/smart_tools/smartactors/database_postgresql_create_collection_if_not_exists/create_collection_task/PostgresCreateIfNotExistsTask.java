@@ -48,7 +48,7 @@ public final class PostgresCreateIfNotExistsTask implements IDatabaseTask {
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-            CreateIfNotExistsCollectionMessage message = IOC.resolve(Keys.resolveByName(CreateIfNotExistsCollectionMessage.class.getCanonicalName()), query);
+            CreateIfNotExistsCollectionMessage message = IOC.resolve(Keys.getKeyByName(CreateIfNotExistsCollectionMessage.class.getCanonicalName()), query);
             collection = message.getCollectionName();
             options = message.getOptions();
             preparedQuery = new QueryStatement();

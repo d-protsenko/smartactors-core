@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.ioc.ioc_container_simple;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.ioc.iioccontainer.IContainer;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
@@ -23,7 +23,7 @@ public class ContainerTest {
         IContainer container = new Container();
         assertNotNull(container);
         IKey key1 = container.getIocKey();
-        IKey key2 = container.getKeyForKeyByNameResolutionStrategy();
+        IKey key2 = container.getKeyForKeyByNameStrategy();
         assertNull(key1);
         assertNotNull(key2);
     }
@@ -35,7 +35,7 @@ public class ContainerTest {
         Object value = new Object();
         IKey strategyKey = mock(IKey.class);
         Object[] param = new Object[]{};
-        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+        IStrategy strategy = mock(IStrategy.class);
         when(strategy.resolve()).thenReturn(value);
         container.register(strategyKey, strategy);
 
@@ -44,7 +44,7 @@ public class ContainerTest {
         verify(strategy, times(1)).resolve(param);
         assertSame(result, value);
 
-        container.remove(strategyKey);
+        container.unregister(strategyKey);
         result = container.resolve(strategyKey);
         fail();
     }
@@ -69,7 +69,7 @@ public class ContainerTest {
     public void checkDeletionException()
             throws Exception {
         IContainer container = new Container();
-        container.remove(null);
+        container.unregister(null);
         fail();
     }
 }

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.iobject_plugins.iobject_simple_impl_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -9,7 +9,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.iobject.iobject_simple_implementation.IObjectImpl;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
@@ -39,28 +38,21 @@ public class IObjectSimpleImplPlugin implements IPlugin {
                 .after("IOC")
                 .process(() -> {
                     try {
-                        IKey fieldKey = Keys.resolveByName(IObjectImpl.class.getCanonicalName());
+                        IKey fieldKey = Keys.getKeyByName(IObjectImpl.class.getCanonicalName());
                         IOC.register(fieldKey, new CreateNewInstanceStrategy(
                                 (args) -> new IObjectImpl()
                         ));
                     } catch (ResolutionException e) {
-                        throw new ActionExecuteException("IObjectSimpleImpl plugin can't load: can't get IObjectSimpleImpl key", e);
+                        throw new ActionExecutionException("IObjectSimpleImpl plugin can't load: can't get IObjectSimpleImpl key", e);
                     } catch (InvalidArgumentException e) {
-                        throw new ActionExecuteException("IObjectSimpleImpl plugin can't load: can't create strategy", e);
+                        throw new ActionExecutionException("IObjectSimpleImpl plugin can't load: can't create strategy", e);
                     } catch (RegistrationException e) {
-                        throw new ActionExecuteException("IObjectSimpleImpl plugin can't load: can't register new strategy", e);
+                        throw new ActionExecutionException("IObjectSimpleImpl plugin can't load: can't register new strategy", e);
                     }
                 })
                 .revertProcess(() -> {
-                    String itemName = "IObjectSimpleImplPlugin";
-                    String keyName = "";
-
-                    try {
-                        keyName = IObjectImpl.class.getCanonicalName();
-                        IOC.remove(Keys.resolveByName(keyName));
-                    } catch(DeletionException e) {
-                        System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                    } catch (ResolutionException e) { }
+                    String[] keyNames = { IObjectImpl.class.getCanonicalName() };
+                    Keys.unregisterByNames(keyNames);
                 });
             bootstrap.add(item);
         } catch (InvalidArgumentException e) {

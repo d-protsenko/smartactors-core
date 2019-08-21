@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.message_processing.condition_chain_choice_strategy;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -25,7 +24,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class ConditionChainChoiceStrategyTest extends PluginsLoadingTestBase {
-    private IResolveDependencyStrategy chainIdStrategy;
+    private IStrategy chainIdStrategy;
     private IMessageProcessor messageProcessorMock;
     private IMessageProcessingSequence messageProcessingSequenceMock;
     private Object trueId = new Object();
@@ -45,10 +44,10 @@ public class ConditionChainChoiceStrategyTest extends PluginsLoadingTestBase {
     @Override
     protected void registerMocks()
             throws Exception {
-        chainIdStrategy = mock(IResolveDependencyStrategy.class);
+        chainIdStrategy = mock(IStrategy.class);
         messageProcessorMock = mock(IMessageProcessor.class);
         messageProcessingSequenceMock = mock(IMessageProcessingSequence.class);
-        IObject args = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'trueChain':'trueChainId', 'falseChain':'falseChainId'}".replace('\'', '"'));
+        IObject args = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'trueChain':'trueChainId', 'falseChain':'falseChainId'}".replace('\'', '"'));
 
         when(messageProcessorMock.getSequence()).thenReturn(messageProcessingSequenceMock);
         when(messageProcessingSequenceMock.getCurrentReceiverArguments()).thenReturn(args);
@@ -56,13 +55,13 @@ public class ConditionChainChoiceStrategyTest extends PluginsLoadingTestBase {
         when(chainIdStrategy.resolve(eq("trueChainId"))).thenReturn(trueId);
         when(chainIdStrategy.resolve(eq("falseChainId"))).thenReturn(falseId);
 
-        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), chainIdStrategy);
+        IOC.register(Keys.getKeyByName("chain_id_from_map_name_and_message"), chainIdStrategy);
     }
 
     @Test
     public void Should_chooseChainConditionIsTrue()
             throws Exception {
-        IObject messageArgs = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'chainCondition': true}".replace('\'', '"'));
+        IObject messageArgs = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'chainCondition': true}".replace('\'', '"'));
         when(messageProcessorMock.getMessage()).thenReturn(messageArgs);
         IChainChoiceStrategy strategy = new ConditionChainChoiceStrategy();
 
@@ -72,7 +71,7 @@ public class ConditionChainChoiceStrategyTest extends PluginsLoadingTestBase {
     @Test
     public void Should_chooseChainConditionIsFalse()
             throws Exception {
-        IObject messageArgs = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'chainCondition': false}".replace('\'', '"'));
+        IObject messageArgs = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'chainCondition': false}".replace('\'', '"'));
         when(messageProcessorMock.getMessage()).thenReturn(messageArgs);
         IChainChoiceStrategy strategy = new ConditionChainChoiceStrategy();
 
@@ -84,7 +83,7 @@ public class ConditionChainChoiceStrategyTest extends PluginsLoadingTestBase {
     @Test(expected = ReadValueException.class)
     public void Should_ThrowException()
             throws Exception {
-        IObject messageArgs = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'chainCondition': false}".replace('\'', '"'));
+        IObject messageArgs = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{'chainCondition': false}".replace('\'', '"'));
         when(messageProcessorMock.getMessage()).thenReturn(messageArgs);
         when(messageProcessingSequenceMock.getCurrentReceiverArguments()).thenThrow(ReadValueException.class);
 

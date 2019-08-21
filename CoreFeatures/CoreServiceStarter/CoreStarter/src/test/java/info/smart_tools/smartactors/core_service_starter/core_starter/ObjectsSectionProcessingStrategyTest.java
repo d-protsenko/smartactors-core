@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.core_service_starter.core_starter;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
@@ -38,7 +38,7 @@ public class ObjectsSectionProcessingStrategyTest extends PluginsLoadingTestBase
     private IReceiverObjectCreator[] creatorMocks;
     private IObject[] objectConfigMocks;
     private IObject configMock;
-    private IResolveDependencyStrategy fullCreatorResolutionStrategy;
+    private IStrategy fullCreatorResolutionStrategy;
     private IKey fieldNameKey = mock(IKey.class);
     private IFieldName objectsFieldName;
 
@@ -56,7 +56,7 @@ public class ObjectsSectionProcessingStrategyTest extends PluginsLoadingTestBase
     protected void registerMocks() throws Exception {
         configMock = mock(IObject.class);
         listenerMock = mock(IReceiverObjectListener.class);
-        fullCreatorResolutionStrategy = mock(IResolveDependencyStrategy.class);
+        fullCreatorResolutionStrategy = mock(IStrategy.class);
 
         creatorMocks = new IReceiverObjectCreator[3];
         objectConfigMocks = new IObject[creatorMocks.length];
@@ -67,11 +67,11 @@ public class ObjectsSectionProcessingStrategyTest extends PluginsLoadingTestBase
             when(fullCreatorResolutionStrategy.resolve(same(objectConfigMocks[i]))).thenReturn(creatorMocks[i]);
         }
 
-        when(configMock.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "objects")))
+        when(configMock.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "objects")))
                 .thenReturn(Arrays.asList(objectConfigMocks));
 
-        IOC.register(Keys.resolveByName("global router registration receiver object listener"), new SingletonStrategy(listenerMock));
-        IOC.register(Keys.resolveByName("full receiver object creator"), fullCreatorResolutionStrategy);
+        IOC.register(Keys.getKeyByName("global router registration receiver object listener"), new SingletonStrategy(listenerMock));
+        IOC.register(Keys.getKeyByName("full receiver object creator"), fullCreatorResolutionStrategy);
     }
 
     @Test
@@ -88,7 +88,7 @@ public class ObjectsSectionProcessingStrategyTest extends PluginsLoadingTestBase
     public void Should_storeSectionName()
             throws Exception {
         assertEquals(
-                IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "objects"),
+                IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "objects"),
                 new ObjectsSectionProcessingStrategy().getSectionName()
         );
     }
@@ -108,7 +108,7 @@ public class ObjectsSectionProcessingStrategyTest extends PluginsLoadingTestBase
         strategy.onLoadConfig(configMock);
 
         for (int i = 0; i < creatorMocks.length; i++) {
-            when(objectConfigMocks[i].getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name")))
+            when(objectConfigMocks[i].getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name")))
                     .thenReturn("someObject");
         }
         strategy.onRevertConfig(configMock);
@@ -121,7 +121,7 @@ public class ObjectsSectionProcessingStrategyTest extends PluginsLoadingTestBase
         strategy.onLoadConfig(configMock);
 
         for (int i = 1; i < creatorMocks.length; i++) {
-            when(objectConfigMocks[i].getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name")))
+            when(objectConfigMocks[i].getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name")))
                     .thenReturn("someObject");
         }
         doThrow(ReadValueException.class).when(objectConfigMocks[0]).getValue(any());

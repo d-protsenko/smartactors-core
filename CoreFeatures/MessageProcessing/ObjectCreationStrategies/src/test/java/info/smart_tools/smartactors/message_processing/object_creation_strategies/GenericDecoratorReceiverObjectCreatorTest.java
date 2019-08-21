@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_processing.object_creation_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
@@ -28,7 +28,7 @@ public class GenericDecoratorReceiverObjectCreatorTest extends PluginsLoadingTes
     private IReceiverObjectListener listenerMock;
     private IReceiverObjectCreator creatorMock;
     private IMessageReceiver[] receiverMocks;
-    private IResolveDependencyStrategy decoratorReceiverResolutionStrategy;
+    private IStrategy decoratorReceiverResolutionStrategy;
     private IObject filterConfig, objectConfig, context;
 
     @Override
@@ -48,17 +48,17 @@ public class GenericDecoratorReceiverObjectCreatorTest extends PluginsLoadingTes
             mock(IMessageReceiver.class),
             mock(IMessageReceiver.class),
         };
-        decoratorReceiverResolutionStrategy = mock(IResolveDependencyStrategy.class);
+        decoratorReceiverResolutionStrategy = mock(IStrategy.class);
         filterConfig = mock(IObject.class);
         objectConfig = mock(IObject.class);
         context = mock(IObject.class);
 
-        IOC.register(Keys.resolveByName("create some receiver decorator"), decoratorReceiverResolutionStrategy);
+        IOC.register(Keys.getKeyByName("create some receiver decorator"), decoratorReceiverResolutionStrategy);
 
         when(decoratorReceiverResolutionStrategy.resolve(
                 same(receiverMocks[0]), same(filterConfig), same(objectConfig), same(context))).thenReturn(receiverMocks[1]);
 
-        when(filterConfig.getValue(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "decoratorDependency")))
+        when(filterConfig.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "decoratorDependency")))
                 .thenReturn("create some receiver decorator");
 
         doAnswer(invocation -> {
@@ -83,7 +83,7 @@ public class GenericDecoratorReceiverObjectCreatorTest extends PluginsLoadingTes
     @Test(expected = ReceiverObjectListenerException.class)
     public void Should_wrapExceptions()
             throws Exception {
-        when(decoratorReceiverResolutionStrategy.resolve(any(), any(), any(), any())).thenThrow(ResolveDependencyStrategyException.class);
+        when(decoratorReceiverResolutionStrategy.resolve(any(), any(), any(), any())).thenThrow(StrategyException.class);
 
         IReceiverObjectCreator tested = new GenericDecoratorReceiverObjectCreator(creatorMock, filterConfig, objectConfig);
 

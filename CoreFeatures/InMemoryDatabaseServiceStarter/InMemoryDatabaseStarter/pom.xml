@@ -5,10 +5,10 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>in-memory-database-service-starter</artifactId>
-        <version>0.5.0</version>
+        <version>0.6.0</version>
     </parent>
     <artifactId>in-memory-database-service-starter.in-memory-database-starter</artifactId>
-    <version>0.5.0</version>
+    <version>0.6.0</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
@@ -103,7 +103,7 @@
                             <inherited>false</inherited>
                             <configuration>
                                 <generatePom>true</generatePom>
-                                <file>target/in-memory-database-service-starter.in-memory-database-starter-0.5.0.jar</file>
+                                <file>target/in-memory-database-service-starter.in-memory-database-starter-0.6.0.jar</file>
                                 <url>${module.rurl}</url>
                                 <repositoryId>${module.rid}</repositoryId>
                                 <groupId>${project.groupId}</groupId>

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.feature_loading_system.feature_manager;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 
 import java.util.Collection;
@@ -26,13 +26,13 @@ class ExecutionPair {
 
     /**
      * Execute current instance of {@link IAction} with current collection of {@link Path}
-     * @throws ActionExecuteException if execution of action has been failed
+     * @throws ActionExecutionException if execution of action has been failed
      */
-    void execute() throws ActionExecuteException {
+    void execute() throws ActionExecutionException {
         try {
             this.action.execute(path);
         } catch (Exception e) {
-            throw new ActionExecuteException(e);
+            throw new ActionExecutionException(e);
         }
     }
 }

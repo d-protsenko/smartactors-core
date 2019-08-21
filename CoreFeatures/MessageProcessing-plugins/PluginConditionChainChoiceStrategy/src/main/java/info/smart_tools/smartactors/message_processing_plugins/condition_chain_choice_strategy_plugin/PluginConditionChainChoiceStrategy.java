@@ -4,7 +4,6 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -36,7 +35,7 @@ public class PluginConditionChainChoiceStrategy extends BootstrapPlugin {
     @BootstrapPlugin.Before({"ChainCallReceiver"})
     public void item()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.resolveByName("condition chain choice strategy"), new SingletonStrategy(new ConditionChainChoiceStrategy()));
+        IOC.register(Keys.getKeyByName("condition chain choice strategy"), new SingletonStrategy(new ConditionChainChoiceStrategy()));
     }
 
     /**
@@ -44,12 +43,7 @@ public class PluginConditionChainChoiceStrategy extends BootstrapPlugin {
      */
     @BootstrapPlugin.Item("condition_chain_choice_strategy")
     public void revertItem() {
-        String itemName = "condition_chain_choice_strategy";
-        String keyName = "condition chain choice strategy";
-        try {
-            IOC.remove(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] keyNames = { "condition chain choice strategy" };
+        Keys.unregisterByNames(keyNames);
     }
 }

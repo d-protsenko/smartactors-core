@@ -44,17 +44,17 @@ public class CloseAsyncOperationActorTest {
         IField collectionNameField = mock(IField.class);
         IField databaseOptionsF = mock(IField.class);
         IKey fieldKey = mock(IKey.class);
-        when(Keys.resolveByName(IField.class.getCanonicalName())).thenReturn(fieldKey);
+        when(Keys.getKeyByName(IField.class.getCanonicalName())).thenReturn(fieldKey);
         when(IOC.resolve(fieldKey, "collectionName")).thenReturn(collectionNameField);
         when(IOC.resolve(fieldKey, "databaseOptions")).thenReturn(databaseOptionsF);
 
         when(collectionNameField.in(actorParams)).thenReturn(collectionName);
 
         when(databaseOptionsF.in(actorParams)).thenReturn(databaseOptionsKey);
-        when(IOC.resolve(Keys.resolveByName(databaseOptionsKey))).thenReturn(databaseOptions);
+        when(IOC.resolve(Keys.getKeyByName(databaseOptionsKey))).thenReturn(databaseOptions);
 
         IKey collectionKey = mock(IKey.class);
-        when(Keys.resolveByName(IAsyncOperationCollection.class.getCanonicalName())).thenReturn(collectionKey);
+        when(Keys.getKeyByName(IAsyncOperationCollection.class.getCanonicalName())).thenReturn(collectionKey);
 
         targetCollection = mock(IAsyncOperationCollection.class);
         when(IOC.resolve(collectionKey, databaseOptions, collectionName)).thenReturn(targetCollection);
@@ -62,7 +62,7 @@ public class CloseAsyncOperationActorTest {
         testActor = new CloseAsyncOperationActor(actorParams);
 
         verifyStatic(atLeast(2));
-        Keys.resolveByName(IField.class.getCanonicalName());
+        Keys.getKeyByName(IField.class.getCanonicalName());
 
         verifyStatic();
         IOC.resolve(fieldKey, "collectionName");
@@ -70,7 +70,7 @@ public class CloseAsyncOperationActorTest {
         verify(collectionNameField).in(actorParams);
 
         verifyStatic();
-        Keys.resolveByName(IAsyncOperationCollection.class.getCanonicalName());
+        Keys.getKeyByName(IAsyncOperationCollection.class.getCanonicalName());
     }
 
     @Test

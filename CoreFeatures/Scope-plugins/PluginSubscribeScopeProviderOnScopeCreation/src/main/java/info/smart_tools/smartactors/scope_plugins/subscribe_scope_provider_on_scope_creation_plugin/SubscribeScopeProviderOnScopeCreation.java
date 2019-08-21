@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.scope_plugins.subscribe_scope_provider_on_scope_creation_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
@@ -55,7 +55,7 @@ public class SubscribeScopeProviderOnScopeCreation implements IPlugin {
                                             }
                                     );
                                 } catch (ScopeProviderException e) {
-                                    throw new ActionExecuteException("SubscribeScopeProviderOnScopeCreation plugin can't load: can't subscribe on creation new scope", e);
+                                    throw new ActionExecutionException("SubscribeScopeProviderOnScopeCreation plugin can't load: can't subscribe on creation new scope", e);
                                 }
                             }
                     );

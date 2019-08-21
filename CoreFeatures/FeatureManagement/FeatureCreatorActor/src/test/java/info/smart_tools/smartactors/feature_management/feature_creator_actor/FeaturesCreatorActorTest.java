@@ -46,7 +46,7 @@ public class FeaturesCreatorActorTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -58,7 +58,7 @@ public class FeaturesCreatorActorTest {
         );
 
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
@@ -69,7 +69,7 @@ public class FeaturesCreatorActorTest {
                         }
                 )
         );
-        IOC.register(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     if (args.length == 0) {
                         return new DSObject();
@@ -154,7 +154,7 @@ public class FeaturesCreatorActorTest {
     public void checkCreationFeatureByMessageMethodBasedOnJsonFile()
             throws Exception {
         List<IObject> repositoryStorage = new ArrayList<>();
-        IOC.register(Keys.resolveByName("feature-repositories"), new SingletonStrategy(repositoryStorage));
+        IOC.register(Keys.getKeyByName("feature-repositories"), new SingletonStrategy(repositoryStorage));
 
         FeaturesCreatorActor actor = new FeaturesCreatorActor();
         CreateFeaturesWrapper wrapper = mock(CreateFeaturesWrapper.class);
@@ -204,7 +204,7 @@ public class FeaturesCreatorActorTest {
     public void checkCreationFeatureByMessageMethodBasedOnZipFile()
             throws Exception {
         List<IObject> repositoryStorage = new ArrayList<>();
-        IOC.register(Keys.resolveByName("feature-repositories"), new SingletonStrategy(repositoryStorage));
+        IOC.register(Keys.getKeyByName("feature-repositories"), new SingletonStrategy(repositoryStorage));
 
         FeaturesCreatorActor actor = new FeaturesCreatorActor();
         CreateFeaturesWrapper wrapper = mock(CreateFeaturesWrapper.class);

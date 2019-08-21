@@ -1,11 +1,10 @@
 package info.smart_tools.smartactors.version_management_plugins.version_management_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -40,9 +39,9 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
 
         ChainIdFromMapNameStrategy strategy = new ChainIdFromMapNameStrategy();
 
-        IOC.register(Keys.resolveByName("chain_id_from_map_name_and_message"), strategy.getResolveByMessageStrategy());
-        IOC.register(Keys.resolveByName("chain_id_from_map_name"), strategy.getResolveByModuleDependenciesStrategy());
-        IOC.register(Keys.resolveByName("register_message_version_strategy"), strategy.getRegisterMessageVersionStrategy());
+        IOC.register(Keys.getKeyByName("chain_id_from_map_name_and_message"), strategy.getResolveByMessageStrategy());
+        IOC.register(Keys.getKeyByName("chain_id_from_map_name"), strategy.getResolveByModuleDependenciesStrategy());
+        IOC.register(Keys.getKeyByName("register_message_version_strategy"), strategy.getRegisterMessageVersionStrategy());
     }
 
     @Item("versioned_router")
@@ -52,15 +51,15 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
             throws ResolutionException, RegistrationException, InvalidArgumentException {
 
         // alternative 1: realization using decorator pattern
-        IRouter router = IOC.resolve(Keys.resolveByName(IRouter.class.getCanonicalName()));
+        IRouter router = IOC.resolve(Keys.getKeyByName(IRouter.class.getCanonicalName()));
         IOC.register(
-                Keys.resolveByName(IRouter.class.getCanonicalName()),
+                Keys.getKeyByName(IRouter.class.getCanonicalName()),
                 new SingletonStrategy(new VersionedRouterDecorator(new ConcurrentHashMap<>(), router))
         );
         /*
         // alternative 2: more fast realization
         IOC.register(
-                Keys.resolveByName(IRouter.class.getCanonicalName()),
+                Keys.getKeyByName(IRouter.class.getCanonicalName()),
                 new SingletonStrategy(new VersionedMapRouter(new ConcurrentHashMap<>()))
         );
         */
@@ -71,7 +70,7 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
     @After({"subscribe_ioc_for_scope_creation"})
     @Before({"create_system_scope"})
     public void registerVersionedStrategyContainerForScope()
-            throws ActionExecuteException {
+            throws ActionExecutionException {
         try {
             ScopeProvider.clearListOfSubscribers();
             ScopeProvider.subscribeOnCreationNewScope(scope -> {
@@ -94,7 +93,7 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
                 }
             });
         } catch (ScopeProviderException e) {
-            throw new ActionExecuteException("ScopedIOC plugin can't load.", e);
+            throw new ActionExecutionException("ScopedIOC plugin can't load.", e);
         }
     }
 
@@ -102,51 +101,23 @@ public class VersionManagementPlugin  extends BootstrapPlugin {
     @ItemRevert("versioned_chain_id_from_map_name_strategy")
     public void unregisterChainIdFromMapNameStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-
-        String itemName = "versioned_chain_id_from_map_name_strategy";
-        String keyName;
-
-        keyName = "register_message_version_strategy";
-        try {
-            IOC.remove(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
-
-        keyName = "chain_id_from_map_name";
-        try {
-            IOC.remove(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
-
-        keyName = "chain_id_from_map_name_and_message";
-        try {
-            IOC.remove(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] itemNames = {  "register_message_version_strategy",
+                                "chain_id_from_map_name",
+                                "chain_id_from_map_name_and_message"  };
+        Keys.unregisterByNames(itemNames);
     }
 
     // ToDo: fix rollback to setup previous strategies
     @ItemRevert("versioned_router")
     public void unregisterVersionedRouterStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-
-        String itemName = "versioned_router";
-        String keyName;
-
-        keyName = IRouter.class.getCanonicalName();
-        try {
-            IOC.remove(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] itemNames = { IRouter.class.getCanonicalName() };
+        Keys.unregisterByNames(itemNames);
     }
 
     @ItemRevert("versioned_strategy_container_for_scope")
     public void unregisterVersionedStrategyContainerForScope()
-            throws ActionExecuteException {
+            throws ActionExecutionException {
         // nothing to do - we cannot unregister subscription on new scope creation
     }
 

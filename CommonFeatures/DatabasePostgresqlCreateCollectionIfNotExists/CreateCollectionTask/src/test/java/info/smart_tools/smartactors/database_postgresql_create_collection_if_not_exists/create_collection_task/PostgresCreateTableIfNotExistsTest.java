@@ -45,12 +45,14 @@ public class PostgresCreateTableIfNotExistsTest {
     public void testCreateIfNotExists() throws QueryBuildException {
         CreateTableIfNotExistsSchema.createIfNotExists(statement, collection, null);
         assertEquals(
+                    "BEGIN; SELECT pg_advisory_xact_lock(2142616274639426746); " +
                 "CREATE OR REPLACE FUNCTION parse_timestamp_immutable(source jsonb) RETURNS timestamptz AS $$ " +
                         "BEGIN RETURN source::text::timestamptz; END; " +
-                        "$$ LANGUAGE 'plpgsql' IMMUTABLE;\n" +
+                        "$$ LANGUAGE 'plpgsql' IMMUTABLE; COMMIT;\n" +
+                        "BEGIN; SELECT pg_advisory_xact_lock(2142616274639426746); " +
                         "CREATE OR REPLACE FUNCTION bigint_to_jsonb_immutable(source bigint) RETURNS jsonb AS $$ " +
                         "BEGIN RETURN to_json(source)::jsonb; END; " +
-                        "$$ LANGUAGE 'plpgsql' IMMUTABLE;\n" +
+                        "$$ LANGUAGE 'plpgsql' IMMUTABLE; COMMIT;\n" +
                         "CREATE TABLE IF NOT EXISTS test_collection (document jsonb NOT NULL);\n" +
                         "do\n" +
                         "$$\n" +

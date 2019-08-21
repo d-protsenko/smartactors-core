@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.feature_loading_system.filesystem_tracker;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 
 import java.io.IOException;
@@ -72,20 +72,20 @@ public class ListenerTask implements Runnable {
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (IOException | ActionExecuteException | InvalidArgumentException e) {
+        } catch (IOException | ActionExecutionException | InvalidArgumentException e) {
             throw new RuntimeException(e);
         }
     }
 
     private void scanExistFiles()
-            throws ActionExecuteException, InvalidArgumentException {
+            throws ActionExecutionException, InvalidArgumentException {
         try (Stream<Path> files = Files.list(fileSystem.getPath(directory.getPath()))) {
             Iterable<Path> iterableFiles = files::iterator;
             for (Path path : iterableFiles) {
                 newFileAction.execute(new info.smart_tools.smartactors.base.path.Path(path));
             }
         } catch (IOException e) {
-            throw new ActionExecuteException(e);
+            throw new ActionExecutionException(e);
         }
     }
 

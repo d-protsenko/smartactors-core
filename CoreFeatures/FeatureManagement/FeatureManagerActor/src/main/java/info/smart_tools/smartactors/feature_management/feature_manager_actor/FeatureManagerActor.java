@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.feature_management.feature_manager_actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.class_management.module_manager.exception.ModuleManagerException;
 import info.smart_tools.smartactors.feature_management.feature_manager_actor.exception.FeatureManagementException;
@@ -79,13 +79,13 @@ public class FeatureManagerActor {
         this.featuresInProgress = new ConcurrentHashMap<>();
 
         this.featureFN = IOC.resolve(
-                Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "feature"
+                Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "feature"
         );
         this.afterFeaturesCallbackQueueFN = IOC.resolve(
-                Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "afterFeaturesCallbackQueue"
+                Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "afterFeaturesCallbackQueue"
         );
         this.startTimeOfLoadingFeatureGroupFN = IOC.resolve(
-                Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "startTimeOfLoadingFeatureGroup"
+                Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "startTimeOfLoadingFeatureGroup"
         );
     }
 
@@ -106,26 +106,26 @@ public class FeatureManagerActor {
 
             int stackDepth = DEFAULT_STACK_DEPTH;
             String scatterChainName = wrapper.getScatterChainName();
-            IQueue<ITask> queue = IOC.resolve(Keys.resolveByName(TASK_QUEUE_IOC_NAME));
+            IQueue<ITask> queue = IOC.resolve(Keys.getKeyByName(TASK_QUEUE_IOC_NAME));
 
-            IQueue afterFeaturesCallbackQueue = IOC.resolve(Keys.resolveByName(IQueue.class.getCanonicalName()));
+            IQueue afterFeaturesCallbackQueue = IOC.resolve(Keys.getKeyByName(IQueue.class.getCanonicalName()));
 
             int count = 0;
             for (IFeature feature : features) {
                 this.featuresInProgress.put(feature.getId(), feature);
                 IMessageProcessingSequence processingSequence = IOC.resolve(
-                        Keys.resolveByName(MESSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME),
+                        Keys.getKeyByName(MESSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME),
                         stackDepth,
                         scatterChainName,
                         mp.getMessage()
                 );
                 IMessageProcessor messageProcessor = IOC.resolve(
-                        Keys.resolveByName(MESSAGE_PROCESSOR_FACTORY_STRATEGY_NAME), queue, processingSequence
+                        Keys.getKeyByName(MESSAGE_PROCESSOR_FACTORY_STRATEGY_NAME), queue, processingSequence
                 );
-                IObject message = IOC.resolve(Keys.resolveByName(IOBJECT_FACTORY_STRATEGY_NAME));
+                IObject message = IOC.resolve(Keys.getKeyByName(IOBJECT_FACTORY_STRATEGY_NAME));
                 message.setValue(this.featureFN, feature.clone());
                 message.setValue(this.afterFeaturesCallbackQueueFN, afterFeaturesCallbackQueue);
-                IObject context = IOC.resolve(Keys.resolveByName(IOBJECT_FACTORY_STRATEGY_NAME));
+                IObject context = IOC.resolve(Keys.getKeyByName(IOBJECT_FACTORY_STRATEGY_NAME));
                 messageProcessor.process(message, context);
                 ++count;
             }
@@ -192,7 +192,7 @@ public class FeatureManagerActor {
                         try {
                             task.execute();
                         } catch (TaskExecutionException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     }
 
@@ -217,7 +217,7 @@ public class FeatureManagerActor {
                         InvalidArgumentException |
                                 AsynchronousOperationException |
                                 ReadValueException |
-                                ActionExecuteException e
+                                ActionExecutionException e
                 ) {
                     throw new RuntimeException(e);
                 }

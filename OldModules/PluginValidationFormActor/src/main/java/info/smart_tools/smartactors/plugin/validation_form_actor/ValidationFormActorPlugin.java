@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.plugin.validation_form_actor;
 
 import info.smart_tools.smartactors.actors.validate_form_data.ValidateFormDataActor;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -39,7 +39,7 @@ public class ValidationFormActorPlugin implements IPlugin {
                     .before("starter")
                     .process(() -> {
                         try {
-                            IKey actorKey = Keys.resolveByName(ValidateFormDataActor.class.getCanonicalName());
+                            IKey actorKey = Keys.getKeyByName(ValidateFormDataActor.class.getCanonicalName());
                             IOC.register(actorKey, new ApplyFunctionToArgumentsStrategy(
                                     (args) -> {
                                         try {
@@ -49,11 +49,11 @@ public class ValidationFormActorPlugin implements IPlugin {
                                         }
                                     }));
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("ValidateFormActor plugin can't load: can't get ValidateFormActor key", e);
+                            throw new ActionExecutionException("ValidateFormActor plugin can't load: can't get ValidateFormActor key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("ValidateFormActor plugin can't load: can't create strategy", e);
+                            throw new ActionExecutionException("ValidateFormActor plugin can't load: can't create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("ValidateFormActor plugin can't load: can't register new strategy", e);
+                            throw new ActionExecutionException("ValidateFormActor plugin can't load: can't register new strategy", e);
                         }
                     });
             bootstrap.add(item);

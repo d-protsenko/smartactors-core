@@ -38,7 +38,7 @@ public class PluginStandardObjectCreatorsTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -49,7 +49,7 @@ public class PluginStandardObjectCreatorsTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -100,14 +100,14 @@ public class PluginStandardObjectCreatorsTest {
         IBootstrapItem<String> item = itemList.get(0);
         item.executeProcess();
         IRoutedObjectCreator objectCreator = IOC.resolve(
-                Keys.resolveByName(IRoutedObjectCreator.class.getCanonicalName() + "#raw")
+                Keys.getKeyByName(IRoutedObjectCreator.class.getCanonicalName() + "#raw")
         );
         assertNotNull(objectCreator);
 
         item.executeRevertProcess();
 
         try {
-            IOC.resolve(Keys.resolveByName(IRoutedObjectCreator.class.getCanonicalName() + "#raw"));
+            IOC.resolve(Keys.getKeyByName(IRoutedObjectCreator.class.getCanonicalName() + "#raw"));
             fail();
         } catch (ResolutionException e) {}
 

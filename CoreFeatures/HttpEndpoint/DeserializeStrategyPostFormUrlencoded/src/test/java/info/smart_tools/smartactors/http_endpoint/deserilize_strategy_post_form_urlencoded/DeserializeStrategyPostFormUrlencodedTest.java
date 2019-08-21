@@ -44,17 +44,17 @@ public class DeserializeStrategyPostFormUrlencodedTest {
         ScopeProvider.setCurrentScope(mainScope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
-        IKey keyIObject = Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject");
+        IKey keyIObject = Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject");
         IOC.register(keyIObject,
             new CreateNewInstanceStrategy(
                 (args) -> new DSObject()
 
             )
         );
-        IOC.register(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {

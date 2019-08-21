@@ -2,9 +2,9 @@ package info.smart_tools.smartactors.checkpoint_auto_startup.checkpoint_auto_sta
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
-import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartupException;
+import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -38,19 +38,19 @@ public class CheckpointAutoStartupPlugin extends BootstrapPlugin {
     @Item("checkpoint_actor_delayed_startup_action")
     public void doSomeThing()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.resolveByName("scheduler service activation action for checkpoint actor"),
+        IOC.register(Keys.getKeyByName("scheduler service activation action for checkpoint actor"),
                 new SingletonStrategy((IAction<ISchedulerService>) service -> {
                     try {
-                        IQueue<ITask> featureLoadCompletionQueue = IOC.resolve(Keys.resolveByName("feature group load completion task queue"));
+                        IQueue<ITask> featureLoadCompletionQueue = IOC.resolve(Keys.getKeyByName("feature group load completion task queue"));
                         featureLoadCompletionQueue.put(() -> {
                             try {
                                 service.start();
-                            } catch (ServiceStartupException | IllegalServiceStateException e) {
+                            } catch (ServiceStartException | IllegalServiceStateException e) {
                                 throw new TaskExecutionException(e);
                             }
                         });
                     } catch (ResolutionException e) {
-                        throw new ActionExecuteException(e);
+                        throw new ActionExecutionException(e);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }

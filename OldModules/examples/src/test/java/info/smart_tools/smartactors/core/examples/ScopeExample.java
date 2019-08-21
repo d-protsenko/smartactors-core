@@ -65,7 +65,7 @@ public class ScopeExample {
     }
 
     private void initSystemIOC() throws InvalidArgumentException, RegistrationException {
-        IOC.register(IOC.getKeyForKeyByNameResolutionStrategy(), new ResolveByNameIocStrategy(
+        IOC.register(IOC.getKeyForKeyByNameStrategy(), new ResolveByNameIocStrategy(
                 (a) -> {
                     try {
                         return new Key((String) a[0]);
@@ -162,7 +162,7 @@ public class ScopeExample {
     @Test
     public void testSystemIOC() throws ScopeProviderException, ResolutionException, InvalidArgumentException, RegistrationException {
         assertSame(systemScope, ScopeProvider.getCurrentScope());
-        IKey key = Keys.resolveByName("test");
+        IKey key = Keys.getKeyByName("test");
         SampleClass systemObject = new SampleClass("system");
         IOC.register(key, new SingletonStrategy(systemObject));
         assertEquals(systemObject, IOC.resolve(key));

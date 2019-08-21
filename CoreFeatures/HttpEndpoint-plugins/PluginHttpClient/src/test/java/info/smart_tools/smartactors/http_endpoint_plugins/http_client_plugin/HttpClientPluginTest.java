@@ -48,7 +48,7 @@ public class HttpClientPluginTest {
         scope.setValue(IOC.getIocKey(), new StrategyContainer());
         ScopeProvider.setCurrentScope(scope);
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
 
@@ -57,7 +57,7 @@ public class HttpClientPluginTest {
         bootstrap.start();
 
         IOC.register(
-                Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
@@ -141,12 +141,12 @@ public class HttpClientPluginTest {
         item.executeProcess();
 
         IResponseHandler responseHandler = mock(IResponseHandler.class);
-        IOC.register(Keys.resolveByName(IResponseHandler.class.getCanonicalName()), new SingletonStrategy(responseHandler));
+        IOC.register(Keys.getKeyByName(IResponseHandler.class.getCanonicalName()), new SingletonStrategy(responseHandler));
         HttpClient client = mock(HttpClient.class);
-        IOC.register(Keys.resolveByName("createTimerOnRequest"), new SingletonStrategy(client));
+        IOC.register(Keys.getKeyByName("createTimerOnRequest"), new SingletonStrategy(client));
         IObject request =
                 new DSObject("{\"messageMapId\": \"messageMapId\", \"message\": {}, \"method\": \"POST\", \"uri\": \"https://foo.bar\"}");
-        IOC.resolve(Keys.resolveByName("sendHttpRequest"), client, request);
+        IOC.resolve(Keys.getKeyByName("sendHttpRequest"), client, request);
         verify(client, times(1)).sendRequest(any());
         assertNotNull(client);
     }

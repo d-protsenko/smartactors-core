@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.on_feature_loading_service_starter.on_feature_loading_starter;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
@@ -38,8 +38,8 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
 
     private IQueue<ITask> taskQueue;
     private IChainStorage chainStorage;
-    private IResolveDependencyStrategy sequenceResolveStrategy;
-    private IResolveDependencyStrategy chainMapIdResolveStrategy;
+    private IStrategy sequenceResolveStrategy;
+    private IStrategy chainMapIdResolveStrategy;
     private IMessageProcessingSequence sequence;
     private IMessageProcessor messageProcessor;
     private int stackDepth;
@@ -65,11 +65,11 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
         IScope mainScope = ScopeProvider.getScope(keyOfMainScope);
         ScopeProvider.setCurrentScope(mainScope);
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
 
-        IKey iFieldNameKey = Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey iFieldNameKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
 
         IOC.register(iFieldNameKey,
                 new CreateNewInstanceStrategy(
@@ -84,24 +84,24 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
                 )
         );
 
-        IKey taskQueueKey = Keys.resolveByName("task_queue");
+        IKey taskQueueKey = Keys.getKeyByName("task_queue");
         IOC.register(taskQueueKey,
                 new SingletonStrategy(this.taskQueue));
 
-        IKey chainStorageKey = Keys.resolveByName(IChainStorage.class.getCanonicalName());
+        IKey chainStorageKey = Keys.getKeyByName(IChainStorage.class.getCanonicalName());
         IOC.register(chainStorageKey,
                 new SingletonStrategy(this.chainStorage));
 
-        IKey messageProcessorKey = Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor");
+        IKey messageProcessorKey = Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor");
         this.messageProcessor = mock(IMessageProcessor.class);
         IOC.register(messageProcessorKey, new SingletonStrategy(this.messageProcessor));
 
-        IKey stackDepthKey = Keys.resolveByName("default_stack_depth");
+        IKey stackDepthKey = Keys.getKeyByName("default_stack_depth");
         this.stackDepth = 5;
         IOC.register(stackDepthKey, new SingletonStrategy(this.stackDepth));
 
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new SingletonStrategy(this.context)
         );
     }
@@ -160,7 +160,7 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
         IObject message31 = ((List<IObject>)onFeatureLoadingConfigSection.get(2).getValue(new FieldName("messages"))).get(0);
         IObject message32 = ((List<IObject>)onFeatureLoadingConfigSection.get(2).getValue(new FieldName("messages"))).get(1);
 
-        this.chainMapIdResolveStrategy = mock(IResolveDependencyStrategy.class);
+        this.chainMapIdResolveStrategy = mock(IStrategy.class);
         Object mapId1 = mock(Object.class);
         Object mapId2 = mock(Object.class);
         Object mapId3 = mock(Object.class);
@@ -171,7 +171,7 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
         when(this.chainMapIdResolveStrategy.resolve("chain2")).thenReturn(mapId2);
         when(this.chainMapIdResolveStrategy.resolve("chain3")).thenReturn(mapId3);
 
-        IKey chainIdFromMapNameKey = Keys.resolveByName("chain_id_from_map_name_and_message");
+        IKey chainIdFromMapNameKey = Keys.getKeyByName("chain_id_from_map_name_and_message");
         IOC.register(chainIdFromMapNameKey,
                 this.chainMapIdResolveStrategy);
 
@@ -179,8 +179,8 @@ public class OnFeatureLoadingSectionProcessingStrategyTest {
         when(this.chainStorage.resolve(mapId2)).thenReturn(chain2);
         when(this.chainStorage.resolve(mapId3)).thenReturn(chain3);
 
-        this.sequenceResolveStrategy = mock(IResolveDependencyStrategy.class);
-        IKey sequenceKey = Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence");
+        this.sequenceResolveStrategy = mock(IStrategy.class);
+        IKey sequenceKey = Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence");
         this.sequence = mock(IMessageProcessingSequence.class);
         IOC.register(sequenceKey, this.sequenceResolveStrategy);
         when(this.sequenceResolveStrategy.resolve(this.stackDepth, "chain1", message11)).thenReturn(sequence);

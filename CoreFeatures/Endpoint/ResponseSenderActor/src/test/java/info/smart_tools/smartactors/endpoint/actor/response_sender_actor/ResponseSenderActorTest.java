@@ -58,10 +58,10 @@ public class ResponseSenderActorTest {
         ScopeProvider.setCurrentScope(mainScope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
-        IKey keyFieldName = Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey keyFieldName = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         IOC.register(keyFieldName,
                 new CreateNewInstanceStrategy(
                         (args) -> {
@@ -72,25 +72,25 @@ public class ResponseSenderActorTest {
                             return null;
                         }
                 ));
-        IKey keyIObject = Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject");
+        IKey keyIObject = Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject");
         IOC.register(keyIObject,
                 new CreateNewInstanceStrategy(
                         (args) -> new DSObject()
 
                 ));
-        IKey keyIResponse = Keys.resolveByName(IResponse.class.getCanonicalName());
+        IKey keyIResponse = Keys.getKeyByName(IResponse.class.getCanonicalName());
         IOC.register(keyIResponse,
                 new SingletonStrategy(response));
 
-        IKey keyIResponseContentStrategy = Keys.resolveByName(IResponseContentStrategy.class.getCanonicalName());
+        IKey keyIResponseContentStrategy = Keys.getKeyByName(IResponseContentStrategy.class.getCanonicalName());
         IOC.register(keyIResponseContentStrategy,
                 new SingletonStrategy(responseContentStrategy));
 
-        IKey keyIResponseSender = Keys.resolveByName(IResponseSender.class.getCanonicalName());
+        IKey keyIResponseSender = Keys.getKeyByName(IResponseSender.class.getCanonicalName());
         IOC.register(keyIResponseSender,
                 new SingletonStrategy(responseSender));
 
-        IOC.register(Keys.resolveByName("http_request_key_for_response_sender"),
+        IOC.register(Keys.getKeyByName("http_request_key_for_response_sender"),
                 new SingletonStrategy("HTTP_POST"));
 
 

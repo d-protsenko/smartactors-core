@@ -46,13 +46,13 @@ public class InMemoryDBSectionProcessingStrategy implements ISectionStrategy {
      * @throws ResolutionException if fails to resolve any dependencies
      */
     InMemoryDBSectionProcessingStrategy() throws ResolutionException {
-        this.name = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "inMemoryDb");
+        this.name = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "inMemoryDb");
         this.nameFieldName = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "name"
         );
         this.documentsFieldName = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "documents"
         );
     }
@@ -61,13 +61,13 @@ public class InMemoryDBSectionProcessingStrategy implements ISectionStrategy {
     public void onLoadConfig(final IObject config) throws ConfigurationProcessingException {
         try {
             List<IObject> databaseObject = (List<IObject>) config.getValue(name);
-            IDatabase dataBase = IOC.resolve(Keys.resolveByName(InMemoryDatabase.class.getCanonicalName()));
+            IDatabase dataBase = IOC.resolve(Keys.getKeyByName(InMemoryDatabase.class.getCanonicalName()));
             for (IObject collection : databaseObject) {
                 String collectionName = (String) collection.getValue(nameFieldName);
                 dataBase.createCollection(collectionName);
                 List<String> documents = (List<String>) collection.getValue(documentsFieldName);
                 for (String document : documents) {
-                    dataBase.insert(IOC.resolve(Keys.resolveByName("IObjectByString"), document), collectionName);
+                    dataBase.insert(IOC.resolve(Keys.getKeyByName("IObjectByString"), document), collectionName);
                 }
             }
         } catch (ReadValueException | InvalidArgumentException e) {

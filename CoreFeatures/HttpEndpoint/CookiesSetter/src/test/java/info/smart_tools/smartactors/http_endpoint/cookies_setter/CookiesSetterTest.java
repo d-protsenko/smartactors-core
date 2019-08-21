@@ -58,16 +58,16 @@ public class CookiesSetterTest {
         ScopeProvider.setCurrentScope(mainScope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
 
         IOC.register(
-                Keys.resolveByName(IObject.class.getCanonicalName()),
+                Keys.getKeyByName(IObject.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy(a -> new DSObject())
         );
 
-        IKey fieldNameKey = Keys.resolveByName(IFieldName.class.getCanonicalName());
+        IKey fieldNameKey = Keys.getKeyByName(IFieldName.class.getCanonicalName());
         IOC.register(
                 fieldNameKey,
                 new ApplyFunctionToArgumentsStrategy(
@@ -109,7 +109,7 @@ public class CookiesSetterTest {
         endpointConfig.setValue(cookiesFN, cookieConfig);
 
         IOC.register(
-                Keys.resolveByName("http-test_endpoint-config"),
+                Keys.getKeyByName("http-test_endpoint-config"),
                 new SingletonStrategy(endpointConfig)
         );
 
@@ -151,7 +151,7 @@ public class CookiesSetterTest {
         endpointConfig.setValue(cookiesFN, cookieConfig);
 
         IOC.register(
-                Keys.resolveByName("http-test_endpoint-config"),
+                Keys.getKeyByName("http-test_endpoint-config"),
                 new SingletonStrategy(endpointConfig)
         );
 
@@ -225,7 +225,7 @@ public class CookiesSetterTest {
         endpointConfig.setValue(cookiesFN, cookiesConfig);
 
         IOC.register(
-                Keys.resolveByName("http-test_endpoint-config"),
+                Keys.getKeyByName("http-test_endpoint-config"),
                 new SingletonStrategy(endpointConfig)
         );
 
@@ -298,12 +298,12 @@ public class CookiesSetterTest {
         endpointConfig2.setValue(cookiesFN, cookiesConfig2);
 
         IOC.register(
-                Keys.resolveByName("http-test-1_endpoint-config"),
+                Keys.getKeyByName("http-test-1_endpoint-config"),
                 new SingletonStrategy(endpointConfig1)
         );
 
         IOC.register(
-                Keys.resolveByName("http-test-2_endpoint-config"),
+                Keys.getKeyByName("http-test-2_endpoint-config"),
                 new SingletonStrategy(endpointConfig2)
         );
 
@@ -436,7 +436,7 @@ public class CookiesSetterTest {
         endpointConfig.setValue(cookiesFN, cookiesConfig);
 
         IOC.register(
-                Keys.resolveByName("http-test_endpoint-config"),
+                Keys.getKeyByName("http-test_endpoint-config"),
                 new SingletonStrategy(endpointConfig)
         );
 

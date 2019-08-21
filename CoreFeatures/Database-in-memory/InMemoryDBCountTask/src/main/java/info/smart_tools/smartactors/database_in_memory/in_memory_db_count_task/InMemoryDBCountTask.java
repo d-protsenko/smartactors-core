@@ -89,9 +89,9 @@ public class InMemoryDBCountTask implements IDatabaseTask {
      */
     public InMemoryDBCountTask() throws TaskPrepareException {
         try {
-            collectionFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collectionName");
-            criteriaFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "criteria");
-            callbackFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "callback");
+            collectionFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collectionName");
+            criteriaFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "criteria");
+            callbackFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "callback");
         } catch (ResolutionException e) {
             throw new TaskPrepareException("Failed to resolve \"IFieldName\"", e);
         }
@@ -111,7 +111,7 @@ public class InMemoryDBCountTask implements IDatabaseTask {
     @Override
     public void execute() throws TaskExecutionException {
         try {
-            IDatabase dataBase = IOC.resolve(Keys.resolveByName(InMemoryDatabase.class.getCanonicalName()));
+            IDatabase dataBase = IOC.resolve(Keys.getKeyByName(InMemoryDatabase.class.getCanonicalName()));
             Long result = dataBase.count(criteria, collection);
             callback.execute(result);
         } catch (ResolutionException e) {

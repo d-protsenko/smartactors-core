@@ -35,7 +35,7 @@ public class CreateCollectionActorTest {
         scope.setValue(IOC.getIocKey(), container);
         ScopeProvider.setCurrentScope(scope);
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -46,7 +46,7 @@ public class CreateCollectionActorTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), IFieldName.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), IFieldName.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
@@ -57,7 +57,7 @@ public class CreateCollectionActorTest {
                         }
                 )
         );
-        IOC.register(Keys.resolveByName(IObject.class.getCanonicalName()),
+        IOC.register(Keys.getKeyByName(IObject.class.getCanonicalName()),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     if (args.length == 0) {
                         return new DSObject();
@@ -72,10 +72,10 @@ public class CreateCollectionActorTest {
                     }
                 })
         );
-        IOC.register(Keys.resolveByName("connectionOptions"),
+        IOC.register(Keys.getKeyByName("connectionOptions"),
                 new ApplyFunctionToArgumentsStrategy(args -> mock(ConnectionOptions.class))
         );
-        IOC.register(Keys.resolveByName("PostgresConnectionPool"),
+        IOC.register(Keys.getKeyByName("PostgresConnectionPool"),
                 new ApplyFunctionToArgumentsStrategy(args -> mock(IPool.class))
         );
     }
@@ -88,7 +88,7 @@ public class CreateCollectionActorTest {
         when(wrapper.getOptions()).thenReturn(null);
 
         ITask task = mock(ITask.class);
-        IOC.register(Keys.resolveByName("db.collection.create-if-not-exists"),
+        IOC.register(Keys.getKeyByName("db.collection.create-if-not-exists"),
                 new ApplyFunctionToArgumentsStrategy(args -> task)
         );
         actor.createTable(wrapper);

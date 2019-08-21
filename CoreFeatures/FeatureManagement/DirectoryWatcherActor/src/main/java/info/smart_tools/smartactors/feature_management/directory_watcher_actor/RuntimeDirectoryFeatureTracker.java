@@ -97,10 +97,10 @@ public class RuntimeDirectoryFeatureTracker {
             this.module = ModuleManager.getCurrentModule();
             this.watchingDir = new info.smart_tools.smartactors.base.path.Path(wrapper.getObservedDirectory());
             this.fileNameFieldName = IOC.resolve(
-                    Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), wrapper.getFileNameFieldName()
+                    Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), wrapper.getFileNameFieldName()
             );
             this.observedDirectoryFieldName = IOC.resolve(
-                    Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), wrapper.getObservedDirectoryFieldName()
+                    Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), wrapper.getObservedDirectoryFieldName()
             );
             this.executionChainName = wrapper.getExecutionChain();
             startWatchingService(this.watchingDir);
@@ -118,22 +118,22 @@ public class RuntimeDirectoryFeatureTracker {
         ScopeProvider.setCurrentScope(this.scope);
         ModuleManager.setCurrentModule(this.module);
 
-        IObject context = IOC.resolve(Keys.resolveByName(IOBJECT_FACTORY_STRATEGY_NAME));
-        IObject message = IOC.resolve(Keys.resolveByName(IOBJECT_FACTORY_STRATEGY_NAME));
+        IObject context = IOC.resolve(Keys.getKeyByName(IOBJECT_FACTORY_STRATEGY_NAME));
+        IObject message = IOC.resolve(Keys.getKeyByName(IOBJECT_FACTORY_STRATEGY_NAME));
         message.setValue(this.fileNameFieldName, newFilePath);
         message.setValue(this.observedDirectoryFieldName, this.watchingDir);
 
-        Integer stackDepth = IOC.resolve(Keys.resolveByName("default_stack_depth"));
+        Integer stackDepth = IOC.resolve(Keys.getKeyByName("default_stack_depth"));
         IMessageProcessingSequence processingSequence = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), MESSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), MESSAGE_PROCESSOR_SEQUENCE_FACTORY_STRATEGY_NAME),
                 stackDepth,
                 this.executionChainName,
                 message
         );
 
-        IQueue queue = IOC.resolve(Keys.resolveByName(TASK_QUEUE_IOC_NAME));
+        IQueue queue = IOC.resolve(Keys.getKeyByName(TASK_QUEUE_IOC_NAME));
         IMessageProcessor messageProcessor = IOC.resolve(
-                IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), MESSAGE_PROCESSOR_FACTORY_STRATEGY_NAME),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), MESSAGE_PROCESSOR_FACTORY_STRATEGY_NAME),
                 queue,
                 processingSequence
         );

@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.message_processing.response_sender_receiver
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -21,18 +21,18 @@ public class ResponseSenderAction implements IAction<IObject> {
 
     public ResponseSenderAction()
             throws ResolutionException {
-        responseStrategyFN = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responseStrategy");
-        contextFN = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context");
+        responseStrategyFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responseStrategy");
+        contextFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context");
     }
 
     @Override
-    public void execute(IObject env) throws ActionExecuteException, InvalidArgumentException {
+    public void execute(IObject env) throws ActionExecutionException, InvalidArgumentException {
         try {
             IObject context = (IObject) env.getValue(contextFN);
             IResponseStrategy responseStrategy = (IResponseStrategy) context.getValue(responseStrategyFN);
             responseStrategy.sendResponse(env);
         } catch (ReadValueException | InvalidArgumentException | ResponseException | NullPointerException e) {
-            throw new ActionExecuteException("Error occurred sending response.", e);
+            throw new ActionExecutionException("Error occurred sending response.", e);
         }
     }
 }

@@ -64,11 +64,11 @@ public class WrapperExample {
         new ConcatSplitRulesPlugin(bootstrap).load();
         bootstrap.start();
 
-        iObjectKey = Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject");
-        iFieldKey = Keys.resolveByName(IField.class.getCanonicalName());
-        configObjectKey = Keys.resolveByName("configuration object");
-        wdsObjectKey = Keys.resolveByName(WDSObject.class.getCanonicalName());
-        iWrapperGeneratorKey = Keys.resolveByName(IWrapperGenerator.class.getCanonicalName());
+        iObjectKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject");
+        iFieldKey = Keys.getKeyByName(IField.class.getCanonicalName());
+        configObjectKey = Keys.getKeyByName("configuration object");
+        wdsObjectKey = Keys.getKeyByName(WDSObject.class.getCanonicalName());
+        iWrapperGeneratorKey = Keys.getKeyByName(IWrapperGenerator.class.getCanonicalName());
     }
 
     @Test

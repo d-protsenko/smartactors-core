@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc.field_name_tools;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -24,7 +24,7 @@ public class FieldNamesTest {
     public void checkResolveByName()
             throws Exception {
         IStrategyContainer strategyContainer = mock(IStrategyContainer.class);
-        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+        IStrategy strategy = mock(IStrategy.class);
         IKey key = mock(IKey.class);
         IKey iFieldNameKey = mock(IKey.class);
         IFieldName fieldName = mock(IFieldName.class);
@@ -43,7 +43,7 @@ public class FieldNamesTest {
         when(strategyContainer.resolve(any())).thenReturn(strategy);
         when(strategy.resolve(IFieldName.class.getCanonicalName())).thenReturn(iFieldNameKey);
         when(strategy.resolve("test")).thenReturn(fieldName);
-        IFieldName result = FieldNames.resolveByName("test");
+        IFieldName result = FieldNames.getFieldNameByName("test");
         assertNotNull(result);
         assertEquals(result, fieldName);
     }

@@ -42,8 +42,8 @@ public class ActorReceiver implements IMessageReceiver {
 
         this.childReceiver = childReceiver;
 
-        this.queue = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "actor_receiver_queue"));
-        this.isBusy = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "actor_receiver_busyness_flag"));
+        this.queue = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "actor_receiver_queue"));
+        this.isBusy = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "actor_receiver_busyness_flag"));
     }
 
     @Override

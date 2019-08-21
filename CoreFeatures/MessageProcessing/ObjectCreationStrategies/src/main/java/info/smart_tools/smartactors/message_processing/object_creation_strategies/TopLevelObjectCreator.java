@@ -28,8 +28,8 @@ public class TopLevelObjectCreator implements IReceiverObjectCreator {
 
     public TopLevelObjectCreator()
             throws ResolutionException {
-        dependencyFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
-        topLevelObjectFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "topLevelObject");
+        dependencyFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
+        topLevelObjectFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "topLevelObject");
     }
 
     @Override
@@ -37,7 +37,7 @@ public class TopLevelObjectCreator implements IReceiverObjectCreator {
             throws ReceiverObjectListenerException, InvalidReceiverPipelineException, ReceiverObjectCreatorException {
         try {
             Object object = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), config.getValue(dependencyFieldName)),
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), config.getValue(dependencyFieldName)),
                     config
             );
 

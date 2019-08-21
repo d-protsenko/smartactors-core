@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.feature_loader.feature_loader;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.IBiAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
@@ -91,16 +91,16 @@ public class FeatureLoaderTest {
         pluginLoaderMock = mock(IPluginLoader.class);
 
         mockStatic(IOC.class, Keys.class);
-        when(Keys.resolveByName(eq("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"))).thenReturn(fieldNameKey);
-        when(Keys.resolveByName(eq("plugin creator"))).thenReturn(pluginCreatorKey);
-        when(Keys.resolveByName(eq("plugin loader visitor"))).thenReturn(pluginLoaderVisitorKey);
-        when(Keys.resolveByName(eq(IConfigurationManager.class.getCanonicalName()))).thenReturn(configurationManagerKey);
-        when(Keys.resolveByName(eq("filesystem facade"))).thenReturn(filesystemFacadeKey);
-        when(Keys.resolveByName(eq("info.smart_tools.smartactors.iobject.iobject.IObject"))).thenReturn(iobjectKey);
-        when(Keys.resolveByName(eq(FeatureStatusImpl.class.getCanonicalName()))).thenReturn(featureStatusKey);
-        when(Keys.resolveByName(eq("configuration object"))).thenReturn(configurationObjectKey);
-        when(Keys.resolveByName(eq("plugin loader"))).thenReturn(pluginLoaderKey);
-        when(Keys.resolveByName(eq("feature group load completion task queue"))).thenReturn(queueKey);
+        when(Keys.getKeyByName(eq("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"))).thenReturn(fieldNameKey);
+        when(Keys.getKeyByName(eq("plugin creator"))).thenReturn(pluginCreatorKey);
+        when(Keys.getKeyByName(eq("plugin loader visitor"))).thenReturn(pluginLoaderVisitorKey);
+        when(Keys.getKeyByName(eq(IConfigurationManager.class.getCanonicalName()))).thenReturn(configurationManagerKey);
+        when(Keys.getKeyByName(eq("filesystem facade"))).thenReturn(filesystemFacadeKey);
+        when(Keys.getKeyByName(eq("info.smart_tools.smartactors.iobject.iobject.IObject"))).thenReturn(iobjectKey);
+        when(Keys.getKeyByName(eq(FeatureStatusImpl.class.getCanonicalName()))).thenReturn(featureStatusKey);
+        when(Keys.getKeyByName(eq("configuration object"))).thenReturn(configurationObjectKey);
+        when(Keys.getKeyByName(eq("plugin loader"))).thenReturn(pluginLoaderKey);
+        when(Keys.getKeyByName(eq("feature group load completion task queue"))).thenReturn(queueKey);
 
         when(IOC.resolve(same(fieldNameKey), eq("featureName"))).thenReturn(featureNameFN);
         when(IOC.resolve(same(fieldNameKey), eq("afterFeatures"))).thenReturn(afterFeaturesFN);
@@ -163,7 +163,7 @@ public class FeatureLoaderTest {
         verifyStatic(times(1));
         IOC.resolve(same(featureStatusKey), argsCaptor.capture());
 
-        IBiAction loadAction = (IBiAction) argsCaptor.getAllValues().get(1);
+        IActionTwoArgs loadAction = (IActionTwoArgs) argsCaptor.getAllValues().get(1);
 
         argsCaptor.getAllValues().clear();
 

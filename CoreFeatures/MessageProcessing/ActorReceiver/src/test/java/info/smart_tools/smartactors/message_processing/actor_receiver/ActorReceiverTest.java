@@ -47,9 +47,9 @@ public class ActorReceiverTest {
         childReceiverMock = mock(IMessageReceiver.class);
         processorMock = mock(IMessageProcessor.class);
 
-        when(IOC.getKeyForKeyByNameResolutionStrategy()).thenReturn(mock(IKey.class));
-        when(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "actor_receiver_queue")).thenReturn(actorReceiverQueueKey);
-        when(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "actor_receiver_busyness_flag")).thenReturn(actorReceiverBusynessFlagKey);
+        when(IOC.getKeyForKeyByNameStrategy()).thenReturn(mock(IKey.class));
+        when(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "actor_receiver_queue")).thenReturn(actorReceiverQueueKey);
+        when(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "actor_receiver_busyness_flag")).thenReturn(actorReceiverBusynessFlagKey);
 
         when(IOC.resolve(actorReceiverQueueKey)).thenReturn(receiverQueueMock);
         when(IOC.resolve(actorReceiverBusynessFlagKey)).thenReturn(receiverFlag);

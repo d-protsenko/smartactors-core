@@ -21,7 +21,7 @@ import java.util.List;
 class FulltextIndexWriter implements IndexWriter {
 
     static IndexWriter resolve(IObject options) throws Exception {
-        IKey fieldNameKey = Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey fieldNameKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         IFieldName languageField = IOC.resolve(fieldNameKey, "language");
         String language = (String) options.getValue(languageField);
         if (language == null) {

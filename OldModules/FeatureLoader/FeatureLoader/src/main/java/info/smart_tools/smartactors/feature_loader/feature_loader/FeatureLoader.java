@@ -2,8 +2,8 @@ package info.smart_tools.smartactors.feature_loader.feature_loader;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.IBiAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionTwoArgs;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
@@ -71,13 +71,13 @@ public class FeatureLoader implements IFeatureLoader {
      */
     public FeatureLoader()
             throws ResolutionException {
-        featureNameFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureName");
-        afterFeaturesFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "afterFeatures");
-        pluginCreator = IOC.resolve(Keys.resolveByName("plugin creator"));
-        pluginLoaderVisitor = IOC.resolve(Keys.resolveByName("plugin loader visitor"));
-        configurationManager = IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
-        fs = IOC.resolve(Keys.resolveByName("filesystem facade"));
-        featureCompletionTaskQueue = IOC.resolve(Keys.resolveByName("feature group load completion task queue"));
+        featureNameFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "featureName");
+        afterFeaturesFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "afterFeatures");
+        pluginCreator = IOC.resolve(Keys.getKeyByName("plugin creator"));
+        pluginLoaderVisitor = IOC.resolve(Keys.getKeyByName("plugin loader visitor"));
+        configurationManager = IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
+        fs = IOC.resolve(Keys.getKeyByName("filesystem facade"));
+        featureCompletionTaskQueue = IOC.resolve(Keys.getKeyByName("feature group load completion task queue"));
     }
 
     @Override
@@ -108,7 +108,7 @@ public class FeatureLoader implements IFeatureLoader {
                 metaFeatureStatus.addDependency(dependencyStatus);
             }
 
-            metaFeatureStatus.init(groupPath, IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
+            metaFeatureStatus.init(groupPath, IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
 
             preStartProcess(metaFeatureStatus);
 
@@ -119,7 +119,7 @@ public class FeatureLoader implements IFeatureLoader {
             metaFeatureStatus.load();
 
             return metaFeatureStatus;
-        } catch (IOException | FeatureLoadException | ActionExecuteException | ResolutionException e) {
+        } catch (IOException | FeatureLoadException | ActionExecutionException | ResolutionException e) {
             throw new FeatureLoadException(
                     MessageFormat.format("Error occurred loading features from ''{0}''.", groupPath.getPath()), e);
         }
@@ -141,7 +141,7 @@ public class FeatureLoader implements IFeatureLoader {
         try {
             preStartProcess(status);
             status.load();
-        } catch (ActionExecuteException e) {
+        } catch (ActionExecutionException e) {
             throw new FeatureLoadException("Error occurred loading the feature.", e);
         }
 
@@ -186,9 +186,9 @@ public class FeatureLoader implements IFeatureLoader {
         return statuses.computeIfAbsent(featureId, id -> {
             try {
                 return IOC.resolve(
-                        Keys.resolveByName(FeatureStatusImpl.class.getCanonicalName()),
+                        Keys.getKeyByName(FeatureStatusImpl.class.getCanonicalName()),
                         id,
-                        (IBiAction<IObject, IPath>) this::loadPluginsAndConfig);
+                        (IActionTwoArgs<IObject, IPath>) this::loadPluginsAndConfig);
             } catch (ResolutionException e) {
                 throw new RuntimeException(e);
             }
@@ -208,20 +208,20 @@ public class FeatureLoader implements IFeatureLoader {
             throws FeatureLoadException {
         try {
             String configString = fs.readToString(fs.joinPaths(featurePath, new Path("config.json")));
-            return IOC.resolve(Keys.resolveByName("configuration object"), configString);
+            return IOC.resolve(Keys.getKeyByName("configuration object"), configString);
         } catch (IOException | ResolutionException | InvalidArgumentException e) {
             throw new FeatureLoadException("Error occurred reading feature configuration file.", e);
         }
     }
 
     private void loadPluginsAndConfig(final IObject config, final IPath directory)
-            throws ActionExecuteException {
+            throws ActionExecutionException {
         try {
             loadPluginsFrom(listJarsIn(directory));
             configurationManager.applyConfig(config);
         } catch (FeatureLoadException | InvalidArgumentException | PluginLoaderException | ProcessExecutionException |
                  ConfigurationProcessingException | ResolutionException e) {
-            throw new ActionExecuteException(e);
+            throw new ActionExecutionException(e);
         }
     }
 
@@ -238,12 +238,12 @@ public class FeatureLoader implements IFeatureLoader {
                 IPlugin plugin = pluginCreator.create(clz, bootstrap);
                 plugin.load();
             } catch (PluginCreationException | PluginException e) {
-                throw new ActionExecuteException(e);
+                throw new ActionExecutionException(e);
             }
         };
 
         IPluginLoader<Collection<IPath>> pluginLoader = IOC.resolve(
-                Keys.resolveByName("plugin loader"),
+                Keys.getKeyByName("plugin loader"),
                 getClass().getClassLoader(),
                 classHandler,
                 pluginLoaderVisitor);
@@ -278,7 +278,7 @@ public class FeatureLoader implements IFeatureLoader {
                             try {
                                 task.execute();
                             } catch (TaskExecutionException e) {
-                                throw new ActionExecuteException(e);
+                                throw new ActionExecutionException(e);
                             }
                         }
                     }
@@ -286,7 +286,7 @@ public class FeatureLoader implements IFeatureLoader {
                     currentLoadingStatus.compareAndSet(status, null);
                 }
             });
-        } catch (ActionExecuteException e) {
+        } catch (ActionExecutionException e) {
             throw new FeatureLoadException("Unexpected feature state.");
         }
     }

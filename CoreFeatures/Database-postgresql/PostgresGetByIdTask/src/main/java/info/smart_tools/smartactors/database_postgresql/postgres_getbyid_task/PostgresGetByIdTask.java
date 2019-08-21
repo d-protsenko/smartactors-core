@@ -53,7 +53,7 @@ public class PostgresGetByIdTask implements IDatabaseTask {
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-            GetByIdMessage message = IOC.resolve(Keys.resolveByName(GetByIdMessage.class.getCanonicalName()), query);
+            GetByIdMessage message = IOC.resolve(Keys.getKeyByName(GetByIdMessage.class.getCanonicalName()), query);
             collection = message.getCollectionName();
             id = message.getId();
             callback = message.getCallback();
@@ -79,7 +79,7 @@ public class PostgresGetByIdTask implements IDatabaseTask {
             ResultSet resultSet = statement.getResultSet();
             if (resultSet.next()) {
                 String sqlDoc = resultSet.getString(1);
-                IObject document = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"), sqlDoc);
+                IObject document = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), sqlDoc);
                 callback.execute(document);
                 connection.commit();
             } else {

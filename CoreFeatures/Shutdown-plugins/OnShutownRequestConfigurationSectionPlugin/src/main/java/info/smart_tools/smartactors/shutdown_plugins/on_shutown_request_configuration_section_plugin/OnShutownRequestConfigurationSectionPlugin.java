@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.shutdown_plugins.on_shutown_request_configu
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
@@ -46,27 +46,27 @@ public class OnShutownRequestConfigurationSectionPlugin extends BootstrapPlugin 
      */
     public void registerDefaultOnShutdownRequestAction()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.resolveByName("default shutdown request action"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.getKeyByName("default shutdown request action"), new ApplyFunctionToArgumentsStrategy(args -> {
             IObject arg = (IObject) args[0];
 
             try {
-                IFieldName messagesFN = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "messages");
-                IFieldName chainFN = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
-                IFieldName modeFieldFN = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "modeField");
+                IFieldName messagesFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "messages");
+                IFieldName chainFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
+                IFieldName modeFieldFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "modeField");
 
                 List<IObject> messages = (List) arg.getValue(messagesFN);
                 Object chainName = arg.getValue(chainFN);
                 IFieldName modeFieldName = (null == arg.getValue(modeFieldFN)) ? null :
-                        IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), arg.getValue(modeFieldFN));
+                        IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), arg.getValue(modeFieldFN));
 
-                IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(),
+                IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(),
                         IChainStorage.class.getCanonicalName()));
-                IQueue<ITask> queue = IOC.resolve(Keys.resolveByName("task_queue"));
+                IQueue<ITask> queue = IOC.resolve(Keys.getKeyByName("task_queue"));
 
                 Integer stackDepth0;
 
                 try {
-                    stackDepth0 = IOC.resolve(Keys.resolveByName("default_stack_depth"));
+                    stackDepth0 = IOC.resolve(Keys.getKeyByName("default_stack_depth"));
                 } catch (ResolutionException e) {
                     stackDepth0 = 5;
                 }
@@ -79,20 +79,20 @@ public class OnShutownRequestConfigurationSectionPlugin extends BootstrapPlugin 
                                 message.setValue(modeFieldName, mode);
                             }
                             IMessageProcessingSequence processingSequence = IOC.resolve(
-                                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                                     stackDepth,
                                     chainName,
                                     message
                             );
                             IMessageProcessor messageProcessor = IOC.resolve(
-                                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+                                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                                     queue,
                                     processingSequence
                             );
-                            messageProcessor.process(message, (IObject) IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
+                            messageProcessor.process(message, (IObject) IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
                         }
                     } catch (ResolutionException | ChangeValueException | MessageProcessorProcessException e) {
-                        throw new ActionExecuteException(e);
+                        throw new ActionExecutionException(e);
                     }
                 };
             } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {
@@ -119,7 +119,7 @@ public class OnShutownRequestConfigurationSectionPlugin extends BootstrapPlugin 
     })
     public void registerOnShutdownRequestSectionProcessingStrategy()
             throws ResolutionException, InvalidArgumentException {
-        IConfigurationManager configurationManager = IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
+        IConfigurationManager configurationManager = IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
 
         configurationManager.addSectionStrategy(
                 new OnShutdownRequestConfigurationSectionStrategy("default shutdown request action"));

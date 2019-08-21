@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.debugger.actor;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.debugger.actor.wrappers.CommandMessage;
 import info.smart_tools.smartactors.debugger.actor.wrappers.DebuggableMessage;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSession;
@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
  * Test for {@link DebuggerActor}.
  */
 public class DebuggerActorTest extends PluginsLoadingTestBase {
-    private IResolveDependencyStrategy sessionStrategyMock;
+    private IStrategy sessionStrategyMock;
 
     private IDebuggerSession[] session;
 
@@ -54,8 +54,8 @@ public class DebuggerActorTest extends PluginsLoadingTestBase {
 
     @Override
     protected void registerMocks() throws Exception {
-        sessionStrategyMock = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.resolveByName("debugger session"), sessionStrategyMock);
+        sessionStrategyMock = mock(IStrategy.class);
+        IOC.register(Keys.getKeyByName("debugger session"), sessionStrategyMock);
 
         session = new IDebuggerSession[] {
             mock(IDebuggerSession.class), mock(IDebuggerSession.class)
@@ -180,7 +180,7 @@ public class DebuggerActorTest extends PluginsLoadingTestBase {
             throws Exception {
         DebuggerActor actor = new DebuggerActor();
 
-        when(sessionStrategyMock.resolve(any(), any(), any())).thenThrow(ResolveDependencyStrategyException.class);
+        when(sessionStrategyMock.resolve(any(), any(), any())).thenThrow(StrategyException.class);
 
         when(commandMessageMock.getCommand()).thenReturn("newSession");
 

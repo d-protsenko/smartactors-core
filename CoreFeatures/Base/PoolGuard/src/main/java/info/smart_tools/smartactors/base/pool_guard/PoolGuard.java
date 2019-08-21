@@ -18,7 +18,7 @@ public class PoolGuard implements IPoolGuard {
     public PoolGuard(final IPool pool) throws PoolGuardException {
         try {
             this.pool = pool;
-            this.currentObject = pool.take();
+            this.currentObject = pool.get();
         } catch (Exception e) {
             throw new PoolGuardException("PoolGuard cannot be initialized", e);
         }

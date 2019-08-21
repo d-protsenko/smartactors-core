@@ -99,7 +99,7 @@ public class PostgresCountTask implements IDatabaseTask {
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-            CountMessage message = IOC.resolve(Keys.resolveByName(CountMessage.class.getCanonicalName()), query);
+            CountMessage message = IOC.resolve(Keys.getKeyByName(CountMessage.class.getCanonicalName()), query);
             collection = message.getCollectionName();
             criteria = message.getCriteria();
             callback = message.getCallback();

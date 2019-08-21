@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.demo.simple_chain.sample_actor_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.demo.simple_chain.sample_actor.SampleActor;
 import info.smart_tools.smartactors.demo.simple_chain.sample_other_actor.SampleOtherActor;
@@ -38,7 +38,7 @@ public class SampleActorPlugin implements IPlugin {
             item1
                     .process(() -> {
                 try {
-                    IOC.register(Keys.resolveByName("SampleActor"), new ApplyFunctionToArgumentsStrategy(
+                    IOC.register(Keys.getKeyByName("SampleActor"), new ApplyFunctionToArgumentsStrategy(
                             (args) -> {
                                 try {
                                     return new SampleActor();
@@ -47,7 +47,7 @@ public class SampleActorPlugin implements IPlugin {
                                 }
                             }));
                 } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
-                    throw new ActionExecuteException(e);
+                    throw new ActionExecutionException(e);
                 }
             });
             bootstrap.add(item1);
@@ -57,7 +57,7 @@ public class SampleActorPlugin implements IPlugin {
             item2
                     .process(() -> {
                         try {
-                            IOC.register(Keys.resolveByName("SampleOtherActor"), new ApplyFunctionToArgumentsStrategy(
+                            IOC.register(Keys.getKeyByName("SampleOtherActor"), new ApplyFunctionToArgumentsStrategy(
                                     (args) -> {
                                         try {
                                             return new SampleOtherActor();
@@ -66,7 +66,7 @@ public class SampleActorPlugin implements IPlugin {
                                         }
                                     }));
                         } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     });
             bootstrap.add(item2);

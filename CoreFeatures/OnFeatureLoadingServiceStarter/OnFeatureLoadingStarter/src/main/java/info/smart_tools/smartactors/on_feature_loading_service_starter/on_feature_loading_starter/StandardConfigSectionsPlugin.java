@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.on_feature_loading_service_starter.on_feature_loading_starter;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.IStrategyRegistration;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.exception.StrategyRegistrationException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
@@ -48,10 +48,10 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =
-                                    IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
+                                    IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
 
                             configurationManager.addSectionStrategy(new OnFeatureLoadingSectionProcessingStrategy());
-                            IAdditionDependencyStrategy strategy = IOC.resolve(Keys.resolveByName("expandable_strategy#resolve key for configuration object"));
+                            IStrategyRegistration strategy = IOC.resolve(Keys.getKeyByName("expandable_strategy#resolve key for configuration object"));
 
                             strategy.register("onFeatureLoading", new ApplyFunctionToArgumentsStrategy(args -> {
                                 try {
@@ -69,22 +69,22 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                                     throw new RuntimeException("Error in configuration 'canonical maps' rule.", e);
                                 }
                             }));
-                        } catch (ResolutionException | InvalidArgumentException | AdditionDependencyStrategyException e) {
-                            throw new ActionExecuteException(e);
+                        } catch (ResolutionException | InvalidArgumentException | StrategyRegistrationException e) {
+                            throw new ActionExecutionException(e);
                         }
                     })
                     .revertProcess(() -> {
                         try {
-                            IAdditionDependencyStrategy strategy = IOC.resolve(Keys.resolveByName("expandable_strategy#resolve key for configuration object"));
+                            IStrategyRegistration strategy = IOC.resolve(Keys.getKeyByName("expandable_strategy#resolve key for configuration object"));
                             try {
-                                strategy.remove("onFeatureLoading");
-                            } catch (AdditionDependencyStrategyException e) {
+                                strategy.unregister("onFeatureLoading");
+                            } catch (StrategyRegistrationException e) {
                                 System.out.println("[WARNING] Deregistration of \"onFeatureLoading\" strategy has failed while reverting \"config_section:onFeatureLoading\" plugin.");
                             }
                         } catch (ResolutionException e) { }
                         try {
                             IConfigurationManager configurationManager =
-                                    IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
+                                    IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
                             ISectionStrategy sectionStrategy = new OnFeatureLoadingSectionProcessingStrategy();
                             configurationManager.removeSectionStrategy(sectionStrategy.getSectionName());
                         } catch ( InvalidArgumentException e) {

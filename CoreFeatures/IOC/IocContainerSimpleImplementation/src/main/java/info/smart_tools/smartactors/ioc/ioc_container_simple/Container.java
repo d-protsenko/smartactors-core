@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.ioc.ioc_container_simple;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.ioc.iioccontainer.IContainer;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
@@ -22,9 +22,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Container implements IContainer {
 
-    private final Map<IKey, IResolveDependencyStrategy> storage = new ConcurrentHashMap<>();
+    private final Map<IKey, IStrategy> storage = new ConcurrentHashMap<>();
 
-    private final IKey keyForKeyByNameResolveStrategy;
+    private final IKey keyByNameStrategyKey;
 
     /**
      * The constructor.
@@ -33,7 +33,7 @@ public class Container implements IContainer {
      */
     public Container()
             throws InvalidArgumentException {
-        keyForKeyByNameResolveStrategy = new Key(UUID.randomUUID().toString());
+        keyByNameStrategyKey = new Key(UUID.randomUUID().toString());
     }
 
     /**
@@ -47,22 +47,12 @@ public class Container implements IContainer {
     }
 
     /**
-     * Return specific instance of {@link IKey} for resolve dependencies from key storage
-     * @return instance of {@link IKey}
-     */
-    @Override
-    @Deprecated
-    public IKey getKeyForKeyStorage() {
-        return keyForKeyByNameResolveStrategy;
-    }
-
-    /**
      * Return specific instance of {@link IKey} for strategy of resolving key by name
      * @return instance of {@link IKey}
      */
     @Override
-    public IKey getKeyForKeyByNameResolutionStrategy() {
-        return keyForKeyByNameResolveStrategy;
+    public IKey getKeyForKeyByNameStrategy() {
+        return keyByNameStrategyKey;
     }
 
     /**
@@ -81,7 +71,7 @@ public class Container implements IContainer {
         if (key == null) {
             throw new ResolutionException("Key can't be null");
         }
-        IResolveDependencyStrategy strategy = storage.get(key);
+        IStrategy strategy = storage.get(key);
         if (strategy == null) {
             throw new ResolutionException("Strategy for key " + key + " not found");
         }
@@ -97,11 +87,11 @@ public class Container implements IContainer {
      * Register new dependency by instance of {@link IKey}
      *
      * @param key      instance of {@link IKey}
-     * @param strategy instance of {@link IResolveDependencyStrategy}
+     * @param strategy instance of {@link IStrategy}
      * @throws RegistrationException when registration is impossible because of any error
      */
     @Override
-    public void register(final IKey key, final IResolveDependencyStrategy strategy)
+    public void register(final IKey key, final IStrategy strategy)
             throws RegistrationException {
         if (key == null) {
             throw new RegistrationException("Key can't be null");
@@ -124,13 +114,13 @@ public class Container implements IContainer {
      * @throws DeletionException if any errors occurred
      */
     @Override
-    public void remove(final IKey key)
+    public IStrategy unregister(final IKey key)
             throws DeletionException {
         if (key == null) {
             throw new DeletionException("Key can't be null");
         }
         try {
-            storage.remove(key);
+            return storage.remove(key);
         } catch (Exception e) {
             throw new DeletionException("Deletion of dependency failed for key " + key, e);
         }

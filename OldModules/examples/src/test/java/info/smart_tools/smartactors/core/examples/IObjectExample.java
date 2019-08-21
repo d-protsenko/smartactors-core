@@ -64,14 +64,14 @@ public class IObjectExample {
 
     @Test
     public void testFieldNameCreateIOC() throws ResolutionException {
-        IFieldName fieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+        IFieldName fieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
         assertEquals("name", fieldName.toString());
     }
 
     @Test
     public void testSetAndGet() throws ResolutionException, ChangeValueException, InvalidArgumentException, ReadValueException {
-        IObject object = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
-        IFieldName fieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+        IObject object = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IFieldName fieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
         Object value = new Object();
         object.setValue(fieldName, value);
         assertSame(value, object.getValue(fieldName));
@@ -79,8 +79,8 @@ public class IObjectExample {
 
     @Test
     public void testSetGetAndDelete() throws ResolutionException, ChangeValueException, InvalidArgumentException, ReadValueException, DeleteValueException {
-        IObject object = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
-        IFieldName fieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+        IObject object = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IFieldName fieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
         Object value = new Object();
         object.setValue(fieldName, value);
         assertSame(value, object.getValue(fieldName));
@@ -90,9 +90,9 @@ public class IObjectExample {
 
     @Test
     public void testIteration() throws ResolutionException, ChangeValueException, InvalidArgumentException {
-        IObject object = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
-        IFieldName firstFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "first");
-        IFieldName secondFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "second");
+        IObject object = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IFieldName firstFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "first");
+        IFieldName secondFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "second");
         object.setValue(firstFieldName, "one");
         object.setValue(secondFieldName, "two");
         for (Map.Entry<IFieldName, Object> entry : object) {
@@ -105,8 +105,8 @@ public class IObjectExample {
 
     @Test
     public void testFieldCreateNew() throws ResolutionException, InvalidArgumentException, ChangeValueException, ReadValueException {
-        IObject object = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
-        IFieldName fieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+        IObject object = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IFieldName fieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
         Object value = new Object();
         object.setValue(fieldName, value);
 
@@ -116,19 +116,19 @@ public class IObjectExample {
 
     @Test
     public void testFieldCreateIOC() throws ResolutionException, InvalidArgumentException, ChangeValueException, ReadValueException {
-        IObject object = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
-        IFieldName fieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+        IObject object = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IFieldName fieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
         Object value = new Object();
         object.setValue(fieldName, value);
 
-        IField field = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "name");
+        IField field = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "name");
         assertSame(value, field.in(object));
     }
 
     @Test
     public void testSetAndGetField() throws ResolutionException, ChangeValueException, InvalidArgumentException, ReadValueException {
-        IObject object = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
-        IField field = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "name");
+        IObject object = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IField field = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "name");
         Object value = new Object();
         field.out(object, value);
         assertSame(value, field.in(object));
@@ -136,8 +136,8 @@ public class IObjectExample {
 
     @Test
     public void testSetAndGetFieldTyped() throws ResolutionException, ChangeValueException, InvalidArgumentException, ReadValueException {
-        IObject object = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
-        IField field = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "name");
+        IObject object = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IField field = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "name");
         String stringValue = "123";
         field.out(object, stringValue);
         Integer intValue = field.in(object, Integer.class);
@@ -146,21 +146,21 @@ public class IObjectExample {
 
     @Test
     public void testNewEmptyDSObject() throws ResolutionException, ReadValueException, InvalidArgumentException {
-        IFieldName fieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+        IFieldName fieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
         IObject object = new DSObject();
         assertNull(object.getValue(fieldName));
     }
 
     @Test
     public void testNewDSObjectFromJSON() throws ResolutionException, InvalidArgumentException, ReadValueException {
-        IFieldName fieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+        IFieldName fieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
         IObject object = new DSObject("{ \"name\": \"value\" }");
         assertEquals("value", object.getValue(fieldName));
     }
 
     @Test
     public void testNewDSObjectFromMap() throws ResolutionException, InvalidArgumentException, ReadValueException {
-        IFieldName fieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+        IFieldName fieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
         Map<IFieldName, Object> map = new HashMap<>();
         map.put(fieldName, "value");
         IObject object = new DSObject(map);
@@ -169,17 +169,17 @@ public class IObjectExample {
 
     @Test
     public void testResolveEmptyIObject() throws ResolutionException, ReadValueException, InvalidArgumentException {
-        IFieldName fieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+        IFieldName fieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
         IObject object = IOC.resolve(
-                Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
         assertNull(object.getValue(fieldName));
     }
 
     @Test
     public void testResolveIObjectFromJSON() throws ResolutionException, InvalidArgumentException, ReadValueException {
-        IFieldName fieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+        IFieldName fieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
         IObject object = IOC.resolve(
-                Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{ \"name\": \"value\" }");
         assertEquals("value", object.getValue(fieldName));
     }
@@ -187,28 +187,28 @@ public class IObjectExample {
     @Test
     public void testSerialization() throws ResolutionException, SerializeException {
         IObject object = IOC.resolve(
-                Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{ \"name\": \"value\" }");
         assertEquals("{\"name\":\"value\"}", object.serialize());
     }
 
     @Test
     public void testJSONObjectField() throws ResolutionException, ReadValueException, InvalidArgumentException {
-        IField field = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "name");
+        IField field = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "name");
         IObject object = IOC.resolve(
-                Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{ \"name\": { \"nested\": \"object\" } }");
         IObject value = field.in(object);
         assertThat(value, is(instanceOf(IObject.class)));
-        IField nestedField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "nested");
+        IField nestedField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "nested");
         assertEquals("object", nestedField.in(value));
     }
 
     @Test
     public void testStringObjectField() throws ResolutionException, ReadValueException, InvalidArgumentException {
-        IField field = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "name");
+        IField field = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "name");
         IObject object = IOC.resolve(
-                Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{ \"name\": \"value\" }");
         String value = field.in(object);
         assertEquals("value", value);
@@ -216,10 +216,10 @@ public class IObjectExample {
 
     @Test
     public void testNumberObjectField() throws ResolutionException, ReadValueException, InvalidArgumentException {
-        IField intField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "int");
-        IField floatField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "float");
+        IField intField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "int");
+        IField floatField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "float");
         IObject object = IOC.resolve(
-                Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{ \"int\": 42, \"float\": 42.42 }");
         Number intValue = intField.in(object);
         assertEquals(42, intValue.intValue());
@@ -229,9 +229,9 @@ public class IObjectExample {
 
     @Test
     public void testNumberWithConversion() throws ResolutionException, ReadValueException, InvalidArgumentException {
-        IField field = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "value");
+        IField field = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "value");
         IObject object = IOC.resolve(
-                Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{ \"value\": 42.42 }");
         Integer intValue = field.in(object, Integer.class);
         assertEquals(42, intValue.longValue());
@@ -243,9 +243,9 @@ public class IObjectExample {
 
     @Test
     public void testLocalDateTimeField() throws ResolutionException, ReadValueException, InvalidArgumentException {
-        IField field = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "date");
+        IField field = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "date");
         IObject object = IOC.resolve(
-                Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{ \"date\": \"2016-08-22T13:38:42\" }");
         LocalDateTime dateTime = field.in(object, LocalDateTime.class);
 
@@ -260,9 +260,9 @@ public class IObjectExample {
     @Test
     @Ignore("Need support for OffsetDateTime")
     public void testOffsetDateTimeField() throws ResolutionException, ReadValueException, InvalidArgumentException {
-        IField field = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "date");
+        IField field = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "date");
         IObject object = IOC.resolve(
-                Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{ \"date\": \"2016-08-22T13:38:42+06\" }");
         OffsetDateTime dateTime = field.in(object, OffsetDateTime.class);
 
@@ -277,9 +277,9 @@ public class IObjectExample {
 
     @Test
     public void testArrayField() throws ResolutionException, ReadValueException, InvalidArgumentException {
-        IField field = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "array");
+        IField field = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "array");
         IObject object = IOC.resolve(
-                Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{ \"array\": [ \"a\", \"b\", \"c\" ] }");
         List<String> array = field.in(object);
         assertEquals(3, array.size());

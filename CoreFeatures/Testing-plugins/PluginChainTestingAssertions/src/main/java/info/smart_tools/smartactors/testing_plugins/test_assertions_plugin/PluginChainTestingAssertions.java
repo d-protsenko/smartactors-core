@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.testing_plugins.test_assertions_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -47,10 +47,10 @@ public class PluginChainTestingAssertions implements IPlugin {
 //                    .before("configure")
                     .process(() -> {
                         try {
-                            IOC.register(Keys.resolveByName("assertion of type equal"), new SingletonStrategy(new EqualAssertion()));
-                            IOC.register(Keys.resolveByName("assertion of type not equal"), new SingletonStrategy(new NotEqualAssertion()));
+                            IOC.register(Keys.getKeyByName("assertion of type equal"), new SingletonStrategy(new EqualAssertion()));
+                            IOC.register(Keys.getKeyByName("assertion of type not equal"), new SingletonStrategy(new NotEqualAssertion()));
                         } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     });
 

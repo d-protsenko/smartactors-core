@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.base.iup_counter;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.iup_counter.exception.IllegalUpCounterState;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
 
@@ -70,7 +70,7 @@ public interface IUpCounter {
     /**
      * Add a callback (under the key) to be called when shutdown is done.
      *
-     * A callback is guaranteed to be executed exactly once if {@code #onShutdownComplete(IPoorAction)} call finishes before first
+     * A callback is guaranteed to be executed exactly once if {@code #onShutdownComplete(IActionNoArgs)} call finishes before first
      * {@link #shutdown(Object)} or {@link #forceShutdown()} shutdown call starts. Otherwise the callback will not be executed more than
      * once.
      *
@@ -79,7 +79,7 @@ public interface IUpCounter {
      * @return            the reference to replaced callback if so, otherwise null
      * @throws UpCounterCallbackExecutionException if system is already down and error occurs executing callback synchronously
      */
-    IPoorAction onShutdownComplete(final Object key, IPoorAction callback) throws UpCounterCallbackExecutionException;
+    IActionNoArgs onShutdownComplete(final Object key, IActionNoArgs callback) throws UpCounterCallbackExecutionException;
 
     /**
      * Remove the callback (by the key) from the set of shutdown completion callbacks.
@@ -87,5 +87,5 @@ public interface IUpCounter {
      * @param key         the key under which callback is stored
      * @return            the reference to removed callback
      */
-    IPoorAction removeFromShutdownComplete(final Object key);
+    IActionNoArgs removeFromShutdownComplete(final Object key);
 }

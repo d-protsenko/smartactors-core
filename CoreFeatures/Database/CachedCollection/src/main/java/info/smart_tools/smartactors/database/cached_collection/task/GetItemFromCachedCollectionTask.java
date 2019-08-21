@@ -45,16 +45,16 @@ public class GetItemFromCachedCollectionTask implements IDatabaseTask {
     public GetItemFromCachedCollectionTask(final IStorageConnection connection) throws CreateCachedCollectionTaskException {
         this.connection = connection;
         try {
-            this.formatter = IOC.resolve(Keys.resolveByName("datetime_formatter"));
-            this.collectionNameField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "collectionName");
-            this.keyNameField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "keyName");
-            this.keyValueField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "key");
-            this.callbackField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "callback");
-            this.isActiveField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "isActive");
-            this.equalsField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "$eq");
-            this.filterField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "filter");
-            this.dateToField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "$date-to");
-            this.startDateTimeField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "startDateTime");
+            this.formatter = IOC.resolve(Keys.getKeyByName("datetime_formatter"));
+            this.collectionNameField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
+            this.keyNameField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "keyName");
+            this.keyValueField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "key");
+            this.callbackField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "callback");
+            this.isActiveField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "isActive");
+            this.equalsField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "$eq");
+            this.filterField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "filter");
+            this.dateToField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "$date-to");
+            this.startDateTimeField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "startDateTime");
         } catch (ResolutionException e) {
             throw new CreateCachedCollectionTaskException("Can't create GetItemFromCachedCollectionTask.", e);
         }
@@ -90,28 +90,28 @@ public class GetItemFromCachedCollectionTask implements IDatabaseTask {
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-            IObject queryForNestedTask  = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
-            IObject filterObject = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject queryForNestedTask  = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject filterObject = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
-            keyField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), (String) keyNameField.in(query));
+            keyField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), (String) keyNameField.in(query));
             String keyValue = keyValueField.in(query);
 
-            IObject eqKeyObject = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject eqKeyObject = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
             equalsField.out(eqKeyObject, keyValue);
             keyField.out(filterObject, eqKeyObject);
 
-            IObject isActiveObject = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject isActiveObject = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
             equalsField.out(isActiveObject, true);
             isActiveField.out(filterObject, isActiveObject);
 
-            IObject dateObject = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject dateObject = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
             dateToField.out(dateObject, LocalDateTime.now().format(formatter));
             startDateTimeField.out(filterObject, dateObject);
 
             filterField.out(queryForNestedTask, filterObject);
 
             getItemTask = IOC.resolve(
-                Keys.resolveByName("db.collection.search"),
+                Keys.getKeyByName("db.collection.search"),
                 connection,
                 collectionNameField.in(query),
                 queryForNestedTask,

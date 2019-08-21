@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.scheduler.actor.impl.service;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
-import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartupException;
+import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStopException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -29,7 +29,7 @@ public class SchedulingService implements ISchedulerService {
     }
 
     @Override
-    public void start() throws IllegalServiceStateException, ServiceStartupException {
+    public void start() throws IllegalServiceStateException, ServiceStartException {
         timerService.start();
         refreshService.start();
     }
@@ -42,7 +42,7 @@ public class SchedulingService implements ISchedulerService {
 
     @Override
     public void startAfter(final long startTime)
-            throws ServiceStartupException, IllegalServiceStateException, InvalidArgumentException {
+            throws ServiceStartException, IllegalServiceStateException, InvalidArgumentException {
         timerService.startAfter(startTime);
         refreshService.startAfter(startTime);
     }

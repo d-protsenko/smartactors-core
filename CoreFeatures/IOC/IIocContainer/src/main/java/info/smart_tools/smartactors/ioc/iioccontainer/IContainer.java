@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.ioc.iioccontainer;
 
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
@@ -19,17 +19,10 @@ public interface IContainer {
     IKey getIocKey();
 
     /**
-     * Return specific instance of {@link IKey} for resolve dependencies from key storage
-     * @return instance of {@link IKey}
-     */
-    @Deprecated
-    IKey getKeyForKeyStorage();
-
-    /**
      * Return specific instance of {@link IKey} for strategy of resolving key by name
      * @return instance of {@link IKey}
      */
-    IKey getKeyForKeyByNameResolutionStrategy();
+    IKey getKeyForKeyByNameStrategy();
 
     /**
      * Resolve dependency by given given {@link IKey} instance and args
@@ -45,17 +38,19 @@ public interface IContainer {
     /**
      * Register new dependency by instance of {@link IKey}
      * @param key instance of {@link IKey}
-     * @param strategy instance of {@link IResolveDependencyStrategy}
+     * @param strategy instance of {@link IStrategy}
      * @throws RegistrationException when registration is impossible because of any error
      */
-    void register(final IKey key, final IResolveDependencyStrategy strategy)
+    void register(final IKey key, final IStrategy strategy)
             throws RegistrationException;
 
     /**
-     * Remove dependency with given key
+     * Unregister dependency with given key
      * @param key instance of {@link IKey}
      * @throws DeletionException if any errors occurred
+     * @return the previous instance of {@link IStrategy} associated with <tt>key</tt>,
+     *         or <tt>null</tt> if there was no association for <tt>key</tt>.
      */
-    void remove(final IKey key)
+    IStrategy unregister(final IKey key)
             throws DeletionException;
 }

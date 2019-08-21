@@ -1,14 +1,13 @@
 package info.smart_tools.smartactors.message_processing_plugins.handler_routing_receiver_creator_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -54,30 +53,23 @@ public class HandlerRoutingReceiverCreatorPlugin implements IPlugin {
                                 try {
                                     HandlerRoutingReceiverCreator objectCreator = new HandlerRoutingReceiverCreator();
                                     IOC.register(
-                                            Keys.resolveByName(IRoutedObjectCreator.class.getCanonicalName() + "#stateless_actor"),
+                                            Keys.getKeyByName(IRoutedObjectCreator.class.getCanonicalName() + "#stateless_actor"),
                                             new SingletonStrategy(objectCreator)
                                     );
                                 } catch (ResolutionException e) {
-                                    throw new ActionExecuteException("HandlerRoutingReceiverCreator plugin can't load: can't get HandlerRoutingReceiverCreator key", e);
+                                    throw new ActionExecutionException("HandlerRoutingReceiverCreator plugin can't load: can't get HandlerRoutingReceiverCreator key", e);
                                 } catch (InvalidArgumentException e) {
-                                    throw new ActionExecuteException("HandlerRoutingReceiverCreator plugin can't load: can't create strategy", e);
+                                    throw new ActionExecutionException("HandlerRoutingReceiverCreator plugin can't load: can't create strategy", e);
                                 } catch (RegistrationException e) {
-                                    throw new ActionExecuteException("HandlerRoutingReceiverCreator plugin can't load: can't register new strategy", e);
+                                    throw new ActionExecutionException("HandlerRoutingReceiverCreator plugin can't load: can't register new strategy", e);
                                 } catch (ObjectCreationException e) {
-                                    throw new ActionExecuteException("HandlerRoutingReceiverCreator plugin can't load: constructor error", e);
+                                    throw new ActionExecutionException("HandlerRoutingReceiverCreator plugin can't load: constructor error", e);
                                 }
                             }
                     )
                     .revertProcess(() -> {
-                        String itemName = "HandlerRoutingReceiverCreator";
-                        String keyName = "";
-
-                        try {
-                            keyName = IRoutedObjectCreator.class.getCanonicalName() + "#stateless_actor";
-                            IOC.remove(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] keyNames = { IRoutedObjectCreator.class.getCanonicalName() + "#stateless_actor" };
+                        Keys.unregisterByNames(keyNames);
                     });
             this.bootstrap.add(item);
         } catch (Throwable e) {

@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.message_processing.message_processor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.IllegalUpCounterState;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
@@ -121,20 +121,20 @@ public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask,
         this.interrupted = 0;
         this.asyncOpDepth = 0;
 
-        this.rawEnvironment = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
+        this.rawEnvironment = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
 
-        configFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "config");
-        messageFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
-        contextFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context");
-        responseFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "response");
-        sequenceFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sequence");
-        argumentsFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "arguments");
-        processorFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "processor");
-        finalActionsFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "finalActions");
+        configFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "config");
+        messageFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
+        contextFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context");
+        responseFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "response");
+        sequenceFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sequence");
+        argumentsFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "arguments");
+        processorFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "processor");
+        finalActionsFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "finalActions");
 
-        this.finalTask = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "final task"), this.rawEnvironment);
+        this.finalTask = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "final task"), this.rawEnvironment);
 
-        this.upCounter = IOC.resolve(Keys.resolveByName("root upcounter"));
+        this.upCounter = IOC.resolve(Keys.getKeyByName("root upcounter"));
     }
 
     @Override
@@ -145,7 +145,7 @@ public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask,
         this.context = theContext;
 
         try {
-            this.response = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
+            this.response = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             rawEnvironment.setValue(configFieldName, config);
             rawEnvironment.setValue(sequenceFieldName, messageProcessingSequence);
@@ -167,7 +167,7 @@ public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask,
                 try {
                     upCounter.down();
                 } catch (UpCounterCallbackExecutionException | IllegalUpCounterState e) {
-                    throw new ActionExecuteException(e);
+                    throw new ActionExecutionException(e);
                 }
             });
 
@@ -227,7 +227,7 @@ public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask,
         }
 
         try {
-            Object signal = IOC.resolve(Keys.resolveByName(signalName));
+            Object signal = IOC.resolve(Keys.getKeyByName(signalName));
 
             if (!(signal instanceof Signal)) {
                 throw new InvalidArgumentException("Resolved signal is not a signal.");

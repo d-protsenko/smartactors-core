@@ -30,7 +30,7 @@ public class InMemoryDatabase implements IDatabase {
      */
     public InMemoryDatabase() throws IDatabaseException {
         try {
-            filterFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "filter");
+            filterFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "filter");
         } catch (ResolutionException e) {
             throw new IDatabaseException("Failed to resolve IFieldName", e);
         }
@@ -39,7 +39,7 @@ public class InMemoryDatabase implements IDatabase {
     @Override
     public void upsert(final IObject document, final String collectionName) throws IDatabaseException {
         try {
-            DataBaseItem item = IOC.resolve(Keys.resolveByName(DataBaseItem.class.getCanonicalName()), document, collectionName);
+            DataBaseItem item = IOC.resolve(Keys.getKeyByName(DataBaseItem.class.getCanonicalName()), document, collectionName);
             if (null == item.getId()) {
                 insert(item);
             } else {
@@ -59,7 +59,7 @@ public class InMemoryDatabase implements IDatabase {
     public void insert(final IObject document, final String collectionName) throws IDatabaseException {
         synchronized (this) {
             try {
-                DataBaseItem item = IOC.resolve(Keys.resolveByName(DataBaseItem.class.getCanonicalName()), document, collectionName);
+                DataBaseItem item = IOC.resolve(Keys.getKeyByName(DataBaseItem.class.getCanonicalName()), document, collectionName);
                 insert(item);
             } catch (ResolutionException e) {
                 throw new IDatabaseException("Failed to create DataBaseItem", e);
@@ -70,7 +70,7 @@ public class InMemoryDatabase implements IDatabase {
     @Override
     public void update(final IObject document, final String collectionName) throws IDatabaseException {
         try {
-            DataBaseItem item = IOC.resolve(Keys.resolveByName(DataBaseItem.class.getCanonicalName()), document, collectionName);
+            DataBaseItem item = IOC.resolve(Keys.getKeyByName(DataBaseItem.class.getCanonicalName()), document, collectionName);
             update(item);
         } catch (ResolutionException e) {
             throw new IDatabaseException("Failed to create DataBaseItem", e);
@@ -119,7 +119,7 @@ public class InMemoryDatabase implements IDatabase {
     }
 
     private Object nextId(final String collectionName) throws ResolutionException {
-        return IOC.resolve(Keys.resolveByName("db.collection.nextid"));
+        return IOC.resolve(Keys.getKeyByName("db.collection.nextid"));
     }
 
     @Override
@@ -133,8 +133,8 @@ public class InMemoryDatabase implements IDatabase {
                     outputList.add(clone(item.getDocument()));
                 }
             }
-            outputList = IOC.resolve(Keys.resolveByName("PagingForDatabaseCollection"), condition, outputList);
-            outputList = IOC.resolve(Keys.resolveByName("SortIObjects"), condition, outputList);
+            outputList = IOC.resolve(Keys.getKeyByName("PagingForDatabaseCollection"), condition, outputList);
+            outputList = IOC.resolve(Keys.getKeyByName("SortIObjects"), condition, outputList);
             return outputList;
         } catch (ResolutionException e) {
             throw new IDatabaseException("Failed to resolve IFieldName or PagingForDatabaseCollection or SortIObjects", e);
@@ -148,7 +148,7 @@ public class InMemoryDatabase implements IDatabase {
             if (condition == null) {
                 return true;
             }
-            return IOC.resolve(Keys.resolveByName("ResolveDataBaseCondition"), "$general_resolver", condition, document);
+            return IOC.resolve(Keys.getKeyByName("ResolveDataBaseCondition"), "$general_resolver", condition, document);
         } catch (ResolutionException e) {
             throw new IDatabaseException("Failed to resolve \"ResolveDataBaseCondition\"", e);
         }
@@ -157,7 +157,7 @@ public class InMemoryDatabase implements IDatabase {
     private IObject clone(final IObject iObject) throws IDatabaseException {
         try {
             String serializedIObject = iObject.serialize();
-            return IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"), serializedIObject);
+            return IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), serializedIObject);
         } catch (ResolutionException | SerializeException e) {
             throw new IDatabaseException("Failed to clone IObject", e);
         }
@@ -167,13 +167,13 @@ public class InMemoryDatabase implements IDatabase {
     public void delete(final IObject document, final String collectionName) throws IDatabaseException {
         try {
             List<DataBaseItem> list = dataBase.get(collectionName);
-            DataBaseItem item = IOC.resolve(Keys.resolveByName(DataBaseItem.class.getCanonicalName()), document, collectionName);
+            DataBaseItem item = IOC.resolve(Keys.getKeyByName(DataBaseItem.class.getCanonicalName()), document, collectionName);
             for (int i = 0; i < list.size(); i++) {
                 DataBaseItem inDbItem = list.get(i);
                 if (inDbItem.getId().equals(item.getId())) {
                     list.remove(inDbItem);
                     try {
-                        document.deleteField(IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), collectionName + "ID"));
+                        document.deleteField(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), collectionName + "ID"));
                     } catch (DeleteValueException | InvalidArgumentException e) {
                         throw new IDatabaseException("Failed to resolve IFieldName", e);
                     } catch (ResolutionException e) {

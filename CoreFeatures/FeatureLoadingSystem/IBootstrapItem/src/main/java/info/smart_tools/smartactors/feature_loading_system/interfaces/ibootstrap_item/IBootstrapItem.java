@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item;
 
 
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.exception.RevertProcessExecutionException;
 
@@ -32,18 +32,18 @@ public interface IBootstrapItem <T> {
     /**
      * Action for execution for loading current item to the system
      * Must support fluent interface
-     * @param process instance of {@link IPoorAction} or function
+     * @param process instance of {@link IActionNoArgs} or function
      * @return current instance of {@link IBootstrapItem}
      */
-    IBootstrapItem process(IPoorAction process);
+    IBootstrapItem process(IActionNoArgs process);
 
     /**
      * Action for revert process action (unload current item from the server)
      * Must support fluent interface
-     * @param process instance of {@link IPoorAction} or function
+     * @param process instance of {@link IActionNoArgs} or function
      * @return current instance of {@link IBootstrapItem}
      */
-    IBootstrapItem revertProcess(IPoorAction process);
+    IBootstrapItem revertProcess(IActionNoArgs process);
 
     /**
      * Execute process action

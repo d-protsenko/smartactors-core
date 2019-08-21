@@ -43,9 +43,9 @@ public class CheckpointFailureActionSectionStrategy implements ISectionStrategy 
      */
     public CheckpointFailureActionSectionStrategy()
             throws ResolutionException {
-        sectionName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpoint_failure_action");
+        sectionName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpoint_failure_action");
 
-        actionNameFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "action");
+        actionNameFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "action");
     }
 
     @Override
@@ -58,9 +58,9 @@ public class CheckpointFailureActionSectionStrategy implements ISectionStrategy 
                 actionKeyName = "default configurable checkpoint failure action";
             }
 
-            IAction<IObject> action = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), actionKeyName), section);
+            IAction<IObject> action = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), actionKeyName), section);
 
-            IOC.register(Keys.resolveByName("checkpoint failure action"),
+            IOC.register(Keys.getKeyByName("checkpoint failure action"),
                     new SingletonStrategy(action));
         } catch (ReadValueException | InvalidArgumentException | ResolutionException | RegistrationException e) {
             throw new ConfigurationProcessingException("Error occurred processing checkpoint_failure_action section.", e);
@@ -70,7 +70,7 @@ public class CheckpointFailureActionSectionStrategy implements ISectionStrategy 
     @Override
     public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
         try {
-            IOC.remove(Keys.resolveByName("checkpoint failure action"));
+            IOC.unregister(Keys.getKeyByName("checkpoint failure action"));
         } catch(DeletionException e) {
             throw new ConfigurationProcessingException("Error occurred while reverting checkpoint_failure_action section.", e);
         } catch (ResolutionException e) { }

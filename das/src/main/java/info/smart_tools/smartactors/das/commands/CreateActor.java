@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.das.commands;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.das.models.Actor;
 import info.smart_tools.smartactors.das.models.Feature;
 import info.smart_tools.smartactors.das.models.Project;
@@ -18,7 +18,7 @@ public class CreateActor implements IAction {
 
     @Override
     public void execute(final Object o)
-            throws ActionExecuteException, InvalidArgumentException {
+            throws ActionExecutionException, InvalidArgumentException {
         System.out.println("Creating actor ...");
 
         try {
@@ -96,7 +96,7 @@ public class CreateActor implements IAction {
             System.out.println("Actor creation has been failed.");
             System.err.println(e);
 
-            throw new ActionExecuteException(e);
+            throw new ActionExecutionException(e);
         }
         System.out.println("Actor has been created successful.");
     }

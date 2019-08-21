@@ -38,23 +38,23 @@ public class ClientSectionProcessingStrategy implements ISectionStrategy {
      * @throws ResolutionException if there are problems on resolving IFieldName
      */
     ClientSectionProcessingStrategy() throws ResolutionException {
-        this.name = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "client");
-        this.startChainNameFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "startChain");
-        this.queueFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "queue");
-        this.stackDepthFieldName = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "stackDepth");
+        this.name = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "client");
+        this.startChainNameFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "startChain");
+        this.queueFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "queue");
+        this.stackDepthFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "stackDepth");
     }
 
     @Override
     public void onLoadConfig(final IObject config) throws ConfigurationProcessingException {
         try {
             IObject clientObject = (IObject) config.getValue(name);
-            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(),
+            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(),
                     IChainStorage.class.getCanonicalName()));
-            IQueue<ITask> queue = IOC.resolve(Keys.resolveByName("task_queue"));
+            IQueue<ITask> queue = IOC.resolve(Keys.getKeyByName("task_queue"));
             clientObject.setValue(queueFieldName, queue);
             Integer stackDepth = (Integer) clientObject.getValue(stackDepthFieldName);
             clientObject.setValue(stackDepthFieldName, stackDepth);
-            IOC.register(Keys.resolveByName("responseHandlerConfiguration"), new SingletonStrategy(clientObject));
+            IOC.register(Keys.getKeyByName("responseHandlerConfiguration"), new SingletonStrategy(clientObject));
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new ConfigurationProcessingException("Error occurred loading \"client\" configuration section.", e);
         } catch (ResolutionException e) {
@@ -67,7 +67,7 @@ public class ClientSectionProcessingStrategy implements ISectionStrategy {
     @Override
     public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
         try {
-            IOC.remove(Keys.resolveByName("responseHandlerConfiguration"));
+            IOC.unregister(Keys.getKeyByName("responseHandlerConfiguration"));
         } catch (DeletionException | ResolutionException e) {
             throw new ConfigurationProcessingException("Error occurred while reverting \"client\" configuration section.", e);
         }

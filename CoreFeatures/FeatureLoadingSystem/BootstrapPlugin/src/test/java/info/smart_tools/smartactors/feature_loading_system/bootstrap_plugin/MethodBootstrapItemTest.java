@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.exception.RevertProcessExecutionException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
@@ -35,13 +35,13 @@ public class MethodBootstrapItemTest {
             @BootstrapPlugin.After({"aItem1", "aItem2"})
             @BootstrapPlugin.Before({"bItem1", "bItem2"})
             public void methodOfTheItem()
-                    throws ActionExecuteException, InvalidArgumentException {
+                    throws ActionExecutionException, InvalidArgumentException {
                 actionMock.execute(this);
             }
 
             @BootstrapPlugin.ItemRevert("theItem")
             public void revertMethodOfTheItem()
-                    throws ActionExecuteException, InvalidArgumentException {
+                    throws ActionExecutionException, InvalidArgumentException {
                 actionMock.execute(this);
             }
         };

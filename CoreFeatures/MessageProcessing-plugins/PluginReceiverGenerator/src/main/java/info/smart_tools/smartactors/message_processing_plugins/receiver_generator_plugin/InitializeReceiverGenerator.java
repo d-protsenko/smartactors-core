@@ -1,14 +1,13 @@
 package info.smart_tools.smartactors.message_processing_plugins.receiver_generator_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -48,29 +47,22 @@ public class InitializeReceiverGenerator implements IPlugin {
                                 try {
                                     IReceiverGenerator rg = new ReceiverGenerator();
                                     IOC.register(
-                                            Keys.resolveByName(IReceiverGenerator.class.getCanonicalName()),
+                                            Keys.getKeyByName(IReceiverGenerator.class.getCanonicalName()),
                                             new SingletonStrategy(rg)
                                     );
                                 } catch (ResolutionException e) {
-                                    throw new ActionExecuteException("InitializeReceiverGenerator plugin can't load: can't get InitializeReceiverGenerator key", e);
+                                    throw new ActionExecutionException("InitializeReceiverGenerator plugin can't load: can't get InitializeReceiverGenerator key", e);
                                 } catch (InvalidArgumentException e) {
-                                    throw new ActionExecuteException("InitializeReceiverGenerator plugin can't load: can't create strategy", e);
+                                    throw new ActionExecutionException("InitializeReceiverGenerator plugin can't load: can't create strategy", e);
                                 } catch (RegistrationException e) {
-                                    throw new ActionExecuteException("InitializeReceiverGenerator plugin can't load: can't register new strategy", e);
+                                    throw new ActionExecutionException("InitializeReceiverGenerator plugin can't load: can't register new strategy", e);
                                 }
                             }
                         )
                     .revertProcess(
                             () -> {
-                                String itemName = "InitializeReceiverGenerator";
-                                String keyName = "";
-
-                                try {
-                                    keyName = IReceiverGenerator.class.getCanonicalName();
-                                    IOC.remove(Keys.resolveByName(keyName));
-                                } catch(DeletionException e) {
-                                    System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                                } catch (ResolutionException e) { }
+                                String[] itemNames = { IReceiverGenerator.class.getCanonicalName() };
+                                Keys.unregisterByNames(itemNames);
                             }
                     );
             this.bootstrap.add(item);

@@ -34,12 +34,12 @@ public class CreateAsyncOperationActor {
      */
     public CreateAsyncOperationActor(final IObject params) throws CreateAsyncOperationActorException {
         try {
-            formatter = IOC.resolve(Keys.resolveByName("datetime_formatter"));
-            IField collectionNameField = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "collectionName");
-            IField databaseOptionsF = IOC.resolve(Keys.resolveByName(IField.class.getCanonicalName()), "databaseOptions");
-            Object connectionOpts =  IOC.resolve(Keys.resolveByName(databaseOptionsF.in(params)));
+            formatter = IOC.resolve(Keys.getKeyByName("datetime_formatter"));
+            IField collectionNameField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
+            IField databaseOptionsF = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "databaseOptions");
+            Object connectionOpts =  IOC.resolve(Keys.getKeyByName(databaseOptionsF.in(params)));
             collection = IOC.resolve(
-                Keys.resolveByName(IAsyncOperationCollection.class.getCanonicalName()), connectionOpts, collectionNameField.in(params)
+                Keys.getKeyByName(IAsyncOperationCollection.class.getCanonicalName()), connectionOpts, collectionNameField.in(params)
             );
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new CreateAsyncOperationActorException("Can't read collection name from message", e);
@@ -60,7 +60,7 @@ public class CreateAsyncOperationActor {
     public void create(final CreateAsyncOperationMessage message) throws CreateAsyncOperationActorException {
 
         try {
-            String token = IOC.resolve(Keys.resolveByName("db.collection.nextid"));
+            String token = IOC.resolve(Keys.getKeyByName("db.collection.nextid"));
             Integer amountOfHoursToExpireFromNow = message.getExpiredTime();
             String expiredTime = LocalDateTime.now().plusHours(amountOfHoursToExpireFromNow).format(formatter);
             message.setSessionIdInData(message.getSessionId());

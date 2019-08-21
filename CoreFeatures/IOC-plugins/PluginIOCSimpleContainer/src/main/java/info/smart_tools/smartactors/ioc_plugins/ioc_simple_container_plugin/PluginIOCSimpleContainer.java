@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.ioc_plugins.ioc_simple_container_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
@@ -41,11 +41,11 @@ public class PluginIOCSimpleContainer implements IPlugin {
                             field.set(null, new Container());
                             field.setAccessible(false);
                         } catch (IllegalAccessException e) {
-                            throw new ActionExecuteException("IOCSimpleContainer plugin can't load: access to field denied", e);
+                            throw new ActionExecutionException("IOCSimpleContainer plugin can't load: access to field denied", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("IOCSimpleContainer plugin can't load: can't create strategy", e);
+                            throw new ActionExecutionException("IOCSimpleContainer plugin can't load: can't create strategy", e);
                         } catch (NoSuchFieldException e) {
-                            throw new ActionExecuteException("IOCSimpleContainer plugin can't load: field with name 'container' is not found", e);
+                            throw new ActionExecutionException("IOCSimpleContainer plugin can't load: field with name 'container' is not found", e);
                         }
                     });
 

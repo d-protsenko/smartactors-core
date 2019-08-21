@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.database_in_memory.in_memory_db_select_task
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.database.interfaces.idatabase.exception.IDatabaseException;
@@ -56,10 +56,10 @@ public class InMemoryDBSelectTaskTest {
         ScopeProvider.setCurrentScope(mainScope);
         Map<String, IConditionVerifier> verifierMap = new HashMap<>();
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
-        IOC.register(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new CreateNewInstanceStrategy(
                         (args) -> {
                             try {
@@ -71,14 +71,14 @@ public class InMemoryDBSelectTaskTest {
                 )
         );
 
-        IOC.register(Keys.resolveByName(InMemoryDatabase.class.getCanonicalName()), new SingletonStrategy(
+        IOC.register(Keys.getKeyByName(InMemoryDatabase.class.getCanonicalName()), new SingletonStrategy(
                         inMemoryDatabase
                 )
         );
     }
 
     @Test
-    public void testExecute() throws InvalidArgumentException, ChangeValueException, TaskPrepareException, TaskExecutionException, IDatabaseException, ActionExecuteException {
+    public void testExecute() throws InvalidArgumentException, ChangeValueException, TaskPrepareException, TaskExecutionException, IDatabaseException, ActionExecutionException {
         InMemoryDBSelectTask selectTask = new InMemoryDBSelectTask();
         IObject query = new DSObject("{\"collectionName\": \"collection_name\"}");
         IObject criteria = new DSObject("{\"hello\": \"world\"}");

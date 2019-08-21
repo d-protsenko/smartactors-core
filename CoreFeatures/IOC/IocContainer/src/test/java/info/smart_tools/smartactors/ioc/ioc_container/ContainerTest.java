@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.ioc.ioc_container;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.ioc.iioccontainer.IContainer;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
@@ -26,13 +26,13 @@ public class ContainerTest {
         IContainer container = new Container();
         assertNotNull(container);
         IKey key1 = container.getIocKey();
-        IKey key2 = container.getKeyForKeyByNameResolutionStrategy();
+        IKey key2 = container.getKeyForKeyByNameStrategy();
         assertNotNull(key1);
         assertNotNull(key2);
         assertNotEquals(key1, key2);
         IContainer otherContainer = new Container();
         IKey otherKey1 = otherContainer.getIocKey();
-        IKey otherKey2 = otherContainer.getKeyForKeyByNameResolutionStrategy();
+        IKey otherKey2 = otherContainer.getKeyForKeyByNameStrategy();
         assertNotNull(otherKey1);
         assertNotNull(otherKey2);
         assertNotEquals(otherKey1, otherKey2);
@@ -50,7 +50,7 @@ public class ContainerTest {
         Object[] param = new Object[]{};
         ScopeProvider.setCurrentScope(scope);
         IStrategyContainer strategyContainer = mock(IStrategyContainer.class);
-        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+        IStrategy strategy = mock(IStrategy.class);
         when(scope.getValue(container.getIocKey())).thenReturn(strategyContainer);
         when(strategyContainer.resolve(strategyKey)).thenReturn(strategy);
         when(strategy.resolve(param)).thenReturn(value);
@@ -81,7 +81,7 @@ public class ContainerTest {
             throws Exception {
         IContainer container = new Container();
         IKey key = mock(IKey.class);
-        IResolveDependencyStrategy strategy = mock(IResolveDependencyStrategy.class);
+        IStrategy strategy = mock(IStrategy.class);
         IStrategyContainer strategyContainer = mock(IStrategyContainer.class);
         IScope scope = mock(IScope.class);
         ScopeProvider.setCurrentScope(scope);
@@ -114,14 +114,14 @@ public class ContainerTest {
     }
 
     @Test
-    public void checkgetKeyForKeyByNameResolutionStrategy()
+    public void checkgetKeyForKeyByNameStrategy()
             throws InvalidArgumentException {
         IContainer container = new Container();
-        assertNotNull(container.getKeyForKeyByNameResolutionStrategy());
-        assertNotNull(container.getKeyForKeyByNameResolutionStrategy().toString());
+        assertNotNull(container.getKeyForKeyByNameStrategy());
+        assertNotNull(container.getKeyForKeyByNameStrategy().toString());
         IContainer container1 = new Container();
-        assertNotEquals(container.getKeyForKeyByNameResolutionStrategy(), container1.getKeyForKeyByNameResolutionStrategy());
-        assertNotEquals(container.getKeyForKeyByNameResolutionStrategy().toString(), container1.getKeyForKeyByNameResolutionStrategy().toString());
+        assertNotEquals(container.getKeyForKeyByNameStrategy(), container1.getKeyForKeyByNameStrategy());
+        assertNotEquals(container.getKeyForKeyByNameStrategy().toString(), container1.getKeyForKeyByNameStrategy().toString());
     }
 
     @Test
@@ -133,12 +133,12 @@ public class ContainerTest {
         ScopeProvider.setCurrentScope(scope);
         IStrategyContainer strategyContainer = mock(IStrategyContainer.class);
         when(scope.getValue(container.getIocKey())).thenReturn(strategyContainer);
-        doNothing().when(strategyContainer).remove(strategyKey);
+        when(strategyContainer.unregister(strategyKey)).thenReturn(null);
 
-        container.remove(strategyKey);
+        container.unregister(strategyKey);
 
         verify(scope, times(1)).getValue(container.getIocKey());
-        verify(strategyContainer, times(1)).remove(strategyKey);
+        verify(strategyContainer, times(1)).unregister(strategyKey);
         reset(scope);
         reset(strategyKey);
         reset(strategyContainer);
@@ -147,6 +147,6 @@ public class ContainerTest {
     @Test (expected = DeletionException.class)
     public void checkDeletionException() throws Exception {
         IContainer container = new Container();
-        container.remove(null);
+        container.unregister(null);
     }
 }

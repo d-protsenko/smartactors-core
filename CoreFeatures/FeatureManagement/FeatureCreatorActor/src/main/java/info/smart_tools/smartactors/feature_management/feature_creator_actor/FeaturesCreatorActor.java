@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.feature_management.feature_creator_actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IBiAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionTwoArgs;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.base.path.Path;
 import info.smart_tools.smartactors.feature_management.feature.Feature;
@@ -55,7 +55,7 @@ public class FeaturesCreatorActor {
     private final static String FILENAME_VERSION_PATTERN = "-\\d+\\.\\d+\\.\\d+";
     private final static String FEATURE_VERSION_PATTERN = "\\d+\\.\\d+\\.\\d+";
 
-    private final Map<String, IBiAction<File, CreateMessageWrapper>> creationFunctions;
+    private final Map<String, IActionTwoArgs<File, CreateMessageWrapper>> creationFunctions;
 
     /**
      * Default constructor
@@ -63,19 +63,19 @@ public class FeaturesCreatorActor {
      */
     public FeaturesCreatorActor()
             throws ResolutionException {
-        this.featuresFN =        IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "features");
-        this.repositoriesFN =    IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "repositories");
-        this.nameFN =            IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "name");
-        this.groupFN =           IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "group");
-        this.versionFN =         IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "version");
-        this.featureLocationFN = IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "featureLocation");
-        this.packageTypeFN =     IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "packageType");
-        this.repositoryIdFN =    IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "repositoryId");
-        this.repositoryTypeFN =  IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "type");
-        this.repositoryUrlFN =   IOC.resolve(Keys.resolveByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "url");
+        this.featuresFN =        IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "features");
+        this.repositoriesFN =    IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "repositories");
+        this.nameFN =            IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "name");
+        this.groupFN =           IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "group");
+        this.versionFN =         IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "version");
+        this.featureLocationFN = IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "featureLocation");
+        this.packageTypeFN =     IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "packageType");
+        this.repositoryIdFN =    IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "repositoryId");
+        this.repositoryTypeFN =  IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "type");
+        this.repositoryUrlFN =   IOC.resolve(Keys.getKeyByName(FIELD_NAME_FACTORY_STARTEGY_NAME), "url");
 
         //TODO: need refactoring. This actions would be took out to the plugin.
-        this.creationFunctions = new HashMap<String, IBiAction<File, CreateMessageWrapper>>(){{
+        this.creationFunctions = new HashMap<String, IActionTwoArgs<File, CreateMessageWrapper>>(){{
             put("zip", (f, w) -> {
                 try {
                     w.setJsonFeaturesDescription(createJsonFeatureDescriptionByZip(f));
@@ -114,14 +114,14 @@ public class FeaturesCreatorActor {
             File file = Paths.get(wrapper.getObservedDirectory(), wrapper.getFileName()).toFile();
             if (file.exists() && !file.isDirectory()) {
 
-                IBiAction<File, CreateMessageWrapper> action = this.creationFunctions.get(
+                IActionTwoArgs<File, CreateMessageWrapper> action = this.creationFunctions.get(
                         getExtension(file)
                 );
                 if (null != action) {
                     action.execute(file, wrapper);
                 }
             }
-        } catch (ReadValueException | InvalidArgumentException | ActionExecuteException e) {
+        } catch (ReadValueException | InvalidArgumentException | ActionExecutionException e) {
             throw new FeatureCreationException("Could not create features by given file.", e);
         }
     }
@@ -136,7 +136,7 @@ public class FeaturesCreatorActor {
         try {
             Map<String, IFeature> features = new HashMap<>();
             List<IObject> repositories = wrapper.getRepositoriesDescription();
-            List<IObject> repositoryStorage = IOC.resolve(Keys.resolveByName(IOC_FEATURE_REPOSITORY_STORAGE_NAME));
+            List<IObject> repositoryStorage = IOC.resolve(Keys.getKeyByName(IOC_FEATURE_REPOSITORY_STORAGE_NAME));
 
             for(IObject repository : repositories) {
                 boolean found = false;
@@ -188,7 +188,7 @@ public class FeaturesCreatorActor {
             Matcher matcher = pattern.matcher(file.getName());
             String version = matcher.find() ? matcher.group() : null;
             List<IObject> featuresDescription = new ArrayList<>();
-            IObject featureDescription = IOC.resolve(Keys.resolveByName(IOBJECT_FACTORY_STRATEGY_NAME));
+            IObject featureDescription = IOC.resolve(Keys.getKeyByName(IOBJECT_FACTORY_STRATEGY_NAME));
             featureDescription.setValue(this.nameFN, name);
             featureDescription.setValue(this.groupFN, null);
             featureDescription.setValue(this.versionFN, version);
@@ -206,7 +206,7 @@ public class FeaturesCreatorActor {
             throws FeatureCreationException {
         try {
             IObject jsonConfig = IOC.resolve(
-                    Keys.resolveByName(IOBJECT_FACTORY_STRATEGY_NAME),
+                    Keys.getKeyByName(IOBJECT_FACTORY_STRATEGY_NAME),
                     new Scanner(file).useDelimiter(END_OF_INPUT_DELIMITER).next()
             );
             return (List<IObject>) jsonConfig.getValue(fieldName);

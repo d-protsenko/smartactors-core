@@ -2,8 +2,8 @@ package info.smart_tools.smartactors.feature_loader.feature_loader;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.IBiAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionTwoArgs;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
@@ -31,7 +31,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 public class FeatureStatusImplTest {
     private IKey taskQueueKey = mock(IKey.class);
     private IQueue<ITask> taskQueueMock;
-    private IBiAction<IObject, IPath> loadActionMock;
+    private IActionTwoArgs<IObject, IPath> loadActionMock;
     private IPath pathMock1;
     private IObject configMock;
     private IAction<Throwable> callbackMock1;
@@ -62,10 +62,10 @@ public class FeatureStatusImplTest {
         mockStatic(IOC.class, Keys.class);
 
         taskQueueMock = mock(IQueue.class);
-        when(Keys.resolveByName(eq("task_queue"))).thenReturn(taskQueueKey);
+        when(Keys.getKeyByName(eq("task_queue"))).thenReturn(taskQueueKey);
         when(IOC.resolve(taskQueueKey)).thenReturn(taskQueueMock);
 
-        loadActionMock = mock(IBiAction.class);
+        loadActionMock = mock(IActionTwoArgs.class);
 
         pathMock1 = mock(IPath.class);
         configMock = mock(IObject.class);
@@ -135,8 +135,8 @@ public class FeatureStatusImplTest {
         status.whenDone(callbackMock2);
         status.whenDone(callbackMock3);
 
-        doThrow(new ActionExecuteException("")).when(callbackMock1).execute(same(null));
-        doThrow(new ActionExecuteException("")).when(callbackMock2).execute(same(null));
+        doThrow(new ActionExecutionException("")).when(callbackMock1).execute(same(null));
+        doThrow(new ActionExecutionException("")).when(callbackMock2).execute(same(null));
 
         status.init(pathMock1, configMock);
 
@@ -189,7 +189,7 @@ public class FeatureStatusImplTest {
 
         FeatureStatusImpl status = new FeatureStatusImpl("feature", loadActionMock);
 
-        doThrow(new ActionExecuteException("")).when(callbackMock1).execute(any());
+        doThrow(new ActionExecutionException("")).when(callbackMock1).execute(any());
 
         status.whenDone(callbackMock1);
         status.whenDone(callbackMock2);

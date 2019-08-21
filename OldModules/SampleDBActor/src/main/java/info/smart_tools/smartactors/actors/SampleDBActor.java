@@ -32,8 +32,8 @@ public class SampleDBActor {
      */
     public SampleDBActor() throws SampleDBException {
         try {
-            ConnectionOptions options = IOC.resolve(Keys.resolveByName("PostgresConnectionOptions"));
-            pool = IOC.resolve(Keys.resolveByName("PostgresConnectionPool"), options);
+            ConnectionOptions options = IOC.resolve(Keys.getKeyByName("PostgresConnectionOptions"));
+            pool = IOC.resolve(Keys.getKeyByName("PostgresConnectionPool"), options);
         } catch (ResolutionException e) {
             throw new SampleDBException("Cannot create actor", e);
         }
@@ -48,7 +48,7 @@ public class SampleDBActor {
 
             try (PoolGuard guard = new PoolGuard(pool)) {
                 ITask task = IOC.resolve(
-                        Keys.resolveByName("db.collection.upsert"),
+                        Keys.getKeyByName("db.collection.upsert"),
                         guard.getObject(),
                         collectionName,
                         document
@@ -76,7 +76,7 @@ public class SampleDBActor {
 
             try (PoolGuard guard = new PoolGuard(pool)) {
                 ITask task = IOC.resolve(
-                        Keys.resolveByName("db.collection.getbyid"),
+                        Keys.getKeyByName("db.collection.getbyid"),
                         guard.getObject(),
                         wrapper.getCollectionName(),
                         id,

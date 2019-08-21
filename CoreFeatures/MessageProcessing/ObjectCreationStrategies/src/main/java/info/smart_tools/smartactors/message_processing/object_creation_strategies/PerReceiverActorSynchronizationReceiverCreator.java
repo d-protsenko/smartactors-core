@@ -42,7 +42,7 @@ public class PerReceiverActorSynchronizationReceiverCreator extends BasicInterme
         }
 
         try {
-            IMessageReceiver synchronizedReceiver = IOC.resolve(Keys.resolveByName("create actor synchronization receiver"), receiverItem);
+            IMessageReceiver synchronizedReceiver = IOC.resolve(Keys.getKeyByName("create actor synchronization receiver"), receiverItem);
             getListener().acceptItem(itemId, synchronizedReceiver);
         } catch (ResolutionException e) {
             throw new ReceiverObjectListenerException(e);

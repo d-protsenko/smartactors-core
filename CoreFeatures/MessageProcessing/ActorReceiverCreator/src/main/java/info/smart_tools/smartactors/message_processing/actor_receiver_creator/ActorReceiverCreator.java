@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_processing.actor_receiver_creator;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -38,8 +38,8 @@ public class ActorReceiverCreator implements IRoutedObjectCreator {
     public ActorReceiverCreator()
             throws ObjectCreationException {
         try {
-            this.name = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
-            this.dependency = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
+            this.name = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+            this.dependency = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
         } catch (Throwable e) {
             throw new ObjectCreationException("Could not create instance of ActorReceiverCreator.");
         }
@@ -50,10 +50,10 @@ public class ActorReceiverCreator implements IRoutedObjectCreator {
             throws ObjectCreationException, InvalidArgumentException {
         try {
             Map<Object, IMessageReceiver> handlerReceiversMap = new HashMap<>();
-            IWrapperGenerator wg = IOC.resolve(Keys.resolveByName(IWrapperGenerator.class.getCanonicalName()));
-            IReceiverGenerator rg = IOC.resolve(Keys.resolveByName(IReceiverGenerator.class.getCanonicalName()));
+            IWrapperGenerator wg = IOC.resolve(Keys.getKeyByName(IWrapperGenerator.class.getCanonicalName()));
+            IReceiverGenerator rg = IOC.resolve(Keys.getKeyByName(IReceiverGenerator.class.getCanonicalName()));
             Object object = IOC.resolve(
-                    Keys.resolveByName((String) description.getValue(this.dependency)),
+                    Keys.getKeyByName((String) description.getValue(this.dependency)),
                     description
             );
             List<Method> methods = new LinkedList<>(Arrays.asList(object.getClass().getDeclaredMethods()));
@@ -61,7 +61,7 @@ public class ActorReceiverCreator implements IRoutedObjectCreator {
             for (Method m : methods) {
                 Class wrapperInterface = m.getParameterTypes()[0];
                 Object wrapper = wg.generate(wrapperInterface);
-                IResolveDependencyStrategy strategy = new SingletonStrategy(wrapper);
+                IStrategy strategy = new SingletonStrategy(wrapper);
                 IMessageReceiver handlerReceiver = rg.generate(object, strategy, m.getName());
                 handlerReceiversMap.put(m.getName(), handlerReceiver);
             }

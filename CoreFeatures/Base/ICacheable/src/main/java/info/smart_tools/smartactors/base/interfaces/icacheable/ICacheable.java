@@ -1,12 +1,12 @@
 package info.smart_tools.smartactors.base.interfaces.icacheable;
 
-import info.smart_tools.smartactors.base.interfaces.icacheable.exception.DropCacheException;
+import info.smart_tools.smartactors.base.interfaces.icacheable.exception.CacheDropException;
 
 public interface ICacheable {
 
     void dropCache()
-            throws DropCacheException;
+            throws CacheDropException;
 
     void dropCacheFor(final Object key)
-            throws DropCacheException;
+            throws CacheDropException;
 }

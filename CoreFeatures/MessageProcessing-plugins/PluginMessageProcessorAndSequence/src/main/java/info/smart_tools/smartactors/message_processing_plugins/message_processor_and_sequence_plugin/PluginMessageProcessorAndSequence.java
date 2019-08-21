@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.message_processing_plugins.message_processo
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
@@ -11,7 +11,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -61,49 +60,32 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                 mps.goTo(currentLevel - 1, repeatStep);
                             };
                             IOC.register(
-                                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "afterExceptionAction#break"),
+                                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "afterExceptionAction#break"),
                                     new SingletonStrategy(breakAction)
                             );
                             IOC.register(
-                                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "afterExceptionAction#continue"),
+                                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "afterExceptionAction#continue"),
                                     new SingletonStrategy(continueAction)
                             );
                             IOC.register(
-                                    IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "afterExceptionAction#repeat"),
+                                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "afterExceptionAction#repeat"),
                                     new SingletonStrategy(repeatAction)
                             );
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't get AfterExceptionAction key", e);
+                            throw new ActionExecutionException("MessageProcessorAndSequence plugin can't load: can't get AfterExceptionAction key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't create strategy", e);
+                            throw new ActionExecutionException("MessageProcessorAndSequence plugin can't load: can't create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't register new strategy", e);
+                            throw new ActionExecutionException("MessageProcessorAndSequence plugin can't load: can't register new strategy", e);
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "after exception actions";
-                        String keyName = "";
-
-                        try {
-                            keyName = "afterExceptionAction#break";
-                            IOC.remove(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "afterExceptionAction#continue";
-                            IOC.remove(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "afterExceptionAction#repeat";
-                            IOC.remove(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] keyNames = {
+                                "afterExceptionAction#break",
+                                "afterExceptionAction#continue",
+                                "afterExceptionAction#repeat"
+                        };
+                        Keys.unregisterByNames(keyNames);
                     });
             bootstrap.add(afterExceptionActions);
 
@@ -118,7 +100,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.resolveByName("final task"),
+                                    Keys.getKeyByName("final task"),
                                     new CreateNewInstanceStrategy(args -> {
                                         try {
                                             return new FinalTask((IObject) args[0]);
@@ -128,7 +110,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                     })
                             );
                             IOC.register(
-                                    Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+                                    Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                                     new CreateNewInstanceStrategy(args -> {
                                         IQueue<ITask> taskQueue = (IQueue<ITask>) args[0];
                                         IMessageProcessingSequence sequence = (IMessageProcessingSequence) args[1];
@@ -138,7 +120,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                             config = (IObject) args[2];
                                         } else {
                                             try {
-                                                config = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                                                config = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
                                             } catch (ResolutionException e) {
                                                 throw new RuntimeException(e);
                                             }
@@ -151,30 +133,19 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                         }
                                     }));
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't get MessageProcessorAndSequence key", e);
+                            throw new ActionExecutionException("MessageProcessorAndSequence plugin can't load: can't get MessageProcessorAndSequence key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't create strategy", e);
+                            throw new ActionExecutionException("MessageProcessorAndSequence plugin can't load: can't create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("MessageProcessorAndSequence plugin can't load: can't register new strategy", e);
+                            throw new ActionExecutionException("MessageProcessorAndSequence plugin can't load: can't register new strategy", e);
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "message_processor";
-                        String keyName = "";
-
-                        try {
-                            keyName = "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor";
-                            IOC.remove(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
-
-                        try {
-                            keyName = "final task";
-                            IOC.remove(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] keyNames = {
+                                "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor",
+                                "final task"
+                        };
+                        Keys.unregisterByNames(keyNames);
                     });
 
             bootstrap.add(processorItem);
@@ -188,7 +159,7 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+                                    Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                                     new CreateNewInstanceStrategy(args -> {
                                         int stackDepth = ((Number) args[0]).intValue();
                                         Object mainChainName = args[1];
@@ -202,17 +173,12 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                                         }
                                     }));
                         } catch (ResolutionException | InvalidArgumentException | RegistrationException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "message_processing_sequence";
-                        String keyName = "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence";
-                        try {
-                            IOC.remove(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] keyNames = { "info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence" };
+                        Keys.unregisterByNames(keyNames);
                     });
 
             bootstrap.add(sequenceItem);
@@ -226,20 +192,15 @@ public class PluginMessageProcessorAndSequence implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.resolveByName("recover message processing sequence"),
+                                    Keys.getKeyByName("recover message processing sequence"),
                                     new MessageProcessingSequenceRecoveryStrategy());
                         } catch (ResolutionException | RegistrationException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     })
                     .revertProcess(() -> {
-                        String itemName = "message_processing_sequence_dump_recovery";
-                        String keyName = "recover message processing sequence";
-                        try {
-                            IOC.remove(Keys.resolveByName(keyName));
-                        } catch(DeletionException e) {
-                            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-                        } catch (ResolutionException e) { }
+                        String[] keyNames = { "recover message processing sequence" };
+                        Keys.unregisterByNames(keyNames);
                     });
 
             bootstrap.add(recoverItem);

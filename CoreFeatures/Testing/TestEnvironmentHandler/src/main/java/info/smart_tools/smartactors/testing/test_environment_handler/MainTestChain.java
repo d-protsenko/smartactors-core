@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.testing.test_environment_handler;
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -58,7 +58,7 @@ public class MainTestChain implements IReceiverChain {
                 if (isCompleted.compareAndSet(false, true)) {
                     completionCallback.execute(null);
                 }
-            } catch (ActionExecuteException | InvalidArgumentException e) {
+            } catch (ActionExecutionException | InvalidArgumentException e) {
                 throw new MessageReceiveException(e);
             }
         }
@@ -93,10 +93,10 @@ public class MainTestChain implements IReceiverChain {
         this.successReceiverArgs = successReceiverArgs;
         this.isCompleted = new AtomicBoolean(false);
         try {
-            this.chainNameFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
-            this.testChainReceiverArgs = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
+            this.chainNameFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
+            this.testChainReceiverArgs = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
             if (null == this.successReceiverArgs) {
-                this.successReceiverArgs = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
+                this.successReceiverArgs = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
             }
         } catch (ResolutionException e) {
             throw new InitializationException("Could not resolve dependency for IObject.", e);
@@ -143,12 +143,12 @@ public class MainTestChain implements IReceiverChain {
     public IObject getExceptionalChainNamesAndEnvironments(final Throwable exception) {
         IObject exceptionalChainAndEnv = null;
         try {
-            exceptionalChainAndEnv = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
+            exceptionalChainAndEnv = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
             exceptionalChainAndEnv.setValue(this.chainNameFieldName, new ExceptionalTestChain());
             if (isCompleted.compareAndSet(false, true)) {
                 completionCallback.execute(exception);
             }
-        } catch (ActionExecuteException | InvalidArgumentException | ResolutionException | ChangeValueException e) {
+        } catch (ActionExecutionException | InvalidArgumentException | ResolutionException | ChangeValueException e) {
             e.printStackTrace();
         }
 

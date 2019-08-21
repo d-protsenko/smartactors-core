@@ -1,1 +1,4 @@
-{"featureName":"info.smart_tools.smartactors:database-postgresql","afterFeatures":["info.smart_tools.smartactors:database"]}
+{
+  "featureName":"info.smart_tools.smartactors:database-postgresql",
+  "afterFeatures":["info.smart_tools.smartactors:database"]
+}

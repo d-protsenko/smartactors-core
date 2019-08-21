@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.checkpoint.failure_action;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -50,7 +50,7 @@ public class SendEnvelopeFailureActionTest extends PluginsLoadingTestBase {
 
         backupActionMock = mock(IAction.class);
 
-        messageFN = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message___");
+        messageFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message___");
     }
 
     @Test
@@ -77,7 +77,7 @@ public class SendEnvelopeFailureActionTest extends PluginsLoadingTestBase {
         try {
             action.execute(messageMock);
             fail();
-        } catch (ActionExecuteException ok) {
+        } catch (ActionExecutionException ok) {
         }
 
         verify(backupActionMock).execute(same(messageMock));
@@ -87,15 +87,15 @@ public class SendEnvelopeFailureActionTest extends PluginsLoadingTestBase {
     public void Should_suppressExceptionThrownByBackupAction()
             throws Exception {
         doThrow(SendingMessageException.class).when(messageBusHandlerMock).handle(any(), any(), eq(true));
-        doThrow(ActionExecuteException.class).when(backupActionMock).execute(same(messageMock));
+        doThrow(ActionExecutionException.class).when(backupActionMock).execute(same(messageMock));
 
         IAction<IObject> action = new SendEnvelopeFailureAction(targetChainId, messageFN, backupActionMock);
 
         try {
             action.execute(messageMock);
             fail();
-        } catch (ActionExecuteException ok) {
-            assertTrue(ok.getCause().getSuppressed()[0] instanceof ActionExecuteException);
+        } catch (ActionExecutionException ok) {
+            assertTrue(ok.getCause().getSuppressed()[0] instanceof ActionExecutionException);
         }
     }
 }

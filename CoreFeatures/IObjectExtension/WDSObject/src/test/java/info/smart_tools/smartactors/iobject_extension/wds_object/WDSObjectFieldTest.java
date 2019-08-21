@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.iobject_extension.wds_object;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -37,7 +37,7 @@ public class WDSObjectFieldTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyByNameResolutionStrategy(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -48,7 +48,7 @@ public class WDSObjectFieldTest {
                         })
         );
         IOC.register(
-                Keys.resolveByName(IFieldName.class.getCanonicalName()),
+                Keys.getKeyByName(IFieldName.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -59,7 +59,7 @@ public class WDSObjectFieldTest {
                         })
         );
         IOC.register(
-                Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.getKeyByName(IStrategy.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> a[1]
                 )
@@ -120,15 +120,15 @@ public class WDSObjectFieldTest {
     @Test
     public void checkInMethod()
             throws Exception {
-        IResolveDependencyStrategy strategy1 = mock(IResolveDependencyStrategy.class);
+        IStrategy strategy1 = mock(IStrategy.class);
         IOC.resolve(
-                Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.getKeyByName(IStrategy.class.getCanonicalName()),
                 "GetValue",
                 strategy1
         );
-        IResolveDependencyStrategy strategy2 = mock(IResolveDependencyStrategy.class);
+        IStrategy strategy2 = mock(IStrategy.class);
         IOC.resolve(
-                Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.getKeyByName(IStrategy.class.getCanonicalName()),
                 "Transform",
                 strategy2
         );
@@ -163,9 +163,9 @@ public class WDSObjectFieldTest {
     @Test (expected = ReadValueException.class)
     public void checkInMethodExceptionOnWrongArgs()
             throws Exception {
-        IResolveDependencyStrategy strategy1 = mock(IResolveDependencyStrategy.class);
+        IStrategy strategy1 = mock(IStrategy.class);
         IOC.resolve(
-                Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.getKeyByName(IStrategy.class.getCanonicalName()),
                 "GetValue",
                 strategy1
         );
@@ -182,15 +182,15 @@ public class WDSObjectFieldTest {
     @Test
     public void checkOutMethod()
             throws Exception {
-        IResolveDependencyStrategy strategy1 = mock(IResolveDependencyStrategy.class);
+        IStrategy strategy1 = mock(IStrategy.class);
         IOC.resolve(
-                Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.getKeyByName(IStrategy.class.getCanonicalName()),
                 "GetValue",
                 strategy1
         );
-        IResolveDependencyStrategy strategy2 = mock(IResolveDependencyStrategy.class);
+        IStrategy strategy2 = mock(IStrategy.class);
         IOC.resolve(
-                Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.getKeyByName(IStrategy.class.getCanonicalName()),
                 "Transform",
                 strategy2
         );
@@ -230,9 +230,9 @@ public class WDSObjectFieldTest {
     @Test (expected = ChangeValueException.class)
     public void checkOutMethodExceptionOnWrongArgs()
             throws Exception {
-        IResolveDependencyStrategy strategy1 = mock(IResolveDependencyStrategy.class);
+        IStrategy strategy1 = mock(IStrategy.class);
         IOC.resolve(
-                Keys.resolveByName(IResolveDependencyStrategy.class.getCanonicalName()),
+                Keys.getKeyByName(IStrategy.class.getCanonicalName()),
                 "GetValue",
                 strategy1
         );

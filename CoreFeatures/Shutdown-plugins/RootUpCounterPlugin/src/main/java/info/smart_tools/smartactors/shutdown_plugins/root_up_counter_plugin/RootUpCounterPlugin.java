@@ -10,7 +10,6 @@ import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonSt
 import info.smart_tools.smartactors.base.up_counter.UpCounter;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -37,7 +36,7 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
     @Item("root_upcounter")
     public void registerRootUpcounter()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.resolveByName("root upcounter"), new SingletonStrategy(new UpCounter()));
+        IOC.register(Keys.getKeyByName("root upcounter"), new SingletonStrategy(new UpCounter()));
     }
 
     /**
@@ -46,15 +45,8 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
      */
     @ItemRevert("root_upcounter")
     public void unregisterRootUpcounter() {
-        String itemName = "root_upcounter";
-        String keyName = "";
-
-        try {
-            keyName = "root upcounter";
-            IOC.remove(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] itemNames = { "root upcounter" };
+        Keys.unregisterByNames(itemNames);
     }
 
     /**
@@ -71,9 +63,9 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
     })
     public void registerNewUpcounterCreationStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.resolveByName("new upcounter"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.getKeyByName("new upcounter"), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
-                IUpCounter parent = args.length > 0 ? (IUpCounter) args[0] : IOC.resolve(Keys.resolveByName("root upcounter"));
+                IUpCounter parent = args.length > 0 ? (IUpCounter) args[0] : IOC.resolve(Keys.getKeyByName("root upcounter"));
 
                 return new UpCounter(parent);
             } catch (ResolutionException | IllegalUpCounterState e) {
@@ -88,15 +80,8 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
      */
     @ItemRevert("new_upcounter_creation_strategy")
     public void unregisterNewUpcounterCreationStrategy() {
-        String itemName = "new_upcounter_creation_strategy";
-        String keyName;
-
-        keyName = "new upcounter";
-        try {
-            IOC.remove(Keys.resolveByName(keyName));
-        } catch(DeletionException e) {
-            System.out.println("[WARNING] Deregistration of \""+keyName+"\" has failed while reverting \""+itemName+"\" plugin.");
-        } catch (ResolutionException e) { }
+        String[] itemNames = { "new upcounter" };
+        Keys.unregisterByNames(itemNames);
     }
 
     /**
@@ -134,9 +119,10 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
     @After({
         "root_upcounter"
     })
+    @Before({"read_initial_config"})
     public void setupDefaultShutdownCallbacks()
             throws ResolutionException, UpCounterCallbackExecutionException {
-        IUpCounter upCounter = IOC.resolve(Keys.resolveByName("root upcounter"));
+        IUpCounter upCounter = IOC.resolve(Keys.getKeyByName("root upcounter"));
 
         upCounter.onShutdownRequest(this.toString(), mode -> {
             System.out.printf("Got shutdown request with mode=\"%s\"\n", mode);

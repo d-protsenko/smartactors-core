@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.ioc.recursive_strategy_container;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
 import info.smart_tools.smartactors.ioc.istrategy_container.exception.StrategyContainerException;
 import org.junit.Before;
@@ -28,12 +28,12 @@ public class EmptyStrategyContainerTest {
 
     @Test(expected = StrategyContainerException.class)
     public void testRegister() throws StrategyContainerException {
-        container.register(new Object(), mock(IResolveDependencyStrategy.class));
+        container.register(new Object(), mock(IStrategy.class));
     }
 
     @Test(expected = StrategyContainerException.class)
     public void testRemove() throws StrategyContainerException {
-        container.remove(new Object());
+        container.unregister(new Object());
     }
 
 }

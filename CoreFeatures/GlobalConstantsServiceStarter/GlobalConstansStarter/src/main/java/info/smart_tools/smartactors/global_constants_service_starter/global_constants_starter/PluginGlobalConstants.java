@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.global_constants_service_starter.global_constants_starter;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
@@ -46,11 +46,11 @@ public class PluginGlobalConstants implements IPlugin {
 //            constantsObjectItem.after("iobject");
             constantsObjectItem.process(() -> {
                 try {
-                    IObject obj = IOC.resolve(Keys.resolveByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
-                    IOC.register(Keys.resolveByName("global constants"), new SingletonStrategy(obj));
+                    IObject obj = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+                    IOC.register(Keys.getKeyByName("global constants"), new SingletonStrategy(obj));
 
                     IOC.register(
-                            Keys.resolveByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+                            Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                             new CreateNewInstanceStrategy(args -> {
                                 IQueue<ITask> taskQueue = (IQueue<ITask>) args[0];
                                 IMessageProcessingSequence sequence = (IMessageProcessingSequence) args[1];
@@ -60,7 +60,7 @@ public class PluginGlobalConstants implements IPlugin {
                                     config = (IObject) args[2];
                                 } else {
                                     try {
-                                        config = IOC.resolve(Keys.resolveByName("global constants"));;
+                                        config = IOC.resolve(Keys.getKeyByName("global constants"));;
                                     } catch (ResolutionException e) {
                                         throw new RuntimeException(e);
                                     }
@@ -72,7 +72,7 @@ public class PluginGlobalConstants implements IPlugin {
                                 }
                             }));
                 } catch (ResolutionException | InvalidArgumentException | RegistrationException e) {
-                    throw new ActionExecuteException(e);
+                    throw new ActionExecutionException(e);
                 }
             });
 
@@ -86,10 +86,10 @@ public class PluginGlobalConstants implements IPlugin {
 //            constantsSectionItem.before("config_sections:done");
             constantsSectionItem.process(() -> {
                 try {
-                    IConfigurationManager configurationManager = IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
+                    IConfigurationManager configurationManager = IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
                     configurationManager.addSectionStrategy(new ConstantsSectionStrategy());
                 } catch (ResolutionException | InvalidArgumentException e) {
-                    throw new ActionExecuteException(e);
+                    throw new ActionExecutionException(e);
                 }
             });
 

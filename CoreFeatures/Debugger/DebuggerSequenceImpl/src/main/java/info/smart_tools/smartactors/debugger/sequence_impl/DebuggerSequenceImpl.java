@@ -65,9 +65,9 @@ public class DebuggerSequenceImpl implements IDebuggerSequence, IDumpable {
 
         this.wrapped = sequence;
 
-        debuggerArguments = IOC.resolve(Keys.resolveByName("configuration object"), DEBUGGER_INTERRUPT_TARGET);
+        debuggerArguments = IOC.resolve(Keys.getKeyByName("configuration object"), DEBUGGER_INTERRUPT_TARGET);
 
-        IRouter router = IOC.resolve(Keys.resolveByName(IRouter.class.getCanonicalName()));
+        IRouter router = IOC.resolve(Keys.getKeyByName(IRouter.class.getCanonicalName()));
 
         try {
             debuggerReceiver = router.route(debuggerAddress);
@@ -199,7 +199,7 @@ public class DebuggerSequenceImpl implements IDebuggerSequence, IDumpable {
     @Override
     public IObject dump(final IObject options) throws DumpException, InvalidArgumentException {
         try {
-            return IOC.resolve(Keys.resolveByName("make dump"), wrapped, options);
+            return IOC.resolve(Keys.getKeyByName("make dump"), wrapped, options);
         } catch (ResolutionException e) {
             throw new DumpException("Error creating dump of debugger sequence.", e);
         }

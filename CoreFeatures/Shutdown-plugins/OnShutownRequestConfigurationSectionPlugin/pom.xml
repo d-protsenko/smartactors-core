@@ -5,10 +5,10 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>shutdown-plugins</artifactId>
-        <version>0.5.0</version>
+        <version>0.6.0</version>
     </parent>
     <artifactId>shutdown-plugins.on-shutown-request-configuration-section-plugin</artifactId>
-    <version>0.5.0</version>
+    <version>0.6.0</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
@@ -27,12 +27,12 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.interfaces.iresolve-dependency-strategy</artifactId>
+            <artifactId>base.interfaces.istrategy</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.interfaces.iaddition-dependency-strategy</artifactId>
+            <artifactId>base.interfaces.istrategy-registration</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
@@ -125,7 +125,7 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>class-management.module-manager</artifactId>
-            <version>0.5.0</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

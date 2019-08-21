@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.testing_plugins.chain_testing_plugin;
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
@@ -55,17 +55,17 @@ public class PluginChainTesting implements IPlugin {
                                 try {
                                     IEnvironmentHandler testHandler = new TestEnvironmentHandler();
                                     IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), "test environment handler"),
+                                            IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "test environment handler"),
                                             new SingletonStrategy(testHandler)
                                     );
                                 } catch (InitializationException e) {
-                                    throw new ActionExecuteException("Test environment handler plugin can't load: can't create new instance.", e);
+                                    throw new ActionExecutionException("Test environment handler plugin can't load: can't create new instance.", e);
                                 } catch (ResolutionException e) {
-                                    throw new ActionExecuteException("Test environment handler plugin can't load: can't get ioc key.", e);
+                                    throw new ActionExecutionException("Test environment handler plugin can't load: can't get ioc key.", e);
                                 } catch (InvalidArgumentException e) {
-                                    throw new ActionExecuteException("Test environment handler plugin can't load: can't create strategy.", e);
+                                    throw new ActionExecutionException("Test environment handler plugin can't load: can't create strategy.", e);
                                 } catch (RegistrationException e) {
-                                    throw new ActionExecuteException("Test environment handler plugin can't load: can't register new strategy.", e);
+                                    throw new ActionExecutionException("Test environment handler plugin can't load: can't register new strategy.", e);
                                 }
                             }
                     );
@@ -84,21 +84,21 @@ public class PluginChainTesting implements IPlugin {
                                 try {
                                     ITestRunner chainTestRunner = new ChainTestRunner();
                                     IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), ITestRunner.class.getCanonicalName() + "#chain"),
+                                            IOC.resolve(IOC.getKeyForKeyByNameStrategy(), ITestRunner.class.getCanonicalName() + "#chain"),
                                             new SingletonStrategy(chainTestRunner)
                                     );
                                     ITestRunner httpEndpointTestRunner = new HttpEndpointTestRunner();
                                     IOC.register(
-                                            IOC.resolve(IOC.getKeyForKeyByNameResolutionStrategy(), ITestRunner.class.getCanonicalName() + "#httpEndpoint"),
+                                            IOC.resolve(IOC.getKeyForKeyByNameStrategy(), ITestRunner.class.getCanonicalName() + "#httpEndpoint"),
                                             new SingletonStrategy(httpEndpointTestRunner));
                                 } catch (ResolutionException e) {
-                                    throw new ActionExecuteException("TestRunners plugin can't load: can't get ioc key.", e);
+                                    throw new ActionExecutionException("TestRunners plugin can't load: can't get ioc key.", e);
                                 } catch (InvalidArgumentException e) {
-                                    throw new ActionExecuteException("TestRunners plugin can't load: can't create strategy.", e);
+                                    throw new ActionExecutionException("TestRunners plugin can't load: can't create strategy.", e);
                                 } catch (RegistrationException e) {
-                                    throw new ActionExecuteException("TestRunners plugin can't load: can't register new strategy.", e);
+                                    throw new ActionExecutionException("TestRunners plugin can't load: can't register new strategy.", e);
                                 } catch (InitializationException e) {
-                                    throw new ActionExecuteException("TestRunners plugin can't load: can't create instance of TestRunner.", e);
+                                    throw new ActionExecutionException("TestRunners plugin can't load: can't create instance of TestRunner.", e);
                                 }
                             }
                     );
@@ -118,11 +118,11 @@ public class PluginChainTesting implements IPlugin {
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =
-                                    IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
+                                    IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
 
                             configurationManager.addSectionStrategy(new TestsSectionStrategy());
                         } catch (ResolutionException | InvalidArgumentException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     });
 
@@ -134,7 +134,7 @@ public class PluginChainTesting implements IPlugin {
                     //.after("IOC")
                     .process(() -> {
                         try {
-                            IOC.register(Keys.resolveByName(MainTestChain.class.getCanonicalName()),
+                            IOC.register(Keys.getKeyByName(MainTestChain.class.getCanonicalName()),
                                     new CreateNewInstanceStrategy(args -> {
                                         try {
                                             return new MainTestChain(args[0], (IAction) args[1], (IObject) args[2],
@@ -144,7 +144,7 @@ public class PluginChainTesting implements IPlugin {
                                         }
                                     }));
                         } catch (ResolutionException | RegistrationException | InvalidArgumentException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     });
 

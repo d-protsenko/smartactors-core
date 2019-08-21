@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.core_service_starter.core_starter;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.IStrategyRegistration;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.exception.StrategyRegistrationException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
@@ -53,16 +53,16 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =
-                                    IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
+                                    IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
                             configurationManager.addSectionStrategy(new ObjectsSectionProcessingStrategy());
                         } catch (ResolutionException | InvalidArgumentException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     })
                     .revertProcess(() -> {
                         try {
                             IConfigurationManager configurationManager =
-                                    IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
+                                    IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
                             ISectionStrategy sectionStrategy = new ObjectsSectionProcessingStrategy();
                             configurationManager.removeSectionStrategy(sectionStrategy.getSectionName());
                         } catch (InvalidArgumentException e) {
@@ -86,10 +86,10 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =
-                                    IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
+                                    IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
 
                             configurationManager.addSectionStrategy(new MapsSectionProcessingStrategy());
-                            IAdditionDependencyStrategy strategy = IOC.resolve(Keys.resolveByName("expandable_strategy#resolve key for configuration object"));
+                            IStrategyRegistration strategy = IOC.resolve(Keys.getKeyByName("expandable_strategy#resolve key for configuration object"));
 
                             strategy.register("maps", new ApplyFunctionToArgumentsStrategy(
                                     (a) -> {
@@ -192,37 +192,37 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                                         }
                                     })
                             );
-                        } catch (ResolutionException | InvalidArgumentException | AdditionDependencyStrategyException e) {
-                            throw new ActionExecuteException(e);
+                        } catch (ResolutionException | InvalidArgumentException | StrategyRegistrationException e) {
+                            throw new ActionExecutionException(e);
                         }
                     })
                     .revertProcess(() -> {
                         try {
-                            IAdditionDependencyStrategy strategy = IOC.resolve(Keys.resolveByName("expandable_strategy#resolve key for configuration object"));
+                            IStrategyRegistration strategy = IOC.resolve(Keys.getKeyByName("expandable_strategy#resolve key for configuration object"));
                             try {
-                                strategy.remove("exceptional");
-                            } catch (AdditionDependencyStrategyException e) {
+                                strategy.unregister("exceptional");
+                            } catch (StrategyRegistrationException e) {
                                 System.out.println("[WARNING] Deregistration of \"exceptional\" strategy has failed while reverting \"config_section:maps\" plugin.");
                             }
                             try {
-                                strategy.remove("out_");
-                            } catch (AdditionDependencyStrategyException e) {
+                                strategy.unregister("out_");
+                            } catch (StrategyRegistrationException e) {
                                 System.out.println("[WARNING] Deregistration of \"out_\" strategy has failed while reverting \"config_section:maps\" plugin.");
                             }
                             try {
-                                strategy.remove("in_");
-                            } catch (AdditionDependencyStrategyException e) {
+                                strategy.unregister("in_");
+                            } catch (StrategyRegistrationException e) {
                                 System.out.println("[WARNING] Deregistration of \"in_\" strategy has failed while reverting \"config_section:maps\" plugin.");
                             }
                             try {
-                                strategy.remove("maps");
-                            } catch (AdditionDependencyStrategyException e) {
+                                strategy.unregister("maps");
+                            } catch (StrategyRegistrationException e) {
                                 System.out.println("[WARNING] Deregistration of \"maps\" strategy has failed while reverting \"config_section:maps\" plugin.");
                             }
                         } catch (ResolutionException e) { }
                         try {
                             IConfigurationManager configurationManager =
-                                    IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
+                                    IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
                             ISectionStrategy sectionStrategy = new MapsSectionProcessingStrategy();
                             configurationManager.removeSectionStrategy(sectionStrategy.getSectionName());
                         } catch (InvalidArgumentException e) {
@@ -245,17 +245,17 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                     .process(() -> {
                         try {
                             IConfigurationManager configurationManager =
-                                    IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
+                                    IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
 
                             configurationManager.addSectionStrategy(new ExecutorSectionProcessingStrategy());
                         } catch (ResolutionException | InvalidArgumentException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     })
                     .revertProcess(() -> {
                         try {
                             IConfigurationManager configurationManager =
-                                    IOC.resolve(Keys.resolveByName(IConfigurationManager.class.getCanonicalName()));
+                                    IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
                             ISectionStrategy sectionStrategy = new ExecutorSectionProcessingStrategy();
                             configurationManager.removeSectionStrategy(sectionStrategy.getSectionName());
                         } catch (InvalidArgumentException e) {

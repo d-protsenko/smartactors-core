@@ -38,7 +38,7 @@ public class ChainCallReceiver implements IMessageReceiver {
             throw new InvalidArgumentException("Strategy should not be null.");
         }
 
-        IKey iFieldNameStrategyKey = Keys.resolveByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey iFieldNameStrategyKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
 
         this.chainChoiceStrategy = chainChoiceStrategy;
         this.scopeSwitchingFieldName = IOC.resolve(iFieldNameStrategyKey, "scopeSwitching");
