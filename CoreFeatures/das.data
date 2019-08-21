@@ -551,7 +551,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "IAdditionDependencyStrategy",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "base.interfaces.istrategy-registration",
   "uploadRepositories" : [ {
@@ -559,7 +559,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "IStrategyRegistration",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "base.interfaces.iaction",
   "uploadRepositories" : [ {
@@ -567,7 +567,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "IAction",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "base.strategy.apply-function-to-arguments",
   "uploadRepositories" : [ {
@@ -575,7 +575,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "ApplyFunctionToArgumentsStrategy",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "base.interfaces.ipath",
   "uploadRepositories" : [ {
@@ -583,7 +583,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "IPath",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "base.exception.invalid-state-exception",
   "uploadRepositories" : [ {
@@ -591,7 +591,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "InvalidStateException",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "base.strategy.create-new-instance-strategy",
   "uploadRepositories" : [ {
@@ -599,7 +599,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "CreateNewInstanceStrategy",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "base.pool-guard",
   "uploadRepositories" : [ {
@@ -607,7 +607,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PoolGuard",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "base.path",
   "uploadRepositories" : [ {
@@ -615,7 +615,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "Path",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "base.strategy.singleton-strategy",
   "uploadRepositories" : [ {
@@ -623,7 +623,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "SingletonStrategy",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "base.pool",
   "uploadRepositories" : [ {
@@ -631,7 +631,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "Pool",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "base.exception.initialization-exception",
   "uploadRepositories" : [ {
@@ -639,7 +639,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "InitializationException",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "base.exception.invalid-argument-exception",
   "uploadRepositories" : [ {
@@ -647,7 +647,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "InvalidArgumentException",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "base.interfaces.iresource-source",
   "uploadRepositories" : [ {
@@ -655,7 +655,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "IResourceSource",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "base.interfaces.istrategy",
   "uploadRepositories" : [ {
@@ -663,7 +663,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "IStrategy",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "base.interfaces.iresolve-dependency-strategy",
   "uploadRepositories" : [ {
@@ -671,7 +671,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "IResolveDependencyStrategy",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "base.interfaces.ipool",
   "uploadRepositories" : [ {
@@ -679,37 +679,37 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "IPool",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "strategy.strategy-storage-strategy",
   "uploadRepositories" : [ ],
   "rawName" : "Strategy.StrategyStorageStrategy",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "interfaces.icacheable",
   "uploadRepositories" : [ ],
   "rawName" : "Interfaces.ICacheable",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "strategy.strategy-storage-with-cache-strategy",
   "uploadRepositories" : [ ],
   "rawName" : "Strategy.StrategyStorageWithCacheStrategy",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "iup-counter",
   "uploadRepositories" : [ ],
   "rawName" : "IUpCounter",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "up-counter",
   "uploadRepositories" : [ ],
   "rawName" : "UpCounter",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "isynchronous-service",
   "uploadRepositories" : [ ],
   "rawName" : "ISynchronousService",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -719,7 +719,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "base",
   "rawName" : "Base",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "actors" : [ {
   "artifactId" : "checkpoint.scheduling-strategies",
