@@ -35,7 +35,6 @@ public final class PostgresSchema {
 
     /**
      * Dictionary for Full Text Search
-     * TODO: don't hardcode Russian
      */
     public static final String DEFAULT_FTS_DICTIONARY = "english";
 
@@ -129,6 +128,7 @@ public final class PostgresSchema {
      * Fills the statement body with the ALTER TABLE ADD COLUMN sentence and
      * CREATE INDEX sentences to add the column and corresponding index for
      * full text search operation with desired language.
+     * It executes indexes addition inside the transaction.
      * @param statement statement to fill the body
      * @param collection collection name to use to construct the sequence name
      * @param options document describing a set of options for the collection creation

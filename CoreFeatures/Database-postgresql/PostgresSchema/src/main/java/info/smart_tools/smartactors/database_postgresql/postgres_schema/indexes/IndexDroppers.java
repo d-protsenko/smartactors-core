@@ -46,7 +46,8 @@ public class IndexDroppers {
      * @param options document describing dropping indexes
      * @throws Exception when something goes wrong
      */
-    public static void writeDropIndexes(Writer body, CollectionName collection, IObject options) throws Exception {
+    public static void writeDropIndexes(Writer body, CollectionName collection, IObject options)
+            throws Exception {
         try {
             if (options == null) {
                 // no indexes definition, ignoring
@@ -80,7 +81,11 @@ public class IndexDroppers {
             fieldPaths.add(PostgresFieldPath.fromString((String) indexFields));
         } else if (indexFields instanceof List) {
             for (Object fieldName : (List) indexFields) {
-                fieldPaths.add(PostgresFieldPath.fromString((String) fieldName));
+                if (fieldName instanceof String) {
+                    fieldPaths.add(PostgresFieldPath.fromString((String) fieldName));
+                } else {
+                    throw new Exception("Column name has non-String type.");
+                }
             }
         } else {
             throw new QueryBuildException("Unknown index definition for " + indexType + ": " + indexFields);

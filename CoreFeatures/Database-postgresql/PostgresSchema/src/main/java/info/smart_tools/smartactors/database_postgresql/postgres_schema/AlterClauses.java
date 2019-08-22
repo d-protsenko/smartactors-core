@@ -66,7 +66,11 @@ final class AlterClauses {
                 fields.add(PostgresFieldPath.fromString((String) fulltextFields));
             } else if (fulltextFields instanceof List) {
                 for (Object fieldName : (List) fulltextFields) {
-                    fields.add(PostgresFieldPath.fromString((String) fieldName));
+                    if (fieldName instanceof String) {
+                        fields.add(PostgresFieldPath.fromString((String) fieldName));
+                    } else {
+                        throw new QueryBuildException("Column name has non-String type.");
+                    }
                 }
             } else {
                 throw new QueryBuildException("Unknown definition for 'fulltext' option: " + fulltextFields);

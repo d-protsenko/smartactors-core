@@ -18,6 +18,8 @@ import java.sql.PreparedStatement;
 
 /**
  * The database task which adds indexes to collection in Postgres database.
+ * It does indexes addition inside the transaction so that method is safe
+ * but may be slow and block other activities on this collection.
  */
 public class PostgresAddIndexesSafeTask implements IDatabaseTask {
 

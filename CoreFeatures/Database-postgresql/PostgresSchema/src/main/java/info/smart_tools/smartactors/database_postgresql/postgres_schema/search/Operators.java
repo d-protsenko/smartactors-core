@@ -73,7 +73,7 @@ final class Operators {
 
     /**
      * Creates the condition writer based on the format string.
-     * @param format format string, contains '%s' for field path and '?' for parameters
+     * @param format format string, contains '%s' for column name and '?' for parameters
      * @return the condition writer ready to be added to basic resolver
      */
     private static QueryWriter formattedCheckWriterForFulltext(final String format) {

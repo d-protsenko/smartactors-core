@@ -66,7 +66,7 @@ public class PostgresAddIndexesTaskTest {
         connection = mock(IStorageConnection.class);
         when(connection.compileQuery(any())).thenReturn(compiledQuery);
 
-        task = new PostgresAddIndexesTask(connection);
+        task = new PostgresAddIndexesSafeTask(connection);
 
         message = mock(AddIndexesMessage.class);
         when(message.getCollectionName()).thenReturn(CollectionName.fromString("test"));
