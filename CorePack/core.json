@@ -146,6 +146,16 @@
       "group": "info.smart_tools.smartactors",
       "name": "shutdown-plugins",
       "version": "RELEASE"
+    },
+    {
+      "group": "info.smart_tools.smartactors",
+      "name": "version-management",
+      "version": "RELEASE"
+    },
+    {
+      "group": "info.smart_tools.smartactors",
+      "name": "version-management-plugins",
+      "version": "RELEASE"
     }
   ]
 }

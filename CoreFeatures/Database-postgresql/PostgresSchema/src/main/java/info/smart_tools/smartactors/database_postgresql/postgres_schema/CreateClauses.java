@@ -69,7 +69,7 @@ public final class CreateClauses {
     }
 
     /**
-     * Writes definition of full text column, i.e. ", fulltext tsvector".
+     * Writes definition of full text column, i.e. ", fulltext_english tsvector".
      * @param body SQL query body to write
      * @param options collection create options to check for fulltext index
      * @throws ResolutionException if failed to resolve field names from IOC
@@ -82,6 +82,7 @@ public final class CreateClauses {
             // ignoring absence of fulltext option
             return;
         }
+        String fullTextLanguage = PostgresSchema.DEFAULT_FTS_DICTIONARY;
         try {
             IKey fieldKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
             IFieldName fullTextField = IOC.resolve(fieldKey, "fulltext");
@@ -90,11 +91,16 @@ public final class CreateClauses {
                 // ignoring absence of fulltext option
                 return;
             }
+            IFieldName languageField = IOC.resolve(fieldKey, "language");
+            String language = (String) options.getValue(languageField);
+            if (language != null) {
+                fullTextLanguage = language;
+            }
         } catch (ReadValueException e) {
             // ignoring absence of fulltext option
         }
         body.write(", ");
-        body.write(PostgresSchema.FULLTEXT_COLUMN);
+        body.write(PostgresSchema.FULLTEXT_COLUMN + "_" + fullTextLanguage);
         body.write(" tsvector");
     }
 }

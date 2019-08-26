@@ -30,7 +30,7 @@ public class IndexCreators {
         put("ordered", (indexDefinition) -> IndexCreators::writeOrderedIndex);
         put("datetime", (indexDefinition) -> IndexCreators::writeDatetimeIndex);
         put("tags", (indexDefinition) -> IndexCreators::writeTagsIndex);
-        put("fulltext", FulltextIndexWriter::resolve);
+        put("fulltext", FulltextIndexWriter::resolveAdd);
     }};
 
     /**
@@ -43,10 +43,10 @@ public class IndexCreators {
      * Writes CREATE INDEX statements to the SQL statement body.
      * @param body where to write SQL
      * @param collection name of the collection
-     * @param options document describing create collection options
+     * @param options document describing index creation options
      * @throws Exception when something goes wrong
      */
-    public static void writeIndexes(Writer body, CollectionName collection, IObject options) throws Exception {
+    public static void writeCreateIndexes(Writer body, CollectionName collection, IObject options) throws Exception {
         try {
             if (options == null) {
                 // no indexes definition, ignoring
@@ -92,32 +92,41 @@ public class IndexCreators {
     private static void writeOrderedIndex(final Writer body, final CollectionName collection,
                                           final List<FieldPath> fields) throws IOException {
         for (FieldPath field : fields) {
-            body.write("CREATE INDEX ON ");
+            body.write("CREATE INDEX ");
+            body.write(collection.toString());
+            body.write("_");
+            body.write(field.getId());
+            body.write("_ordered_index ON ");
             body.write(collection.toString());
             body.write(" USING BTREE ((");
             body.write(field.toSQL());
             body.write("));\n");
         }
-
     }
 
     private static void writeDatetimeIndex(final Writer body, final CollectionName collection,
                                            final List<FieldPath> fields) throws IOException {
         for (FieldPath field : fields) {
-            body.write("CREATE INDEX ON ");
+            body.write("CREATE INDEX ");
             body.write(collection.toString());
-            body.write(" USING BTREE (");
-            body.write("(parse_timestamp_immutable(");
+            body.write("_");
+            body.write(field.getId());
+            body.write("_datetime_index ON ");
+            body.write(collection.toString());
+            body.write(" USING BTREE ((parse_timestamp_immutable(");
             body.write(field.toSQL());
-            body.write("))");
-            body.write(");\n");
+            body.write(")));\n");
         }
     }
 
     private static void writeTagsIndex(final Writer body, final CollectionName collection,
                                        final List<FieldPath> fields) throws IOException {
         for (FieldPath field : fields) {
-            body.write("CREATE INDEX ON ");
+            body.write("CREATE INDEX ");
+            body.write(collection.toString());
+            body.write("_");
+            body.write(field.getId());
+            body.write("_tags_index ON ");
             body.write(collection.toString());
             body.write(" USING GIN ((");
             body.write(field.toSQL());

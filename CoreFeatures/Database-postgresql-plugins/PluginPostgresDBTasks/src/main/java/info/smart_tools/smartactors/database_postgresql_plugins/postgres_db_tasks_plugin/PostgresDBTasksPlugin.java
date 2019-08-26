@@ -7,12 +7,17 @@ import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.Ap
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
+import info.smart_tools.smartactors.database_postgresql.postgres_add_indexes_task.PostgresAddIndexesSafeTask;
 import info.smart_tools.smartactors.database_postgresql.postgres_count_task.CountMessage;
 import info.smart_tools.smartactors.database_postgresql.postgres_count_task.PostgresCountTask;
 import info.smart_tools.smartactors.database_postgresql.postgres_create_task.CreateCollectionMessage;
 import info.smart_tools.smartactors.database_postgresql.postgres_create_task.PostgresCreateTask;
+import info.smart_tools.smartactors.database_postgresql.postgres_add_indexes_task.AddIndexesMessage;
+import info.smart_tools.smartactors.database_postgresql.postgres_add_indexes_task.PostgresAddIndexesTask;
 import info.smart_tools.smartactors.database_postgresql.postgres_delete_task.DeleteMessage;
 import info.smart_tools.smartactors.database_postgresql.postgres_delete_task.PostgresDeleteTask;
+import info.smart_tools.smartactors.database_postgresql.postgres_drop_indexes_task.DropIndexesMessage;
+import info.smart_tools.smartactors.database_postgresql.postgres_drop_indexes_task.PostgresDropIndexesTask;
 import info.smart_tools.smartactors.database_postgresql.postgres_getbyid_task.GetByIdMessage;
 import info.smart_tools.smartactors.database_postgresql.postgres_getbyid_task.PostgresGetByIdTask;
 import info.smart_tools.smartactors.database_postgresql.postgres_insert_task.InsertMessage;
@@ -62,6 +67,8 @@ public class PostgresDBTasksPlugin implements IPlugin {
                 .process(() -> {
                     try {
                         registerCreateTask();
+                        registerAddIndexesTasks();
+                        registerDropIndexesTasks();
                         registerNextIdStrategy();
                         registerUpsertTask();
                         registerInsertTask();
@@ -128,6 +135,152 @@ public class PostgresDBTasksPlugin implements IPlugin {
                                      options = (IObject) args[2];
                                 }
                                 IDatabaseTask task = new PostgresCreateTask(connection);
+
+                                IObject query = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+
+                                collectionNameField.out(query, collectionName);
+                                optionsField.out(query, options);
+
+                                task.prepare(query);
+                                return task;
+                            } catch (Exception e) {
+                                throw new RuntimeException("Can't resolve create db task.", e);
+                            }
+                        }
+                )
+        );
+    }
+
+    private void registerAddIndexesTasks() throws RegistrationException, ResolutionException, InvalidArgumentException {
+        IField collectionNameField = IOC.resolve(
+                Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
+        IField optionsField = IOC.resolve(
+                Keys.getKeyByName(IField.class.getCanonicalName()), "options");
+
+        IOC.register(
+                Keys.getKeyByName(AddIndexesMessage.class.getCanonicalName()),
+                new ApplyFunctionToArgumentsStrategy(
+                        (args) -> {
+                            IObject message = (IObject) args[0];
+                            return new AddIndexesMessage() {
+                                @Override
+                                public CollectionName getCollectionName() throws ReadValueException {
+                                    try {
+                                        return (CollectionName) collectionNameField.in(message);
+                                    } catch (Exception e) {
+                                        throw new ReadValueException(e);
+                                    }
+                                }
+                                @Override
+                                public IObject getOptions() throws ReadValueException {
+                                    try {
+                                        return (IObject) optionsField.in(message);
+                                    } catch (Exception e) {
+                                        throw new ReadValueException(e);
+                                    }
+                                }
+                            };
+                        }
+                )
+        );
+        IOC.register(
+                Keys.getKeyByName("db.collection.addindexes"),
+                new ApplyFunctionToArgumentsStrategy(
+                        (args) -> {
+                            try {
+                                IStorageConnection connection = (IStorageConnection) args[0];
+                                CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
+                                IObject options = null;
+                                if (args.length > 2) {
+                                    options = (IObject) args[2];
+                                }
+                                IDatabaseTask task = new PostgresAddIndexesTask(connection);
+
+                                IObject query = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+
+                                collectionNameField.out(query, collectionName);
+                                optionsField.out(query, options);
+
+                                task.prepare(query);
+                                return task;
+                            } catch (Exception e) {
+                                throw new RuntimeException("Can't resolve create db task.", e);
+                            }
+                        }
+                )
+        );
+        IOC.register(
+                Keys.getKeyByName("db.collection.addindexessafe"),
+                new ApplyFunctionToArgumentsStrategy(
+                        (args) -> {
+                            try {
+                                IStorageConnection connection = (IStorageConnection) args[0];
+                                CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
+                                IObject options = null;
+                                if (args.length > 2) {
+                                    options = (IObject) args[2];
+                                }
+                                IDatabaseTask task = new PostgresAddIndexesSafeTask(connection);
+
+                                IObject query = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+
+                                collectionNameField.out(query, collectionName);
+                                optionsField.out(query, options);
+
+                                task.prepare(query);
+                                return task;
+                            } catch (Exception e) {
+                                throw new RuntimeException("Can't resolve create db task.", e);
+                            }
+                        }
+                )
+        );
+    }
+
+    private void registerDropIndexesTasks() throws RegistrationException, ResolutionException, InvalidArgumentException {
+        IField collectionNameField = IOC.resolve(
+                Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
+        IField optionsField = IOC.resolve(
+                Keys.getKeyByName(IField.class.getCanonicalName()), "options");
+
+        IOC.register(
+                Keys.getKeyByName(DropIndexesMessage.class.getCanonicalName()),
+                new ApplyFunctionToArgumentsStrategy(
+                        (args) -> {
+                            IObject message = (IObject) args[0];
+                            return new DropIndexesMessage() {
+                                @Override
+                                public CollectionName getCollectionName() throws ReadValueException {
+                                    try {
+                                        return (CollectionName) collectionNameField.in(message);
+                                    } catch (Exception e) {
+                                        throw new ReadValueException(e);
+                                    }
+                                }
+                                @Override
+                                public IObject getOptions() throws ReadValueException {
+                                    try {
+                                        return (IObject) optionsField.in(message);
+                                    } catch (Exception e) {
+                                        throw new ReadValueException(e);
+                                    }
+                                }
+                            };
+                        }
+                )
+        );
+        IOC.register(
+                Keys.getKeyByName("db.collection.dropindexes"),
+                new ApplyFunctionToArgumentsStrategy(
+                        (args) -> {
+                            try {
+                                IStorageConnection connection = (IStorageConnection) args[0];
+                                CollectionName collectionName = CollectionName.fromString(String.valueOf(args[1]));
+                                IObject options = null;
+                                if (args.length > 2) {
+                                    options = (IObject) args[2];
+                                }
+                                IDatabaseTask task = new PostgresDropIndexesTask(connection);
 
                                 IObject query = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
 
