@@ -42,7 +42,7 @@ public final class CreateTableIfNotExistsSchema {
             body.write(");\n");
             CreateIndexIfNotExistsSchema.writePrimaryKeyIfNotExists(body, collection);
             if (options != null) {
-                IndexCreators.writeIndexes(body, collection, options);
+                IndexCreators.writeCreateIndexes(body, collection, options);
             }
         } catch (Exception e) {
             throw new QueryBuildException("Failed to build create if not exists body", e);

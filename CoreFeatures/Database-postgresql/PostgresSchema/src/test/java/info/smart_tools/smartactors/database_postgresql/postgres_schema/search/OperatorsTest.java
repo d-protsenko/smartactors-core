@@ -2,6 +2,8 @@ package info.smart_tools.smartactors.database_postgresql.postgres_schema.search;
 
 import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.QueryStatement;
+import info.smart_tools.smartactors.iobject.ds_object.DSObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,7 +63,7 @@ public class OperatorsTest {
                         "(parse_timestamp_immutable(document#>'{date-from}')>=(?)::timestamp)",
                         "(parse_timestamp_immutable(document#>'{date-to}')<=(?)::timestamp)",
                         "((document#>'{hasTag}')??(?))",
-                        "fulltext@@(to_tsquery('russian',?))"));
+                        "fulltext_english@@(to_tsquery(?,?))"));
 
         for (int i = 0; i < OPERATORS_NUMBER; ++i) {
             StringWriter body = new StringWriter();
@@ -71,7 +73,9 @@ public class OperatorsTest {
                     .resolve(operatorsNames.get(i))
                     .write(queryStatement, resolver, fieldsPaths.get(i), queryParam);
             assertEquals(result.get(i), body.toString().trim());
-            verify(queryStatement).pushParameterSetter(any());
+            if (i < (OPERATORS_NUMBER-1)) {
+                verify(queryStatement).pushParameterSetter(any());
+            }
         }
     }
 

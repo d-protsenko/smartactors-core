@@ -173,20 +173,67 @@ public class PostgresSchemaTest {
                 "CREATE OR REPLACE FUNCTION bigint_to_jsonb_immutable(source bigint) RETURNS jsonb AS $$ " +
                         "BEGIN RETURN to_json(source)::jsonb; END; " +
                         "$$ LANGUAGE 'plpgsql' IMMUTABLE; COMMIT;\n" +
-                "CREATE TABLE test_collection (document jsonb NOT NULL, fulltext tsvector);\n" +
+                "CREATE TABLE test_collection (document jsonb NOT NULL, fulltext_english tsvector);\n" +
                 "CREATE UNIQUE INDEX test_collection_pkey ON test_collection USING BTREE ((document#>'{test_collectionID}'));\n" +
-                "CREATE INDEX ON test_collection USING BTREE ((document#>'{a}'));\n" +
-                "CREATE INDEX ON test_collection USING GIN (fulltext);\n" +
-                "CREATE FUNCTION test_collection_fulltext_update_trigger() RETURNS trigger AS $$\n" +
+                "CREATE INDEX test_collection_a_ordered_index ON test_collection USING BTREE ((document#>'{a}'));\n" +
+                "CREATE INDEX test_collection_fulltext_english_index ON test_collection USING GIN (fulltext_english);\n" +
+                "CREATE FUNCTION test_collection_fulltext_english_update_trigger() RETURNS trigger AS $$\n" +
                 "begin\n" +
-                "new.fulltext := " +
+                "new.fulltext_english := " +
                 "to_tsvector('english', coalesce((new.document#>'{b}')::text,''));\n" +
                 "return new;\n" +
                 "end\n" +
                 "$$ LANGUAGE plpgsql;\n" +
-                "CREATE TRIGGER test_collection_fulltext_update_trigger BEFORE INSERT OR UPDATE " +
+                "CREATE TRIGGER test_collection_fulltext_english_update_trigger BEFORE INSERT OR UPDATE " +
                 "ON test_collection FOR EACH ROW EXECUTE PROCEDURE " +
-                "test_collection_fulltext_update_trigger();\n",
+                "test_collection_fulltext_english_update_trigger();\n",
+                body.toString());
+    }
+
+    @Test
+    public void testAddIndexes() throws QueryBuildException, InvalidArgumentException {
+        IObject options = new DSObject("{ \"ordered\": \"a\"," +
+                "\"fulltext\": \"b\"," +
+                "\"datetime\": \"date\"," +
+                "\"tags\": \"tags\"," +
+                "\"language\": \"russian\"" +
+                "}");
+        PostgresSchema.addIndexes(statement, collection, options);
+        assertEquals("ALTER TABLE test_collection ADD COLUMN fulltext_russian tsvector DEFAULT NULL;\n" +
+                        "UPDATE test_collection SET fulltext_russian := to_tsvector('russian', coalesce((document#>'{b}')::text,''));\n" +
+                        "CREATE INDEX test_collection_a_ordered_index ON test_collection USING BTREE ((document#>'{a}'));\n" +
+                        "CREATE INDEX test_collection_date_datetime_index ON test_collection USING BTREE ((parse_timestamp_immutable(document#>'{date}')));\n" +
+                        "CREATE INDEX test_collection_fulltext_russian_index ON test_collection USING GIN (fulltext_russian);\n" +
+                        "CREATE FUNCTION test_collection_fulltext_russian_update_trigger() RETURNS trigger AS $$\n" +
+                        "begin\n" +
+                        "new.fulltext_russian := " +
+                        "to_tsvector('russian', coalesce((new.document#>'{b}')::text,''));\n" +
+                        "return new;\n" +
+                        "end\n" +
+                        "$$ LANGUAGE plpgsql;\n" +
+                        "CREATE TRIGGER test_collection_fulltext_russian_update_trigger BEFORE INSERT OR UPDATE " +
+                        "ON test_collection FOR EACH ROW EXECUTE PROCEDURE " +
+                        "test_collection_fulltext_russian_update_trigger();\n" +
+                        "CREATE INDEX test_collection_tags_tags_index ON test_collection USING GIN ((document#>'{tags}'));\n",
+                body.toString());
+    }
+
+    @Test
+    public void testDropIndexes() throws QueryBuildException, InvalidArgumentException {
+        IObject options = new DSObject("{ \"ordered\": \"a\"," +
+                "\"fulltext\": \"b\"," +
+                "\"datetime\": \"date\"," +
+                "\"tags\": \"tags\"," +
+                "\"language\": \"russian\"" +
+                "}");
+        PostgresSchema.dropIndexes(statement, collection, options);
+        assertEquals("DROP INDEX test_collection_a_ordered_index;\n" +
+                        "DROP INDEX test_collection_date_datetime_index;\n" +
+                        "DROP TRIGGER test_collection_fulltext_russian_update_trigger ON test_collection;\n" +
+                        "DROP FUNCTION test_collection_fulltext_russian_update_trigger();\n" +
+                        "DROP INDEX test_collection_fulltext_russian_index;\n" +
+                        "DROP INDEX test_collection_tags_tags_index;\n" +
+                        "ALTER TABLE test_collection DROP COLUMN fulltext_russian;\n",
                 body.toString());
     }
 
@@ -270,4 +317,27 @@ public class PostgresSchemaTest {
         verify(statement, times(3)).pushParameterSetter(any());
     }
 
+    @Test
+    public void testSearchWithFulltext() throws InvalidArgumentException, QueryBuildException {
+        IObject criteria = new DSObject("{ \"filter\": { \"$fulltext\": \"term1 term2\" } }");
+        PostgresSchema.search(statement, collection, criteria);
+        assertEquals("SELECT document FROM test_collection WHERE " +
+                "(fulltext_english@@(to_tsquery(?,?))) LIMIT(?)OFFSET(?)", body.toString());
+        verify(statement, times(2)).pushParameterSetter(any());
+    }
+
+    @Test
+    public void testSearchWithFulltextWithLanguage() throws InvalidArgumentException, QueryBuildException {
+        IObject criteria = new DSObject("{ \"filter\": { \"$fulltext\": { \"query\":\"term1 term2\", \"language\":\"russian\" } } }");
+        PostgresSchema.search(statement, collection, criteria);
+        assertEquals("SELECT document FROM test_collection WHERE " +
+                "(fulltext_russian@@(to_tsquery(?,?))) LIMIT(?)OFFSET(?)", body.toString());
+        verify(statement, times(2)).pushParameterSetter(any());
+    }
+
+    @Test(expected = QueryBuildException.class)
+    public void testSearchWithFulltextComplex() throws InvalidArgumentException, QueryBuildException {
+        IObject criteria = new DSObject("{ \"filter\": { \"$fulltext\": { \"query\":{ \"$or\": [ \"term1\", \"term2\" ] }, \"language\":\"russian\" } } }");
+        PostgresSchema.search(statement, collection, criteria);
+    }
 }

@@ -46,4 +46,10 @@ public interface FieldPath {
      */
     String toSQL();
 
+    /**
+     * Get id of field path used in SQL query
+     * The result is depended on database and schema type
+     * @return String representation of field path id usable in SQL query
+     */
+    String getId();
 }
