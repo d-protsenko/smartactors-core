@@ -53,6 +53,7 @@ public class DeserializeStrategyPostMultipartFormData implements IDeserializeStr
 
     private String endpointName;
     private Map<HttpDataType, IAction<IObject>> actions = new HashMap<>();
+
     /**
      * Constructor
      * @param endpointName the endpoint name
@@ -164,7 +165,7 @@ public class DeserializeStrategyPostMultipartFormData implements IDeserializeStr
                         Files.copy(uploadedFile.getFile().toPath(), os);
                         os.flush();
                     }
-                    message.setValue(fieldName,  file.getAbsoluteFile());
+                    message.setValue(fieldName,  file.getAbsolutePath());
                 } catch (ResolutionException e) {
                     throw new RuntimeException(
                             "Could not resolve field name by key name - 'info.smart_tools.smartactors.iobject.ifield_name.IFieldName'",
