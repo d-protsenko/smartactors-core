@@ -29,7 +29,9 @@ public class HttpClientInitializer {
         IFieldName timeFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "timeout");
 
         Map<Object, ITimerTask> timerTasks = new HashMap<>();
-        IOC.register(Keys.getKeyByName("createTimerOnRequest"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(
+                Keys.getKeyByName("createTimerOnRequest"),
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             ITimer timer =
                                     null;
@@ -65,7 +67,9 @@ public class HttpClientInitializer {
                 )
         );
 
-        IOC.register(Keys.getKeyByName("cancelTimerOnRequest"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(
+                Keys.getKeyByName("cancelTimerOnRequest"),
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             Object uuid = args[0];
                             ITimerTask timerTask = timerTasks.get(uuid);

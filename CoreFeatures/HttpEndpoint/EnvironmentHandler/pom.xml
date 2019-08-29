@@ -81,7 +81,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.strategy.create-new-instance-strategy</artifactId>
+            <artifactId>base.strategy.apply-function-to-arguments</artifactId>
             <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>

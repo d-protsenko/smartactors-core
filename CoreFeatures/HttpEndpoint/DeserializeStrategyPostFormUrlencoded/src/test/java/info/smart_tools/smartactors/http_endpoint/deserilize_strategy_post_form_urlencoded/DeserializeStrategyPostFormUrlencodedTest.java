@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.http_endpoint.deserilize_strategy_post_form_urlencoded;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_post_form_urlencoded.DeserializeStrategyPostFormUrlencoded;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
@@ -48,14 +48,16 @@ public class DeserializeStrategyPostFormUrlencodedTest {
                 new ResolveByNameIocStrategy()
         );
         IKey keyIObject = Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject");
-        IOC.register(keyIObject,
-            new CreateNewInstanceStrategy(
-                (args) -> new DSObject()
+        IOC.register(
+                keyIObject,
+                new ApplyFunctionToArgumentsStrategy(
+                    (args) -> new DSObject()
 
-            )
+                )
         );
-        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
-                new CreateNewInstanceStrategy(
+        IOC.register(
+                Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
                                 return new FieldName((String) args[0]);
