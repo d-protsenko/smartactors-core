@@ -29,6 +29,7 @@ import java.util.List;
  *                 "type": "http",
  *                 "port": 8080,
  *                 "startChain": "mainChain",
+ *                 "uploadDirectory": "/home/server/uploads",
  *                 "maxContentLength": 4098,
  *                 "stackDepth": 5 (temporarily),
  *                 "templates": [
@@ -49,6 +50,7 @@ import java.util.List;
  *                 "type": "https",
  *                 "port": 9909,
  *                 "startChain": "mainChain",
+ *                 "uploadDirectory": "/home/server/uploads",
  *                 "maxContentLength": 4098,
  *                 "stackDepth": 5,
  *                 "certPath": "/home/sevenbits/workspace/smartactors-core_v2/ssl/cert.pem",
