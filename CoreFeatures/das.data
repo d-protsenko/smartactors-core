@@ -3615,7 +3615,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "EndpointStarter",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -3625,7 +3625,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "endpoint-service-starter",
   "rawName" : "EndpointServiceStarter",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "actors" : [ {
   "artifactId" : "database-starter",
