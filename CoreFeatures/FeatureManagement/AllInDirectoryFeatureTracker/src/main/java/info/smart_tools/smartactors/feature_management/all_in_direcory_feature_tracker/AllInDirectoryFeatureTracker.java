@@ -96,7 +96,7 @@ public class AllInDirectoryFeatureTracker {
                                 throw new RuntimeException(e);
                             }
                         }
-                ).forEach(i -> features.put(i.getName(), i));
+                ).forEach(i -> features.put(i.getName() + "-" + i.getVersion(), i));
             }
 
             wrapper.setFeatures(features.values());
@@ -173,9 +173,9 @@ public class AllInDirectoryFeatureTracker {
         repositoryStorage.addAll(repositories);
         List<IObject> featuresFromJson = (List<IObject>) jsonConfig.getValue(this.featuresFN);
         for (IObject feature : featuresFromJson) {
-            String name = (String) feature.getValue(this.nameFN);
+            String featureId = (String) feature.getValue(this.nameFN) + "-" + (String) feature.getValue(this.versionFN);
             String packageType = (String) feature.getValue(this.packageTypeFN);
-            features.put(name, new Feature(
+            features.put(featureId, new Feature(
                             (String) feature.getValue(this.groupFN),
                             (String) feature.getValue(this.nameFN),
                             (String) feature.getValue(this.versionFN),

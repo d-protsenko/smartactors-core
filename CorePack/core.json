@@ -3,7 +3,7 @@
     {
       "repositoryId": "smartactors_core_and_core_features_dev",
       "type": "default",
-      "url": "https://features-library.7bits.it/artifactory/smartactors_core_and_core_features_dev"
+      "url": "https://repository.smart-tools.info/artifactory/smartactors_core_and_core_features_dev"
     }
   ],
   "features": [
@@ -145,6 +145,16 @@
     {
       "group": "info.smart_tools.smartactors",
       "name": "shutdown-plugins",
+      "version": "RELEASE"
+    },
+    {
+      "group": "info.smart_tools.smartactors",
+      "name": "version-management",
+      "version": "RELEASE"
+    },
+    {
+      "group": "info.smart_tools.smartactors",
+      "name": "version-management-plugins",
       "version": "RELEASE"
     }
   ]

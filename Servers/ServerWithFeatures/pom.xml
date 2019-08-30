@@ -29,7 +29,7 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>server-developing-tools.interfaces.iserver</artifactId>
+            <artifactId>server-development-tools.interfaces.iserver</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>

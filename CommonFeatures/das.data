@@ -127,30 +127,30 @@
   "actors" : [ {
   "artifactId" : "postgres-create-collection-if-not-exists-task",
   "uploadRepositories" : [ ],
-  "rawName" : "PostgresCreateCollectionIfNotExistsTask",
-  "version" : "0.6.0"
+  "rawName" : "CreateCollectionTask",
+  "version" : "0.6.1"
 }, {
   "artifactId" : "create-collection-actor",
   "uploadRepositories" : [ ],
   "rawName" : "CreateCollectionActor",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ {
   "artifactId" : "create-collection-plugin",
   "uploadRepositories" : [ ],
   "rawName" : "CreateCollectionPlugin",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "create-collection-actor-plugin",
   "uploadRepositories" : [ ],
   "rawName" : "CreateCollectionActorPlugin",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 } ],
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "database-postgresql-create-collection-if-not-exists",
   "rawName" : "DatabasePostgresqlCreateCollectionIfNotExists",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 } ],
   "on-actor-creation-upload-repositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
