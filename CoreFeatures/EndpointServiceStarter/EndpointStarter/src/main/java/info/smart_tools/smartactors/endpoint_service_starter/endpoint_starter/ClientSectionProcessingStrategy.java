@@ -13,7 +13,6 @@ import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationExce
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.key_tools.Keys;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 
@@ -48,8 +47,6 @@ public class ClientSectionProcessingStrategy implements ISectionStrategy {
     public void onLoadConfig(final IObject config) throws ConfigurationProcessingException {
         try {
             IObject clientObject = (IObject) config.getValue(name);
-            IChainStorage chainStorage = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(),
-                    IChainStorage.class.getCanonicalName()));
             IQueue<ITask> queue = IOC.resolve(Keys.getKeyByName("task_queue"));
             clientObject.setValue(queueFieldName, queue);
             Integer stackDepth = (Integer) clientObject.getValue(stackDepthFieldName);
