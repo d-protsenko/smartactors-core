@@ -178,7 +178,7 @@ public class DeserializeStrategyPostMultipartFormData implements IDeserializeStr
                     );
                 } catch (IOException e) {
                     throw new RuntimeException(
-                            "Could not read value(file) from HTTP request by given attribute name",
+                            "Issues with IO has occurred.",
                             e
                     );
                 } catch (ReadValueException e) {
