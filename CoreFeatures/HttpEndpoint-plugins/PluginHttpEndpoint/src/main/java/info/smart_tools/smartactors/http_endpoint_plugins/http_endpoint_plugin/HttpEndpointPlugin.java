@@ -24,6 +24,7 @@ import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_get.parse
 import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_post_form_urlencoded.DeserializeStrategyPostFormUrlencoded;
 import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_post_json.DeserializeStrategyPostJson;
 import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_post_multipart_form_data.DeserializeStrategyPostMultipartFormData;
+import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_post_multipart_form_data.FileSavingStrategy;
 import info.smart_tools.smartactors.http_endpoint.environment_handler.EnvironmentHandler;
 import info.smart_tools.smartactors.http_endpoint.http_endpoint.HttpEndpoint;
 import info.smart_tools.smartactors.http_endpoint.http_headers_setter.HttpHeadersExtractor;
@@ -198,6 +199,10 @@ public class HttpEndpointPlugin implements IPlugin {
                                                 return channelHandlerNetty;
                                             }
                                     ));
+                            IOC.register(
+                                    Keys.getKeyByName("http file saving strategy"),
+                                    new FileSavingStrategy()
+                            );
 
                         } catch (ResolutionException e) {
                             throw new ActionExecutionException("EndpointCollection plugin can't load: can't get key", e);

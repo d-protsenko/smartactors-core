@@ -1,13 +1,16 @@
 package info.smart_tools.smartactors.http_endpoint.deserialize_strategy_post_multipart_form_data;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
+import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.exceptions.DeserializationException;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
 import info.smart_tools.smartactors.ioc.key_tools.Keys;
@@ -28,11 +31,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -43,6 +48,7 @@ public class DeserializeStrategyPostMultipartFormDataTest {
 
     private static final String ENDPOINT_CONFIG_NAME_POSTFIX = "_endpoint-config";
     private static final String UPLOAD_DIRECTORY_FIELD_NAME_KEY = "uploadDirectory";
+    private static final String ON_FILE_EXISTS_ACTOPN_CODE_NAME_KEY = "onFileExistsActionCode";
 
     private static final String BOUNDARY = "aaa-000-xxx";
 
@@ -93,46 +99,14 @@ public class DeserializeStrategyPostMultipartFormDataTest {
         scope.setValue(IOC.getIocKey(), this.container);
         ScopeProvider.setCurrentScope(scope);
 
-        IOC.register(
-                IOC.getKeyForKeyByNameStrategy(),
-                new ResolveByNameIocStrategy(
-                        (a) -> {
-                            try {
-                                return new Key((String) a[0]);
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        })
-        );
+        registerResolveByNameIOCStrategy();
+        registerIFieldNameStrategy();
+        registerIObjectStrategy();
 
         IOC.register(
-                IOC.resolve(
-                        IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
-                        new ApplyFunctionToArgumentsStrategy(
-                                (args) -> {
-                                    try {
-                                        return new FieldName((String) args[0]);
-                                    } catch (Exception e) {
-                                        throw new RuntimeException("exception", e);
-                                    }
-                                }
-                        )
+                Keys.getKeyByName("http file saving strategy"),
+                new FileSavingStrategy()
         );
-        IOC.register(
-                Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
-                new ApplyFunctionToArgumentsStrategy(args -> {
-                    if (args.length == 0) {
-                        return new DSObject();
-                    } else if (args.length == 1 && args[0] instanceof String) {
-                        try {
-                            return new DSObject((String) args[0]);
-                        } catch (InvalidArgumentException e) {
-                            throw new RuntimeException(e);
-                        }
-                    } else {
-                        throw new RuntimeException("Invalid arguments for IObject creation.");
-                    }
-                }));
 
         IObject config1 = mock(IObject.class);
         IObject config2 = mock(IObject.class);
@@ -144,7 +118,16 @@ public class DeserializeStrategyPostMultipartFormDataTest {
                 Keys.getKeyByName(ENDPOINT_NAME_2 + ENDPOINT_CONFIG_NAME_POSTFIX),
                 new SingletonStrategy(config2)
         );
-        when(config2.getValue(any())).thenReturn(SECOND_ENDPOINT_UPLOAD_DIRECTORY);
+        IFieldName uploadFileDirFN = IOC.resolve(
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), IFIELD_NAME_STRATEGY_NAME),
+                UPLOAD_DIRECTORY_FIELD_NAME_KEY
+        );
+        IFieldName onFileExistsActionCodeFN = IOC.resolve(
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), IFIELD_NAME_STRATEGY_NAME),
+                ON_FILE_EXISTS_ACTOPN_CODE_NAME_KEY
+        );
+        when(config2.getValue(uploadFileDirFN)).thenReturn(SECOND_ENDPOINT_UPLOAD_DIRECTORY);
+        when(config2.getValue(onFileExistsActionCodeFN)).thenReturn(0);
         arg1_FN = IOC.resolve(
                 IOC.resolve(IOC.getKeyForKeyByNameStrategy(), IFIELD_NAME_STRATEGY_NAME),
                 ARG1
@@ -168,51 +151,104 @@ public class DeserializeStrategyPostMultipartFormDataTest {
     }
 
     @Test
-    public void check_deserialization_with_default_file_path()
-            throws Exception {
-
-        IDeserializeStrategy<FullHttpRequest> strategy = new DeserializeStrategyPostMultipartFormData(
-                "testEndpoint1"
-        );
-        FullHttpRequest request = createMultipartRequest();
-
-        IObject message = strategy.deserialize(request);
-        assertEquals(message.getValue(arg1_FN), VALUE1);
-        assertEquals(message.getValue(arg2_FN), VALUE2);
-        assertEquals(message.getValue(arg3_FN), VALUE3);
-
+    public void check_deserialization_with_default_file_path() throws IOException {
         File uploadedFile = new File(DEFAULT_UPLOAD_DIR + File.separator + UPLOADED_FILENAME);
-        assertTrue(uploadedFile.exists());
-        assertEquals(message.getValue(fileName_FN), uploadedFile.getAbsolutePath());
-        String fileContent = new String(Files.readAllBytes(Paths.get(uploadedFile.getPath())));
-        assertEquals(content, fileContent);
-        uploadedFile.delete();
-        Files.delete(Paths.get(DEFAULT_UPLOAD_DIR));
+        try {
+            IDeserializeStrategy<FullHttpRequest> strategy = new DeserializeStrategyPostMultipartFormData(
+                    "testEndpoint1"
+            );
+            FullHttpRequest request = createMultipartRequest();
+
+            IObject message = strategy.deserialize(request);
+            assertEquals(message.getValue(arg1_FN), VALUE1);
+            assertEquals(message.getValue(arg2_FN), VALUE2);
+            assertEquals(message.getValue(arg3_FN), VALUE3);
+
+
+            assertTrue(uploadedFile.exists());
+            assertEquals(message.getValue(fileName_FN), uploadedFile.getAbsolutePath());
+            String fileContent = new String(Files.readAllBytes(Paths.get(uploadedFile.getPath())));
+            assertEquals(content, fileContent);
+        } catch (Exception e) {
+            fail();
+        } finally {
+            if (uploadedFile.exists()) {
+                uploadedFile.delete();
+            }
+            if (Files.exists(Paths.get(DEFAULT_UPLOAD_DIR))) {
+                Files.delete(Paths.get(DEFAULT_UPLOAD_DIR));
+            }
+        }
     }
 
     @Test
     public void check_different_upload_directories_for_endpoints_differently_configured()
-            throws Exception {
+            throws IOException {
+        File uploadedFile1 = new File(DEFAULT_UPLOAD_DIR + File.separator + UPLOADED_FILENAME);
+        File uploadedFile2 = new File(SECOND_ENDPOINT_UPLOAD_DIRECTORY + File.separator + UPLOADED_FILENAME);
+        try {
+            IDeserializeStrategy<FullHttpRequest> strategy1 = new DeserializeStrategyPostMultipartFormData(
+                    "testEndpoint1"
+            );
+            IDeserializeStrategy<FullHttpRequest> strategy2 = new DeserializeStrategyPostMultipartFormData(
+                    "testEndpoint2"
+            );
+            FullHttpRequest request = createMultipartRequest();
 
-        IDeserializeStrategy<FullHttpRequest> strategy1 = new DeserializeStrategyPostMultipartFormData(
+            strategy1.deserialize(request);
+            strategy2.deserialize(request);
+
+
+            assertTrue(uploadedFile1.exists());
+            assertTrue(uploadedFile2.exists());
+        } catch (Exception e) {
+            fail();
+        } finally {
+            if (uploadedFile1.exists()) {
+                uploadedFile1.delete();
+            }
+            if (uploadedFile2.exists()) {
+                uploadedFile2.delete();
+            }
+            if (Files.exists(Paths.get(DEFAULT_UPLOAD_DIR))) {
+                Files.delete(Paths.get(DEFAULT_UPLOAD_DIR));
+            }
+            if (Files.exists(Paths.get(SECOND_ENDPOINT_UPLOAD_DIRECTORY))) {
+                Files.delete(Paths.get(SECOND_ENDPOINT_UPLOAD_DIRECTORY));
+            }
+        }
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void check_resolution_exception_on_creation()
+            throws Exception {
+        Object id = ScopeProvider.createScope(null);
+        IScope scope = ScopeProvider.getScope(id);
+        scope.setValue(IOC.getIocKey(), new StrategyContainer());
+        ScopeProvider.setCurrentScope(scope);
+        new DeserializeStrategyPostMultipartFormData(
                 "testEndpoint1"
         );
-        IDeserializeStrategy<FullHttpRequest> strategy2 = new DeserializeStrategyPostMultipartFormData(
-                "testEndpoint2"
+    }
+
+    @Test(expected = DeserializationException.class)
+    public void check_exception_on_creation()
+            throws Exception {
+        Object id = ScopeProvider.createScope(null);
+        IScope scope = ScopeProvider.getScope(id);
+        scope.setValue(IOC.getIocKey(), new StrategyContainer());
+        ScopeProvider.setCurrentScope(scope);
+
+        registerResolveByNameIOCStrategy();
+        registerIFieldNameStrategy();
+
+        new DeserializeStrategyPostMultipartFormData(
+                "testEndpoint1"
         );
-        FullHttpRequest request = createMultipartRequest();
-
-        strategy1.deserialize(request);
-        strategy2.deserialize(request);
-
-        File uploadedFile1 = new File(DEFAULT_UPLOAD_DIR + File.separator + UPLOADED_FILENAME);
-        assertTrue(uploadedFile1.exists());
-        File uploadedFile2 = new File(SECOND_ENDPOINT_UPLOAD_DIRECTORY + File.separator + UPLOADED_FILENAME);
-        assertTrue(uploadedFile2.exists());
-        uploadedFile1.delete();
-        uploadedFile2.delete();
-        Files.delete(Paths.get(DEFAULT_UPLOAD_DIR));
-        Files.delete(Paths.get(SECOND_ENDPOINT_UPLOAD_DIRECTORY));
+        IDeserializeStrategy strategy = new DeserializeStrategyPostMultipartFormData(
+                "testEndpoint1"
+        );
+        strategy.deserialize(null);
     }
 
     private FullHttpRequest createMultipartRequest() {
@@ -227,5 +263,56 @@ public class DeserializeStrategyPostMultipartFormDataTest {
         request.content().writeBytes(requestBodyWOFile.getBytes(CharsetUtil.UTF_8));
 
         return request;
+    }
+
+    private void registerResolveByNameIOCStrategy()
+            throws Exception {
+        IOC.register(
+                IOC.getKeyForKeyByNameStrategy(),
+                new ResolveByNameIocStrategy(
+                        (a) -> {
+                            try {
+                                return new Key((String) a[0]);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        })
+        );
+    }
+
+    private void registerIFieldNameStrategy()
+            throws Exception {
+        IOC.register(
+                IOC.resolve(
+                        IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                new ApplyFunctionToArgumentsStrategy(
+                        (args) -> {
+                            try {
+                                return new FieldName((String) args[0]);
+                            } catch (Exception e) {
+                                throw new RuntimeException("exception", e);
+                            }
+                        }
+                )
+        );
+    }
+
+    private void registerIObjectStrategy()
+            throws Exception {
+        IOC.register(
+                Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                new ApplyFunctionToArgumentsStrategy(args -> {
+                    if (args.length == 0) {
+                        return new DSObject();
+                    } else if (args.length == 1 && args[0] instanceof String) {
+                        try {
+                            return new DSObject((String) args[0]);
+                        } catch (InvalidArgumentException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        throw new RuntimeException("Invalid arguments for IObject creation.");
+                    }
+                }));
     }
 }
