@@ -9,7 +9,7 @@
     </parent>
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>ioc</artifactId>
-    <version>0.6.0</version>
+    <version>0.6.3</version>
     <packaging>pom</packaging>
     <modules>
         <module>IKey</module>
@@ -19,7 +19,6 @@
         <module>StrategyContainer</module>
         <module>NamedKeysStorage</module>
         <module>KeyTools</module>
-        <module>FieldNameTools</module>
         <module>IOC</module>
         <module>IIocContainer</module>
         <module>IocContainer</module>
