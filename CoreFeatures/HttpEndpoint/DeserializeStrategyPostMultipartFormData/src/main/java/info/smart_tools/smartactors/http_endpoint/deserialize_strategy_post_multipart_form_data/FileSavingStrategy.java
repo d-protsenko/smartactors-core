@@ -58,7 +58,7 @@ public class FileSavingStrategy implements IStrategy {
         this.onFileExistsActions.put(
                 2, (file, source) -> {
                     try {
-                        file = validateFileExists(file, 0);
+                        file = validateFileExists(file);
                         saveFile(file, source);
                     } catch (IOException e) {
                         throw new RuntimeException("Issues with IO has occurred.", e);
@@ -105,21 +105,20 @@ public class FileSavingStrategy implements IStrategy {
         return (T) newFile;
     }
 
-    private File validateFileExists(final File file, final int count) throws IOException {
+    private File validateFileExists(final File file) throws IOException {
         String path = file.getParentFile().getCanonicalPath();
-        File newFile = count != 0 ?
-                new File(
-                        path + File.separator + getFileName(file) +
-                        LEFT_BRACKET + count + RIGHT_BRACKET +
-                        (!getFileExtension(file).isEmpty() ? EXTENSION_DELIMITER + getFileExtension(file) : "")
-                ) :
-                new File(file.getCanonicalPath());
-        if (!newFile.exists()) {
-            return newFile;
-        } else {
-            int newCount = count + 1;
-            return validateFileExists(file, newCount);
+        File newFile = new File(file.getCanonicalPath());
+        int count = 0;
+        while (newFile.exists()) {
+            count++;
+            newFile = new File(
+                    path + File.separator + getFileName(file) +
+                            LEFT_BRACKET + count + RIGHT_BRACKET +
+                            (!getFileExtension(file).isEmpty() ? EXTENSION_DELIMITER + getFileExtension(file) : "")
+            );
         }
+
+        return newFile;
     }
 
     private void validatePathAccessibility(final String allowedDir, final String resultDir)
@@ -132,7 +131,7 @@ public class FileSavingStrategy implements IStrategy {
         File f2 = new File(resultDir);
         String canonicalResultDir = f2.getCanonicalPath();
 
-        if (!canonicalResultDir.contains(canonicalAllowedDir)) {
+        if (!canonicalResultDir.startsWith(canonicalAllowedDir)) {
             throw new RuntimeException("Try to save file to an unauthorized directory.");
         }
     }
