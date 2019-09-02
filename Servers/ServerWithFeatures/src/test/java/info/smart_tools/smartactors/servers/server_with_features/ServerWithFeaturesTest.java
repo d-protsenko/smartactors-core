@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.servers.server_with_features;
 
-import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.IServer;
-import info.smart_tools.smartactors.server_developing_tools.interfaces.iserver.exception.ServerExecutionException;
+import info.smart_tools.smartactors.server_development_tools.interfaces.iserver.IServer;
+import info.smart_tools.smartactors.server_development_tools.interfaces.iserver.exception.ServerExecutionException;
 import org.junit.Ignore;
 import org.junit.Test;
 
