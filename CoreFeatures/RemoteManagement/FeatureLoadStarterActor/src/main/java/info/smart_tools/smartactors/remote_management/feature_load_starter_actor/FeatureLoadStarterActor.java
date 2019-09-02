@@ -6,6 +6,8 @@ import info.smart_tools.smartactors.remote_management.feature_load_starter_actor
 import info.smart_tools.smartactors.remote_management.feature_load_starter_actor.wrapper.SetParamsToLoadFromRepositoryWrapper;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class FeatureLoadStarterActor {
@@ -20,9 +22,12 @@ public class FeatureLoadStarterActor {
         try {
             String location = wrapper.getFeatureLocation();
             File f = new File(location);
-            wrapper.setFileName(f.getName());
-            wrapper.setObservedDirectory(f.getParent());
-
+            String destinationDirectory = wrapper.getFeatureDestinationPath();
+            String fileName = f.getName();
+            File destination = Paths.get(destinationDirectory, fileName).toFile();
+            Files.copy(f.toPath(), destination.toPath());
+            wrapper.setFileName(fileName);
+            wrapper.setObservedDirectory(destinationDirectory);
         } catch(Exception e) {
             throw new FeatureLoadStarterException(e);
         }
