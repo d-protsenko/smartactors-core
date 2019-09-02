@@ -43,7 +43,9 @@ public class HttpClientInitializer {
         IKey nullResponseStrategyKey = Keys.getKeyByName("null response strategy");
 
         Map<Object, ITimerTask> timerTasks = new HashMap<>();
-        IOC.register(Keys.getKeyByName("createTimerOnRequest"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(
+                Keys.getKeyByName("createTimerOnRequest"),
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             ITimer timer =
                                     null;
@@ -99,7 +101,9 @@ public class HttpClientInitializer {
                 )
         );
 
-        IOC.register(Keys.getKeyByName("cancelTimerOnRequest"), new ApplyFunctionToArgumentsStrategy(
+        IOC.register(
+                Keys.getKeyByName("cancelTimerOnRequest"),
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             Object uuid = args[0];
                             ITimerTask timerTask = timerTasks.get(uuid);

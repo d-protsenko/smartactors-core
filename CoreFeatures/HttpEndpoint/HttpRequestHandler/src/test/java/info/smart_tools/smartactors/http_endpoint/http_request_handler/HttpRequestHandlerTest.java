@@ -3,7 +3,6 @@ package info.smart_tools.smartactors.http_endpoint.http_request_handler;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
-import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.iadd_request_parameters_to_iobject.IAddRequestParametersToIObject;
 import info.smart_tools.smartactors.endpoint.interfaces.iadd_request_parameters_to_iobject.exception.AddRequestParametersToIObjectException;
@@ -72,7 +71,9 @@ public class HttpRequestHandlerTest {
                 new ResolveByNameIocStrategy()
         );
 
-        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), new CreateNewInstanceStrategy(
+        IOC.register(
+                Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
                                 return new FieldName((String) args[0]);
@@ -83,7 +84,9 @@ public class HttpRequestHandlerTest {
                 )
         );
 
-        IOC.register(Keys.getKeyByName("EmptyIObject"), new CreateNewInstanceStrategy(
+        IOC.register(
+                Keys.getKeyByName("EmptyIObject"),
+                new ApplyFunctionToArgumentsStrategy(
                         args -> new DSObject()
                 )
         );
@@ -107,7 +110,9 @@ public class HttpRequestHandlerTest {
 //                new SingletonStrategy(requestParametersToIObject)
 //        );
 
-        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty"), new CreateNewInstanceStrategy(
+        IOC.register(
+                Keys.getKeyByName("info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty"),
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             IChannelHandler channelHandler = new ChannelHandlerNetty();
                             channelHandler.init(args[0]);

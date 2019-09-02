@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.http_endpoint.http_response_sender;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse.IResponse;
@@ -99,7 +99,7 @@ public class HttpResponseSenderTest {
 
         IOC.register(
                 keyIObject,
-                new CreateNewInstanceStrategy(
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
                                 return new DSObject((String) args[0]);
@@ -111,7 +111,7 @@ public class HttpResponseSenderTest {
         );
         IOC.register(
                 keyFullHttpResponse,
-                new CreateNewInstanceStrategy(
+                new ApplyFunctionToArgumentsStrategy(
                         (args) ->
                                 new DefaultFullHttpResponse((HttpVersion) args[0], (HttpResponseStatus) args[1], (ByteBuf) args[2])
 
@@ -119,7 +119,7 @@ public class HttpResponseSenderTest {
         );
         IOC.register(
                 keyFieldName,
-                new CreateNewInstanceStrategy(
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
                                 return new FieldName((String) args[0]);

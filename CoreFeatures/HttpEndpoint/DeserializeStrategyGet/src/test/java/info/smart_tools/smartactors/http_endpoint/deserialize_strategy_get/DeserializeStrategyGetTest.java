@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.http_endpoint.deserialize_strategy_get;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.iadd_request_parameters_to_iobject.exception.AddRequestParametersToIObjectException;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.exceptions.DeserializationException;
@@ -40,7 +40,8 @@ public class DeserializeStrategyGetTest {
     QueryStringDecoder decoder;
 
     @Before
-    public void setUp() throws ScopeProviderException, RegistrationException, ResolutionException, InvalidArgumentException {
+    public void setUp()
+            throws ScopeProviderException, RegistrationException, ResolutionException, InvalidArgumentException {
 
         emptyIObject = mock(IObject.class);
         ScopeProvider.subscribeOnCreationNewScope(
@@ -63,7 +64,9 @@ public class DeserializeStrategyGetTest {
         );
 
 
-        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), new CreateNewInstanceStrategy(
+        IOC.register(
+                Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                new ApplyFunctionToArgumentsStrategy(
                 args -> {
                     try {
                         return new FieldName((String) args[0]);
@@ -74,17 +77,23 @@ public class DeserializeStrategyGetTest {
         ));
 
         decoder = mock(QueryStringDecoder.class);
-        IOC.register(Keys.getKeyByName(QueryStringDecoder.class.getCanonicalName()), new SingletonStrategy(
+        IOC.register(
+                Keys.getKeyByName(QueryStringDecoder.class.getCanonicalName()),
+                new SingletonStrategy(
                         decoder
                 )
         );
 
         parseTree = mock(IParseTree.class);
-        IOC.register(Keys.getKeyByName(IParseTree.class.getCanonicalName()), new SingletonStrategy(
+        IOC.register(
+                Keys.getKeyByName(IParseTree.class.getCanonicalName()),
+                new SingletonStrategy(
                         parseTree
                 )
         );
-        IOC.register(Keys.getKeyByName("EmptyIObject"), new CreateNewInstanceStrategy(
+        IOC.register(
+                Keys.getKeyByName("EmptyIObject"),
+                new ApplyFunctionToArgumentsStrategy(
                         args -> new DSObject()
                 )
         );
@@ -92,8 +101,16 @@ public class DeserializeStrategyGetTest {
     }
 
     @Test
-    public void testUriWithEmptyArgs() throws DeserializationException, ResolutionException, InvalidArgumentException, RegistrationException, ChangeValueException, AddRequestParametersToIObjectException {
-        IOC.register(Keys.getKeyByName("EmptyIObject"), new SingletonStrategy(
+    public void testUriWithEmptyArgs()
+            throws DeserializationException,
+            ResolutionException,
+            InvalidArgumentException,
+            RegistrationException,
+            ChangeValueException,
+            AddRequestParametersToIObjectException {
+        IOC.register(
+                Keys.getKeyByName("EmptyIObject"),
+                new SingletonStrategy(
                         emptyIObject
                 )
         );
@@ -117,7 +134,12 @@ public class DeserializeStrategyGetTest {
     }
 
     @Test
-    public void testUriWithArgs() throws DeserializationException, InvalidArgumentException, ReadValueException, ResolutionException, RegistrationException, AddRequestParametersToIObjectException {
+    public void testUriWithArgs()
+            throws DeserializationException,
+            InvalidArgumentException,
+            ReadValueException, ResolutionException,
+            RegistrationException,
+            AddRequestParametersToIObjectException {
 
         String testUri = "www.www.ru/hello?hello=world";
         httpRequest = mock(FullHttpRequest.class);
@@ -141,7 +163,10 @@ public class DeserializeStrategyGetTest {
     }
 
     @Test
-    public void testUriWithoutArgs() throws DeserializationException, InvalidArgumentException, ReadValueException, ResolutionException, RegistrationException, AddRequestParametersToIObjectException {
+    public void testUriWithoutArgs()
+            throws DeserializationException,
+            InvalidArgumentException,
+            ReadValueException, ResolutionException, RegistrationException, AddRequestParametersToIObjectException {
         IOC.register(Keys.getKeyByName("EmptyIObject"), new SingletonStrategy(
                         emptyIObject
                 )

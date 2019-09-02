@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.http_endpoint.http_client_initializer;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
@@ -38,7 +38,9 @@ public class HttpClientInitializerTest {
                 IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
-        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), new CreateNewInstanceStrategy(
+        IOC.register(
+                Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                new ApplyFunctionToArgumentsStrategy(
                 (args) -> {
                     try {
                         return new FieldName((String) args[0]);
