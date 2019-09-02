@@ -74,7 +74,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginHttpEndpoint",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "http-endpoint-plugins.get-cookie-from-request-plugin",
   "uploadRepositories" : [ {
@@ -82,7 +82,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginGetCookieFromRequestRule",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "http-endpoint-plugins.endpoint-plugin",
   "uploadRepositories" : [ {
@@ -90,7 +90,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginEndpoint",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "http-endpoint-plugins.http-client-plugin",
   "uploadRepositories" : [ {
@@ -98,7 +98,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginHttpClient",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "http-endpoint-plugins.response-content-json-strategy-plugin",
   "uploadRepositories" : [ {
@@ -106,7 +106,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginResponseJsonContentStrategy",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "http-endpoint-plugins.get-query-parameter-rule-plugin",
   "uploadRepositories" : [ {
@@ -114,7 +114,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginGetQueryParameterRule",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "http-endpoint-plugins.response-plugin",
   "uploadRepositories" : [ {
@@ -122,7 +122,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginResponse",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "http-endpoint-plugins.get-header-from-request-rule-plugin",
   "uploadRepositories" : [ {
@@ -130,7 +130,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginGetHeaderRule",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "http-endpoint-plugins.http-request-sender-actor-plugin",
   "uploadRepositories" : [ {
@@ -138,7 +138,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginHttpRequestSenderActor",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -148,7 +148,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "http-endpoint-plugins",
   "rawName" : "HttpEndpoint-plugins",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "actors" : [ {
   "artifactId" : "dumpable-interface.idumpable",
@@ -908,7 +908,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "WDSObject",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "iobject-extension.field-name-tools",
   "uploadRepositories" : [ {
@@ -916,7 +916,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "FieldNameTools",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "iobject-extension.configuration-object",
   "uploadRepositories" : [ {
@@ -924,7 +924,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "CObject",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -934,7 +934,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "iobject-extension",
   "rawName" : "IObjectExtension",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "actors" : [ {
   "artifactId" : "configuration-manager-plugins.configuration-manager-plugin",
@@ -1844,7 +1844,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "IKey",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "ioc.resolve-by-name-ioc-with-lambda-strategy",
   "uploadRepositories" : [ {
@@ -1852,7 +1852,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "ResolveByNameIocWithLambdaStrategy",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "ioc.recursive-strategy-container",
   "uploadRepositories" : [ {
@@ -1860,7 +1860,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "RecursiveStrategyContainer",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "ioc.istrategy-container",
   "uploadRepositories" : [ {
@@ -1868,7 +1868,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "IStrategyContainer",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "ioc.strategy-container",
   "uploadRepositories" : [ {
@@ -1876,7 +1876,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "StrategyContainer",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "ioc.named-key-storage",
   "uploadRepositories" : [ {
@@ -1884,7 +1884,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "NamedKeysStorage",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "ioc.key-tools",
   "uploadRepositories" : [ {
@@ -1892,7 +1892,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "KeyTools",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "ioc.ioc",
   "uploadRepositories" : [ {
@@ -1900,7 +1900,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "IOC",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "ioc.iioccontainer",
   "uploadRepositories" : [ {
@@ -1908,7 +1908,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "IIocContainer",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "ioc.ioc-container",
   "uploadRepositories" : [ {
@@ -1916,7 +1916,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "IocContainer",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "ioc.ioc-container-simple",
   "uploadRepositories" : [ {
@@ -1924,7 +1924,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "IocContainerSimpleImplementation",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "ioc.resolve-by-name-ioc-strategy",
   "uploadRepositories" : [ {
@@ -1932,7 +1932,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "ResolveByNameIocStrategy",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "ioc.string-ioc-key",
   "uploadRepositories" : [ {
@@ -1940,7 +1940,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "StringIocKey",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -1950,7 +1950,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "ioc",
   "rawName" : "IOC",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "actors" : [ {
   "artifactId" : "checkpoint-plugins.scheduling-strategies-plugin",
@@ -3224,7 +3224,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginHttpsEndpoint",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "https-endpoint-plugins.https-client-plugin",
   "uploadRepositories" : [ {
@@ -3232,7 +3232,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "HttpsClientPlugin",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "artifactId" : "https-endpoint-plugins.https-request-sender-actor-plugin",
   "uploadRepositories" : [ {
@@ -3240,7 +3240,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "PluginHttpsRequestSenderActor",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -3250,7 +3250,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "https-endpoint-plugins",
   "rawName" : "HttpsEndpoint-plugins",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "actors" : [ {
   "artifactId" : "iobject-plugins.fieldname-plugin",
@@ -3558,7 +3558,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "OnFeatureLoadingStarter",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -3568,7 +3568,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "on-feature-loading-service-starter",
   "rawName" : "OnFeatureLoadingServiceStarter",
-  "version" : "0.6.1"
+  "version" : "0.6.3"
 }, {
   "actors" : [ {
   "artifactId" : "global-constants-service-starter.global-constants-starter",
