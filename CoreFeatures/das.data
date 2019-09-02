@@ -2691,8 +2691,8 @@
   "uploadRepositoryId" : "archiva.smartactors-modules",
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
-  "rawName" : "ChainModuleManager",
-  "version" : "0.6.0"
+  "rawName" : "ChainVersionManager",
+  "version" : "0.6.1"
 }, {
   "artifactId" : "version-management.versioned-map-router",
   "uploadRepositories" : [ {
@@ -2700,7 +2700,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "VersionedMapRouter",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "version-management.versioned-router-decorator",
   "uploadRepositories" : [ {
@@ -2708,7 +2708,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "VersionedRouterDecorator",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "version-management.versioned-strategy-container",
   "uploadRepositories" : [ {
@@ -2716,7 +2716,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "VersionedStrategyContainer",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "artifactId" : "version-management.versioned-recursive-strategy-container",
   "uploadRepositories" : [ {
@@ -2724,7 +2724,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "VersionedRecursiveStrategyContainer",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -2734,7 +2734,7 @@
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "version-management",
   "rawName" : "VersionManagement",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 }, {
   "actors" : [ {
   "artifactId" : "version-management-plugins.version-management-plugin",
@@ -3647,7 +3647,7 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "FeatureLoadStarterActor",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 } ],
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-features",
@@ -3660,12 +3660,12 @@
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/smartactors-modules/"
 } ],
   "rawName" : "RemoteManagementPlugin",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 } ],
   "groupId" : "info.smart_tools.smartactors",
   "artifactId" : "remote-management",
   "rawName" : "RemoteManagement",
-  "version" : "0.6.0"
+  "version" : "0.6.1"
 } ],
   "on-actor-creation-upload-repositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
