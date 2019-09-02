@@ -218,7 +218,7 @@ Available conditions:
 Available operators:
 
 * `$eq` — test for equality of the document field and the specified value
-* `$neq` — test for not equality
+* `$ne` — test for not equality
 * `$lt` — "less than", the document field is less than the specified value
 * `$gt` — "greater than", the document field is larger than the specified value
 * `$lte` — less or equal

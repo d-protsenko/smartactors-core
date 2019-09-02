@@ -23,6 +23,8 @@ import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_get.parse
 import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_get.parse_tree.ParseTree;
 import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_post_form_urlencoded.DeserializeStrategyPostFormUrlencoded;
 import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_post_json.DeserializeStrategyPostJson;
+import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_post_multipart_form_data.DeserializeStrategyPostMultipartFormData;
+import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_post_multipart_form_data.FileSavingStrategy;
 import info.smart_tools.smartactors.http_endpoint.environment_handler.EnvironmentHandler;
 import info.smart_tools.smartactors.http_endpoint.http_endpoint.HttpEndpoint;
 import info.smart_tools.smartactors.http_endpoint.http_headers_setter.HttpHeadersExtractor;
@@ -141,6 +143,11 @@ public class HttpEndpointPlugin implements IPlugin {
                                                             "HTTP_application/x-www-form-urlencoded",
                                                             endpointName
                                                     );
+                                                    IOC.resolve(
+                                                            Keys.getKeyByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
+                                                            "HTTP_multipart/form-data",
+                                                            endpointName
+                                                    );
                                                     IOC.register(
                                                             Keys.getKeyByName(endpointName + "_endpoint-config"),
                                                             new SingletonStrategy(configuration)
@@ -191,6 +198,10 @@ public class HttpEndpointPlugin implements IPlugin {
                                                 return channelHandlerNetty;
                                             }
                                     ));
+                            IOC.register(
+                                    Keys.getKeyByName("http file saving strategy"),
+                                    new FileSavingStrategy()
+                            );
 
                         } catch (ResolutionException e) {
                             throw new ActionExecutionException("EndpointCollection plugin can't load: can't get key", e);
@@ -367,7 +378,7 @@ public class HttpEndpointPlugin implements IPlugin {
                             if (request.method().toString().equals("GET")) {
                                 return "HTTP_GET";
                             }
-                            return "HTTP_" + request.headers().get(HttpHeaderNames.CONTENT_TYPE);
+                            return "HTTP_" + (request.headers().get(HttpHeaderNames.CONTENT_TYPE)).split(";")[0];
                         }
                 )
         );
@@ -384,6 +395,13 @@ public class HttpEndpointPlugin implements IPlugin {
                         //args[0] - type of the request
                         //args[1] - name of the endpoint
                         (args) -> new DeserializeStrategyPostFormUrlencoded()
+                )
+        );
+        deserializationStrategyChooser.register("HTTP_multipart/form-data",
+                new ApplyFunctionToArgumentsStrategy(
+                        //args[0] - type of the request
+                        //args[1] - name of the endpoint
+                        (args) -> new DeserializeStrategyPostMultipartFormData((String) args[1])
                 )
         );
         deserializationStrategyChooser.register("HTTP_GET",

@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.plugin.info.smart_tools.smartactors.http_en
 
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -50,7 +50,7 @@ public class EndpointTest {
         );
         IOC.register(
                 Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
-                new CreateNewInstanceStrategy(
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
                                 return new FieldName((String) args[0]);

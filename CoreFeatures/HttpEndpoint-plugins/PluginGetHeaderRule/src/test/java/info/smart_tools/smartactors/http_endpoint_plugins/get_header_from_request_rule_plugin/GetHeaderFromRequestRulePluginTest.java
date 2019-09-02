@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
-import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
@@ -25,7 +25,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.*;
 
-@PrepareForTest({IOC.class, Keys.class, GetHeaderFromRequestRulePlugin.class, CreateNewInstanceStrategy.class})
+@PrepareForTest({IOC.class, Keys.class, GetHeaderFromRequestRulePlugin.class, ApplyFunctionToArgumentsStrategy.class})
 @RunWith(PowerMockRunner.class)
 public class GetHeaderFromRequestRulePluginTest {
     private GetHeaderFromRequestRulePlugin plugin;
@@ -87,7 +87,7 @@ public class GetHeaderFromRequestRulePluginTest {
         verifyStatic();
         Keys.getKeyByName(GetHeaderFromRequestRule.class.getCanonicalName());
 
-        ArgumentCaptor<CreateNewInstanceStrategy> createNewInstanceStrategyArgumentCaptor = ArgumentCaptor.forClass(CreateNewInstanceStrategy.class);
+        ArgumentCaptor<ApplyFunctionToArgumentsStrategy> createNewInstanceStrategyArgumentCaptor = ArgumentCaptor.forClass(ApplyFunctionToArgumentsStrategy.class);
 
         verifyStatic();
         IOC.register(eq(ruleKey), createNewInstanceStrategyArgumentCaptor.capture());

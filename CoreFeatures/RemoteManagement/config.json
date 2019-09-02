@@ -16,6 +16,7 @@
           "target": "feature-load-starter-actor",
           "wrapper":{
             "in_getFeatureLocation":"message/featureLocation",
+            "in_getFeatureDestinationPath":"const/features",
             "out_setObservedDirectory":"message/observedDirectory",
             "out_setFileName":"message/fileName"
           },

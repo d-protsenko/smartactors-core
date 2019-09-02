@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.http_endpoint.environment_handler;
 
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
@@ -70,7 +70,7 @@ public class EnvironmentHandlerTest {
         IKey keyFieldName = Keys.getKeyByName(IFieldName.class.getCanonicalName());
         IOC.register(
                 keyIObjectByString,
-                new CreateNewInstanceStrategy(
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
                                 return new DSObject((String) args[0]);
@@ -82,7 +82,7 @@ public class EnvironmentHandlerTest {
         );
         IOC.register(
                 keyIMessageProcessingSequence,
-                new CreateNewInstanceStrategy(
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
                                 boolean switchScopeOnStartup = args.length > 3 ? (Boolean)args[3] : true;
@@ -95,7 +95,7 @@ public class EnvironmentHandlerTest {
         );
         IOC.register(
                 keyIFieldName,
-                new CreateNewInstanceStrategy(
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
                                 return new FieldName((String) args[0]);
@@ -107,7 +107,7 @@ public class EnvironmentHandlerTest {
         );
         IOC.register(
                 keyFieldName,
-                new CreateNewInstanceStrategy(
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
                                 return new FieldName((String) args[0]);

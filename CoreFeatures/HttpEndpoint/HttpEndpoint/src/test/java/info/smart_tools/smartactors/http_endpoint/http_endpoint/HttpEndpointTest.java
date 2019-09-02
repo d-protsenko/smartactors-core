@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.http_endpoint.http_endpoint;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
-import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.endpoint.interfaces.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
@@ -92,7 +92,7 @@ public class HttpEndpointTest {
         IKey keyIFieldName = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         IOC.register(
                 keyMessageProcessingSequence,
-                new CreateNewInstanceStrategy(
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
                                 boolean switchScopeOnStartup = args.length > 3 ? (Boolean)args[3] : true;
@@ -105,7 +105,7 @@ public class HttpEndpointTest {
         );
         IOC.register(
                 keyIObject,
-                new CreateNewInstanceStrategy(
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
                                 return args.length > 0 ? new DSObject((String) args[0]) : new DSObject();
@@ -117,7 +117,7 @@ public class HttpEndpointTest {
         );
         IOC.register(
                 keyIFieldName,
-                new CreateNewInstanceStrategy(
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
                                 return new FieldName((String) args[0]);
@@ -129,7 +129,7 @@ public class HttpEndpointTest {
         );
         IOC.register(
                 keyChannelHandler,
-                new CreateNewInstanceStrategy(
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             IChannelHandler handler = new ChannelHandlerNetty();
                             handler.init(args[0]);
@@ -137,11 +137,14 @@ public class HttpEndpointTest {
                         }
                 )
         );
-        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
-                new CreateNewInstanceStrategy(
+        IOC.register(
+                Keys.getKeyByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> new DeserializeStrategyPostJson(mapperStub)
                 ));
-        IOC.register(Keys.getKeyByName("EmptyIObject"), new CreateNewInstanceStrategy(
+        IOC.register(
+                Keys.getKeyByName("EmptyIObject"),
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> new DSObject()
                 )
         );

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.http_endpoint.http_response_handler;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
@@ -77,8 +77,9 @@ public class HttpResponseHandlerTest {
                 IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
-        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
-                new CreateNewInstanceStrategy(
+        IOC.register(
+                Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
                                 return new FieldName((String) args[0]);
@@ -88,21 +89,27 @@ public class HttpResponseHandlerTest {
                         }
                 )
         );
-        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
+        IOC.register(
+                Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence"),
                 new SingletonStrategy(
                         messageProcessingSequence
                 )
         );
-        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
+        IOC.register(
+                Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"),
                 new SingletonStrategy(
                         messageProcessor
                 )
         );
-        IOC.register(Keys.getKeyByName("httpResponseResolver"), new SingletonStrategy(
+        IOC.register(
+                Keys.getKeyByName("httpResponseResolver"),
+                new SingletonStrategy(
                         strategy
                 )
         );
-        IOC.register(Keys.getKeyByName("EmptyIObject"), new CreateNewInstanceStrategy(
+        IOC.register(
+                Keys.getKeyByName("EmptyIObject"),
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> new DSObject()
 
                 )
@@ -111,11 +118,15 @@ public class HttpResponseHandlerTest {
         IOC.register(Keys.getKeyByName("cancelTimerOnRequest"),
                 new SingletonStrategy(obj));
 
-        IOC.register(Keys.getKeyByName("chain_id_from_map_name_and_message"), new SingletonStrategy(
+        IOC.register(
+                Keys.getKeyByName("chain_id_from_map_name_and_message"),
+                new SingletonStrategy(
                         mapId
                 )
         );
-        IOC.register(Keys.getKeyByName(IChainStorage.class.getCanonicalName()), new SingletonStrategy(
+        IOC.register(
+                Keys.getKeyByName(IChainStorage.class.getCanonicalName()),
+                new SingletonStrategy(
                         chainStorage
                 )
         );
