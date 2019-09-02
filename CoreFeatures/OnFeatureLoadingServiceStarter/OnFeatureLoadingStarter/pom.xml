@@ -5,10 +5,10 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>on-feature-loading-service-starter</artifactId>
-        <version>0.6.0</version>
+        <version>0.6.3</version>
     </parent>
     <artifactId>on-feature-loading-service-starter.on-feature-loading-starter</artifactId>
-    <version>0.6.0</version>
+    <version>0.6.3</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
@@ -123,12 +123,6 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>class-management.module-manager</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>ioc.field-name-tools</artifactId>
             <version>[0.0.1, 1.0.0)</version>
             <scope>compile</scope>
         </dependency>

@@ -21,7 +21,6 @@ import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.ioc.field_name_tools.FieldNames;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
@@ -184,7 +183,12 @@ public class HttpsEndpointPlugin implements IPlugin {
                         IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         "templates"
                 );
-        scopeSwitchingFieldName = FieldNames.getFieldNameByName("scopeSwitching");
+
+        scopeSwitchingFieldName =
+                IOC.resolve(
+                        IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                        "scopeSwitching"
+                );
     }
 
 

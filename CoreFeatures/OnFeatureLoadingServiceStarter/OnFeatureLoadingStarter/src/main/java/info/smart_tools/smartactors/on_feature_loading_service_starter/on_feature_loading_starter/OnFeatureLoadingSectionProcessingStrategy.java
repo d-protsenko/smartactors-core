@@ -6,7 +6,6 @@ import info.smart_tools.smartactors.configuration_manager.interfaces.iconfigurat
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.ioc.field_name_tools.FieldNames;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.key_tools.Keys;
@@ -77,7 +76,10 @@ public class OnFeatureLoadingSectionProcessingStrategy implements ISectionStrate
                 IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 "messages"
         );
-        this.scopeSwitchingFieldName = FieldNames.getFieldNameByName("scopeSwitching");
+        this.scopeSwitchingFieldName = IOC.resolve(
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                "scopeSwitching"
+        );
     }
 
     @Override
