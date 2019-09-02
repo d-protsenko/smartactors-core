@@ -43,13 +43,13 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.strategy.apply-function-to-arguments</artifactId>
-            <version>0.6.0</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.key-tools</artifactId>
-            <version>0.6.0</version>
+            <version>[0.0.1, 1.0.0)</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
