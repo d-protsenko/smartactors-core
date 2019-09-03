@@ -164,7 +164,7 @@
                             <inherited>false</inherited>
                             <configuration>
                                 <generatePom>true</generatePom>
-                                <file>target/message-bus-service-starter.messagebus-starter-0.6.0.jar</file>
+                                <file>${project.basedir}/target/${project.artifactId}-${project.version}.jar</file>
                                 <url>${module.rurl}</url>
                                 <repositoryId>${module.rid}</repositoryId>
                                 <groupId>${project.groupId}</groupId>
