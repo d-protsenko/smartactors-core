@@ -19,5 +19,7 @@
         <module>BasePool</module>
         <module>ServiceInterfaces</module>
         <module>BaseServiceComponents</module>
+        <module>ScopeInterfaces</module>
+        <module>Scope</module>
     </modules>
 </project>
