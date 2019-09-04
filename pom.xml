@@ -21,6 +21,7 @@
         <module>Servers/Server2</module>
         <module>SystemActors</module>
         <module>das</module>
+        <module>Features</module>
     </modules>
 
     <build>
