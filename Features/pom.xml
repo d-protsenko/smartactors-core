@@ -21,5 +21,10 @@
         <module>BaseServiceComponents</module>
         <module>ScopeInterfaces</module>
         <module>Scope</module>
+        <module>ClassLoaderInterfaces</module>
+        <module>ClassLoaders</module>
+        <module>ClassGenerators</module>
+        <module>ModuleInterfaces</module>
+        <module>ModuleManager</module>
     </modules>
 </project>
