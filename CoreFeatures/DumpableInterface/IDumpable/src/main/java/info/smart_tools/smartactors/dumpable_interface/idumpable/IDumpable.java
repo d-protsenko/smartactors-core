@@ -11,7 +11,7 @@ public interface IDumpable {
     /**
      * Create serializable copy of this object's state.
      *
-     * @param options    options of
+     * @param options options of
      * @return the copy of internal state of this object
      * @throws DumpException if any error occurs
      * @throws InvalidArgumentException if {@code options} argument is {@code null} or contains invalid values

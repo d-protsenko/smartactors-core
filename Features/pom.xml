@@ -26,5 +26,11 @@
         <module>ClassGenerators</module>
         <module>ModuleInterfaces</module>
         <module>ModuleManager</module>
+        <module>IObjectInterfaces</module>
+        <module>IObjects</module>
+        <module>FeatureLoadingSystemInterfaces</module>
+        <module>FeatureLoadingSystem</module>
+        <module>IOCInterfaces</module>
+        <module>IOC</module>
     </modules>
 </project>
