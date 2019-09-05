@@ -1,0 +1,6 @@
+{
+  "featureName":"info.smart_tools.smartactors:ioc-strategy-pack",
+  "afterFeatures":[
+    "info.smart_tools.smartactors:strategy-interfaces"
+  ]
+}

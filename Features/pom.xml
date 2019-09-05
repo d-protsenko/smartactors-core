@@ -32,5 +32,6 @@
         <module>FeatureLoadingSystem</module>
         <module>IOCInterfaces</module>
         <module>IOC</module>
+        <module>IOCStrategyPack</module>
     </modules>
 </project>
