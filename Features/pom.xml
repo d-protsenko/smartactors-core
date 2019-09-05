@@ -33,5 +33,6 @@
         <module>IOCInterfaces</module>
         <module>IOC</module>
         <module>IOCStrategyPack</module>
+        <module>Fields</module>
     </modules>
 </project>

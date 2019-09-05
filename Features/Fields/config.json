@@ -1,5 +1,5 @@
 {
-  "featureName":"info.smart_tools.smartactors:ioc-strategy-pack",
+  "featureName":"info.smart_tools.smartactors:fields",
   "afterFeatures":[
     "info.smart_tools.smartactors:ioc",
     "info.smart_tools.smartactors:iobjects"
