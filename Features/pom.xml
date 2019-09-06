@@ -35,5 +35,8 @@
         <module>IOCStrategyPack</module>
         <module>Fields</module>
         <module>MessageProcessingInterfaces</module>
+        <module>IObjectExtension</module>
+        <module>ConfigurationManager</module>
+        <module>ConfigurationManagerInterfaces</module>
     </modules>
 </project>
