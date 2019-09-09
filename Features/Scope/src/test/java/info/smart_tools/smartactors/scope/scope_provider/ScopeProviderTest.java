@@ -62,19 +62,19 @@ public class ScopeProviderTest {
         assertNotSame(result1, result2);
     }
 
-    @Test
-    public void checkSubscribeOnCreationNewScope()
-            throws Exception {
-        IAction observer = mock(IAction.class);
-        doNothing().when(observer).execute(any(IScope.class));
-        ScopeProvider.subscribeOnCreationNewScope(observer);
-        ScopeProvider.createScope(null);
-        verify(observer, times(1)).execute(any(IScope.class));
-        reset(observer);
-    }
+//    @Test
+//    public void checkSubscribeOnCreationNewScope()
+//            throws Exception {
+//        IAction observer = mock(IAction.class);
+//        doNothing().when(observer).execute(any(IScope.class));
+//        ScopeProvider.subscribeOnCreationNewScope(observer);
+//        ScopeProvider.createScope(null);
+//        verify(observer, times(1)).execute(any(IScope.class));
+//        reset(observer);
+//    }
 
     @Test
-    public void checkClearListOfSubscribers()
+    public void checkSubscribeAndClearListOfSubscribers()
             throws Exception {
         IAction observer = mock(IAction.class);
         doNothing().when(observer).execute(any(IScope.class));
