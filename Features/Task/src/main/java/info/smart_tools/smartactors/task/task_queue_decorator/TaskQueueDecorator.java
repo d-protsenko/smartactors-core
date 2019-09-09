@@ -21,7 +21,6 @@ public class TaskQueueDecorator implements IQueue<ITask> {
      * The constructor.
      *
      * @param queue    underlying standard queue
-     * @throws InvalidArgumentException if queue queue is {@code null}
      */
     public TaskQueueDecorator(final IQueue<ITask> queue) {
         this.queue = queue;

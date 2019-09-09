@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception;
 
 /**
- * Exception for error in {@link info.smart_tools.smartactors.core.ibootstrap.IBootstrapItem} process method
+ * Exception for error in {@link info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem} process method
  */
 public class ProcessExecutionException extends Exception {
 

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception;
 
 /**
- * Exception for error in {@link info.smart_tools.smartactors.core.ibootstrap_item.IBootstrapItem} undo method
+ * Exception for error in {@link info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem} undo method
  */
 public class RevertProcessExecutionException extends Exception {
 

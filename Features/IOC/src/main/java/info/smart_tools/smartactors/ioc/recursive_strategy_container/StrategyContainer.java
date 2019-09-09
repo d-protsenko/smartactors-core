@@ -9,13 +9,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Implementation of {@link IStrategyContainer}
- * <p>
+ * <br>
  * Simple key-value storage
- * <ul>
+ *   <ul>
  *     <li>key is a unique object identifier</li>
  *     <li>value is a instance of {@link IStrategy}</li>
- * </ul>
- * </p>
+ *   </ul>
  * <p>
  * Stores the link to the parent container to make the recursive resolving
  * when the strategy doesn't exist in the current container.
