@@ -38,5 +38,10 @@
         <module>IObjectExtension</module>
         <module>ConfigurationManager</module>
         <module>ConfigurationManagerInterfaces</module>
+        <module>TaskInterfaces</module>
+        <module>Task</module>
+        <module>ShutdownTaskProcessingStrategies</module>
+        <module>MessageProcessing</module>
+        <module>Helpers</module>
     </modules>
 </project>

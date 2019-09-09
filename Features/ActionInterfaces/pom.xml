@@ -98,8 +98,7 @@
                 <version>3.0.0-M3</version>
                 <configuration>
                     <useSystemClassLoader>false</useSystemClassLoader>
-                    <parallel>methods</parallel>
-                    <threadCount>4</threadCount>
+                    <!--<parallel>methods</parallel>-->                     <!--<threadCount>4</threadCount>-->
                 </configuration>
             </plugin>
 

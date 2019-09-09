@@ -41,15 +41,24 @@ public class IFieldPlugin implements IPlugin {
                 .process(() -> {
                     try {
                         IKey fieldKey = Keys.getKeyByName(IField.class.getCanonicalName());
-                        IOC.register(fieldKey, new ResolveByNameIocStrategy(
-                            (args) -> {
-                                String fieldName = String.valueOf(args[0]);
-                                try {
-                                    return new Field(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), fieldName));
-                                } catch (InvalidArgumentException | ResolutionException e) {
-                                    throw new RuntimeException("Can't resolve IField: ", e);
-                                }
-                            }));
+                        IOC.register(
+                                fieldKey,
+                                new ResolveByNameIocStrategy(
+                                        (args) -> {
+                                            String fieldName = String.valueOf(args[0]);
+                                            try {
+                                                return new Field(
+                                                        IOC.resolve(
+                                                                Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                                                                fieldName
+                                                        )
+                                                );
+                                            } catch (InvalidArgumentException | ResolutionException e) {
+                                                throw new RuntimeException("Can't resolve IField: ", e);
+                                            }
+                                        }
+                                )
+                        );
                     } catch (ResolutionException e) {
                         throw new ActionExecutionException("IField plugin can't load: can't get IField key", e);
                     } catch (InvalidArgumentException e) {

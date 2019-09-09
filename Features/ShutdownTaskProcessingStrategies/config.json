@@ -1,0 +1,8 @@
+{
+  "featureName":"info.smart_tools.smartactors:shutdown-task-processing-strategies",
+  "afterFeatures":[
+    "info.smart_tools.smartactors:service-interfaces",
+    "info.smart_tools.smartactors:task-interfaces",
+    "info.smart_tools.smartactors:ioc"
+  ]
+}

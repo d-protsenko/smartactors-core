@@ -70,7 +70,7 @@ public interface IBootstrapItem <T> {
     List<T> getAfterItems();
 
     /**
-     * Rreturn name of current item
+     * Return name of current item
      * @return name of current item
      */
     T getItemName();
