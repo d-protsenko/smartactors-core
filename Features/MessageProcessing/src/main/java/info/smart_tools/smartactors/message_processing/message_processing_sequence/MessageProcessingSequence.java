@@ -102,9 +102,10 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
      * @param stackDepth maximum depth of stack of nested chains
      * @param mainChainName the {@link IReceiverChain} to start message processing with
      * @param message to resolve chains in sequence
-     * @throws InvalidArgumentException if stack depth is not a positive number
-     * @throws InvalidArgumentException if main chain is {@code null}
-     * @throws InvalidArgumentException if main chain contains no receivers
+     * @param switchScopeOnStartup switch scope on start up
+     * @throws InvalidArgumentException if some errors occurred on an instance of {@link IMessageProcessingSequence} creation
+     * @throws ResolutionException if IOC is not initialized
+     * @throws ChainNotFoundException if the required chain is not found
      * @throws ResolutionException if resolution of any dependencies fails
      */
     public MessageProcessingSequence(final int stackDepth, final Object mainChainName, final IObject message, final boolean switchScopeOnStartup)
@@ -130,7 +131,9 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         }
         try {
             callChain(mainChainName);
-        } catch(NestedChainStackOverflowException | ScopeProviderException e) {}
+        } catch(NestedChainStackOverflowException | ScopeProviderException e) {
+            // ToDo: Empty catch
+        }
 
         if (!next()) {
             throw new InvalidArgumentException("Main chain should contain at least one receiver.");
@@ -142,9 +145,9 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
      *
      * @param dump the of sequence to recover from
      * @param message to resolve chains in sequence
-     * @throws InvalidArgumentException if stack depth is not a positive number
-     * @throws InvalidArgumentException if main chain is {@code null}
-     * @throws InvalidArgumentException if main chain contains no receivers
+     * @throws InvalidArgumentException if some errors occurred on an instance of {@link IMessageProcessingSequence} creation
+     * @throws ReadValueException if an error occurred on reading a field of an instance of {@link info.smart_tools.smartactors.iobject.iobject.IObject}
+     * @throws ChainNotFoundException if the required chain is not found
      * @throws ResolutionException if resolution of any dependencies fails
      */
     public MessageProcessingSequence(final IObject dump, final IObject message)

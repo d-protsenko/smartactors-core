@@ -9,10 +9,12 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
  */
 public interface IChainChoiceStrategy {
     /**
-     * Choose a chain to be called on the message being processed by given message processor.
-     *
      * @param messageProcessor    message processor processing the message
+     *
+     * @param messageProcessor message processor processing the message
      * @return name of the chain to be called for the message
+     * @throws InvalidArgumentException if an error occurred on an instance of {@link IMessageProcessor} validation
+     * @throws ReadValueException if an error occurred on reading a field of an instance of {@link info.smart_tools.smartactors.iobject.iobject.IObject}
      */
     Object chooseChain(IMessageProcessor messageProcessor)
             throws InvalidArgumentException, ReadValueException;

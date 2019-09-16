@@ -33,6 +33,7 @@ public class WrapperCreatorReceiverDecorator implements IMessageReceiver {
      * @param underlyingReceiver    the receiver to decorate
      * @param wrapperStrategiesMap  map to use as a cache for wrapper object resolution strategies. This probably should be a map storing
      *                              keys by weak references
+     * @param strategyDependencyName the key of strategy dependency
      * @throws ResolutionException if error occurs resolving any dependencies
      */
     public WrapperCreatorReceiverDecorator(

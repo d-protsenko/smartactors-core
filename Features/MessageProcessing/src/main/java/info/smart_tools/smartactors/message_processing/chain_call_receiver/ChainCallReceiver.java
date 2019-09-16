@@ -30,7 +30,7 @@ public class ChainCallReceiver implements IMessageReceiver {
      *
      * @param chainChoiceStrategy           strategy to use
      * @throws InvalidArgumentException     if storage is {@code null}
-     * @throws InvalidArgumentException     if strategy is {@code null}
+     * @throws ResolutionException          if IOC is not initialized
      */
     public ChainCallReceiver(final IChainChoiceStrategy chainChoiceStrategy)
             throws InvalidArgumentException, ResolutionException {
