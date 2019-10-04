@@ -44,5 +44,6 @@
         <module>MessageProcessing</module>
         <module>Helpers</module>
         <module>FeatureManagement</module>
+        <module>CoreServiceStarter</module>
     </modules>
 </project>
