@@ -1,5 +1,5 @@
 {
-  "featureName":"info.smart_tools.smartactors:scope-interfaces",
+  "featureName":"info.smart_tools.smartactors:feature-loading-system",
   "afterFeatures":[
     "info.smart_tools.smartactors:classloader-interfaces",
     "info.smart_tools.smartactors:file-system-interfaces"

@@ -43,5 +43,6 @@
         <module>ShutdownTaskProcessingStrategies</module>
         <module>MessageProcessing</module>
         <module>Helpers</module>
+        <module>FeatureManagement</module>
     </modules>
 </project>
