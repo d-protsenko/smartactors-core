@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.http_endpoint.tcp_server.TcpServer;
 import info.smart_tools.smartactors.http_endpoint.tcp_server.exceptions.ServerInitializationException;
 import info.smart_tools.smartactors.https_endpoint.interfaces.issl_engine_provider.ISslEngineProvider;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import io.netty.channel.ChannelInboundHandler;

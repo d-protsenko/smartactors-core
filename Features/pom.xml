@@ -20,7 +20,7 @@
         <module>ServiceInterfaces</module>
         <module>BaseServiceComponents</module>
         <module>ScopeInterfaces</module>
-        <module>Scope</module>
+        <module>ScopeProvider</module>
         <module>ClassLoaderInterfaces</module>
         <module>ClassLoaders</module>
         <module>ClassGenerators</module>
@@ -31,7 +31,8 @@
         <module>FeatureLoadingSystemInterfaces</module>
         <module>FeatureLoadingSystem</module>
         <module>IOCInterfaces</module>
-        <module>IOC</module>
+        <module>IOCWithScope</module>
+        <module>IOCWithoutScope</module>
         <module>IOCStrategyPack</module>
         <module>Fields</module>
         <module>MessageProcessingInterfaces</module>
@@ -45,5 +46,6 @@
         <module>Helpers</module>
         <module>FeatureManagement</module>
         <module>CoreServiceStarter</module>
+        <module>VersionManagement</module>
     </modules>
 </project>

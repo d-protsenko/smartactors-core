@@ -49,6 +49,7 @@
             <version>[0.7.0, 1.0.0)</version>
         </dependency>
 
+        <!-- Third-party dependencies -->
         <dependency>
             <groupId>net.lingala.zip4j</groupId>
             <artifactId>zip4j</artifactId>
@@ -70,7 +71,7 @@
             <version>3.0.3</version>
         </dependency>
 
-
+        <!-- Tests -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>Helpers</artifactId>

@@ -1,6 +1,11 @@
 {
   "featureName":"info.smart_tools.smartactors:message-processing",
   "afterFeatures":[
-    "info.smart_tools.smartactors:message-processing-interfaces"
+    "info.smart_tools.smartactors:message-processing-interfaces",
+    "info.smart_tools.smartactors:task-interfaces",
+    "info.smart_tools.smartactors:pool-interfaces",
+    "info.smart_tools.smartactors:fields",
+    "info.smart_tools.smartactors:base-service-components",
+    "info.smart_tools.smartactors:class-generators"
   ]
 }

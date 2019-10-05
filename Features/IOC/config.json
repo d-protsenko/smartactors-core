@@ -1,8 +1,0 @@
-{
-  "featureName":"info.smart_tools.smartactors:ioc",
-  "afterFeatures":[
-    "info.smart_tools.smartactors:ioc-interfaces",
-    "info.smart_tools.smartactors:scope",
-    "info.smart_tools.smartactors:base-strategies"
-  ]
-}

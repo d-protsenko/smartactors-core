@@ -6,7 +6,7 @@ import info.smart_tools.smartactors.http_endpoint.http_request_sender_actor.exce
 import info.smart_tools.smartactors.http_endpoint.http_request_sender_actor.wrappers.HttpRequestSenderActorWrapper;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.key_tools.Keys;
 

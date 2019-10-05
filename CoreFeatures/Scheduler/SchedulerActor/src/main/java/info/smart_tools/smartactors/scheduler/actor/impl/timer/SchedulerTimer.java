@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStopException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.scheduler.interfaces.IDelayedSynchronousService;

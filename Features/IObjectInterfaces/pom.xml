@@ -13,10 +13,10 @@
     <groupId>info.smart_tools.smartactors</groupId>
     <version>0.7.0</version>
     <!--<licenses>-->
-    <!--<license>-->
-    <!--<name></name>-->
-    <!--<url></url>-->
-    <!--</license>-->
+        <!--<license>-->
+            <!--<name></name>-->
+            <!--<url></url>-->
+        <!--</license>-->
     <!--</licenses>-->
 
     <properties>
@@ -38,6 +38,8 @@
             <artifactId>BaseExceptions</artifactId>
             <version>[0.7.0, 1.0.0)</version>
         </dependency>
+
+        <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

@@ -30,7 +30,7 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>IOC</artifactId>
+            <artifactId>IOCWithScope</artifactId>
             <version>[0.7.0, 1.0.0)</version>
         </dependency>
         <dependency>
@@ -38,8 +38,6 @@
             <artifactId>Fields</artifactId>
             <version>[0.7.0, 1.0.0)</version>
         </dependency>
-
-
 
         <!-- Third party dependencies -->
         <dependency>
@@ -59,6 +57,7 @@
         </dependency>
 
 
+        <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
