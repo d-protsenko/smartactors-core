@@ -5,8 +5,8 @@
     "info.smart_tools.smartactors:task",
     "info.smart_tools.smartactors:service-interfaces",
     "info.smart_tools.smartactors:message-processing-interfaces",
-    "info.smart_tools.smartactors:iobjects",
-    "info.smart_tools.smartactors:feature-loading-system",
+    "info.smart_tools.smartactors:iobject-interfaces",
+    "info.smart_tools.smartactors:feature-loading-system-interfaces",
     "info.smart_tools.smartactors:iobject-extension"
   ]
 }

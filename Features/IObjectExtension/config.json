@@ -2,6 +2,6 @@
   "featureName":"info.smart_tools.smartactors:iobject-extension",
   "afterFeatures":[
     "info.smart_tools.smartactors:ioc",
-    "info.smart_tools.smartactors:fields"
+    "info.smart_tools.smartactors:iobjects"
   ]
 }

@@ -47,5 +47,6 @@
         <module>FeatureManagement</module>
         <module>CoreServiceStarter</module>
         <module>VersionManagement</module>
+        <module>FeatureLoadingSystemPlugins</module>
     </modules>
 </project>

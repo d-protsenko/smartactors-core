@@ -9,6 +9,7 @@ import info.smart_tools.smartactors.field.field.Field;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.DeleteValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -56,7 +57,7 @@ public class WrapperGenerator implements IWrapperGenerator {
 
         try {
             Class<T> clazz = (Class<T>) targetInterface.getClassLoader().loadClass(
-                    targetInterface.getName()+"Impl"
+                    targetInterface.getName() + "Impl"
             );
             return clazz.newInstance();
 
@@ -94,11 +95,11 @@ public class WrapperGenerator implements IWrapperGenerator {
                 .addImport(FieldName.class.getCanonicalName())
                 .addImport(InvalidArgumentException.class.getCanonicalName())
                 .addImport(targetInterface.getCanonicalName())
-                .addImport("info.smart_tools.smartactors.iobject.iobject.IObject")
+                .addImport(IObject.class.getCanonicalName())
                 .addImport(IObjectWrapper.class.getCanonicalName())
                 .addImport(ReadValueException.class.getCanonicalName())
                 .addImport(ChangeValueException.class.getCanonicalName())
-                .addImport("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")
+                .addImport(IFieldName.class.getCanonicalName())
                 .addImport(DeleteValueException.class.getCanonicalName())
                 .addImport(SerializeException.class.getCanonicalName())
                 .addImport(Iterator.class.getCanonicalName())

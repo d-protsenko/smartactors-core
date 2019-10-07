@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.Ap
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
@@ -108,7 +109,8 @@ public abstract class IOCInitializer {
                 "iobject strategy",
                 () -> {
                     try {
-                        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
+                        IOC.register(
+                                Keys.getKeyByName(IObject.class.getCanonicalName()),
                                 new ApplyFunctionToArgumentsStrategy(
                                         args -> {
                                             if (args.length == 0) {
@@ -116,6 +118,12 @@ public abstract class IOCInitializer {
                                             } else if (args.length == 1 && args[0] instanceof String) {
                                                 try {
                                                     return new DSObject((String) args[0]);
+                                                } catch (Exception e) {
+                                                    throw new RuntimeException(e);
+                                                }
+                                            } else if (args.length == 1 && args[0] instanceof Map) {
+                                                try {
+                                                    return new DSObject((Map) args[0]);
                                                 } catch (Exception e) {
                                                     throw new RuntimeException(e);
                                                 }

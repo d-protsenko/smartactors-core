@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_iobject_strategies;
 
 import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
+import info.smart_tools.smartactors.helpers.IOCInitializer.IOCInitializer;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.exception.ResolutionException;
@@ -23,37 +24,25 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.powermock.api.mockito.PowerMockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({IOC.class, Keys.class})
-public class MapToIObjectStrategyTest {
+public class MapToIObjectStrategyTest extends IOCInitializer {
 
-    private MapToIObjectStrategy strategy;
-
-    @Before
-    public void setUp() throws Exception {
-
-        mockStatic(IOC.class);
-        mockStatic(Keys.class);
-
-        strategy = new MapToIObjectStrategy();
+    @Override
+    protected void registry(String... strategyNames) throws Exception {
+        registryStrategies("ifieldname strategy", "iobject strategy");
     }
+
 
     @Test
     public void ShouldCorrectConvertMapToIObject() throws Exception {
 
-        IKey key = mock(IKey.class);
-        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName")).thenReturn(key);
-
-        IFieldName fieldName1 = mock(IFieldName.class);
-        IFieldName fieldName2 = mock(IFieldName.class);
-        when(IOC.resolve(key, "key1")).thenReturn(fieldName1);
-        when(IOC.resolve(key, "key2")).thenReturn(fieldName2);
+        IFieldName fieldName1 = IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "key1");
+        IFieldName fieldName2 = IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "key2");
 
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("key1", 123);
         map.put("key2", "value");
 
-        IObject result = strategy.resolve(map);
+        IObject result = (new MapToIObjectStrategy()).resolve(map);
         assertEquals(result.getValue(fieldName1), 123);
         assertEquals(result.getValue(fieldName2), "value");
     }
@@ -61,18 +50,14 @@ public class MapToIObjectStrategyTest {
     @Test(expected = StrategyException.class)
     public void ShouldThrowException_When_AnyErrorIsOccurred() throws Exception {
 
-        when(IOC.resolve(any(IKey.class), anyString())).thenThrow(new ResolutionException(""));
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("key", "value");
-        strategy.resolve(map);
+        (new MapToIObjectStrategy()).resolve(new Object());
         fail();
     }
 
     @Test(expected = StrategyException.class)
     public void ShouldThrowException_When_NullIsPassed() throws Exception {
 
-        strategy.resolve(null);
+        (new MapToIObjectStrategy()).resolve(null);
         fail();
     }
 }

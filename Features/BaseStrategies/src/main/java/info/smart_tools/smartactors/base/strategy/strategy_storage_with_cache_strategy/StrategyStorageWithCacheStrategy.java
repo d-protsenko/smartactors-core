@@ -43,6 +43,7 @@ public class StrategyStorageWithCacheStrategy implements IStrategy, IStrategyReg
 
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T resolve(Object... args)
             throws StrategyException {
         try {

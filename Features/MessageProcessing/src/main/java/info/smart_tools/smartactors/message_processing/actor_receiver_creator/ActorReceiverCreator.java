@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.message_processing.actor_receiver_creator;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.iobject.field_name.FieldName;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.key_tools.Keys;
@@ -27,8 +27,8 @@ import java.util.*;
  */
 public class ActorReceiverCreator implements IRoutedObjectCreator {
 
-    private FieldName name;
-    private FieldName dependency;
+    private IFieldName name;
+    private IFieldName dependency;
 
     /**
      * Default constructor.

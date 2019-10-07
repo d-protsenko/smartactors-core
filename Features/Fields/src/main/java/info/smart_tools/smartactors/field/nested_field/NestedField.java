@@ -2,12 +2,13 @@ package info.smart_tools.smartactors.field.nested_field;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.field.field.Field;
-import info.smart_tools.smartactors.iobject.ds_object.DSObject;
-import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield.IField;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -25,7 +26,12 @@ public class NestedField implements IField {
         try {
             for (Field step : steps) {
                 if (step.in(object) == null) {
-                    step.out(object, new DSObject());
+                    step.out(
+                            object,
+                            IOC.resolve(
+                                    Keys.getKeyByName(IObject.class.getCanonicalName())
+                            )
+                    );
                 }
 
                 object = step.in(object);
@@ -52,10 +58,16 @@ public class NestedField implements IField {
         try {
             String[] stepNames = fieldName.split(SPLITTER);
 
-            field = new Field(new FieldName(stepNames[stepNames.length - 1]));
+            field = new Field(
+                    IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), stepNames[stepNames.length - 1])
+            );
 
             for (int i = 0; i < stepNames.length - 1; ++i) {
-                steps.add(new Field(new FieldName(stepNames[i])));
+                steps.add(
+                        new Field(
+                                IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), stepNames[i])
+                        )
+                );
             }
         } catch (Throwable e) {
             throw new InvalidArgumentException(e);

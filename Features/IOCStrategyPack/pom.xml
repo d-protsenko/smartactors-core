@@ -30,7 +30,7 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>IObjects</artifactId>
+            <artifactId>IObjectInterfaces</artifactId>
             <version>[0.7.0, 1.0.0)</version>
         </dependency>
         <dependency>
@@ -40,6 +40,12 @@
         </dependency>
 
         <!-- Tests -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>Helpers</artifactId>
+            <version>[0.7.0, 1.0.0)</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

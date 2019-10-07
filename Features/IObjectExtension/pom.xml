@@ -35,7 +35,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>Fields</artifactId>
+            <artifactId>IObjects</artifactId>
             <version>[0.7.0, 1.0.0)</version>
         </dependency>
 
@@ -56,8 +56,13 @@
             <version>2.9.9</version>
         </dependency>
 
-
         <!-- Tests -->
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>Fields</artifactId>
+            <version>[0.7.0, 1.0.0)</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

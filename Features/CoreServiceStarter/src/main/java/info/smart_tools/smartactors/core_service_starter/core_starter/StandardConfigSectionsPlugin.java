@@ -7,7 +7,6 @@ import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExec
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.ISectionStrategy;
-import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
@@ -41,7 +40,10 @@ public class StandardConfigSectionsPlugin implements IPlugin {
     public void load() throws PluginException {
         try {
             /* "objects" section */
-            IBootstrapItem<String> objectsSectionItem = new BootstrapItem("config_section:objects");
+            IBootstrapItem<String> objectsSectionItem = IOC.resolve(
+                    Keys.getKeyByName("bootstrap item"),
+                    "config_section:objects"
+            );
 
             objectsSectionItem
                     .after("config_sections:start")
@@ -73,7 +75,10 @@ public class StandardConfigSectionsPlugin implements IPlugin {
             bootstrap.add(objectsSectionItem);
 
             /* "maps" section */
-            IBootstrapItem<String> mapsSectionItem = new BootstrapItem("config_section:maps");
+            IBootstrapItem<String> mapsSectionItem = IOC.resolve(
+                    Keys.getKeyByName("bootstrap item"),
+                    "config_section:maps"
+            );
 
             mapsSectionItem
                     .after("config_sections:start")
@@ -233,7 +238,10 @@ public class StandardConfigSectionsPlugin implements IPlugin {
             bootstrap.add(mapsSectionItem);
 
             /* "executor" section */
-            IBootstrapItem<String> executorSectionItem = new BootstrapItem("config_section:executor");
+            IBootstrapItem<String> executorSectionItem = IOC.resolve(
+                    Keys.getKeyByName("bootstrap item"),
+                    "config_section:executor"
+            );
 
             executorSectionItem
                     .after("config_sections:start")
@@ -265,7 +273,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
 
             bootstrap.add(executorSectionItem);
 
-        } catch (InvalidArgumentException e) {
+        } catch (ResolutionException e) {
             throw new PluginException(e);
         }
     }

@@ -1,6 +1,7 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_iobject_strategies;
 
 import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
+import info.smart_tools.smartactors.helpers.IOCInitializer.IOCInitializer;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import org.junit.Before;
@@ -17,7 +18,13 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(String.class)
-public class StringToIObjectStrategyTest {
+public class StringToIObjectStrategyTest extends IOCInitializer {
+
+    @Override
+    protected void registry(String... strategyNames) throws Exception {
+        registryStrategies("ifieldname strategy", "iobject strategy");
+    }
+
 
     private StringToIObjectStrategy strategy;
 
