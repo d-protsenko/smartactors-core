@@ -1,4 +1,4 @@
 /**
- * Package contains exceptions for {@link info.smart_tools.smartactors.ioc.iioccontainer.IContainer} methods
+ * Package contains exceptions for IOC methods
  */
 package info.smart_tools.smartactors.ioc.exception;

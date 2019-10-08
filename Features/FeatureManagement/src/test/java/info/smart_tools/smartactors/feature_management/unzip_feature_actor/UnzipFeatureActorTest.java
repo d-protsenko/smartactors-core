@@ -54,8 +54,8 @@ public class UnzipFeatureActorTest extends IOCInitializer {
         when(feature.getName()).thenReturn("test-feature");
         when(feature.getDependencies()).thenReturn(null);
         when(feature.getGroupId()).thenReturn("com.groupId");
-        String fileName = "target"+File.separator+"test-classes"+File.separator+"test-feature-VERSION.zip";
-        String directory = "target"+File.separator+"test-classes"+File.separator+"test-feature-VERSION";
+        String fileName = "target" + File.separator + "test-classes" + File.separator + "test-feature-VERSION.zip";
+        String directory = "target" + File.separator + "test-classes" + File.separator + "test-feature-VERSION";
         when(feature.getLocation()).thenReturn(
                 new Path(fileName)
         );
