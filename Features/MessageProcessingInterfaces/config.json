@@ -1,9 +1,7 @@
 {
   "featureName":"info.smart_tools.smartactors:message-processing-interfaces",
   "afterFeatures":[
-    "info.smart_tools.smartactors:ioc-interfaces",
-    "info.smart_tools.smartactors:module-interfaces",
-    "info.smart_tools.smartactors:scope-interfaces",
-    "info.smart_tools.smartactors:iobject-interfaces"
+    "info.smart_tools.smartactors:iobject-interfaces",
+    "info.smart_tools.smartactors:strategy-interfaces"
   ]
 }

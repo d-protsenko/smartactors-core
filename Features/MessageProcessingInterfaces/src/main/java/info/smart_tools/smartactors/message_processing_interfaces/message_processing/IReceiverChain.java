@@ -1,8 +1,6 @@
 package info.smart_tools.smartactors.message_processing_interfaces.message_processing;
 
-import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.scope.iscope.IScope;
 
 import java.util.Collection;
 
@@ -66,16 +64,4 @@ public interface IReceiverChain {
      * @return the description of chain
      */
     IObject getChainDescription();
-
-    /**
-     * Get scope of chain
-     * @return the scope of chain
-     */
-    IScope getScope();
-
-    /**
-     * Get module which chain belongs to
-     * @return the module which chain belongs to
-     */
-    IModule getModule();
 }

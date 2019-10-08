@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.class_management.interfaces.module_able.IModuleAble;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
@@ -13,6 +14,7 @@ import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.scope.iscope.IScope;
+import info.smart_tools.smartactors.scope.scope_able.IScopeAble;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,7 +24,7 @@ import java.util.Map;
 /**
  * Decorator for {@link IReceiverChain} that replaces some steps of decorated chain by another ones.
  */
-class ReceiverReplacingChainDecorator implements IReceiverChain {
+class ReceiverReplacingChainDecorator implements IReceiverChain, IScopeAble, IModuleAble {
     private final IReceiverChain original;
     private final IMessageReceiver[] receivers;
 
@@ -80,10 +82,10 @@ class ReceiverReplacingChainDecorator implements IReceiverChain {
     }
 
     @Override
-    public IScope getScope() { return original.getScope(); }
+    public IScope getScope() { return ((IScopeAble) original).getScope(); }
 
     @Override
-    public IModule getModule() { return original.getModule(); }
+    public IModule getModule() { return ((IModuleAble) original).getModule(); }
 
     @Override
     public IObject getExceptionalChainNamesAndEnvironments(final Throwable exception) {

@@ -5,8 +5,6 @@ import info.smart_tools.smartactors.class_management.class_generator_with_java_c
 import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.class_builder.ClassBuilder;
 import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.class_builder.Modifiers;
 import info.smart_tools.smartactors.class_management.interfaces.iclass_generator.IClassGenerator;
-import info.smart_tools.smartactors.field.field.Field;
-import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -15,6 +13,9 @@ import info.smart_tools.smartactors.iobject.iobject.exception.DeleteValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper;
+import info.smart_tools.smartactors.ioc.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_generator.exception.WrapperGeneratorException;
 
@@ -91,14 +92,15 @@ public class WrapperGenerator implements IWrapperGenerator {
         cb
                 .addPackageName(targetInterface.getPackage().getName())
                 .addImport(IField.class.getCanonicalName())
-                .addImport(Field.class.getCanonicalName())
-                .addImport(FieldName.class.getCanonicalName())
+                .addImport(IOC.class.getCanonicalName())
+                .addImport(Keys.class.getCanonicalName())
                 .addImport(InvalidArgumentException.class.getCanonicalName())
                 .addImport(targetInterface.getCanonicalName())
                 .addImport(IObject.class.getCanonicalName())
                 .addImport(IObjectWrapper.class.getCanonicalName())
                 .addImport(ReadValueException.class.getCanonicalName())
                 .addImport(ChangeValueException.class.getCanonicalName())
+                .addImport(ResolutionException.class.getCanonicalName())
                 .addImport(IFieldName.class.getCanonicalName())
                 .addImport(DeleteValueException.class.getCanonicalName())
                 .addImport(SerializeException.class.getCanonicalName())
@@ -149,7 +151,7 @@ public class WrapperGenerator implements IWrapperGenerator {
                 .addField()
                 .setModifier(Modifiers.PRIVATE)
                 .setType(Map.class.getSimpleName())
-                .setInnerGenericType(IFieldName.class.getSimpleName() + "," + Field.class.getSimpleName())
+                .setInnerGenericType(IFieldName.class.getSimpleName() + ", " + IField.class.getSimpleName())
                 .setName("fields");
 
         // Add class constructors
@@ -162,9 +164,9 @@ public class WrapperGenerator implements IWrapperGenerator {
                     .append(methodPrefix)
                     .append("_")
                     .append(m.getName())
-                    .append(" = new ")
-                    .append("Field(new FieldName(\"")
-                    .append(methodPrefix).append("_").append(m.getName()).append("\"" + "));\n");
+                    .append(" = ")
+                    .append("IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), \"")
+                    .append(methodPrefix).append("_").append(m.getName()).append("\"" + ");\n");
         }
         builder.append("this.fields = new HashMap<>();\n");
         builder
@@ -252,12 +254,26 @@ public class WrapperGenerator implements IWrapperGenerator {
                 .next()
                 .setExceptions(ReadValueException.class.getSimpleName())
                 .setExceptions(InvalidArgumentException.class.getSimpleName())
-                .addStringToBody("Field field = fields.get(name);")
+                .addStringToBody("IField field = fields.get(name);")
                 .addStringToBody("if (null == field) {")
-                .addStringToBody("\tfield = new Field(name);")
-                .addStringToBody("\tfields.put(name, field);")
+
+                .addStringToBody("\ttry {")
+                .addStringToBody("\t\tfield = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), name);")
+                .addStringToBody("\t\tfields.put(name, field);")
+                .addStringToBody("\t} catch(ResolutionException e) {")
+                .addStringToBody("\t\tthrow new RuntimeException(\"Could not resolve dependency for IField\");")
+                .addStringToBody("\t}")
+
                 .addStringToBody("}")
-                .addStringToBody("return new Field(name).in(this.env);");
+
+                .addStringToBody("\ttry {")
+
+                .addStringToBody("\t\treturn ((IField) IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), name)).in(this.env);")
+
+                .addStringToBody("\t} catch(ResolutionException e) {")
+                .addStringToBody("\t\tthrow new RuntimeException(\"Could not resolve dependency for IField\");")
+                .addStringToBody("\t}");
+
         cb
                 .addMethod()
                 .setModifier(Modifiers.PUBLIC)
@@ -273,12 +289,29 @@ public class WrapperGenerator implements IWrapperGenerator {
                 .next()
                 .setExceptions(ChangeValueException.class.getSimpleName())
                 .setExceptions(InvalidArgumentException.class.getSimpleName())
-                .addStringToBody("Field field = fields.get(name);")
+                .addStringToBody("IField field = fields.get(name);")
                 .addStringToBody("if (null == field) {")
-                .addStringToBody("\tfield = new Field(name);")
-                .addStringToBody("\tfields.put(name, field);")
+
+                .addStringToBody("\ttry {")
+                .addStringToBody("\t\tfield = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), name);")
+                .addStringToBody("\t\tfields.put(name, field);")
+                .addStringToBody("\t} catch(ResolutionException e) {")
+                .addStringToBody("\t\tthrow new RuntimeException(\"Could not resolve dependency for IField\");")
+                .addStringToBody("\t}")
+
+
                 .addStringToBody("}")
-                .addStringToBody("new Field(name).out(env, value);");
+
+
+                .addStringToBody("\ttry {")
+
+                .addStringToBody("\t\t((IField) IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), name)).out(env, value);")
+
+                .addStringToBody("\t} catch(ResolutionException e) {")
+                .addStringToBody("\t\tthrow new RuntimeException(\"Could not resolve dependency for IField\");")
+                .addStringToBody("\t}");
+
+
         cb
                 .addMethod()
                 .setModifier(Modifiers.PUBLIC)

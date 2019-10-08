@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.message_processing.receiver_chain;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.class_management.interfaces.module_able.IModuleAble;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.dumpable_interface.idumpable.IDumpable;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -13,13 +14,14 @@ import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.scope.iscope.IScope;
+import info.smart_tools.smartactors.scope.scope_able.IScopeAble;
 
 import java.util.*;
 
 /**
  * Basic implementation of {@link IReceiverChain} -- immutable sequence of receivers.
  */
-public class ImmutableReceiverChain implements IReceiverChain, IDumpable {
+public class ImmutableReceiverChain implements IReceiverChain, IDumpable, IScopeAble, IModuleAble {
     private final Object id;
     private final Object name;
     private final IMessageReceiver[] receivers;

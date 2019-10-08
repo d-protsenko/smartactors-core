@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.class_management.interfaces.module_able.IModuleAble;
 import info.smart_tools.smartactors.helpers.IOCInitializer.IOCInitializer;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -14,6 +15,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
+import info.smart_tools.smartactors.scope.scope_able.IScopeAble;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import org.junit.Test;
 
@@ -21,6 +23,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 /**
  * Test for {@link MessageProcessingSequenceRecoveryStrategy}.
@@ -58,7 +61,8 @@ public class MessageProcessingSequenceRecoveryStrategyTest extends IOCInitialize
     @Test
     public void Should_recoverSequenceFromDumpRestoringDumpedChains()
             throws Exception {
-        IReceiverChain chainA = mock(IReceiverChain.class), chainB = mock(IReceiverChain.class);
+        IReceiverChain chainA = mock(IReceiverChain.class, withSettings().extraInterfaces(IScopeAble.class, IModuleAble.class)),
+                       chainB = mock(IReceiverChain.class, withSettings().extraInterfaces(IScopeAble.class, IModuleAble.class));
 
         IObject seqDump = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
@@ -89,9 +93,9 @@ public class MessageProcessingSequenceRecoveryStrategyTest extends IOCInitialize
         when(chainB.get(1)).thenReturn(mock(IMessageReceiver.class));
         when(chainB.get(2)).thenReturn(mock(IMessageReceiver.class));
         when(chainB.get(3)).thenReturn(mock(IMessageReceiver.class));
-        when(chainB.getScope()).thenReturn(ScopeProvider.getCurrentScope());
-        when(chainA.getScope()).thenReturn(ScopeProvider.getCurrentScope());
-        when(chainB.getModule()).thenReturn(mock(IModule.class));
+        when(((IScopeAble) chainB).getScope()).thenReturn(ScopeProvider.getCurrentScope());
+        when(((IScopeAble) chainA).getScope()).thenReturn(ScopeProvider.getCurrentScope());
+        when(((IModuleAble) chainB).getModule()).thenReturn(mock(IModule.class));
         when(chainA.getName()).thenReturn("a");
         when(chainB.getName()).thenReturn("b");
 

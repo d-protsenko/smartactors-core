@@ -14,7 +14,6 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageReceiveException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
-import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 
 /**
  * Receiver that calls {@link IReceiverChain} chosen by a {@link IChainChoiceStrategy} on a message.
@@ -55,7 +54,7 @@ public class ChainCallReceiver implements IMessageReceiver {
             }
             processor.getSequence().callChainSecurely(chainName, processor);
         } catch (ChainChoiceException | ChainNotFoundException | NestedChainStackOverflowException |
-                ResolutionException | ReadValueException | InvalidArgumentException | ScopeProviderException e) {
+                ReadValueException | InvalidArgumentException e) {
             throw new MessageReceiveException("Could not call nested chain.", e);
         }
     }

@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.message_processing.receiver_chain;
 
 import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.class_management.interfaces.module_able.IModuleAble;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -13,6 +14,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRoute
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.scope.iscope.IScope;
+import info.smart_tools.smartactors.scope.scope_able.IScopeAble;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -132,8 +134,8 @@ public class ImmutableReceiverChainStrategyTest {
 
         assertNotNull(chain);
         assertSame(chain.getName(), chainName);
-        assertSame(chain.getScope(), scope);
-        assertSame(chain.getModule(), module);
+        assertSame(((IScopeAble) chain).getScope(), scope);
+        assertSame(((IModuleAble) chain).getModule(), module);
     }
 
     @Test(expected = StrategyException.class)

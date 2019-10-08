@@ -4,12 +4,10 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
-import info.smart_tools.smartactors.ioc.exception.ResolutionException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainChoiceException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NoExceptionHandleChainException;
-import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 
 /**
  * Object managing order of operations executed on a single message.
@@ -89,8 +87,8 @@ public interface IMessageProcessingSequence {
      * @throws NestedChainStackOverflowException if overflow of nested chains stack occurs
      */
     void callChainSecurely(Object chainName, IMessageProcessor processor)
-            throws NestedChainStackOverflowException, ChainNotFoundException, ResolutionException,
-            ChainChoiceException, ScopeProviderException;
+            throws NestedChainStackOverflowException, ChainNotFoundException,
+            ChainChoiceException;
 
     /**
      * Setup resoration chain name for sequence. When chain which such name is called by callChain method then
@@ -108,7 +106,7 @@ public interface IMessageProcessingSequence {
      * @throws NestedChainStackOverflowException if overflow of nested chains stack occurs
      */
     void callChain(Object chainName)
-            throws NestedChainStackOverflowException, ChainNotFoundException, ResolutionException, ScopeProviderException;
+            throws NestedChainStackOverflowException, ChainNotFoundException;
 
     /**
      * Switch to the chain that should be executed when exception occurs.
@@ -128,6 +126,5 @@ public interface IMessageProcessingSequence {
      */
     void catchException(Throwable exception, IObject context)
             throws NoExceptionHandleChainException, NestedChainStackOverflowException, ChangeValueException,
-            InvalidArgumentException, ReadValueException, ResolutionException, ChainNotFoundException,
-            ScopeProviderException;
+            InvalidArgumentException, ReadValueException, ChainNotFoundException;
 }

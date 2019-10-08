@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.message_processing.message_processing_seque
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.class_management.interfaces.module_able.IModuleAble;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.dumpable_interface.idumpable.IDumpable;
 import info.smart_tools.smartactors.dumpable_interface.idumpable.exceptions.DumpException;
@@ -25,6 +26,7 @@ import info.smart_tools.smartactors.message_processing_interfaces.message_proces
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NoExceptionHandleChainException;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
+import info.smart_tools.smartactors.scope.scope_able.IScopeAble;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 
 import java.util.Arrays;
@@ -131,8 +133,8 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         }
         try {
             callChain(mainChainName);
-        } catch(NestedChainStackOverflowException | ScopeProviderException e) {
-            // ToDo: Empty catch
+        } catch(NestedChainStackOverflowException e) {
+            // ToDo: !!! - Empty catch
         }
 
         if (!next()) {
@@ -178,7 +180,9 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
             }
             try {
                 callChain(chainName);
-            } catch(NestedChainStackOverflowException | ScopeProviderException e) {}
+            } catch (NestedChainStackOverflowException e) {
+                // TODO !!! unhandled exception
+            }
             int pos = ((Number) stepStack.next()).intValue();
             uncheckedGoTo(level++, pos + 1);
         }
@@ -187,9 +191,14 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
     }
 
     private IReceiverChain resolveChain(final Object chainName)
-            throws ResolutionException, ChainNotFoundException {
-        Object chainId = IOC.resolve(chainIdStrategyKey, chainName, message);
-        return chainStorage.resolve(chainId);
+            throws ChainNotFoundException {
+        try {
+            Object chainId = IOC.resolve(chainIdStrategyKey, chainName, message);
+            return chainStorage.resolve(chainId);
+        } catch (ResolutionException e) {
+            throw new ChainNotFoundException("Could not resolve chain by name: " + chainName, e);
+        }
+
     }
 
     /* Call it carefully since it does not change scope and module context */
@@ -206,8 +215,8 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         this.stackIndex = 0;
         try {
             if (scopeSwitchingStack[0]) {
-                ModuleManager.setCurrentModule(chainStack[0].getModule());
-                ScopeProvider.setCurrentScope(chainStack[0].getScope());
+                ModuleManager.setCurrentModule(((IModuleAble) chainStack[0]).getModule());
+                ScopeProvider.setCurrentScope(((IScopeAble) chainStack[0]).getScope());
             } else {
                 ModuleManager.setCurrentModule(moduleStack[0]);
                 ScopeProvider.setCurrentScope(scopeStack[0]);
@@ -273,8 +282,8 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
         }
         try {
             if (lastScopeSwitchingLevel > -1) {
-                ModuleManager.setCurrentModule(chainStack[lastScopeSwitchingLevel].getModule());
-                ScopeProvider.setCurrentScope(chainStack[lastScopeSwitchingLevel].getScope());
+                ModuleManager.setCurrentModule(((IModuleAble) chainStack[lastScopeSwitchingLevel]).getModule());
+                ScopeProvider.setCurrentScope(((IScopeAble) chainStack[lastScopeSwitchingLevel]).getScope());
             } else {
                 ModuleManager.setCurrentModule(moduleStack[0]);
                 ScopeProvider.setCurrentScope(scopeStack[0]);
@@ -320,8 +329,8 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
 
     @Override
     public void callChainSecurely(final Object chainName, IMessageProcessor processor)
-            throws NestedChainStackOverflowException, ResolutionException, ChainNotFoundException,
-            ChainChoiceException, ScopeProviderException {
+            throws NestedChainStackOverflowException, ChainNotFoundException,
+            ChainChoiceException {
 
         IReceiverChain chain = resolveChain(chainName);
         checkAccess(chain, processor);
@@ -330,14 +339,14 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
 
     @Override
     public void callChain(final Object chainName)
-            throws NestedChainStackOverflowException, ResolutionException, ChainNotFoundException, ScopeProviderException {
+            throws NestedChainStackOverflowException, ChainNotFoundException {
 
         IReceiverChain chain = resolveChain(chainName);
         putChainToStack(chain);
     }
 
     private void putChainToStack(IReceiverChain chain)
-            throws NestedChainStackOverflowException, ScopeProviderException {
+            throws NestedChainStackOverflowException {
         int newStackIndex = stackIndex + 1;
 
         if (newStackIndex >= chainStack.length) {
@@ -348,13 +357,21 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
 
         chainStack[newStackIndex] = chain;
         stepStack[newStackIndex] = -1;
-        scopeStack[newStackIndex] = ScopeProvider.getCurrentScope();
+        try {
+            scopeStack[newStackIndex] = ScopeProvider.getCurrentScope();
+        } catch (ScopeProviderException e) {
+            throw new RuntimeException("Could not get the current scope", e);
+        }
         moduleStack[newStackIndex] = ModuleManager.getCurrentModule();
 
         scopeSwitchingStack[newStackIndex] = chain.getName().equals(scopeSwitchingChainName);
         if (scopeSwitchingStack[newStackIndex]) {
-            ScopeProvider.setCurrentScope(chain.getScope());
-            ModuleManager.setCurrentModule(chain.getModule());
+            try {
+                ScopeProvider.setCurrentScope(((IScopeAble) chain).getScope());
+            } catch (ScopeProviderException e) {
+
+            }
+            ModuleManager.setCurrentModule(((IModuleAble) chain).getModule());
             setScopeSwitchingChainName(null);
         }
 
@@ -385,9 +402,8 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
                    ChangeValueException,
                    InvalidArgumentException,
                    ChainNotFoundException,
-                   ResolutionException,
-                   ReadValueException,
-                   ScopeProviderException {
+                   ReadValueException
+    {
         int causedLevel = stackIndex;
         int causedStep = stepStack[causedLevel];
         int caughtLevel;
