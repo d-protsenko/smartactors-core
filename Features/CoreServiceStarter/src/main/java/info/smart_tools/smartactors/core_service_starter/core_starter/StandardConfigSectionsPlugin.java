@@ -11,9 +11,8 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.iobject.field_name.FieldName;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.iobject_extension.configuration_object.ConfigurationObject;
 import info.smart_tools.smartactors.ioc.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.key_tools.Keys;
@@ -37,6 +36,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void load() throws PluginException {
         try {
             /* "objects" section */
@@ -69,7 +69,9 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                             configurationManager.removeSectionStrategy(sectionStrategy.getSectionName());
                         } catch (InvalidArgumentException e) {
                             System.out.println("[WARNING] Deregistration of \"ObjectsSectionProcessingStrategy\" has failed while reverting \"config_section:objects\" plugin.");
-                        } catch (ResolutionException e) { }
+                        } catch (ResolutionException e) {
+                            // ToDo: !!! Unhandled exception
+                        }
                     });
 
             bootstrap.add(objectsSectionItem);
@@ -87,6 +89,7 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                     .after("receiver_chains_storage")
                     .after("receiver_chain")
                     .after("IFieldNamePlugin")
+                    .after("ConfigurationObject")
                     .before("starter")
                     .process(() -> {
                         try {
@@ -103,16 +106,34 @@ public class StandardConfigSectionsPlugin implements IPlugin {
 
                                             if (obj instanceof List) {
                                                 for (IObject innerObject : (List<IObject>) obj) {
-                                                    if (null == innerObject.getValue(new FieldName("externalAccess"))) {
-                                                        innerObject.setValue(new FieldName("externalAccess"), false);
+                                                    if (null == innerObject.getValue(
+                                                            IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "externalAccess"))
+                                                    ) {
+                                                        innerObject.setValue(
+                                                                IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "externalAccess"),
+                                                                false
+                                                        );
                                                     }
-                                                    if (!innerObject.getValue(new FieldName("id")).equals("tryToTakeResourceMap")) {
-                                                        List exceptionalList = (List) innerObject.getValue(new FieldName("exceptional"));
+                                                    if (!innerObject.getValue(
+                                                            IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "id")
+                                                    ).equals("tryToTakeResourceMap")) {
+                                                        List exceptionalList = (List) innerObject.getValue(
+                                                                IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "exceptional")
+                                                        );
 
-                                                        IObject outOfResourcesExceptionObj = new ConfigurationObject();
-                                                        outOfResourcesExceptionObj.setValue(new FieldName("class"), "info.smart_tools.smartactors.base.interfaces.iresource_source.exceptions.OutOfResourceException");
-                                                        outOfResourcesExceptionObj.setValue(new FieldName("chain"), "tryToTakeResourceMap");
-                                                        outOfResourcesExceptionObj.setValue(new FieldName("after"), "break");
+                                                        IObject outOfResourcesExceptionObj = IOC.resolve(Keys.getKeyByName("configuration object"));
+                                                        outOfResourcesExceptionObj.setValue(
+                                                                IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "class"),
+                                                                "info.smart_tools.smartactors.base.interfaces.iresource_source.exceptions.OutOfResourceException"
+                                                        );
+                                                        outOfResourcesExceptionObj.setValue(
+                                                                IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "chain"),
+                                                                "tryToTakeResourceMap"
+                                                        );
+                                                        outOfResourcesExceptionObj.setValue(
+                                                                IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "after"),
+                                                                "break"
+                                                        );
                                                         exceptionalList.add(0, outOfResourcesExceptionObj);
                                                     }
                                                 }
@@ -128,9 +149,15 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                                         try {
                                             Object obj = a[1];
                                             if (obj instanceof String) {
-                                                IObject innerObject = new ConfigurationObject();
-                                                innerObject.setValue(new FieldName("name"), "wds_getter_strategy");
-                                                innerObject.setValue(new FieldName("args"), new ArrayList<String>() {{ add((String) obj); }});
+                                                IObject innerObject = IOC.resolve(Keys.getKeyByName("configuration object"));
+                                                innerObject.setValue(
+                                                        IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "name"),
+                                                        "wds_getter_strategy"
+                                                );
+                                                innerObject.setValue(
+                                                        IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "args"),
+                                                        new ArrayList<String>() {{ add((String) obj); }}
+                                                );
 
                                                 return new ArrayList<IObject>() {{ add(innerObject); }};
                                             }
@@ -147,9 +174,15 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                                         try {
                                             Object obj = a[1];
                                             if (obj instanceof String) {
-                                                IObject innerObject = new ConfigurationObject();
-                                                innerObject.setValue(new FieldName("name"), "wds_target_strategy");
-                                                innerObject.setValue(new FieldName("args"), new ArrayList<String>() {{ add("local/value"); add((String) obj); }});
+                                                IObject innerObject = IOC.resolve(Keys.getKeyByName("configuration object"));
+                                                innerObject.setValue(
+                                                        IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "name"),
+                                                        "wds_target_strategy"
+                                                );
+                                                innerObject.setValue(
+                                                        IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "args"),
+                                                        new ArrayList<String>() {{ add("local/value"); add((String) obj); }}
+                                                );
 
                                                 return new ArrayList<List<IObject>>() {{
                                                     add(new ArrayList<IObject>() {{  add(innerObject); }});
@@ -159,12 +192,18 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                                                 for (Object o : (List) obj) {
                                                     if (o instanceof List) {
                                                         for (Object innerObject : (List) o) {
-                                                            if (((IObject) innerObject).getValue(new FieldName("name")).equals("target")) {
-                                                                ((IObject) innerObject).setValue(new FieldName("name"), "wds_target_strategy");
-                                                                ((IObject) innerObject).setValue(new FieldName("args"), new ArrayList<String>() {{
+                                                            if (((IObject) innerObject).getValue(
+                                                                    IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "name")
+                                                            ).equals("target")) {
+                                                                ((IObject) innerObject).setValue(
+                                                                        IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "name"),
+                                                                        "wds_target_strategy"
+                                                                );
+                                                                ((IObject) innerObject).setValue(
+                                                                        IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "args"), new ArrayList<String>() {{
                                                                             add("local/value");
                                                                             add((String) ((List) ((IObject) innerObject)
-                                                                                    .getValue(new FieldName("args"))).get(0));
+                                                                                    .getValue(IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "args"))).get(0));
                                                                         }}
                                                                 );
                                                             }
@@ -184,8 +223,13 @@ public class StandardConfigSectionsPlugin implements IPlugin {
                                             Object obj = a[1];
                                             if (obj instanceof List) {
                                                 for (IObject innerObject : (List<IObject>) obj) {
-                                                    if (null == innerObject.getValue(new FieldName("after"))) {
-                                                        innerObject.setValue(new FieldName("after"), "break");
+                                                    if (
+                                                            null == innerObject.getValue(IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "after"))
+                                                    ) {
+                                                        innerObject.setValue(
+                                                                IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "after"),
+                                                                "break"
+                                                        );
                                                     }
                                                 }
                                             }

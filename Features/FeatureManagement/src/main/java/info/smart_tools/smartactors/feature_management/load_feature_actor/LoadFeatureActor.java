@@ -7,11 +7,9 @@ import info.smart_tools.smartactors.base.path.Path;
 import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
-import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception.RevertProcessExecutionException;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin_creator.IPluginCreator;
@@ -91,7 +89,8 @@ public class LoadFeatureActor {
                     file.listFiles((item, string) ->  string.endsWith(LIBRARY_EXTENSION))
             ).map(Path::new).forEach(jars::add);
 
-            IBootstrap<IBootstrapItem<String>> bootstrap = new Bootstrap();
+            IBootstrap<String> bootstrap = IOC.resolve(Keys.getKeyByName("bootstrap"));
+
             IAction<Class> classHandler = clz -> {
                 try {
                     if (Modifier.isAbstract(clz.getModifiers())) {

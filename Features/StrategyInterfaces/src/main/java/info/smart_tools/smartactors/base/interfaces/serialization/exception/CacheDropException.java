@@ -1,7 +1,7 @@
-package info.smart_tools.smartactors.base.interfaces.icacheable.exception;
+package info.smart_tools.smartactors.base.interfaces.serialization.exception;
 
 /**
- * Exception for error in {@link info.smart_tools.smartactors.base.interfaces.icacheable.ICacheable} methods
+ * Exception for error in {@link info.smart_tools.smartactors.base.interfaces.serialization.ICacheable} methods
  */
 
 public class CacheDropException extends Exception {

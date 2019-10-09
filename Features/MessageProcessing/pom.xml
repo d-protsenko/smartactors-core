@@ -60,11 +60,6 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>IObjectInterfaces</artifactId>
-            <version>[0.7.0, 1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ModuleManager</artifactId>
             <version>[0.7.0, 1.0.0)</version>
         </dependency>

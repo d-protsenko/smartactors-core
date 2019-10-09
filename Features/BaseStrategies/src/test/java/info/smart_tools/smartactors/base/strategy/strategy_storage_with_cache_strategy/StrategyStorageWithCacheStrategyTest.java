@@ -4,8 +4,8 @@ import info.smart_tools.smartactors.base.interfaces.istrategy_registration.IStra
 import info.smart_tools.smartactors.base.interfaces.istrategy_registration.exception.StrategyRegistrationException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
 import info.smart_tools.smartactors.base.interfaces.iaction.IFunction;
-import info.smart_tools.smartactors.base.interfaces.icacheable.ICacheable;
-import info.smart_tools.smartactors.base.interfaces.icacheable.exception.CacheDropException;
+import info.smart_tools.smartactors.base.interfaces.serialization.ICacheable;
+import info.smart_tools.smartactors.base.interfaces.serialization.exception.CacheDropException;
 import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;

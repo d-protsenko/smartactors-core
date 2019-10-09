@@ -48,5 +48,6 @@
         <module>CoreServiceStarter</module>
         <module>VersionManagement</module>
         <module>FeatureLoadingSystemPlugins</module>
+        <module>TransformInterfaces</module>
     </modules>
 </project>

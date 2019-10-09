@@ -7,6 +7,6 @@
     "info.smart_tools.smartactors:ioc",
     "info.smart_tools.smartactors:service-interfaces",
     "info.smart_tools.smartactors:class-generators",
-    "info.smart_tools.smartactors:iobject-interfaces"
+    "info.smart_tools.smartactors:module-manager"
   ]
 }

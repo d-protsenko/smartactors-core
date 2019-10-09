@@ -30,7 +30,22 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>MessageProcessing</artifactId>
+            <artifactId>MessageProcessingInterfaces</artifactId>
+            <version>[0.7.0, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>TaskInterfaces</artifactId>
+            <version>[0.7.0, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>IOCWithScope</artifactId>
+            <version>[0.7.0, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>ModuleManager</artifactId>
             <version>[0.7.0, 1.0.0)</version>
         </dependency>
         <dependency>
@@ -40,7 +55,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>FeatureLoadingSystem</artifactId>
+            <artifactId>FeatureLoadingSystemInterfaces</artifactId>
             <version>[0.7.0, 1.0.0)</version>
         </dependency>
         <dependency>

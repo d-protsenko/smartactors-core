@@ -2,6 +2,7 @@
   "featureName":"info.smart_tools.smartactors:version-management",
   "afterFeatures":[
     "info.smart_tools.smartactors:module-manager",
-    "info.smart_tools.smartactors:message-processing-interfaces"
+    "info.smart_tools.smartactors:message-processing-interfaces",
+    "info.smart_tools.smartactors:ioc-interfaces"
   ]
 }

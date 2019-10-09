@@ -1,19 +1,8 @@
 package info.smart_tools.smartactors.iobject.ds_object;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonTokenId;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.deser.std.UntypedObjectDeserializer;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.iobject.field_name.FieldName;
+import info.smart_tools.smartactors.base.interfaces.transformation.ITransformable;
+import info.smart_tools.smartactors.iobject.converter.MapStringTransformer;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
@@ -21,7 +10,6 @@ import info.smart_tools.smartactors.iobject.iobject.exception.DeleteValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -32,29 +20,7 @@ import java.util.Map;
 public class DSObject implements IObject {
 
     private Map<IFieldName, Object> body;
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    static {
-        OBJECT_MAPPER.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-        SimpleModule module = new SimpleModule("Nested IObject serialization module");
-        module.addSerializer(new StdSerializer<IObject>(IObject.class) {
-            @Override
-            public void serialize(
-                    final IObject iObject,
-                    final JsonGenerator jsonGenerator,
-                    final SerializerProvider serializerProvider
-            )
-                    throws IOException {
-                try {
-
-                    jsonGenerator.writeRawValue((String) iObject.serialize());
-                } catch (SerializeException e) {
-                    throw new IOException("Could not serialize DSObject.", e);
-                }
-            }
-        });
-        module.addDeserializer(Object.class, new ObjectDeserializer());
-        OBJECT_MAPPER.registerModule(module);
-    }
+    private static ITransformable transformer = new MapStringTransformer();
 
     /**
      * Create new instance of {@link DSObject} by given body of pairs {@link IFieldName}, {@link Object}
@@ -66,8 +32,8 @@ public class DSObject implements IObject {
         if (null == objectEntries) {
             throw new InvalidArgumentException("Argument should not be null.");
         }
-        this.body = new HashMap<IFieldName, Object>(0);
-        this.body.putAll((HashMap<IFieldName, Object>) objectEntries);
+        this.body = new HashMap<>(0);
+        this.body.putAll(objectEntries);
     }
 
     /**
@@ -78,7 +44,7 @@ public class DSObject implements IObject {
     public DSObject(final String body)
             throws InvalidArgumentException {
         try {
-            this.body = OBJECT_MAPPER.reader(new TypeReference<Map<FieldName, Object>>() { }).readValue(body);
+            this.body = (Map<IFieldName, Object>) transformer.transformFrom(body);
         } catch (Throwable e) {
             throw new InvalidArgumentException(e);
         }
@@ -119,10 +85,11 @@ public class DSObject implements IObject {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T serialize()
             throws SerializeException {
         try {
-            return (T) OBJECT_MAPPER.writer().writeValueAsString(body);
+            return (T) transformer.transformTo(body);
         } catch (Throwable e) {
             throw new SerializeException();
         }
@@ -154,26 +121,4 @@ public class DSObject implements IObject {
             return this.iterator.next();
         }
     } 
-}
-
-/**
- * Custom deserializer.
- * Cast all nested json objects to {@link IObject}.
- */
-class ObjectDeserializer extends UntypedObjectDeserializer {
-
-    @Override
-    public Object deserialize(final JsonParser jp, final DeserializationContext ctxt)
-            throws IOException {
-        try {
-            if (JsonTokenId.ID_START_OBJECT == jp.getCurrentTokenId()) {
-                return new DSObject(
-                        (Map<IFieldName, Object>) jp.readValueAs(new TypeReference<Map<FieldName, Object>>() { })
-                );
-            }
-        } catch (Exception e) {
-            return super.deserialize(jp, ctxt);
-        }
-        return super.deserialize(jp, ctxt);
-    }
 }

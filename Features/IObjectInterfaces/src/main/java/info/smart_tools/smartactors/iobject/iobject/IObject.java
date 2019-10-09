@@ -57,6 +57,7 @@ public interface IObject extends Iterable<Map.Entry<IFieldName, Object>> {
      * @return serialized instance of {@link IObject}
      * @throws SerializeException if any errors occurred on serialization
      */
+    @Deprecated
     <T> T serialize()
             throws SerializeException;
 

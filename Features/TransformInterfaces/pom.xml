@@ -4,14 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>IObjects</artifactId>
+    <artifactId>TransformInterfaces</artifactId>
     <groupId>info.smart_tools.smartactors</groupId>
     <version>0.7.0</version>
     <!--<licenses>-->
-    <!--<license>-->
-    <!--<name></name>-->
-    <!--<url></url>-->
-    <!--</license>-->
+        <!--<license>-->
+            <!--<name></name>-->
+            <!--<url></url>-->
+        <!--</license>-->
     <!--</licenses>-->
 
     <properties>
@@ -28,34 +28,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>IObjectInterfaces</artifactId>
-            <version>[0.7.0, 1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>TransformInterfaces</artifactId>
-            <version>[0.7.0, 1.0.0)</version>
-        </dependency>
-
-
-        <!-- Third party dependencies -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.9.9.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>2.9.9</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>2.9.9</version>
-        </dependency>
 
         <!-- Tests -->
         <dependency>
@@ -131,45 +103,31 @@
 
             <!-- Add needed dependencies to assembly -->
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.1.1</version>
-                <executions>
-                    <execution>
-                        <id>unpack</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>com.fasterxml.jackson.core</groupId>
-                                    <artifactId>jackson-core</artifactId>
-                                    <version>2.9.9</version>
-                                    <outputDirectory>${basedir}/target/classes</outputDirectory>
-                                    <excludes>META-INF/**</excludes>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.fasterxml.jackson.core</groupId>
-                                    <artifactId>jackson-databind</artifactId>
-                                    <version>2.9.9.3</version>
-                                    <outputDirectory>${basedir}/target/classes</outputDirectory>
-                                    <excludes>META-INF/**</excludes>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.fasterxml.jackson.core</groupId>
-                                    <artifactId>jackson-annotations</artifactId>
-                                    <version>2.9.9</version>
-                                    <outputDirectory>${basedir}/target/classes</outputDirectory>
-                                    <excludes>META-INF/**</excludes>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-dependency-plugin</artifactId>-->
+                <!--<version>3.1.1</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>unpack</id>-->
+                        <!--<phase>prepare-package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>unpack</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<artifactItems>-->
+                                <!--<artifactItem>-->
+                                    <!--<groupId>dependency group id</groupId>-->
+                                    <!--<artifactId>dependency artifact id</artifactId>-->
+                                    <!--<version>dependency version</version>-->
+                                    <!--<outputDirectory>${basedir}/target/classes</outputDirectory>-->
+                                    <!--<excludes>META-INF/**</excludes>-->
+                                <!--</artifactItem>-->
+                            <!--</artifactItems>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
 
 
             <!-- Exclude generated pom.xml from assembly -->

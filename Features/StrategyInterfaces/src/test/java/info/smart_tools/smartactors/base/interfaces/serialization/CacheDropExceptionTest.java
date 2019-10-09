@@ -1,6 +1,6 @@
-package info.smart_tools.smartactors.base.interfaces.icacheable;
+package info.smart_tools.smartactors.base.interfaces.serialization;
 
-import info.smart_tools.smartactors.base.interfaces.icacheable.exception.CacheDropException;
+import info.smart_tools.smartactors.base.interfaces.serialization.exception.CacheDropException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
