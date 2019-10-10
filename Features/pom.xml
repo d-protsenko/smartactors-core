@@ -50,5 +50,6 @@
         <module>FeatureLoadingSystemPlugins</module>
         <module>TransformInterfaces</module>
         <module>OnFeatureLoadingServiceStarter</module>
+        <module>ScopePlugins</module>
     </modules>
 </project>
