@@ -53,5 +53,6 @@
         <module>ScopePlugins</module>
         <module>IOCStrategyPackPlugins</module>
         <module>IOCPlugins</module>
+        <module>FieldsPlugins</module>
     </modules>
 </project>

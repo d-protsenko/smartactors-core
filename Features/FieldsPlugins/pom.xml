@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>IOCStrategyPackPlugins</artifactId>
+    <artifactId>FieldsPlugins</artifactId>
     <groupId>info.smart_tools.smartactors</groupId>
     <version>0.7.0</version>
     <!--<licenses>-->
@@ -35,7 +35,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>IOCStrategyPack</artifactId>
+            <artifactId>Fields</artifactId>
             <version>[0.7.0, 1.0.0)</version>
         </dependency>
 
@@ -43,12 +43,6 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>Helpers</artifactId>
-            <version>[0.7.0, 1.0.0)</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>FeatureLoadingSystem</artifactId>
             <version>[0.7.0, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
