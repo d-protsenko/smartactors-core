@@ -1,0 +1,10 @@
+{
+  "featureName":"info.smart_tools.smartactors:on-feature-loading-service-starter",
+  "afterFeatures":[
+    "info.smart_tools.smartactors:ioc",
+    "info.smart_tools.smartactors:feature-loading-system-interfaces",
+    "info.smart_tools.smartactors:configuration-manager-interfaces",
+    "info.smart_tools.smartactors:message-processing-interfaces",
+    "info.smart_tools.smartactors:task-interfaces"
+  ]
+}

@@ -49,5 +49,6 @@
         <module>VersionManagement</module>
         <module>FeatureLoadingSystemPlugins</module>
         <module>TransformInterfaces</module>
+        <module>OnFeatureLoadingServiceStarter</module>
     </modules>
 </project>
