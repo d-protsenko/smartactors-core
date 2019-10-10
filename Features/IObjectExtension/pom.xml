@@ -35,7 +35,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>IObjects</artifactId>
+            <artifactId>IObjectInterfaces</artifactId>
             <version>[0.7.0, 1.0.0)</version>
         </dependency>
 
@@ -60,6 +60,12 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>Fields</artifactId>
+            <version>[0.7.0, 1.0.0)</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>IObjects</artifactId>
             <version>[0.7.0, 1.0.0)</version>
             <scope>test</scope>
         </dependency>

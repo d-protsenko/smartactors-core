@@ -54,5 +54,6 @@
         <module>IOCStrategyPackPlugins</module>
         <module>IOCPlugins</module>
         <module>FieldsPlugins</module>
+        <module>IObjectsPlugins</module>
     </modules>
 </project>

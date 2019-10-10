@@ -14,14 +14,16 @@ import com.fasterxml.jackson.databind.deser.std.UntypedObjectDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.DeleteValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
+import info.smart_tools.smartactors.ioc.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,7 +32,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Implementation of {@link IObject}.
+ * Implementation of {@link @IObject}.
  * This implementation gets value on {@code getValue} method, leads it in to the canonical form and returns result.
  */
 public class ConfigurationObject implements IObject {
@@ -39,8 +41,15 @@ public class ConfigurationObject implements IObject {
     private final Map<IFieldName, Object> canonizedBody;
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final TypeReference typeReference;
 
     static {
+        try {
+            typeReference = IOC.resolve(Keys.getKeyByName("Map<FieldName,Object> typeReference"));
+        } catch (ResolutionException e) {
+            throw new RuntimeException("Could not resolve 'fieldName typeReference' dependency.", e);
+        }
+
         OBJECT_MAPPER.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
         SimpleModule module = new SimpleModule("Nested IObject serialization module");
         module.addDeserializer(Object.class, new ObjectDeserializer());
@@ -74,7 +83,7 @@ public class ConfigurationObject implements IObject {
     public ConfigurationObject(final String body)
             throws InvalidArgumentException {
         try {
-            this.body = OBJECT_MAPPER.reader(new TypeReference<Map<FieldName, Object>>() { }).readValue(body);
+            this.body = OBJECT_MAPPER.readerFor(typeReference).readValue(body);
         } catch (Throwable e) {
             throw new InvalidArgumentException(e);
         }
@@ -162,7 +171,7 @@ public class ConfigurationObject implements IObject {
 
     @Override
     public Iterator<Map.Entry<IFieldName, Object>> iterator() {
-        return null;
+        throw new NotImplementedException();
     }
 
     @Override
@@ -182,13 +191,23 @@ public class ConfigurationObject implements IObject {
  */
 class ObjectDeserializer extends UntypedObjectDeserializer {
 
+    private static final TypeReference typeReference;
+
+    static {
+        try {
+            typeReference = IOC.resolve(Keys.getKeyByName("Map<FieldName,Object> typeReference"));
+        } catch (ResolutionException e) {
+            throw new RuntimeException("Could not resolve 'fieldName typeReference' dependency.", e);
+        }
+    }
+
     @Override
     public Object deserialize(final JsonParser jp, final DeserializationContext ctxt)
             throws IOException {
         try {
             if (JsonTokenId.ID_START_OBJECT == jp.getCurrentTokenId()) {
                 return new ConfigurationObject(
-                        (Map<IFieldName, Object>) jp.readValueAs(new TypeReference<Map<FieldName, Object>>() { })
+                        (Map<IFieldName, Object>) jp.readValueAs(typeReference)
                 );
             }
         } catch (Exception e) {

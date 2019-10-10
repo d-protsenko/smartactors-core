@@ -1,6 +1,7 @@
 {
   "featureName":"info.smart_tools.smartactors:fields-plugins",
   "afterFeatures":[
-    
+    "info.smart_tools.smartactors:feature-loading-system-interfaces",
+    "info.smart_tools.smartactors:fields"
   ]
 }

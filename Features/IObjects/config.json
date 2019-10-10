@@ -1,7 +1,6 @@
 {
   "featureName":"info.smart_tools.smartactors:iobjects",
   "afterFeatures":[
-    "info.smart_tools.smartactors:iobject-interfaces",
-    "info.smart_tools.smartactors:transform-interfaces"
+    "info.smart_tools.smartactors:iobject-interfaces"
   ]
 }

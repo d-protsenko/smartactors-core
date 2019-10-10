@@ -1,9 +1,11 @@
 package info.smart_tools.smartactors.iobject_extension.configuration_object;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.istrategy_registration.IStrategyRegistration;
 import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.field.field_name_tools.FieldNames;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -19,6 +21,7 @@ import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import org.junit.Before;
 import org.junit.Test;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -160,6 +163,10 @@ public class ConfigurationObjectTest {
                 ),
                 strategy
         );
+        IOC.register(
+                Keys.getKeyByName("Map<FieldName,Object> typeReference"),
+                new SingletonStrategy(new TypeReference<Map<FieldName, Object>>(){})
+        );
         this.configString = "{\n" +
                 "  \"wrapper\": {\n" +
                 "    \"in_getIntValue\": \"message/IntValue\",\n" +
@@ -265,11 +272,12 @@ public class ConfigurationObjectTest {
         fail();
     }
 
-    @Test
+    @Test(expected = NotImplementedException.class)
     public void checkNullOnTryToGetIterator()
             throws Exception {
         ConfigurationObject co = new ConfigurationObject(this.configString);
-        assertNull(co.iterator());
+        co.iterator();
+        fail();
     }
 
     @Test (expected = ReadValueException.class)
