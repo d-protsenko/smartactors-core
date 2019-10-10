@@ -1,0 +1,7 @@
+{
+  "featureName":"info.smart_tools.smartactors:ioc-plugins",
+  "afterFeatures":[
+    "info.smart_tools.smartactors:feature-loading-system-interfaces",
+    "info.smart_tools.smartactors:ioc"
+  ]
+}

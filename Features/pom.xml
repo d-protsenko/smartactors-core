@@ -51,5 +51,7 @@
         <module>TransformInterfaces</module>
         <module>OnFeatureLoadingServiceStarter</module>
         <module>ScopePlugins</module>
+        <module>IOCStrategyPackPlugins</module>
+        <module>IOCPlugins</module>
     </modules>
 </project>
