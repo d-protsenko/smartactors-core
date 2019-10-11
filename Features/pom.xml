@@ -48,12 +48,13 @@
         <module>CoreServiceStarter</module>
         <module>VersionManagement</module>
         <module>FeatureLoadingSystemPlugins</module>
-        <module>TransformInterfaces</module>
         <module>OnFeatureLoadingServiceStarter</module>
         <module>ScopePlugins</module>
         <module>IOCStrategyPackPlugins</module>
         <module>IOCPlugins</module>
-        <module>FieldsPlugins</module>
-        <module>IObjectsPlugins</module>
+        <module>FieldPlugins</module>
+        <module>IObjectPlugins</module>
+        <module>IObjectExtensionPlugins</module>
+        <module>ConfigurationManagerPlugins</module>
     </modules>
 </project>

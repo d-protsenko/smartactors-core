@@ -1,0 +1,7 @@
+{
+  "featureName":"info.smart_tools.smartactors:iobject-extension-plugins",
+  "afterFeatures":[
+    "info.smart_tools.smartactors:feature-loading-system",
+    "info.smart_tools.smartactors:iobject-extension"
+  ]
+}

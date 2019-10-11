@@ -1,8 +1,0 @@
-{
-  "featureName":"info.smart_tools.smartactors:iobjects-plugins",
-  "afterFeatures":[
-    "info.smart_tools.smartactors:feature-loading-system-interfaces",
-    "info.smart_tools.smartactors:ioc",
-    "info.smart_tools.smartactors:iobjects"
-  ]
-}
