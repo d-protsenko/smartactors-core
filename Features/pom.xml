@@ -22,7 +22,9 @@
         <module>ScopeInterfaces</module>
         <module>ScopeProvider</module>
         <module>ClassLoaderInterfaces</module>
-        <module>ClassLoaders</module>
+        <module>ClassLoaderHierarchical</module>
+        <module>ClassLoaderAdvanced</module>
+        <module>ClassLoaderSimple</module>
         <module>ClassGenerators</module>
         <module>ModuleInterfaces</module>
         <module>ModuleManager</module>
@@ -65,5 +67,6 @@
         <module>FeatureManagementPlugins</module>
         <module>CoreServiceStarterPlugins</module>
         <module>OnFeatureLoadingServiceStarterPlugins</module>
+        <module>ClassGeneratorPlugins</module>
     </modules>
 </project>

@@ -1,0 +1,8 @@
+{
+  "featureName":"info.smart_tools.smartactors:class-generator-plugins",
+  "afterFeatures":[
+    "info.smart_tools.smartactors:feature-loading-system",
+    "info.smart_tools.smartactors:class-generators",
+    "info.smart_tools.smartactors:ioc"
+  ]
+}
