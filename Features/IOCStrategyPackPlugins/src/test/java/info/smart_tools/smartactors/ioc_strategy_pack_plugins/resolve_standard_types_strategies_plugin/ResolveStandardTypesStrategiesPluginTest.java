@@ -1,11 +1,11 @@
 package info.smart_tools.smartactors.ioc_strategy_pack_plugins.resolve_standard_types_strategies_plugin;
 
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
-import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception.ProcessExecutionException;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.helpers.IOCInitializer.IOCInitializer;
 import info.smart_tools.smartactors.ioc.exception.ResolutionException;
@@ -22,6 +22,9 @@ import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 
 public class ResolveStandardTypesStrategiesPluginTest extends IOCInitializer {
 
@@ -42,12 +45,6 @@ public class ResolveStandardTypesStrategiesPluginTest extends IOCInitializer {
 
     @Test
     public void ShouldRegisterStrategiesForStandardTypes() throws Exception {
-        IOC.register(
-                Keys.getKeyByName("bootstrap item"),
-                new ApplyFunctionToArgumentsStrategy(
-                        (args) -> new BootstrapItem((String) args[0])
-                )
-        );
         plugin.load();
         bootstrap.start();
         IKey stringKey = Keys.getKeyByName(String.class.getCanonicalName() + "convert");
@@ -183,18 +180,14 @@ public class ResolveStandardTypesStrategiesPluginTest extends IOCInitializer {
 
     @Test(expected = PluginException.class)
     public void ShouldThrowPluginException_When_InternalErrorIsOccurred() throws Exception {
-        plugin.load();
-        bootstrap.start();
+        IBootstrap b = mock(IBootstrap.class);
+        IPlugin pl = new ResolveStandardTypesStrategiesPlugin(b);
+        doThrow(InvalidArgumentException.class).when(b).add(any());
+        pl.load();
     }
 
     @Test(expected = ProcessExecutionException.class)
     public void ShouldThrowException_When_ExceptionInLambdaIsThrown() throws Exception {
-        IOC.register(
-                Keys.getKeyByName("bootstrap item"),
-                new ApplyFunctionToArgumentsStrategy(
-                        (args) -> new BootstrapItem((String) args[0])
-                )
-        );
         plugin.load();
         ScopeProvider.setCurrentScope(null);
         bootstrap.start();

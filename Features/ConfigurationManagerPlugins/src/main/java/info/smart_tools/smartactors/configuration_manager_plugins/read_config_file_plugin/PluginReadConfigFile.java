@@ -4,6 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.exceptions.ConfigurationProcessingException;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
@@ -35,12 +36,10 @@ public class PluginReadConfigFile implements IPlugin {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void load() throws PluginException {
         try {
-            IBootstrapItem<String> readConfigItem = IOC.resolve(
-                    Keys.getKeyByName("bootstrap item"),
-                    "read_initial_config"
-            );
+            IBootstrapItem<String> readConfigItem = new BootstrapItem("read_initial_config");
 
             readConfigItem
                     .after("config_sections:done")
@@ -102,7 +101,7 @@ public class PluginReadConfigFile implements IPlugin {
                     });
 
             bootstrap.add(readConfigItem);
-        } catch (ResolutionException e) {
+        } catch (InvalidArgumentException e) {
             throw new PluginException(e);
         }
     }

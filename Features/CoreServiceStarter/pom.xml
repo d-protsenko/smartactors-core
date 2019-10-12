@@ -35,7 +35,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>Task</artifactId>
+            <artifactId>TaskInterfaces</artifactId>
             <version>[0.7.0, 1.0.0)</version>
         </dependency>
         <dependency>
@@ -158,29 +158,29 @@
             <!-- Add needed dependencies to assembly -->
 
             <!--<plugin>-->
-            <!--<groupId>org.apache.maven.plugins</groupId>-->
-            <!--<artifactId>maven-dependency-plugin</artifactId>-->
-            <!--<version>3.1.1</version>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<id>unpack</id>-->
-            <!--<phase>prepare-package</phase>-->
-            <!--<goals>-->
-            <!--<goal>unpack</goal>-->
-            <!--</goals>-->
-            <!--<configuration>-->
-            <!--<artifactItems>-->
-            <!--<artifactItem>-->
-            <!--<groupId>dependency group id</groupId>-->
-            <!--<artifactId>dependency artifact id</artifactId>-->
-            <!--<version>dependency version</version>-->
-            <!--<outputDirectory>${basedir}/target/classes</outputDirectory>-->
-            <!--<excludes>META-INF/**</excludes>-->
-            <!--</artifactItem>-->
-            <!--</artifactItems>-->
-            <!--</configuration>-->
-            <!--</execution>-->
-            <!--</executions>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-dependency-plugin</artifactId>-->
+                <!--<version>3.1.1</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>unpack</id>-->
+                        <!--<phase>prepare-package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>unpack</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<artifactItems>-->
+                                <!--<artifactItem>-->
+                                    <!--<groupId>dependency group id</groupId>-->
+                                    <!--<artifactId>dependency artifact id</artifactId>-->
+                                    <!--<version>dependency version</version>-->
+                                    <!--<outputDirectory>${basedir}/target/classes</outputDirectory>-->
+                                    <!--<excludes>META-INF/**</excludes>-->
+                                <!--</artifactItem>-->
+                            <!--</artifactItems>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
             <!--</plugin>-->
 
 

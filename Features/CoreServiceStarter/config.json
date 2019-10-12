@@ -2,7 +2,7 @@
   "featureName":"info.smart_tools.smartactors:core-service-starter",
   "afterFeatures":[
     "info.smart_tools.smartactors:configuration-manager-interfaces",
-    "info.smart_tools.smartactors:task",
+    "info.smart_tools.smartactors:task-interfaces",
     "info.smart_tools.smartactors:service-interfaces",
     "info.smart_tools.smartactors:message-processing-interfaces",
     "info.smart_tools.smartactors:feature-loading-system-interfaces",

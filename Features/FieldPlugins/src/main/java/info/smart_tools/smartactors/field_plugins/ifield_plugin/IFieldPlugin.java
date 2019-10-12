@@ -2,6 +2,7 @@ package info.smart_tools.smartactors.field_plugins.ifield_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
@@ -34,10 +35,7 @@ public class IFieldPlugin implements IPlugin {
     public void load() throws PluginException {
 
         try {
-            IBootstrapItem<String> item = IOC.resolve(
-                    Keys.getKeyByName("bootstrap item"),
-                    "IFieldPlugin"
-            );
+            IBootstrapItem<String> item = new BootstrapItem("IFieldPlugin");
             item
                 .after("IOC")
                 .process(() -> {
@@ -74,7 +72,7 @@ public class IFieldPlugin implements IPlugin {
                     Keys.unregisterByNames(keyNames);
                 });
             bootstrap.add(item);
-        } catch (ResolutionException e) {
+        } catch (InvalidArgumentException e) {
             throw new PluginException("Can't load IField plugin", e);
         }
     }

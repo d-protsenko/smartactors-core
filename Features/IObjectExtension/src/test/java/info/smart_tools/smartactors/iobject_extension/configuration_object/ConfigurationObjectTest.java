@@ -7,6 +7,7 @@ import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.field.field_name_tools.FieldNames;
+import info.smart_tools.smartactors.helpers.IOCInitializer.IOCInitializer;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -33,43 +34,18 @@ import static org.mockito.Mockito.mock;
 /**
  * Tests for {@link ConfigurationObject}
  */
-public class ConfigurationObjectTest {
+public class ConfigurationObjectTest extends IOCInitializer {
 
     private String configString;
+
+    @Override
+    protected void registry(String... strategyNames) throws Exception {
+        registryStrategies("ifieldname strategy", "iobject strategy");
+    }
 
     @Before
     public void init()
             throws Exception {
-        Object keyOfMainScope = ScopeProvider.createScope(null);
-        IScope scope = ScopeProvider.getScope(keyOfMainScope);
-        scope.setValue(IOC.getIocKey(), new StrategyContainer());
-        ScopeProvider.setCurrentScope(scope);
-
-        IOC.register(
-                IOC.getKeyForKeyByNameStrategy(),
-                new ResolveByNameIocStrategy(
-                        (a) -> {
-                            try {
-                                return new Key((String) a[0]);
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        })
-        );
-        IOC.register(
-                Keys.getKeyByName(IFieldName.class.getCanonicalName()),
-                new ApplyFunctionToArgumentsStrategy(
-                        (a) -> {
-                            try {
-                                return new FieldName((String) a[0]);
-                            } catch (Throwable e) {
-                                throw new RuntimeException(
-                                        "Could not create new instance of IFieldName Object."
-                                );
-                            }
-                        }
-                )
-        );
 
         IOC.register(
                 IOC.resolve(

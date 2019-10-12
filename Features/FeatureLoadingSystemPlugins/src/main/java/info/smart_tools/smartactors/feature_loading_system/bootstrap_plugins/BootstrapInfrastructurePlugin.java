@@ -36,6 +36,7 @@ public class BootstrapInfrastructurePlugin extends BootstrapPlugin {
      * @throws RegistrationException if error occurs registering the strategy
      */
     @Item("bootstrapInfrastructure")
+    @SuppressWarnings("unchecked")
     public void registerBootstrapInfrastructureStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(

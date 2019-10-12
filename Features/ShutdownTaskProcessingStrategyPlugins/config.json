@@ -1,0 +1,10 @@
+{
+  "featureName":"info.smart_tools.smartactors:shutdown-task-processing-strategy-plugins",
+  "afterFeatures":[
+    "info.smart_tools.smartactors:feature-loading-system",
+    "info.smart_tools.smartactors:shutdown-task-processing-strategies",
+    "info.smart_tools.smartactors:configuration-manager-interfaces",
+    "info.smart_tools.smartactors:message-processing-interfaces",
+    "info.smart_tools.smartactors:base-service-components"
+  ]
+}

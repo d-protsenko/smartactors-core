@@ -1,7 +1,6 @@
 package info.smart_tools.smartactors.scope_plugins.subscribe_scope_provider_on_scope_creation_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
@@ -10,7 +9,6 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.ex
 import info.smart_tools.smartactors.helpers.IOCInitializer.IOCInitializer;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
-import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import org.junit.Before;
@@ -59,12 +57,6 @@ public class SubscribeScopeProviderOnScopeCreationTest extends IOCInitializer {
     @Test
     public void checkLoadExecution()
             throws Exception {
-        IOC.register(
-                Keys.getKeyByName("bootstrap item"),
-                new ApplyFunctionToArgumentsStrategy(
-                        (args) -> new BootstrapItem((String) args[0])
-                )
-        );
         Checker checker = new Checker();
         checker.item = new BootstrapItem("test");
         IBootstrap<IBootstrapItem<String>> bootstrap = mock(IBootstrap.class);
@@ -102,7 +94,7 @@ public class SubscribeScopeProviderOnScopeCreationTest extends IOCInitializer {
             throws Exception {
         IBootstrap<IBootstrapItem<String>> bootstrap = mock(IBootstrap.class);
         IPlugin plugin = new SubscribeScopeProviderOnScopeCreation(bootstrap);
-        doThrow(Exception.class).when(bootstrap).add(any(IBootstrapItem.class));
+        doThrow(InvalidArgumentException.class).when(bootstrap).add(any(IBootstrapItem.class));
         plugin.load();
         fail();
     }

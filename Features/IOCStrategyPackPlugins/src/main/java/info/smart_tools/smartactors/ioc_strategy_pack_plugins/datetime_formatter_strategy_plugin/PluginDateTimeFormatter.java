@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.ioc_strategy_pack_plugins.datetime_formatte
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
@@ -34,10 +35,7 @@ public class PluginDateTimeFormatter implements IPlugin {
     public void load() throws PluginException {
 
         try {
-            IBootstrapItem<String> bootstrapItem = IOC.resolve(
-                    Keys.getKeyByName("bootstrap item"),
-                    "datetime_formatter_plugin"
-            );
+            IBootstrapItem<String> bootstrapItem = new BootstrapItem("datetime_formatter_plugin");
 
             bootstrapItem
                 .after("IOC")
@@ -59,7 +57,7 @@ public class PluginDateTimeFormatter implements IPlugin {
                     Keys.unregisterByNames(keyNames);
                 });
             bootstrap.add(bootstrapItem);
-        } catch (ResolutionException e) {
+        } catch (InvalidArgumentException e) {
             throw new PluginException(e);
         }
     }

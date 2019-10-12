@@ -1,0 +1,8 @@
+{
+  "featureName":"info.smart_tools.smartactors:task-plugins",
+  "afterFeatures":[
+    "info.smart_tools.smartactors:feature-loading-system",
+    "info.smart_tools.smartactors:task",
+    "info.smart_tools.smartactors:ioc"
+  ]
+}

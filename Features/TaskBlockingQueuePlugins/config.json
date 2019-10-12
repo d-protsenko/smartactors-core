@@ -1,0 +1,9 @@
+{
+  "featureName":"info.smart_tools.smartactors:task-plugins.blocking-queue",
+  "afterFeatures":[
+    "info.smart_tools.smartactors:feature-loading-system",
+    "info.smart_tools.smartactors:task",
+    "info.smart_tools.smartactors:ioc",
+    "info.smart_tools.smartactors:iobject-interfaces"
+  ]
+}

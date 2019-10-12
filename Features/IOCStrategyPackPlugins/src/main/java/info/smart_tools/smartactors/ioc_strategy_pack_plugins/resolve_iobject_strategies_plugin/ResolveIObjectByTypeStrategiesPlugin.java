@@ -9,6 +9,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExec
 import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.base.strategy.strategy_storage_with_cache_strategy.StrategyStorageWithCacheStrategy;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
@@ -46,10 +47,7 @@ public class ResolveIObjectByTypeStrategiesPlugin implements IPlugin {
     @Override
     public void load() throws PluginException {
         try {
-            IBootstrapItem<String> item = IOC.resolve(
-                    Keys.getKeyByName("bootstrap item"),
-                    "ResolveIObjectByTypeStrategiesPlugin"
-            );
+            IBootstrapItem<String> item = new BootstrapItem("ResolveIObjectByTypeStrategiesPlugin");
             item
                 .after("IOC")
                 .process(() -> {
@@ -88,7 +86,7 @@ public class ResolveIObjectByTypeStrategiesPlugin implements IPlugin {
                     Keys.unregisterByNames(keyNames);
                 });
             bootstrap.add(item);
-        } catch (ResolutionException e) {
+        } catch (InvalidArgumentException e) {
             throw new PluginException("Can't load resolve iobject by type strategies plugin", e);
         }
     }

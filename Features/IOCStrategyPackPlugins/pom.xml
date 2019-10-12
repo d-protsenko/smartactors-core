@@ -30,7 +30,7 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>FeatureLoadingSystemInterfaces</artifactId>
+            <artifactId>FeatureLoadingSystem</artifactId>
             <version>[0.7.0, 1.0.0)</version>
         </dependency>
         <dependency>
@@ -43,12 +43,6 @@
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>Helpers</artifactId>
-            <version>[0.7.0, 1.0.0)</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>FeatureLoadingSystem</artifactId>
             <version>[0.7.0, 1.0.0)</version>
             <scope>test</scope>
         </dependency>

@@ -1,12 +1,7 @@
 package info.smart_tools.smartactors.ioc_strategy_pack_plugins.datetime_formatter_strategy_plugin;
 
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception.ProcessExecutionException;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception.RevertProcessExecutionException;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.helpers.IOCInitializer.IOCInitializer;
 import info.smart_tools.smartactors.ioc.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -31,13 +26,6 @@ public class PluginDateTimeFormatterTest extends IOCInitializer {
     @Before
     public void prepareIOC()
             throws Exception {
-
-        IOC.register(
-                Keys.getKeyByName("bootstrap item"),
-                new ApplyFunctionToArgumentsStrategy(
-                        (args) -> new BootstrapItem((String) args[0])
-                )
-        );
         bootstrap = new Bootstrap();
         bootstrap.add(new BootstrapItem("IOC").process(()->{}));
         new PluginDateTimeFormatter(bootstrap).load();
@@ -61,8 +49,6 @@ public class PluginDateTimeFormatterTest extends IOCInitializer {
         try {
             IOC.resolve(Keys.getKeyByName("datetime_formatter"));
             fail();
-        } catch(ResolutionException e) { }
-
-        bootstrap.start();
+        } catch (ResolutionException e) { }
     }
 }

@@ -56,5 +56,14 @@
         <module>IObjectPlugins</module>
         <module>IObjectExtensionPlugins</module>
         <module>ConfigurationManagerPlugins</module>
+        <module>TaskBlockingQueuePlugins</module>
+        <module>TaskNonBlockingQueuePlugins</module>
+        <module>TaskPlugins</module>
+        <module>ShutdownTaskProcessingStrategyPlugins</module>
+        <module>VersionManagementPlugins</module>
+        <module>MessageProcessingPlugins</module>
+        <module>FeatureManagementPlugins</module>
+        <module>CoreServiceStarterPlugins</module>
+        <module>OnFeatureLoadingServiceStarterPlugins</module>
     </modules>
 </project>

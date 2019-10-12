@@ -20,8 +20,6 @@ import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask_dispatcher.ITaskDispatcher;
 import info.smart_tools.smartactors.task.interfaces.ithread_pool.IThreadPool;
-import info.smart_tools.smartactors.task.task_dispatcher.TaskDispatcher;
-import info.smart_tools.smartactors.task.thread_pool.ThreadPool;
 
 /**
  *
@@ -62,9 +60,18 @@ public class ExecutorSectionProcessingStrategy implements ISectionStrategy {
 
             IQueue<ITask> queue = IOC.resolve(Keys.getKeyByName(IQueue.class.getCanonicalName()), section);
 
-            IThreadPool threadPool = new ThreadPool(threadsCount);
+            IThreadPool threadPool = IOC.resolve(
+                    Keys.getKeyByName(IThreadPool.class.getCanonicalName()),
+                    threadsCount
+            );
 
-            ITaskDispatcher taskDispatcher = new TaskDispatcher(queue, threadPool, maxExecutionDelay, maxRunningThreads);
+            ITaskDispatcher taskDispatcher = IOC.resolve(
+                    Keys.getKeyByName(ITaskDispatcher.class.getCanonicalName()),
+                    queue,
+                    threadPool,
+                    maxExecutionDelay,
+                    maxRunningThreads
+            );
 
             IOC.register(Keys.getKeyByName("task_dispatcher"), new SingletonStrategy(taskDispatcher));
             IOC.register(Keys.getKeyByName("task_queue"), new SingletonStrategy(queue));

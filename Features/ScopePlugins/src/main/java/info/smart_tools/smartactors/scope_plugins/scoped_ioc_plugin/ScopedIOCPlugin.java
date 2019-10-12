@@ -1,13 +1,13 @@
 package info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.ioc.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
@@ -28,13 +28,11 @@ public class ScopedIOCPlugin implements IPlugin {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void load() throws PluginException {
         try {
             /* "subscribe_ioc_for_scope_creation" - create new strategy container in new scopes */
-            IBootstrapItem<String> subscribeItem = IOC.resolve(
-                    Keys.getKeyByName("bootstrap item"),
-                    "subscribe_ioc_for_scope_creation"
-            );
+            IBootstrapItem<String> subscribeItem = new BootstrapItem("subscribe_ioc_for_scope_creation");
 
             subscribeItem
                     .before("create_system_scope")
@@ -56,10 +54,7 @@ public class ScopedIOCPlugin implements IPlugin {
             bootstrap.add(subscribeItem);
 
             /* "ioc_container" - create and set container */
-            IBootstrapItem<String> containerItem = IOC.resolve(
-                    Keys.getKeyByName("bootstrap item"),
-                    "ioc_container"
-            );
+            IBootstrapItem<String> containerItem = new BootstrapItem("ioc_container");
 
             containerItem
                     .after("create_system_scope")
@@ -68,17 +63,14 @@ public class ScopedIOCPlugin implements IPlugin {
             bootstrap.add(containerItem);
 
             /* "IOC" - barrier after which the IOC should be ready to use */
-            IBootstrapItem<String> iocItem = IOC.resolve(
-                    Keys.getKeyByName("bootstrap item"),
-                    "IOC"
-            );
+            IBootstrapItem<String> iocItem = new BootstrapItem("IOC");
 
             iocItem
                     .after("ioc_container")
                     .process(() -> { });
 
             bootstrap.add(iocItem);
-        } catch (ResolutionException e) {
+        } catch (InvalidArgumentException e) {
             throw new PluginException(e);
         }
     }

@@ -5,6 +5,7 @@ import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExec
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.configuration_manager.configuration_manager.ConfigurationManager;
 import info.smart_tools.smartactors.configuration_manager.interfaces.iconfiguration_manager.IConfigurationManager;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
@@ -33,10 +34,7 @@ public class PluginConfigurationManager implements IPlugin {
     public void load() throws PluginException {
         try {
             // "configuration_manager" - create and register in IOC instance of ConfigurationManager
-            IBootstrapItem<String> configurationManagerItem = IOC.resolve(
-                    Keys.getKeyByName("bootstrap item"),
-                    "configuration_manager"
-            );
+            IBootstrapItem<String> configurationManagerItem = new BootstrapItem("configuration_manager");
 
             configurationManagerItem
                     .after("IOC")
@@ -60,22 +58,12 @@ public class PluginConfigurationManager implements IPlugin {
             bootstrap.add(configurationManagerItem);
 
             // Two barrier items between which core configuration sections strategies should be registered
-            IBootstrapItem<String> barrierItem1 = IOC.resolve(
-                    Keys.getKeyByName("bootstrap item"),
-                    "config_sections:start"
-            );
-            barrierItem1.after("configuration_manager").process(() -> {}).revertProcess(() -> {});
+            bootstrap.add(new BootstrapItem("config_sections:start")
+                    .process(() -> { }).after("configuration_manager"));
+            bootstrap.add(new BootstrapItem("config_sections:done")
+                    .process(() -> { }).after("config_sections:start"));
 
-            IBootstrapItem<String> barrierItem2 = IOC.resolve(
-                    Keys.getKeyByName("bootstrap item"),
-                    "config_sections:done"
-            );
-            barrierItem1.after("config_sections:start").process(() -> {}).revertProcess(() -> {});
-
-            bootstrap.add(barrierItem1);
-            bootstrap.add(barrierItem2);
-
-        } catch (ResolutionException e) {
+        } catch (InvalidArgumentException e) {
             throw new PluginException(e);
         }
     }
