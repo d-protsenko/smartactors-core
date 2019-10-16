@@ -1,11 +1,15 @@
 package info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.class_builder;
 
+import info.smart_tools.smartactors.class_management.interfaces.class_builder.IClassBuilder;
+import info.smart_tools.smartactors.class_management.interfaces.class_builder.IFieldInfo;
+import info.smart_tools.smartactors.class_management.interfaces.class_builder.Modifiers;
+
 /**
  * Field summary info
  */
-public class FieldInfo {
+public class FieldInfo implements IFieldInfo {
 
-    private ClassBuilder classBuilder;
+    private IClassBuilder classBuilder;
 
     private Modifiers modifier;
     private String name;
@@ -14,10 +18,10 @@ public class FieldInfo {
 
     /**
      * Constructor.
-     * Create new instance of {@link FieldInfo} by given {@link ClassBuilder}
-     * @param classBuilder the link to parent instance of {@link ClassBuilder}
+     * Create new instance of {@link IFieldInfo} by given {@link IClassBuilder}
+     * @param classBuilder the link to parent instance of {@link IClassBuilder}
      */
-    public FieldInfo(final ClassBuilder classBuilder) {
+    public FieldInfo(final IClassBuilder classBuilder) {
         this.classBuilder = classBuilder;
     }
 
@@ -28,9 +32,9 @@ public class FieldInfo {
     /**
      * Set modifier of field
      * @param modifierOfField the constructor modifier
-     * @return instance of {@link FieldInfo}
+     * @return instance of {@link IFieldInfo}
      */
-    public FieldInfo setModifier(final Modifiers modifierOfField) {
+    public IFieldInfo setModifier(final Modifiers modifierOfField) {
         this.modifier = modifierOfField;
 
         return this;
@@ -43,9 +47,9 @@ public class FieldInfo {
     /**
      * Set name of current field
      * @param nameOfField the name of field
-     * @return instance of {@link FieldInfo}
+     * @return instance of {@link IFieldInfo}
      */
-    public FieldInfo setName(final String nameOfField) {
+    public IFieldInfo setName(final String nameOfField) {
         this.name = nameOfField;
 
         return this;
@@ -58,9 +62,9 @@ public class FieldInfo {
     /**
      * Set type of current field
      * @param typeOfField the type of field
-     * @return instance of {@link FieldInfo}
+     * @return instance of {@link IFieldInfo}
      */
-    public FieldInfo setType(final String typeOfField) {
+    public IFieldInfo setType(final String typeOfField) {
         this.type = typeOfField;
 
         return this;
@@ -73,9 +77,9 @@ public class FieldInfo {
     /**
      * Set generic type of current field
      * @param genericType the generic type of field
-     * @return instance of {@link FieldInfo}
+     * @return instance of {@link IFieldInfo}
      */
-    public FieldInfo setInnerGenericType(final String genericType) {
+    public IFieldInfo setInnerGenericType(final String genericType) {
         this.innerGenericType = genericType;
 
         return this;
@@ -83,9 +87,9 @@ public class FieldInfo {
 
     /**
      * Return editing to parent parameters
-     * @return the parent instance of {@link ClassBuilder}
+     * @return the parent instance of {@link IClassBuilder}
      */
-    public ClassBuilder next() {
+    public IClassBuilder next() {
         return this.classBuilder;
     }
 }

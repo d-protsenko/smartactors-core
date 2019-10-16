@@ -1,14 +1,18 @@
 package info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.class_builder;
 
+import info.smart_tools.smartactors.class_management.interfaces.class_builder.IClassBuilder;
+import info.smart_tools.smartactors.class_management.interfaces.class_builder.IClassInfo;
+import info.smart_tools.smartactors.class_management.interfaces.class_builder.Modifiers;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Class summary info
  */
-public class ClassInfo {
+public class ClassInfo implements IClassInfo {
 
-    private ClassBuilder builder;
+    private IClassBuilder builder;
     private String className;
     private Modifiers classModifier;
     private String inherited;
@@ -16,19 +20,19 @@ public class ClassInfo {
 
     /**
      * Constructor.
-     * Create instance of {@link ClassInfo} by given {@link ClassBuilder}
-     * @param builder the link to parent instance of {@link ClassBuilder}
+     * Create instance of {@link ClassInfo} by given {@link IClassBuilder}
+     * @param builder the link to parent instance of {@link IClassBuilder}
      */
-    public ClassInfo(final ClassBuilder builder) {
+    public ClassInfo(final IClassBuilder builder) {
         this.builder = builder;
     }
 
     /**
      * Set modifier of class
      * @param modifierOfClass the class modifier
-     * @return current instance of {@link ClassInfo}
+     * @return current instance of {@link IClassInfo}
      */
-    public ClassInfo setClassModifier(final Modifiers modifierOfClass) {
+    public IClassInfo setClassModifier(final Modifiers modifierOfClass) {
         this.classModifier = modifierOfClass;
 
         return this;
@@ -37,9 +41,9 @@ public class ClassInfo {
     /**
      * Set name of class
      * @param nameOfClass the name of class
-     * @return current instance of {@link ClassInfo}
+     * @return current instance of {@link IClassInfo}
      */
-    public ClassInfo setClassName(final String nameOfClass) {
+    public IClassInfo setClassName(final String nameOfClass) {
         this.className = nameOfClass;
 
         return this;
@@ -48,9 +52,9 @@ public class ClassInfo {
     /**
      * Set inheritable class
      * @param inheritedClass the name of inherited class
-     * @return current instance of {@link ClassInfo}
+     * @return current instance of {@link IClassInfo}
      */
-    public ClassInfo setInherited(final String inheritedClass) {
+    public IClassInfo setInherited(final String inheritedClass) {
         this.inherited = inheritedClass;
 
         return this;
@@ -59,9 +63,9 @@ public class ClassInfo {
     /**
      * Add new interface by given interface name
      * @param interfaceName the name of given interface
-     * @return current instance of {@link ClassInfo}
+     * @return current instance of {@link IClassInfo}
      */
-    public ClassInfo setInterfaces(final String interfaceName) {
+    public IClassInfo setInterfaces(final String interfaceName) {
         this.interfaces.add(interfaceName);
 
         return this;
@@ -85,9 +89,9 @@ public class ClassInfo {
 
     /**
      * Return editing to parent parameters
-     * @return the parent instance of {@link ClassBuilder}
+     * @return the parent instance of {@link IClassBuilder}
      */
-    public ClassBuilder next() {
+    public IClassBuilder next() {
         return this.builder;
     }
 }

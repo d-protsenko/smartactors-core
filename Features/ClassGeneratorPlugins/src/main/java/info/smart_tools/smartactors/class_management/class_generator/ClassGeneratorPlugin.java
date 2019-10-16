@@ -6,7 +6,6 @@ import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.Ap
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.FromStringClassGenerator;
 import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.class_builder.ClassBuilder;
-import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.class_builder.Modifiers;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
@@ -27,6 +26,7 @@ public class ClassGeneratorPlugin implements IPlugin {
     /**
      * The constructor.
      * @param bootstrap the bootstrap
+     * @throws Exception if any error occurs
      */
     public ClassGeneratorPlugin(final IBootstrap<IBootstrapItem<String>> bootstrap) throws Exception {
         this.bootstrap = bootstrap;
@@ -53,17 +53,6 @@ public class ClassGeneratorPlugin implements IPlugin {
                                             (args) -> new ClassBuilder((String) args[0], (String) args[1])
                                     )
                             );
-                            Modifiers mPublic = Modifiers.PUBLIC;
-                            IOC.register(
-                                    Keys.getKeyByName("class-builder:modifier:public"),
-                                    new SingletonStrategy(mPublic)
-                            );
-                            Modifiers mPrivate = Modifiers.PRIVATE;
-                            IOC.register(
-                                    Keys.getKeyByName("class-builder:modifier:private"),
-                                    new SingletonStrategy(mPrivate)
-                            );
-
                         } catch (ResolutionException | InvalidArgumentException | RegistrationException e ) {
                             throw new ActionExecutionException(e);
                         }

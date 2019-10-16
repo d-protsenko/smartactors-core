@@ -1,20 +1,23 @@
 package info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.class_builder;
 
+import info.smart_tools.smartactors.class_management.interfaces.class_builder.IConstructorInfo;
+import info.smart_tools.smartactors.class_management.interfaces.class_builder.IConstructorParameterInfo;
+
 /**
  * Parameter summary class
  */
-public class ConstructorParameterInfo {
+public class ConstructorParameterInfo implements IConstructorParameterInfo {
 
-    private ConstructorInfo constructorInfo;
+    private IConstructorInfo constructorInfo;
     private String name;
     private String type;
 
     /**
      * Constructor.
-     * Create new instance of {@link ConstructorParameterInfo} by given {@link ConstructorInfo}
-     * @param constructorInfo the link to parent instance of {@link ConstructorInfo}
+     * Create new instance of {@link IConstructorParameterInfo} by given {@link IConstructorInfo}
+     * @param constructorInfo the link to parent instance of {@link IConstructorInfo}
      */
-    public ConstructorParameterInfo(final ConstructorInfo constructorInfo) {
+    public ConstructorParameterInfo(final IConstructorInfo constructorInfo) {
         this.constructorInfo = constructorInfo;
     }
 
@@ -29,9 +32,9 @@ public class ConstructorParameterInfo {
     /**
      * Set name of current constructor argument
      * @param nameOfArgument the name of constructor argument
-     * @return instance of {@link ConstructorParameterInfo}
+     * @return instance of {@link IConstructorParameterInfo}
      */
-    public ConstructorParameterInfo setName(final String nameOfArgument) {
+    public IConstructorParameterInfo setName(final String nameOfArgument) {
         this.name = nameOfArgument;
 
         return this;
@@ -40,9 +43,9 @@ public class ConstructorParameterInfo {
     /**
      * Set type of current constructor argument
      * @param typeOfArgument the type of constructor argument
-     * @return instance of {@link ConstructorParameterInfo}
+     * @return instance of {@link IConstructorParameterInfo}
      */
-    public ConstructorParameterInfo setType(final String typeOfArgument) {
+    public IConstructorParameterInfo setType(final String typeOfArgument) {
         this.type = typeOfArgument;
 
         return this;
@@ -50,9 +53,9 @@ public class ConstructorParameterInfo {
 
     /**
      * Return editing to parent parameters
-     * @return the parent instance of {@link ConstructorInfo}
+     * @return the parent instance of {@link IConstructorInfo}
      */
-    public ConstructorInfo next() {
+    public IConstructorInfo next() {
         return this.constructorInfo;
     }
 }

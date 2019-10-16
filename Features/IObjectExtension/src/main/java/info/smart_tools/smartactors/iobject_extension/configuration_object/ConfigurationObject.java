@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Implementation of {@link @IObject}.
+ * Implementation of {@link IObject}.
  * This implementation gets value on {@code getValue} method, leads it in to the canonical form and returns result.
  */
 public class ConfigurationObject implements IObject {

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api;
 
 import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.class_builder.ClassBuilder;
-import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.class_builder.Modifiers;
+import info.smart_tools.smartactors.class_management.interfaces.class_builder.Modifiers;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

@@ -1,6 +1,9 @@
 package info.smart_tools.smartactors.message_processing.wrapper_generator;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.FromStringClassGenerator;
+import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.class_builder.ClassBuilder;
 import info.smart_tools.smartactors.class_management.interfaces.ismartactors_class_loader.ISmartactorsClassLoader;
 import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.field.field.Field;
@@ -12,12 +15,8 @@ import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
-import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
-import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
 import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_generator.exception.WrapperGeneratorException;
-import info.smart_tools.smartactors.scope.iscope.IScope;
-import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -59,22 +58,16 @@ public class WrapperGeneratorTest extends IOCInitializer {
                         }
                 )
         );
-//        Object keyOfMainScope = ScopeProvider.createScope(null);
-//        IScope scope = ScopeProvider.getScope(keyOfMainScope);
-//        scope.setValue(IOC.getIocKey(), new StrategyContainer());
-//        ScopeProvider.setCurrentScope(scope);
-//
-//        IOC.register(
-//                IOC.getKeyForKeyByNameStrategy(),
-//                new ResolveByNameIocStrategy(
-//                        (a) -> {
-//                            try {
-//                                return new Key((String) a[0]);
-//                            } catch (Exception e) {
-//                                throw new RuntimeException(e);
-//                            }
-//                        })
-//        );
+        IOC.register(
+                Keys.getKeyByName("class-generator:from-string"),
+                new ApplyFunctionToArgumentsStrategy((args) -> new FromStringClassGenerator()
+                ));
+        IOC.register(
+                Keys.getKeyByName("class-builder:from_string"),
+                new ApplyFunctionToArgumentsStrategy(
+                        (args) -> new ClassBuilder((String) args[0], (String) args[1])
+                )
+        );
     }
 
     private void attachJarToClassLoader(String jarName, ISmartactorsClassLoader cl)

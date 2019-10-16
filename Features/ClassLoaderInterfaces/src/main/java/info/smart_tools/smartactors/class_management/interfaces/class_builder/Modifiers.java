@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.class_builder;
+package info.smart_tools.smartactors.class_management.interfaces.class_builder;
 
 /**
  * Class, fields or methods modifiers

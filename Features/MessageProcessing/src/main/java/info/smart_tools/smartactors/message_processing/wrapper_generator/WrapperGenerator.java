@@ -1,9 +1,8 @@
 package info.smart_tools.smartactors.message_processing.wrapper_generator;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.FromStringClassGenerator;
-import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.class_builder.ClassBuilder;
-import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.class_builder.Modifiers;
+import info.smart_tools.smartactors.class_management.interfaces.class_builder.IClassBuilder;
+import info.smart_tools.smartactors.class_management.interfaces.class_builder.Modifiers;
 import info.smart_tools.smartactors.class_management.interfaces.iclass_generator.IClassGenerator;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -39,15 +38,17 @@ public class WrapperGenerator implements IWrapperGenerator {
     /**
      * Constructor.
      * Create new instance of {@link WrapperGenerator} by given {@link ClassLoader}
+     * @throws Exception if any error occur
      */
-    public WrapperGenerator() {
-        this.classGenerator = new FromStringClassGenerator();
+    public WrapperGenerator() throws Exception {
+        this.classGenerator = IOC.resolve(Keys.getKeyByName("class-generator:from-string"));
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T generate(final Class<T> targetInterface)
             throws InvalidArgumentException, WrapperGeneratorException {
-        T instance = null;
+//        T instance = null;
 
         if (null == targetInterface) {
             throw new InvalidArgumentException("Target class should not be null!");
@@ -85,9 +86,10 @@ public class WrapperGenerator implements IWrapperGenerator {
 
     private <T> Class<T> generateClass(final Class<T> targetInterface)
             throws Exception {
-
-        ClassBuilder cb = new ClassBuilder("\t", "\n");
-
+        IClassBuilder cb = IOC.resolve(
+                Keys.getKeyByName("class-builder:from_string"),
+                "\t", "\n"
+        );
         // Add package name and imports.
         cb
                 .addPackageName(targetInterface.getPackage().getName())

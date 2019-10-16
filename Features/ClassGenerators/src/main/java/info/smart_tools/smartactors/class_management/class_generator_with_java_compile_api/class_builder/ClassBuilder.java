@@ -1,5 +1,14 @@
 package info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.class_builder;
 
+
+import info.smart_tools.smartactors.class_management.interfaces.class_builder.IClassBuilder;
+import info.smart_tools.smartactors.class_management.interfaces.class_builder.IClassInfo;
+import info.smart_tools.smartactors.class_management.interfaces.class_builder.IConstructorInfo;
+import info.smart_tools.smartactors.class_management.interfaces.class_builder.IConstructorParameterInfo;
+import info.smart_tools.smartactors.class_management.interfaces.class_builder.IFieldInfo;
+import info.smart_tools.smartactors.class_management.interfaces.class_builder.IMethodInfo;
+import info.smart_tools.smartactors.class_management.interfaces.class_builder.IMethodParameterInfo;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,16 +18,16 @@ import java.util.Map;
  * Class builder.
  * Build class by given class attributes.
  */
-public class ClassBuilder {
+public class ClassBuilder implements IClassBuilder {
 
     private String tabSymbol = "\0";
     private String lineBreakSymbol = "\0";
     private List<String> importsList = new ArrayList<>();
     private String packageName = "";
-    private ClassInfo classInfo;
-    private List<FieldInfo> fields = new ArrayList<>();
-    private List<MethodInfo> methods = new ArrayList<>();
-    private List<ConstructorInfo> constructors = new ArrayList<>();
+    private IClassInfo classInfo;
+    private List<IFieldInfo> fields = new ArrayList<>();
+    private List<IMethodInfo> methods = new ArrayList<>();
+    private List<IConstructorInfo> constructors = new ArrayList<>();
 
     private static final char OPEN = '{';
     private static final char CLOSE = '}';
@@ -50,7 +59,7 @@ public class ClassBuilder {
 
     /**
      * Constructor.
-     * Creates instance of {@link ClassBuilder} with given setting
+     * Creates instance of {@link IClassBuilder} with given setting
      * @param tabSymbol the symbol for indent between string beginning and language words
      * @param lineBreakSymbol the newline character
      */
@@ -62,9 +71,9 @@ public class ClassBuilder {
     /**
      * Add package name
      * @param nameOfPackage the name of package
-     * @return current instance of {@link ClassBuilder}
+     * @return current instance of {@link IClassBuilder}
      */
-    public ClassBuilder addPackageName(final String nameOfPackage) {
+    public IClassBuilder addPackageName(final String nameOfPackage) {
         this.packageName = nameOfPackage;
 
         return this;
@@ -73,19 +82,19 @@ public class ClassBuilder {
     /**
      * Add import
      * @param value the import string
-     * @return current instance of {@link ClassBuilder}
+     * @return current instance of {@link IClassBuilder}
      */
-    public ClassBuilder addImport(final String value) {
+    public IClassBuilder addImport(final String value) {
         this.importsList.add(value);
 
         return this;
     }
 
     /**
-     * Start editing parameters of {@link ClassInfo}
-     * @return instance of {@link ClassInfo}
+     * Start editing parameters of {@link IClassInfo}
+     * @return instance of {@link IClassInfo}
      */
-    public ClassInfo addClass() {
+    public IClassInfo addClass() {
         if (null == this.classInfo) {
             this.classInfo = new ClassInfo(this);
         }
@@ -95,10 +104,10 @@ public class ClassBuilder {
 
     /**
      * Add new method and start editing parameters of new method
-     * @return instance of {@link MethodInfo}
+     * @return instance of {@link IMethodInfo}
      */
-    public MethodInfo addMethod() {
-        MethodInfo method = new MethodInfo(this);
+    public IMethodInfo addMethod() {
+        IMethodInfo method = new MethodInfo(this);
         this.methods.add(method);
 
         return method;
@@ -106,10 +115,10 @@ public class ClassBuilder {
 
     /**
      * Add new constructor and start editing parameters of new constructor
-     * @return instance of {@link ConstructorInfo}
+     * @return instance of {@link IConstructorInfo}
      */
-    public ConstructorInfo addConstructor() {
-        ConstructorInfo constructorInfo = new ConstructorInfo(this);
+    public IConstructorInfo addConstructor() {
+        IConstructorInfo constructorInfo = new ConstructorInfo(this);
         this.constructors.add(constructorInfo);
 
         return constructorInfo;
@@ -117,28 +126,28 @@ public class ClassBuilder {
 
     /**
      * Add new field and start editing parameters of new field
-     * @return instance of {@link FieldInfo}
+     * @return instance of {@link IFieldInfo}
      */
-    public FieldInfo addField() {
-        FieldInfo fieldInfo = new FieldInfo(this);
+    public IFieldInfo addField() {
+        IFieldInfo fieldInfo = new FieldInfo(this);
         this.fields.add(fieldInfo);
 
         return fieldInfo;
     }
 
-    public ClassInfo getClassInfo() {
+    public IClassInfo getClassInfo() {
         return classInfo;
     }
 
-    public List<FieldInfo> getFields() {
+    public List<IFieldInfo> getFields() {
         return fields;
     }
 
-    public List<MethodInfo> getMethods() {
+    public List<IMethodInfo> getMethods() {
         return methods;
     }
 
-    public List<ConstructorInfo> getConstructors() {
+    public List<IConstructorInfo> getConstructors() {
         return constructors;
     }
 
@@ -206,7 +215,7 @@ public class ClassBuilder {
                 .append(this.lineBreakSymbol);
 
         // Add fields
-        for (FieldInfo field : this.getFields()) {
+        for (IFieldInfo field : this.getFields()) {
             builder
                     .append(this.tabSymbol)
                     .append(field.getModifier().getValue())
@@ -231,7 +240,7 @@ public class ClassBuilder {
         builder.append(this.lineBreakSymbol);
 
         // Add constructors
-        for (ConstructorInfo constructorInfo : this.getConstructors()) {
+        for (IConstructorInfo constructorInfo : this.getConstructors()) {
             builder
                     .append(this.tabSymbol)
                     .append(constructorInfo.getModifier().getValue())
@@ -240,7 +249,7 @@ public class ClassBuilder {
                     .append(OPEN_B);
             listSize = constructorInfo.getParameters().size();
             count = 1;
-            for (ConstructorParameterInfo parameterInfo : constructorInfo.getParameters()) {
+            for (IConstructorParameterInfo parameterInfo : constructorInfo.getParameters()) {
                 builder
                         .append(parameterInfo.getType())
                         .append(SPACE)
@@ -290,7 +299,7 @@ public class ClassBuilder {
         }
 
         // Add methods
-        for (MethodInfo methodInfo : this.getMethods()) {
+        for (IMethodInfo methodInfo : this.getMethods()) {
             builder
                     .append(this.tabSymbol)
                     .append(methodInfo.getModifier().getValue())
@@ -301,7 +310,7 @@ public class ClassBuilder {
                     .append(OPEN_B);
             listSize = methodInfo.getParameters().size();
             count = 1;
-            for (MethodParameterInfo parameterInfo : methodInfo.getParameters()) {
+            for (IMethodParameterInfo parameterInfo : methodInfo.getParameters()) {
                 builder
                         .append(parameterInfo.getType())
                         .append(SPACE)

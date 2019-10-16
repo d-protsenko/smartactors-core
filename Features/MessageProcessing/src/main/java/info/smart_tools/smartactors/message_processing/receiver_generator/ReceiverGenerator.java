@@ -2,11 +2,12 @@ package info.smart_tools.smartactors.message_processing.receiver_generator;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
-import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.FromStringClassGenerator;
-import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.class_builder.ClassBuilder;
-import info.smart_tools.smartactors.class_management.class_generator_with_java_compile_api.class_builder.Modifiers;
+import info.smart_tools.smartactors.class_management.interfaces.class_builder.IClassBuilder;
+import info.smart_tools.smartactors.class_management.interfaces.class_builder.Modifiers;
 import info.smart_tools.smartactors.class_management.interfaces.iclass_generator.IClassGenerator;
 import info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.ireceiver_generator.IReceiverGenerator;
 import info.smart_tools.smartactors.message_processing_interfaces.ireceiver_generator.exception.ReceiverGeneratorException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
@@ -30,14 +31,15 @@ public class ReceiverGenerator implements IReceiverGenerator {
     /**
      * Constructor.
      * Create new instance of {@link ReceiverGenerator} by given {@link ClassLoader}
-     * @throws InvalidArgumentException if initialization of {@link FromStringClassGenerator} was failed
+     * @throws Exception if any error occured
      */
     public ReceiverGenerator()
-            throws InvalidArgumentException {
-        this.classGenerator = new FromStringClassGenerator();
+            throws Exception {
+        this.classGenerator = IOC.resolve(Keys.getKeyByName("class-generator:from-string"));;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public IMessageReceiver generate(
             final Object objInstance,
             final IStrategy wrapperResolutionStrategy,
@@ -85,7 +87,10 @@ public class ReceiverGenerator implements IReceiverGenerator {
             final String handlerName
     )
             throws Exception {
-        ClassBuilder cb = new ClassBuilder("\t", "\n");
+        IClassBuilder cb = IOC.resolve(
+                Keys.getKeyByName("class-builder:from_string"),
+                "\t", "\n"
+        );
         Class wrapperInterface = findWrapperInterface(usersObject, handlerName);
 
         // Add package name and imports
