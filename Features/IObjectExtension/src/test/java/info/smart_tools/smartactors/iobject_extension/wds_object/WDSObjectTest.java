@@ -3,6 +3,7 @@ package info.smart_tools.smartactors.iobject_extension.wds_object;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.field.field_name_tools.FieldNames;
+import info.smart_tools.smartactors.helpers.IOCInitializer.IOCInitializer;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
@@ -31,38 +32,17 @@ import static org.mockito.Mockito.*;
 /**
  * Tests for {@link WDSObject}
  */
-public class WDSObjectTest {
+public class WDSObjectTest extends IOCInitializer {
+
+    @Override
+    protected void registry(final String ... strategyNames)
+            throws Exception {
+        registryStrategies("ifieldname strategy");
+    }
 
     @Before
     public void init()
             throws Exception {
-        Object keyOfMainScope = ScopeProvider.createScope(null);
-        IScope scope = ScopeProvider.getScope(keyOfMainScope);
-        scope.setValue(IOC.getIocKey(), new StrategyContainer());
-        ScopeProvider.setCurrentScope(scope);
-
-        IOC.register(
-                IOC.getKeyForKeyByNameStrategy(),
-                new ResolveByNameIocStrategy(
-                        (a) -> {
-                            try {
-                                return new Key((String) a[0]);
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        })
-        );
-        IOC.register(
-                Keys.getKeyByName(IFieldName.class.getCanonicalName()),
-                new ResolveByNameIocStrategy(
-                        (a) -> {
-                            try {
-                                return new FieldName((String) a[0]);
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        })
-        );
         IOC.register(
                 Keys.getKeyByName(IStrategy.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(

@@ -56,6 +56,8 @@ public class InitializeReceiverGenerator implements IPlugin {
                                     throw new ActionExecutionException("InitializeReceiverGenerator plugin can't load: can't create strategy", e);
                                 } catch (RegistrationException e) {
                                     throw new ActionExecutionException("InitializeReceiverGenerator plugin can't load: can't register new strategy", e);
+                                } catch (Exception e) {
+                                    throw new ActionExecutionException("InitializeReceiverGenerator plugin can't load: can't create instance of ReceiverGenerator", e);
                                 }
                             }
                         )

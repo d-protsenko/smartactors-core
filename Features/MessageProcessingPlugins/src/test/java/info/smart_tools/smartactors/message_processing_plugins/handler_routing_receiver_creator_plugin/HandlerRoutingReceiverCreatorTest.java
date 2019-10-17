@@ -6,6 +6,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.helpers.IOCInitializer.IOCInitializer;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.ioc.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
@@ -28,37 +29,12 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-public class HandlerRoutingReceiverCreatorTest {
-    @Before
-    public void init()
-            throws Exception {
-        Object keyOfMainScope = ScopeProvider.createScope(null);
-        IScope scope = ScopeProvider.getScope(keyOfMainScope);
-        scope.setValue(IOC.getIocKey(), new StrategyContainer());
-        ScopeProvider.setCurrentScope(scope);
+public class HandlerRoutingReceiverCreatorTest extends IOCInitializer {
 
-        IOC.register(
-                IOC.getKeyForKeyByNameStrategy(),
-                new ResolveByNameIocStrategy(
-                        (a) -> {
-                            try {
-                                return new Key((String) a[0]);
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        })
-        );
-        IOC.register(
-                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
-                new ResolveByNameIocStrategy(
-                        (a) -> {
-                            try {
-                                return new FieldName((String) a[0]);
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        })
-        );
+    @Override
+    protected void registry(final String ... strategyNames)
+            throws Exception {
+        registryStrategies("ifieldname strategy");
     }
 
     @Test

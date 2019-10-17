@@ -59,6 +59,8 @@ public class RegisterWrapperGenerator implements IPlugin {
                                     throw new ActionExecutionException("RegisterWrapperGenerator plugin can't load: can't create strategy", e);
                                 } catch (RegistrationException e) {
                                     throw new ActionExecutionException("RegisterWrapperGenerator plugin can't load: can't register new strategy", e);
+                                } catch (Exception e) {
+                                    throw new ActionExecutionException("RegisterWrapperGenerator plugin can't load: can't create instane of WrapperGenerator", e);
                                 }
                     })
                     .revertProcess(() -> {
