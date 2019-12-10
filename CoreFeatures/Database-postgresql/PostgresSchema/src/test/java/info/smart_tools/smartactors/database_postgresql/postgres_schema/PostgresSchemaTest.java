@@ -103,6 +103,18 @@ public class PostgresSchemaTest {
     }
 
     @Test
+    public void testSearchWithSortingAndTypeCast() throws InvalidArgumentException, QueryBuildException {
+        IObject criteria = new DSObject("{ \"filter\": { \"a\": { \"$eq\": \"b\" } }," +
+                " \"sort\": [ { \"a\": { \"direction\": \"desc\", \"type\": \"decimal\" }} ] }");
+        PostgresSchema.search(statement, collection, criteria);
+        assertEquals("SELECT document FROM test_collection " +
+                "WHERE ((((document#>'{a}')=to_json(?)::jsonb))) " +
+                "ORDER BY((document#>>'{a}')::decimal)DESC " +
+                "LIMIT(?)OFFSET(?)", body.toString());
+        verify(statement, times(2)).pushParameterSetter(any());
+    }
+
+    @Test
     public void testSearchWithPagingAndSorting() throws InvalidArgumentException, QueryBuildException {
         IObject criteria = new DSObject("{ \"filter\": { \"a\": { \"$eq\": \"b\" } }," +
                 " \"page\": { \"size\": 10, \"number\": 3 }, " +
