@@ -219,6 +219,69 @@ public class PostgresSchemaTest {
     }
 
     @Test
+    public void testAddSingleIndexWithTypeCast() throws Exception {
+        IObject options = new DSObject("{ " +
+                    "\"ordered\": { " +
+                        "\"fieldName\": \"a\", " +
+                        "\"type\": \"decimal\"" +
+                    "}" +
+                "}");
+        PostgresSchema.addIndexes(statement, collection, options);
+        assertEquals("CREATE INDEX test_collection_a_ordered_index ON test_collection USING BTREE (((document#>>'{a}')::decimal));\n",
+                body.toString());
+    }
+
+    @Test
+    public void testAddMultipleIndexesWithTypeCast() throws Exception {
+        IObject options = new DSObject("{ " +
+                    "\"ordered\": [" +
+                        "{ " +
+                            "\"fieldName\": \"a\", " +
+                            "\"type\": \"decimal\"" +
+                        "}, " +
+                        "{ " +
+                            "\"fieldName\": \"b\", " +
+                            "\"type\": \"int\"" +
+                        "}" +
+                    "]" +
+                "}");
+        PostgresSchema.addIndexes(statement, collection, options);
+        assertEquals(
+                "CREATE INDEX test_collection_a_ordered_index ON test_collection USING BTREE (((document#>>'{a}')::decimal));\n" +
+                        "CREATE INDEX test_collection_b_ordered_index ON test_collection USING BTREE (((document#>>'{b}')::int));\n",
+                body.toString());
+    }
+
+    @Test
+    public void testAddMultipleIndexesWithMixedTypeCast() throws Exception {
+        IObject options = new DSObject("{ " +
+                    "\"ordered\": [" +
+                        "{ " +
+                            "\"fieldName\": \"a\", " +
+                            "\"type\": \"decimal\"" +
+                        "}, " +
+                        "\"b\"" +
+                    "]" +
+                "}");
+        PostgresSchema.addIndexes(statement, collection, options);
+        assertEquals(
+                "CREATE INDEX test_collection_a_ordered_index ON test_collection USING BTREE (((document#>>'{a}')::decimal));\n" +
+                        "CREATE INDEX test_collection_b_ordered_index ON test_collection USING BTREE ((document#>'{b}'));\n",
+                body.toString());
+    }
+
+    @Test(expected = QueryBuildException.class)
+    public void testAddIndexWithTypeCastIncorrectly() throws Exception {
+        IObject options = new DSObject("{" +
+                    "\"ordered\": {" +
+                        "\"badField\": \"bad data\"" +
+                    "}" +
+                "}"
+        );
+        PostgresSchema.addIndexes(statement, collection, options);
+    }
+
+    @Test
     public void testDropIndexes() throws QueryBuildException, InvalidArgumentException {
         IObject options = new DSObject("{ \"ordered\": \"a\"," +
                 "\"fulltext\": \"b\"," +
