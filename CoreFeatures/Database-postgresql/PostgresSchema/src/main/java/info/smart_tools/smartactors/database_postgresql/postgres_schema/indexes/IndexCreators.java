@@ -160,6 +160,8 @@ public class IndexCreators {
                 throw new QueryBuildException("Cannot resolve dependency while building query ", e);
             } catch (ReadValueException | InvalidArgumentException e) {
                 throw new QueryBuildException("Cannot read value from field name options", e);
+            } catch (NullPointerException e) {
+                throw new QueryBuildException("Incorrect format of create index options", e);
             }
         }
         return false;
