@@ -80,6 +80,16 @@ public class PostgresSchemaTest {
     }
 
     @Test
+    public void testSearchWithTypeCast() throws InvalidArgumentException, QueryBuildException {
+        IObject criteria = new DSObject("{ \"filter\": { \"a\": { \"$eq\": { \"value\": \"val\", \"type\": \"decimal\" } } } }");
+        PostgresSchema.search(statement, collection, criteria);
+        assertEquals("SELECT document FROM test_collection " +
+                "WHERE ((((document#>>'{a}')::decimal=(?::decimal)))) " +
+                "LIMIT(?)OFFSET(?)", body.toString());
+        verify(statement, times(2)).pushParameterSetter(any());
+    }
+
+    @Test
     public void testSearchWithPaging() throws InvalidArgumentException, QueryBuildException {
         IObject criteria = new DSObject("{ \"filter\": { \"a\": { \"$eq\": \"b\" } }," +
                 " \"page\": { \"size\": 10, \"number\": 3 } }");

@@ -36,12 +36,24 @@ final class Operators {
     public static void addAll(final PostgresQueryWriterResolver resolver) {
 
         // Basic field comparison operators
-        resolver.addQueryWriter("$eq", formattedCheckWriter("((%s)=to_json(?)::jsonb)"));
-        resolver.addQueryWriter("$ne", formattedCheckWriter("((%s)!=to_json(?)::jsonb)"));
-        resolver.addQueryWriter("$lt", formattedCheckWriter("((%s)<to_json(?)::jsonb)"));
-        resolver.addQueryWriter("$gt", formattedCheckWriter("((%s)>to_json(?)::jsonb)"));
-        resolver.addQueryWriter("$lte", formattedCheckWriter("((%s)<=to_json(?)::jsonb)"));
-        resolver.addQueryWriter("$gte", formattedCheckWriter("((%s)>=to_json(?)::jsonb)"));
+        resolver.addQueryWriter("$eq", formattedCheckWriterForComparisons(
+                "((%s)=to_json(?)::jsonb)",
+                "((%s)=(?::%s))"));
+        resolver.addQueryWriter("$ne", formattedCheckWriterForComparisons(
+                "((%s)!=to_json(?)::jsonb)",
+                "((%s)!=(?::%s))"));
+        resolver.addQueryWriter("$lt", formattedCheckWriterForComparisons(
+                "((%s)<to_json(?)::jsonb)",
+                "((%s)<(?::%s))"));
+        resolver.addQueryWriter("$gt", formattedCheckWriterForComparisons(
+                "((%s)>to_json(?)::jsonb)",
+                "((%s)>(?::%s))"));
+        resolver.addQueryWriter("$lte", formattedCheckWriterForComparisons(
+                "((%s)<=to_json(?)::jsonb)",
+                "((%s)<=(?::%s))"));
+        resolver.addQueryWriter("$gte", formattedCheckWriterForComparisons(
+                "((%s)>=to_json(?)::jsonb)",
+                "((%s)>=(?::%s))"));
 
         //Check on present
         resolver.addQueryWriter("$isNull", Operators::writeFieldExistsCheckCondition);
@@ -161,6 +173,40 @@ final class Operators {
     }
 
     /**
+     * Writes part of sql query with basic field comparison operators
+     * @param format sql string for condition. Contains '%s' for field path and type to cast, '?' for parameters
+     * @param query query statement object where to write the body and add parameter setters
+     * @param contextFieldPath current field path, for example document#>>'{field}'
+     * @param queryParameterValue value field of current query parameter
+     * @param queryParameterType type field of current query parameter, [currentParameterValue] will be casted to this type
+     * @throws QueryBuildException if something goes wrong
+     */
+    private static void writeFieldCheckConditionWithTypeCast(
+            final String format,
+            final QueryStatement query,
+            final FieldPath contextFieldPath,
+            final Object queryParameterValue,
+            final String queryParameterType
+    ) throws QueryBuildException {
+
+        if (contextFieldPath == null) {
+            throw new QueryBuildException("Field check conditions not allowed outside of field context");
+        }
+
+        try {
+            query.getBodyWriter().write(String.format(format, contextFieldPath.toSQL(), queryParameterType));
+
+            query.pushParameterSetter((statement, index) -> {
+                statement.setObject(index++, queryParameterValue);
+                statement.setObject(index++, queryParameterType);
+                return index;
+            });
+        } catch (IOException e) {
+            throw new QueryBuildException("Query search conditions write failed because of exception", e);
+        }
+    }
+
+    /**
      * Writes part of sql query which checks existence of field in the document
      * @param query query statement object where to write body and add parameter setters
      * @param resolver resolver for nested operators, is ignored here
@@ -242,5 +288,39 @@ final class Operators {
         } catch (IOException e) {
             throw new QueryBuildException("Query search conditions write failed because of exception", e);
         }
+    }
+
+    /**
+     * Creates the condition writer which depends on presence or absence type cast in the search criteria
+     * @param formatWithoutTypeCast format string, contains '%s' for field path and '?' for parameters
+     * @param formatWithTypeCast format string, contains '%s' for field path and type, '?' for parameters
+     * @return the condition writer ready to be added to basic resolver
+     */
+    private static QueryWriter formattedCheckWriterForComparisons(
+            final String formatWithoutTypeCast,
+            final String formatWithTypeCast
+    ) {
+        return (query, resolver, contextFieldPath, queryParameter) -> {
+            if (queryParameter instanceof IObject) {
+                try {
+                    IKey fieldNameKey = Keys.getKeyByName(IFieldName.class.getCanonicalName());
+                    IFieldName valueFN = IOC.resolve(fieldNameKey, "value");
+                    IFieldName typeFN = IOC.resolve(fieldNameKey, "type");
+                    Object value = ((IObject) queryParameter).getValue(valueFN);
+                    String type = (String) ((IObject) queryParameter).getValue(typeFN);
+
+                    writeFieldCheckConditionWithTypeCast(formatWithTypeCast, query, contextFieldPath, value, type);
+                } catch (ResolutionException e) {
+                    throw new QueryBuildException("Unable to resolve dependency for 'value' and 'type' fields", e);
+                } catch (ReadValueException | InvalidArgumentException e) {
+                    throw new QueryBuildException("Unable to get 'value' and 'type' fields from the search criteria", e);
+                } catch (ClassCastException e) {
+                    throw new QueryBuildException("Cannot cast 'type' field in the search criteria to String", e);
+                }
+            } else {
+                writeFieldCheckCondition(formatWithoutTypeCast, query, contextFieldPath, queryParameter);
+            }
+
+        };
     }
 }
