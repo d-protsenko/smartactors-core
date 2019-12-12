@@ -84,7 +84,7 @@ public class PostgresSchemaTest {
         IObject criteria = new DSObject("{ \"filter\": { \"a\": { \"$eq\": { \"value\": \"val\", \"type\": \"decimal\" } } } }");
         PostgresSchema.search(statement, collection, criteria);
         assertEquals("SELECT document FROM test_collection " +
-                "WHERE ((((document#>>'{a}')::decimal=(?::decimal)))) " +
+                "WHERE (((((document#>>'{a}')::decimal)=(?::decimal)))) " +
                 "LIMIT(?)OFFSET(?)", body.toString());
         verify(statement, times(2)).pushParameterSetter(any());
     }

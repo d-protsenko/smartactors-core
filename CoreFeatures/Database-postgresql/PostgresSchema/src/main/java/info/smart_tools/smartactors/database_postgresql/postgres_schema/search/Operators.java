@@ -152,7 +152,7 @@ final class Operators {
     private static void writeFieldCheckCondition(
             final String format,
             final QueryStatement query,
-            final FieldPath contextFieldPath,
+            final String contextFieldPath,
             final Object queryParameter
     ) throws QueryBuildException {
 
@@ -161,7 +161,7 @@ final class Operators {
         }
 
         try {
-            query.getBodyWriter().write(String.format(format, contextFieldPath.toSQL()));
+            query.getBodyWriter().write(String.format(format, PostgresFieldPath.fromString(contextFieldPath).toSQL()));
 
             query.pushParameterSetter((statement, index) -> {
                 statement.setObject(index++, queryParameter);
@@ -184,7 +184,7 @@ final class Operators {
     private static void writeFieldCheckConditionWithTypeCast(
             final String format,
             final QueryStatement query,
-            final FieldPath contextFieldPath,
+            final String contextFieldPath,
             final Object queryParameterValue,
             final String queryParameterType
     ) throws QueryBuildException {
@@ -194,7 +194,9 @@ final class Operators {
         }
 
         try {
-            query.getBodyWriter().write(String.format(format, contextFieldPath.toSQL(), queryParameterType));
+            query.getBodyWriter().write(String.format(
+                    format,
+                    PostgresFieldPath.fromStringAndType(contextFieldPath, queryParameterType).toSQL(), queryParameterType));
 
             query.pushParameterSetter((statement, index) -> {
                 statement.setObject(index++, queryParameterValue);
@@ -217,7 +219,7 @@ final class Operators {
     private static void writeFieldExistsCheckCondition(
             final QueryStatement query,
             final QueryWriterResolver resolver,
-            final FieldPath contextFieldPath,
+            final String contextFieldPath,
             final Object queryParameter
     ) throws QueryBuildException {
 
@@ -232,7 +234,7 @@ final class Operators {
             }
             Boolean isNull = Boolean.parseBoolean(isNullStr);
             String condition = isNull ? "(%s) is null" : "(%s) is not null";
-            query.getBodyWriter().write(String.format(condition, contextFieldPath.toSQL()));
+            query.getBodyWriter().write(String.format(condition, PostgresFieldPath.fromString(contextFieldPath).toSQL()));
         } catch (IOException e) {
             throw new QueryBuildException("Query search conditions write failed because of exception.", e);
         }
@@ -249,7 +251,7 @@ final class Operators {
     private static void writeFieldInArrayCheckCondition(
             final QueryStatement query,
             final QueryWriterResolver resolver,
-            final FieldPath contextFieldPath,
+            final String contextFieldPath,
             final Object queryParameter
     ) throws QueryBuildException {
 
@@ -270,7 +272,7 @@ final class Operators {
                 return;
             }
 
-            writer.write(String.format("((%s)in(", contextFieldPath.toSQL()));
+            writer.write(String.format("((%s)in(", PostgresFieldPath.fromString(contextFieldPath).toSQL()));
 
             for (int i = paramAsList.size(); i > 0; --i) {
                 writer.write(String.format("to_json(?)::jsonb%s", (i == 1) ? "" : ","));

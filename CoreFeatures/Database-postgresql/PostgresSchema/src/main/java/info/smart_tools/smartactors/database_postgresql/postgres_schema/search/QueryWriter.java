@@ -17,7 +17,7 @@ public interface QueryWriter {
      * @param queryParameter currently processing query parameter
      * @throws QueryBuildException when something goes wrong
      */
-    void write(QueryStatement query, QueryWriterResolver resolver, FieldPath contextFieldPath,
+    void write(QueryStatement query, QueryWriterResolver resolver, String contextFieldPath,
                Object queryParameter) throws QueryBuildException;
 
 }
