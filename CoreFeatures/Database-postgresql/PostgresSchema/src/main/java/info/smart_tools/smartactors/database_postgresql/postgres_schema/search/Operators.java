@@ -200,7 +200,6 @@ final class Operators {
 
             query.pushParameterSetter((statement, index) -> {
                 statement.setObject(index++, queryParameterValue);
-                statement.setObject(index++, queryParameterType);
                 return index;
             });
         } catch (IOException e) {
