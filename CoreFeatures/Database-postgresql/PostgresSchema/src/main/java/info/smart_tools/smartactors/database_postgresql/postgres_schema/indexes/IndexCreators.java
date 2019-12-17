@@ -79,18 +79,18 @@ public class IndexCreators {
             return;
             // ignoring absence of this index type definition
         }
-        boolean pathFound = checkAndAddSingleFieldPath(fieldPaths, indexFields);
-        if (!pathFound) {
-            try {
+        try {
+            boolean pathFound = checkAndAddSingleFieldPath(fieldPaths, indexFields);
+            if (!pathFound) {
                 for (Object fieldName : (List) indexFields) {
                     pathFound = checkAndAddSingleFieldPath(fieldPaths, fieldName);
                     if (!pathFound) {
                         throw new QueryBuildException("Bad options for creating index task: field data need to be a string, an IObject or a list");
                     }
                 }
-            } catch (ClassCastException e) {
-                throw new QueryBuildException("Bad options for creating index task: field data need to be a string, an IObject or a list", e);
             }
+        } catch (ClassCastException e) {
+            throw new QueryBuildException("Bad options for creating index task: field data need to be a string, an IObject or a list", e);
         }
 
 
