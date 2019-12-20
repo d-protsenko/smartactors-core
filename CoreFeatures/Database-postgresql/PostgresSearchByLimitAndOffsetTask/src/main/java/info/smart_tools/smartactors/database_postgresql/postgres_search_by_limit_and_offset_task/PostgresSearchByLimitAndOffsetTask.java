@@ -109,7 +109,7 @@ public class PostgresSearchByLimitAndOffsetTask implements IDatabaseTask {
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-            SearchMessage message = IOC.resolve(Keys.getKeyByName(SearchMessage.class.getCanonicalName()), query);
+            SearchByLimitAndOffsetMessage message = IOC.resolve(Keys.getKeyByName(SearchByLimitAndOffsetMessage.class.getCanonicalName()), query);
             collection = message.getCollectionName();
             criteria = message.getCriteria();
             callback = message.getCallback();

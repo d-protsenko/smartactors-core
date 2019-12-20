@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.database_postgresql.postgres_search_by_limit_and_offset_task;
+package info.smart_tools.smartactors.database_postgresql.postgres_search_task;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;

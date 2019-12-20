@@ -49,7 +49,7 @@ import static org.mockito.Mockito.*;
 public class PostgresSearchByLimitAndOffsetTaskTest {
 
     private IDatabaseTask task;
-    private SearchMessage message;
+    private SearchByLimitAndOffsetMessage message;
     private IStorageConnection connection;
     private JDBCCompiledQuery compiledQuery;
     private PreparedStatement sqlStatement;
@@ -80,12 +80,12 @@ public class PostgresSearchByLimitAndOffsetTaskTest {
 
         task = new PostgresSearchByLimitAndOffsetTask(connection);
 
-        message = mock(SearchMessage.class);
+        message = mock(SearchByLimitAndOffsetMessage.class);
         when(message.getCollectionName()).thenReturn(CollectionName.fromString("test"));
         when(message.getCriteria()).thenReturn(new DSObject("{ \"filter\": { } }"));
 
         IOC.register(
-                Keys.getKeyByName(SearchMessage.class.getCanonicalName()),
+                Keys.getKeyByName(SearchByLimitAndOffsetMessage.class.getCanonicalName()),
                 new SingletonStrategy(message)
         );
     }

@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 /**
  * A query message to be passed to {@link PostgresSearchByLimitAndOffsetTask#prepare(IObject)}.
  */
-public interface SearchMessage {
+public interface SearchByLimitAndOffsetMessage {
 
     /**
      * Returns the collection name where to search the document
