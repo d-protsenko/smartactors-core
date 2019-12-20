@@ -97,7 +97,16 @@ final class SearchClauses {
                 Integer size = (Integer) page.getValue(sizeField);
                 IFieldName numberField = IOC.resolve(fieldNameKey, "number");
                 Integer number = (Integer) page.getValue(numberField);
-                paging.write(statement, number, size);
+                IFieldName limitField = IOC.resolve(fieldNameKey, "limit");
+                Integer limit = (Integer) page.getValue(limitField);
+                IFieldName offsetField = IOC.resolve(fieldNameKey, "offset");
+                Integer offset = (Integer) page.getValue(offsetField);
+
+                if (limit != null) {
+                    paging.writeByLimitAndOffset(statement, limit, offset);
+                } else {
+                    paging.write(statement, number, size);
+                }
             } catch (Exception e) {
                 throw new QueryBuildException("wrong page format: " + page.serialize(), e);
             }
