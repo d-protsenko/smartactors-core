@@ -7,12 +7,27 @@
         <artifactId>database-postgresql</artifactId>
         <version>0.6.3</version>
     </parent>
-    <artifactId>database-postgresql.postgres-schema</artifactId>
+    <artifactId>database-postgresql.postgres-search-by-limit-and-offset-task</artifactId>
     <version>0.6.3</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>database-postgresql.postgres-connection</artifactId>
+            <artifactId>iobject.iobject</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>database.interfaces.idatabase-task</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>ioc.ioc</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>ioc.key-tools</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
@@ -22,7 +37,12 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>ioc.key-tools</artifactId>
+            <artifactId>database-postgresql.postgres-connection</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>database-postgresql.postgres-schema</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
@@ -39,12 +59,6 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>iobject.ds-object</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.strategy-container</artifactId>
             <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
@@ -57,7 +71,25 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>base.strategy.singleton-strategy</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.strategy.create-new-instance-strategy</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>iobject.field-name</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>iobject.ds-object</artifactId>
             <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>

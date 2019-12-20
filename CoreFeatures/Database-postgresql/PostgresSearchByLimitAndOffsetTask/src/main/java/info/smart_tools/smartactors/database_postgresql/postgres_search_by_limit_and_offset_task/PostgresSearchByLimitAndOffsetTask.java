@@ -1,4 +1,4 @@
-package info.smart_tools.smartactors.database_postgresql.postgres_search_task;
+package info.smart_tools.smartactors.database_postgresql.postgres_search_by_limit_and_offset_task;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
@@ -35,8 +35,8 @@ import java.util.List;
  *              ]
  *          },
  *          "page": {
- *              "size": 50,
- *              "number": 2
+ *              "limit": 10,
+ *              "offset": 100
  *          },
  *          "sort": [
  *              { "a": "asc" },
@@ -75,7 +75,7 @@ import java.util.List;
  *     </ul>
  * </p>
  */
-public class PostgresSearchTask implements IDatabaseTask {
+public class PostgresSearchByLimitAndOffsetTask implements IDatabaseTask {
 
     /**
      * Connection to the database.
@@ -102,7 +102,7 @@ public class PostgresSearchTask implements IDatabaseTask {
      * Creates the task
      * @param connection the database connection where to perform search
      */
-    public PostgresSearchTask(final IStorageConnection connection) {
+    public PostgresSearchByLimitAndOffsetTask(final IStorageConnection connection) {
         this.connection = connection;
     }
 
@@ -115,7 +115,7 @@ public class PostgresSearchTask implements IDatabaseTask {
             callback = message.getCallback();
 
             preparedQuery = new QueryStatement();
-            PostgresSchema.search(preparedQuery, collection, criteria);
+            PostgresSchema.searchByLimitAndOffset(preparedQuery, collection, criteria);
         } catch (Exception e) {
             throw new TaskPrepareException(e);
         }
