@@ -54,7 +54,7 @@ public class PagingWriterTest {
 
     @Test
     public void should_WritesPAGINGClauseIntoQueryStatementByLimitAndOffset() throws QueryBuildException, SQLException {
-        pagingWriter.writeByLimitAndOffset(query, 3, 10);
+        pagingWriter.writeByLimitAndOffset(query, 3, 10L);
         assertEquals("LIMIT(?)OFFSET(?)", body.toString());
         verify(query, times(1)).pushParameterSetter(any());
         for (SQLQueryParameterSetter setter : setters) {
@@ -62,7 +62,7 @@ public class PagingWriterTest {
             int finalIndex = setter.setParameters(statement, 1);
             assertEquals(3, finalIndex);
             verify(statement).setInt(eq(1), eq(3));
-            verify(statement).setInt(eq(2), eq(10));
+            verify(statement).setLong(eq(2), eq(10L));
         }
     }
 
@@ -76,7 +76,7 @@ public class PagingWriterTest {
             int finalIndex = setter.setParameters(statement, 1);
             assertEquals(3, finalIndex);
             verify(statement).setInt(eq(1), eq(3));
-            verify(statement).setInt(eq(2), eq(0));
+            verify(statement).setLong(eq(2), eq(0L));
         }
     }
 

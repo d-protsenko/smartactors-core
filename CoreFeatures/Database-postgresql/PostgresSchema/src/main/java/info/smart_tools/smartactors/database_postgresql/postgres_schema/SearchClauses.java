@@ -130,7 +130,8 @@ final class SearchClauses {
                 IFieldName limitField = IOC.resolve(fieldNameKey, "limit");
                 Integer limit = (Integer) page.getValue(limitField);
                 IFieldName offsetField = IOC.resolve(fieldNameKey, "offset");
-                Integer offset = (Integer) page.getValue(offsetField);
+                Object offsetRaw = page.getValue(offsetField);
+                Long offset = (offsetRaw != null) ? ((Number) offsetRaw).longValue() : null;
                 paging.writeByLimitAndOffset(statement, limit, offset);
             } catch (Exception e) {
                 throw new QueryBuildException("wrong page format: " + page.serialize(), e);

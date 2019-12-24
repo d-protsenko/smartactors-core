@@ -55,15 +55,15 @@ public class PagingWriter {
      * @param offset [optional] number of rows to skip
      * @throws QueryBuildException when writing body of query errors
      */
-    public void writeByLimitAndOffset(final QueryStatement queryStatement, final Integer limit, final Integer offset) throws QueryBuildException {
-        int offsetOrDefault = Optional.ofNullable(offset).orElse(0);
+    public void writeByLimitAndOffset(final QueryStatement queryStatement, final Integer limit, final Long offset) throws QueryBuildException {
+        long offsetOrDefault = Optional.ofNullable(offset).orElse(0L);
         int limitValidated = Optional.ofNullable(limit).orElseThrow(
                 () -> new QueryBuildException("Error while writing PAGING clause of search query"));
         try {
             queryStatement.getBodyWriter().write("LIMIT(?)OFFSET(?)");
             queryStatement.pushParameterSetter((statement, index) -> {
                 statement.setInt(index++, limitValidated);
-                statement.setInt(index++, offsetOrDefault);
+                statement.setLong(index++, offsetOrDefault);
                 return index;
             });
         } catch (IOException e) {
