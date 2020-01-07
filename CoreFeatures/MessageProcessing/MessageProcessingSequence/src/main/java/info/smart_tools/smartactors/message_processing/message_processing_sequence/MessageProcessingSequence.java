@@ -184,9 +184,13 @@ public class MessageProcessingSequence implements IMessageProcessingSequence, ID
     }
 
     private IReceiverChain resolveChain(final Object chainName)
-            throws ResolutionException, ChainNotFoundException {
-        Object chainId = IOC.resolve(chainIdStrategyKey, chainName, message);
-        return chainStorage.resolve(chainId);
+            throws ChainNotFoundException {
+        try {
+            Object chainId = IOC.resolve(chainIdStrategyKey, chainName, message);
+            return chainStorage.resolve(chainId);
+        } catch (ResolutionException ex) {
+            throw new ChainNotFoundException(chainName, ex);
+        }
     }
 
     /* Call it carefully since it does not change scope and module context */

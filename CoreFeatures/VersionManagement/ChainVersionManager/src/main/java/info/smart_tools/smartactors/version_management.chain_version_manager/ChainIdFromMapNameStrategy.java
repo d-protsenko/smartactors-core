@@ -13,6 +13,7 @@ public class ChainIdFromMapNameStrategy {
     Map<Object, Map<Comparable, Object>> chainIds = new ConcurrentHashMap<>();
     private static Map<Object, ChainVersionStrategies> chainVersionStrategies = new ConcurrentHashMap<>();
     private IStrategy resolveByMessageStrategy = new IStrategy(){
+        @SuppressWarnings("unchecked")
         @Override
         public <T> T resolve(Object... args) throws StrategyException {
             return (T) resolveByMessage(args[0], (IObject) args[1]);
@@ -20,6 +21,7 @@ public class ChainIdFromMapNameStrategy {
     };
 
     private IStrategy resolveByModuleDependenciesStrategy = new IStrategy(){
+        @SuppressWarnings("unchecked")
         @Override
         public <T> T resolve(Object... args) throws StrategyException {
             return (T) resolveByModuleDependencies(args[0]);
@@ -94,20 +96,23 @@ public class ChainIdFromMapNameStrategy {
         if (chainName == null) {
             throw new StrategyException("Chain name cannot be null.");
         }
-        if (chainName.toString().indexOf(":") > -1) {
+        if (chainName.toString().contains(":")) {
             return chainName;
         }
         if (message == null) {
             throw new StrategyException("Message for chain Id resolution cannot be null.");
         }
-
-        Comparable version = chainVersionStrategies.get(chainName).resolveVersion(message);
+        ChainVersionStrategies versionStrategies = chainVersionStrategies.get(chainName);
+        if (versionStrategies == null) {
+            throw new StrategyException("Chain version strategies not found");
+        }
+        Comparable version = versionStrategies.resolveVersion(message);
         return resolve_by_version(chainName, version);
     }
 
     private Object resolveByModuleDependencies(Object chainName)
             throws StrategyException {
-        if (chainName.toString().indexOf(":") > -1) {
+        if (chainName.toString().contains(":")) {
             return chainName;
         }
         Comparable version = ModuleManager.getCurrentModule().getVersion();
