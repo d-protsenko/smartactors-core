@@ -3,9 +3,12 @@ package info.smart_tools.smartactors.database_postgresql_plugins.postgres_db_tas
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
+import info.smart_tools.smartactors.database.interfaces.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.database_postgresql.postgres_add_indexes_task.PostgresAddIndexesSafeTask;
 import info.smart_tools.smartactors.database_postgresql.postgres_count_task.CountMessage;
@@ -35,6 +38,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IP
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
@@ -580,8 +584,14 @@ public class PostgresDBTasksPlugin implements IPlugin {
 
                                 task.prepare(query);
                                 return task;
-                            } catch (Exception e) {
-                                throw new RuntimeException("Can't resolve search db task.", e);
+                            } catch (ResolutionException e) {
+                                throw new FunctionExecutionException("Failed to resolve value from IOC", e);
+                            } catch (TaskPrepareException e) {
+                                throw new FunctionExecutionException("Failed to prepare database task for execution", e);
+                            } catch (QueryBuildException e) {
+                                throw new FunctionExecutionException("Failed to build query", e);
+                            } catch (ChangeValueException e) {
+                                throw new FunctionExecutionException("Failed to set value to IObject", e);
                             }
                         }
                 )
