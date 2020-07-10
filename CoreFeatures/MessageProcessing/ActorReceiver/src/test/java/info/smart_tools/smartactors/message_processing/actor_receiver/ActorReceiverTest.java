@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.message_processing.actor_receiver;
 
-import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
@@ -19,10 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -50,9 +47,9 @@ public class ActorReceiverTest {
         childReceiverMock = mock(IMessageReceiver.class);
         processorMock = mock(IMessageProcessor.class);
 
-        when(IOC.getKeyForKeyStorage()).thenReturn(mock(IKey.class));
-        when(IOC.resolve(IOC.getKeyForKeyStorage(), "actor_receiver_queue")).thenReturn(actorReceiverQueueKey);
-        when(IOC.resolve(IOC.getKeyForKeyStorage(), "actor_receiver_busyness_flag")).thenReturn(actorReceiverBusynessFlagKey);
+        when(IOC.getKeyForKeyByNameStrategy()).thenReturn(mock(IKey.class));
+        when(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "actor_receiver_queue")).thenReturn(actorReceiverQueueKey);
+        when(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "actor_receiver_busyness_flag")).thenReturn(actorReceiverBusynessFlagKey);
 
         when(IOC.resolve(actorReceiverQueueKey)).thenReturn(receiverQueueMock);
         when(IOC.resolve(actorReceiverBusynessFlagKey)).thenReturn(receiverFlag);
@@ -99,8 +96,8 @@ public class ActorReceiverTest {
     @Test
     public void Should_executeReceiversFromQueue_When_QueueIsNotEmptyAndActorIsNotBusy()
             throws Exception {
-        IMessageProcessor[] processorMocks = new IMessageProcessor[] {
-                mock(IMessageProcessor.class), mock(IMessageProcessor.class) };
+        IMessageProcessor[] processorMocks = new IMessageProcessor[]{
+                mock(IMessageProcessor.class), mock(IMessageProcessor.class)};
 
         receiverFlag.set(false);
 
@@ -110,14 +107,14 @@ public class ActorReceiverTest {
         }).when(childReceiverMock).receive(any());
 
         when(receiverQueueMock.isEmpty())
-            .thenAnswer(invocationOnMock -> {
-                assertFalse(receiverFlag.get());
-                return false;
-            })
-            .thenAnswer(invocationOnMock -> {
-                assertFalse(receiverFlag.get());
-                return true;
-            });
+                .thenAnswer(invocationOnMock -> {
+                    assertFalse(receiverFlag.get());
+                    return false;
+                })
+                .thenAnswer(invocationOnMock -> {
+                    assertFalse(receiverFlag.get());
+                    return true;
+                });
 
         when(receiverQueueMock.poll())
                 .thenReturn(processorMocks[0])
@@ -178,5 +175,28 @@ public class ActorReceiverTest {
 
         verify(asynchronousOperationExceptionMock).printStackTrace();
         verify(asynchronousOperationExceptionMock).addSuppressed(messageReceiveExceptionMock);
+    }
+
+
+    @Test
+    public void Should_propagateDisposeToChildReceiver()
+            throws Exception {
+        RuntimeException exception = mock(RuntimeException.class);
+        ActorReceiver actorReceiver = new ActorReceiver(childReceiverMock);
+
+        actorReceiver.dispose();
+        verify(childReceiverMock).dispose();
+    }
+
+    @Test
+    public void Should_catchChildDisposeException()
+            throws Exception {
+        RuntimeException exception = mock(RuntimeException.class);
+        ActorReceiver actorReceiver = new ActorReceiver(childReceiverMock);
+
+        doThrow(exception).when(childReceiverMock).dispose();
+
+        actorReceiver.dispose();
+        verify(childReceiverMock).dispose();
     }
 }

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.feature_loading_system.filesystem_tracker;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +12,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 public class ListenerTaskTest {
@@ -132,13 +133,13 @@ public class ListenerTaskTest {
 
         ListenerTask task = new ListenerTask(directoryMock, actionMock, fileSystemMock);
 
-        doThrow(new ActionExecuteException("")).when(actionMock).execute(any(IPath.class));
+        doThrow(new ActionExecutionException("")).when(actionMock).execute(any(IPath.class));
 
         try {
             task.run();
             fail();
         } catch (RuntimeException e) {
-            assertTrue(e.getCause() instanceof ActionExecuteException);
+            assertTrue(e.getCause() instanceof ActionExecutionException);
         }
     }
 

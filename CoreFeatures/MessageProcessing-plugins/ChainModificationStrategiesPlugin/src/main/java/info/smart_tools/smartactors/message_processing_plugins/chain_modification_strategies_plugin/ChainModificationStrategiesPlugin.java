@@ -5,7 +5,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing.chain_modifications.ReplaceReceiversChainModificationStrategy;
 
 /**
@@ -31,6 +31,15 @@ public class ChainModificationStrategiesPlugin extends BootstrapPlugin {
     @After({"IFieldNamePlugin"})
     public void registerReceiverReplaceModification()
             throws ResolutionException, RegistrationException {
-        IOC.register(Keys.getOrAdd("chain modification: replace receivers"), new ReplaceReceiversChainModificationStrategy());
+        IOC.register(Keys.getKeyByName("chain modification: replace receivers"), new ReplaceReceiversChainModificationStrategy());
+    }
+
+    /**
+     * Unregisters {@link ReplaceReceiversChainModificationStrategy}.
+     */
+    @ItemRevert("chain_modification_strategies:replace_receivers")
+    public void unregisterReceiverReplaceModification() {
+        String[] keyNames = { "chain modification: replace receivers" };
+        Keys.unregisterByNames(keyNames);
     }
 }

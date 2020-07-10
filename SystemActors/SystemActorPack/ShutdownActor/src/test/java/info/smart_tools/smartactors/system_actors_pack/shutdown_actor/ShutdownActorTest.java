@@ -7,13 +7,12 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import info.smart_tools.smartactors.system_actors_pack.shutdown_actor.wrapper.ForceShutdownRequestMessage;
 import info.smart_tools.smartactors.system_actors_pack.shutdown_actor.wrapper.ShutdownRequestMessage;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.mockito.Matchers.eq;
@@ -36,7 +35,7 @@ public class ShutdownActorTest extends PluginsLoadingTestBase {
     protected void registerMocks() throws Exception {
         upCounterMock = mock(IUpCounter.class);
 
-        IOC.register(Keys.getOrAdd("a upcounter"), new SingletonStrategy(upCounterMock));
+        IOC.register(Keys.getKeyByName("a upcounter"), new SingletonStrategy(upCounterMock));
     }
 
     @Test

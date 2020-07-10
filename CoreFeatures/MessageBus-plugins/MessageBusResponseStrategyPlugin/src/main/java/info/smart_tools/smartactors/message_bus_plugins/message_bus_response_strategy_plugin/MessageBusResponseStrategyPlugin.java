@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_bus.message_bus_handler.MessageBusResponseStrategy;
 
 public class MessageBusResponseStrategyPlugin  extends BootstrapPlugin {
@@ -24,6 +24,6 @@ public class MessageBusResponseStrategyPlugin  extends BootstrapPlugin {
     @Item("message_bus_response_strategy")
     public void registerMessageBusResponseStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("message bus response strategy"), new SingletonStrategy(new MessageBusResponseStrategy()));
+        IOC.register(Keys.getKeyByName("message bus response strategy"), new SingletonStrategy(new MessageBusResponseStrategy()));
     }
 }

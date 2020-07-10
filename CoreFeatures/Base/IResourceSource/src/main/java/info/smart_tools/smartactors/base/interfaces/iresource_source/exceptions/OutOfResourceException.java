@@ -1,12 +1,12 @@
 package info.smart_tools.smartactors.base.interfaces.iresource_source.exceptions;
 
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.interfaces.iresource_source.IResourceSource;
 
 /**
  * Exception thrown by methods of implementations of {@link IResourceSource} when client tries to access resource that
- * is not available but will become available later (the client may use {@link IResourceSource#onAvailable(IPoorAction)}
+ * is not available but will become available later (the client may use {@link IResourceSource#onAvailable(IActionNoArgs)}
  * to wait for resource).
  */
 public class OutOfResourceException extends Exception {

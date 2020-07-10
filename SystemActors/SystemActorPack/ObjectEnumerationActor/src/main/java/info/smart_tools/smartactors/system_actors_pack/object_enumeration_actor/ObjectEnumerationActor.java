@@ -1,11 +1,11 @@
 package info.smart_tools.smartactors.system_actors_pack.object_enumeration_actor;
 
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.system_actors_pack.object_enumeration_actor.wrapper.EnumerationResult;
 
 /**
@@ -21,7 +21,7 @@ public class ObjectEnumerationActor {
      */
     public void enumerateChains(final EnumerationResult result)
             throws ResolutionException, ChangeValueException {
-        IChainStorage storage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
+        IChainStorage storage = IOC.resolve(Keys.getKeyByName(IChainStorage.class.getCanonicalName()));
         result.setItems(storage.enumerate());
     }
 
@@ -34,7 +34,7 @@ public class ObjectEnumerationActor {
      */
     public void enumerateReceivers(final EnumerationResult result)
             throws ResolutionException, ChangeValueException {
-        IRouter router = IOC.resolve(Keys.getOrAdd(IRouter.class.getCanonicalName()));
+        IRouter router = IOC.resolve(Keys.getKeyByName(IRouter.class.getCanonicalName()));
         result.setItems(router.enumerate());
     }
 }

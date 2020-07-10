@@ -3,16 +3,11 @@ package info.smart_tools.smartactors.feature_management.directory_watcher_actor;
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardWatchEventKinds;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchKey;
-import java.nio.file.WatchService;
+import java.nio.file.*;
 
 /**
  * The service for watching directory on new file creation
@@ -59,7 +54,7 @@ public class ListeningTask implements Runnable {
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (IOException | ActionExecuteException | InvalidArgumentException e) {
+        } catch (IOException | ActionExecutionException | InvalidArgumentException e) {
             throw new RuntimeException(e);
         }
     }

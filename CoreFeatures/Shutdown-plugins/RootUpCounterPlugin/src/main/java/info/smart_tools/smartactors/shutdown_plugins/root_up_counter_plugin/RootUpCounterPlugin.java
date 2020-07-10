@@ -13,7 +13,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 public class RootUpCounterPlugin extends BootstrapPlugin {
 
@@ -36,7 +36,17 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
     @Item("root_upcounter")
     public void registerRootUpcounter()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("root upcounter"), new SingletonStrategy(new UpCounter()));
+        IOC.register(Keys.getKeyByName("root upcounter"), new SingletonStrategy(new UpCounter()));
+    }
+
+    /**
+     * Reverts root upcounter registrations.
+     *
+     */
+    @ItemRevert("root_upcounter")
+    public void unregisterRootUpcounter() {
+        String[] itemNames = { "root upcounter" };
+        Keys.unregisterByNames(itemNames);
     }
 
     /**
@@ -53,15 +63,25 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
     })
     public void registerNewUpcounterCreationStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("new upcounter"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.getKeyByName("new upcounter"), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
-                IUpCounter parent = args.length > 0 ? (IUpCounter) args[0] : IOC.resolve(Keys.getOrAdd("root upcounter"));
+                IUpCounter parent = args.length > 0 ? (IUpCounter) args[0] : IOC.resolve(Keys.getKeyByName("root upcounter"));
 
                 return new UpCounter(parent);
             } catch (ResolutionException | IllegalUpCounterState e) {
                 throw new FunctionExecutionException(e);
             }
         }));
+    }
+
+    /**
+     * Reverts strategy for creation of new upcounters registration.
+     *
+     */
+    @ItemRevert("new_upcounter_creation_strategy")
+    public void unregisterNewUpcounterCreationStrategy() {
+        String[] itemNames = { "new upcounter" };
+        Keys.unregisterByNames(itemNames);
     }
 
     /**
@@ -99,20 +119,21 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
     @After({
         "root_upcounter"
     })
+    @Before({"read_initial_config"})
     public void setupDefaultShutdownCallbacks()
             throws ResolutionException, UpCounterCallbackExecutionException {
-        IUpCounter upCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
+        IUpCounter upCounter = IOC.resolve(Keys.getKeyByName("root upcounter"));
 
-        upCounter.onShutdownRequest(mode -> {
+        upCounter.onShutdownRequest(this.toString(), mode -> {
             System.out.printf("Got shutdown request with mode=\"%s\"\n", mode);
         });
 
-        upCounter.onShutdownComplete(() -> {
+        upCounter.onShutdownComplete(this.toString(), () -> {
             System.out.println("Shutting down completely...");
         });
 
         // TODO:: Remove/move to separate feature if multiple instances will be able to run in the same JVM
-        upCounter.onShutdownComplete(() -> {
+        upCounter.onShutdownComplete(this.toString(), () -> {
             Thread thread = new Thread(() -> {
                 try {
                     Thread.sleep(TERMINATION_TIMEOUT / 2);
@@ -121,7 +142,7 @@ public class RootUpCounterPlugin extends BootstrapPlugin {
                     System.out.println("Forcing JVM shutdown...");
                     System.exit(1);
                 } catch (InterruptedException ignore) { }
-            });
+            }, "onShutdownCompleteThread");
 
             thread.setDaemon(true);
             thread.start();

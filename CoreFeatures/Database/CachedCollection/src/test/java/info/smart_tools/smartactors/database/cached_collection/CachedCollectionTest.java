@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.database.cached_collection;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
-import info.smart_tools.smartactors.base.interfaces.ipool.exception.PoolTakeException;
+import info.smart_tools.smartactors.base.interfaces.ipool.exception.GettingFromPoolException;
 import info.smart_tools.smartactors.database.cached_collection.exception.DeleteCacheItemException;
 import info.smart_tools.smartactors.database.cached_collection.exception.GetCacheItemException;
 import info.smart_tools.smartactors.database.cached_collection.exception.UpsertCacheItemException;
@@ -16,7 +16,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,13 +30,11 @@ import java.util.List;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.doAnswer;
 import static org.powermock.api.mockito.PowerMockito.doThrow;
 import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.*;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
@@ -57,7 +55,7 @@ public class CachedCollectionTest {
     private IField searchResultField;
 
     @Before
-    public void setUp() throws ReadValueException, ChangeValueException, InvalidArgumentException, PoolTakeException, ResolutionException {
+    public void setUp() throws ReadValueException, ChangeValueException, InvalidArgumentException, GettingFromPoolException, ResolutionException {
 
         mockStatic(IOC.class);
         mockStatic(Keys.class);
@@ -75,7 +73,7 @@ public class CachedCollectionTest {
         IField connectionPoolField = mock(IField.class);
 
         IKey mockKeyField = mock(IKey.class);
-        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(mockKeyField);
+        when(Keys.getKeyByName(IField.class.getCanonicalName())).thenReturn(mockKeyField);
         when(IOC.resolve(mockKeyField, "collectionName")).thenReturn(collectionNameField);
         when(IOC.resolve(mockKeyField, "connectionPool")).thenReturn(connectionPoolField);
         when(IOC.resolve(mockKeyField, "keyName")).thenReturn(keyNameField);
@@ -92,7 +90,7 @@ public class CachedCollectionTest {
         IPool connectionPool = mock(IPool.class);
         connection = mock(IStorageConnection.class);
         collectionName = mock(String.class);
-        when(connectionPool.take()).thenReturn(connection);
+        when(connectionPool.get()).thenReturn(connection);
         when(connectionPoolField.in(config)).thenReturn(connectionPool);
         when(collectionNameField.in(config)).thenReturn(collectionName);
         collection = new CachedCollection(config);
@@ -107,12 +105,12 @@ public class CachedCollectionTest {
         IObject query = mock(IObject.class);
         IObject deleteQuery = mock(IObject.class);
         IKey keyIObject = mock(IKey.class);
-        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(keyIObject);
+        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(keyIObject);
         when(IOC.resolve(keyIObject)).thenReturn(deleteQuery);
 
         IDatabaseTask deleteTask = mock(IDatabaseTask.class);
         IKey keyTask = mock(IKey.class);
-        when(Keys.getOrAdd("db.cached_collection.delete")).thenReturn(keyTask);
+        when(Keys.getKeyByName("db.cached_collection.delete")).thenReturn(keyTask);
         when(IOC.resolve(eq(keyTask), any(), eq(collectionName), eq(query))).thenReturn(deleteTask);
 
         when(specificKeyNameField.in(query)).thenReturn("key");
@@ -137,13 +135,13 @@ public class CachedCollectionTest {
 
         IObject upsertQuery = mock(IObject.class);
         IKey keyIObject = mock(IKey.class);
-        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(keyIObject);
+        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(keyIObject);
         when(IOC.resolve(keyIObject)).thenReturn(upsertQuery);
         when(specificKeyNameField.in(query)).thenReturn("key");
 
         IDatabaseTask upsertTask = mock(IDatabaseTask.class);
         IKey keyTask = mock(IKey.class);
-        when(Keys.getOrAdd("db.cached_collection.upsert")).thenReturn(keyTask);
+        when(Keys.getKeyByName("db.cached_collection.upsert")).thenReturn(keyTask);
         when(IOC.resolve(eq(keyTask), any(), eq(collectionName), eq(query))).thenReturn(upsertTask);
 
         collection.upsert(query);
@@ -160,13 +158,13 @@ public class CachedCollectionTest {
 
         IObject upsertQuery = mock(IObject.class);
         IKey keyIObject = mock(IKey.class);
-        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(keyIObject);
+        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(keyIObject);
         when(IOC.resolve(keyIObject)).thenReturn(upsertQuery);
         when(specificKeyNameField.in(query)).thenReturn("key");
 
         IDatabaseTask upsertTask = mock(IDatabaseTask.class);
         IKey keyTask = mock(IKey.class);
-        when(Keys.getOrAdd("db.cached_collection.upsert")).thenReturn(keyTask);
+        when(Keys.getKeyByName("db.cached_collection.upsert")).thenReturn(keyTask);
         when(IOC.resolve(eq(keyTask), any(), eq(collectionName), eq(query))).thenReturn(upsertTask);
         doThrow(new TaskExecutionException("")).when(upsertTask).execute();
 
@@ -195,14 +193,14 @@ public class CachedCollectionTest {
 
         IObject readQuery = mock(IObject.class);
         IKey keyIObject = mock(IKey.class);
-        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(keyIObject);
+        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(keyIObject);
         when(IOC.resolve(keyIObject)).thenReturn(readQuery);
 
         final IObject searchResult = mock(IObject.class);
 
         IDatabaseTask readTask = mock(IDatabaseTask.class);
         IKey keyTask = mock(IKey.class);
-        when(Keys.getOrAdd("db.cached_collection.get_item")).thenReturn(keyTask);
+        when(Keys.getKeyByName("db.cached_collection.get_item")).thenReturn(keyTask);
         final IAction[] callback = {mock(IAction.class)};
         doAnswer(invocation -> {
             callback[0] = (IAction) invocation.getArguments()[5];
@@ -226,14 +224,14 @@ public class CachedCollectionTest {
 
         IObject readQuery = mock(IObject.class);
         IKey keyIObject = mock(IKey.class);
-        when(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(keyIObject);
+        when(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")).thenReturn(keyIObject);
         when(IOC.resolve(keyIObject)).thenReturn(readQuery);
 
         final IObject searchResult = mock(IObject.class);
 
         IDatabaseTask readTask = mock(IDatabaseTask.class);
         IKey keyTask = mock(IKey.class);
-        when(Keys.getOrAdd("db.cached_collection.get_item")).thenReturn(keyTask);
+        when(Keys.getKeyByName("db.cached_collection.get_item")).thenReturn(keyTask);
         final IAction[] callback = {mock(IAction.class)};
         doAnswer(invocation -> {
             callback[0] = (IAction) invocation.getArguments()[5];

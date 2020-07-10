@@ -1,40 +1,37 @@
 package info.smart_tools.smartactors.endpoint.actor.response_sender_actor;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.endpoint.actor.response_sender_actor.exceptions.ResponseSenderActorException;
 import info.smart_tools.smartactors.endpoint.actor.response_sender_actor.wrapper.ResponseSenderMessage;
-import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.endpoint.interfaces.ichannel_handler.IChannelHandler;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse.IResponse;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse_content_strategy.IResponseContentStrategy;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse_sender.IResponseSender;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse_sender.exceptions.ResponseSendingException;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
-import info.smart_tools.smartactors.endpoint.interfaces.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.endpoint.interfaces.iresponse.IResponse;
-import info.smart_tools.smartactors.endpoint.interfaces.iresponse_content_strategy.IResponseContentStrategy;
-import info.smart_tools.smartactors.endpoint.interfaces.iresponse_sender.IResponseSender;
-import info.smart_tools.smartactors.endpoint.interfaces.iresponse_sender.exceptions.ResponseSendingException;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_strategy.ResolveByNameIocStrategy;
+import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
-import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class ResponseSenderActorTest {
     IResponse response;
@@ -61,10 +58,10 @@ public class ResponseSenderActorTest {
         ScopeProvider.setCurrentScope(mainScope);
 
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
-        IKey keyFieldName = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey keyFieldName = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         IOC.register(keyFieldName,
                 new CreateNewInstanceStrategy(
                         (args) -> {
@@ -75,25 +72,25 @@ public class ResponseSenderActorTest {
                             return null;
                         }
                 ));
-        IKey keyIObject = Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
+        IKey keyIObject = Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject");
         IOC.register(keyIObject,
                 new CreateNewInstanceStrategy(
                         (args) -> new DSObject()
 
                 ));
-        IKey keyIResponse = Keys.getOrAdd(IResponse.class.getCanonicalName());
+        IKey keyIResponse = Keys.getKeyByName(IResponse.class.getCanonicalName());
         IOC.register(keyIResponse,
                 new SingletonStrategy(response));
 
-        IKey keyIResponseContentStrategy = Keys.getOrAdd(IResponseContentStrategy.class.getCanonicalName());
+        IKey keyIResponseContentStrategy = Keys.getKeyByName(IResponseContentStrategy.class.getCanonicalName());
         IOC.register(keyIResponseContentStrategy,
                 new SingletonStrategy(responseContentStrategy));
 
-        IKey keyIResponseSender = Keys.getOrAdd(IResponseSender.class.getCanonicalName());
+        IKey keyIResponseSender = Keys.getKeyByName(IResponseSender.class.getCanonicalName());
         IOC.register(keyIResponseSender,
                 new SingletonStrategy(responseSender));
 
-        IOC.register(Keys.getOrAdd("http_request_key_for_response_sender"),
+        IOC.register(Keys.getKeyByName("http_request_key_for_response_sender"),
                 new SingletonStrategy("HTTP_POST"));
 
 

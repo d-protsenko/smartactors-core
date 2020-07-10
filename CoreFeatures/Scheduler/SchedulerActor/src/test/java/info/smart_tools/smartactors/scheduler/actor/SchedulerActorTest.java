@@ -1,11 +1,11 @@
 package info.smart_tools.smartactors.scheduler.actor;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStopException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
@@ -16,7 +16,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.scheduler.actor.wrappers.*;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
@@ -32,9 +32,7 @@ import org.mockito.ArgumentCaptor;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
@@ -53,7 +51,7 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
     private AddEntryQueryListMessage addListEntryQueryMessage;
     private ListEntriesQueryMessage listEntriesQueryMessage;
     private DeleteEntryQueryMessage deleteEntryQueryMessage;
-    private IResolveDependencyStrategy newEntryStrategy;
+    private IStrategy newEntryStrategy;
     private ISchedulerEntry entryMock;
     private IQueue taskQueueMock;
     private ISchedulerEntryFilter preShutdownModeEntryFilterMock;
@@ -78,23 +76,23 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
         service = mock(ISchedulerService.class);
         activationAction = mock(IAction.class);
 
-        IResolveDependencyStrategy poolStrategy = mock(IResolveDependencyStrategy.class);
-        IResolveDependencyStrategy serviceStrategy = mock(IResolveDependencyStrategy.class);
-        IResolveDependencyStrategy actionStrategy = mock(IResolveDependencyStrategy.class);
+        IStrategy poolStrategy = mock(IStrategy.class);
+        IStrategy serviceStrategy = mock(IStrategy.class);
+        IStrategy actionStrategy = mock(IStrategy.class);
 
         when(service.getEntryStorage()).thenReturn(storage);
         when(poolStrategy.resolve(same(connectionOptions))).thenReturn(pool);
         when(serviceStrategy.resolve(same(pool), eq("the_collection_name")))
                 .thenReturn(service)
-                .thenThrow(ResolveDependencyStrategyException.class);
+                .thenThrow(StrategyException.class);
         when(actionStrategy.resolve()).thenReturn(activationAction);
 
-        IOC.register(Keys.getOrAdd("the connection options dependency"), new SingletonStrategy(connectionOptions));
-        IOC.register(Keys.getOrAdd("the connection pool dependency"), poolStrategy);
-        IOC.register(Keys.getOrAdd("new scheduler service"), serviceStrategy);
-        IOC.register(Keys.getOrAdd("scheduler service activation action for scheduler actor"), actionStrategy);
+        IOC.register(Keys.getKeyByName("the connection options dependency"), new SingletonStrategy(connectionOptions));
+        IOC.register(Keys.getKeyByName("the connection pool dependency"), poolStrategy);
+        IOC.register(Keys.getKeyByName("new scheduler service"), serviceStrategy);
+        IOC.register(Keys.getKeyByName("scheduler service activation action for scheduler actor"), actionStrategy);
 
-        args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        args = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'connectionOptionsDependency':'the connection options dependency'," +
                         "'connectionPoolDependency':'the connection pool dependency'," +
@@ -119,18 +117,18 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
         when(entryMock.getState()).thenReturn(mock(IObject.class));
         when(entryMock.getId()).thenReturn("id");
 
-        newEntryStrategy = mock(IResolveDependencyStrategy.class);
+        newEntryStrategy = mock(IStrategy.class);
         when(newEntryStrategy.resolve(any(), any())).thenReturn(entryMock);
-        IOC.register(Keys.getOrAdd("new scheduler entry"), newEntryStrategy);
+        IOC.register(Keys.getKeyByName("new scheduler entry"), newEntryStrategy);
 
         taskQueueMock = mock(IQueue.class);
-        IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(taskQueueMock));
+        IOC.register(Keys.getKeyByName("task_queue"), new SingletonStrategy(taskQueueMock));
 
         upCounterMock = mock(IUpCounter.class);
-        IOC.register(Keys.getOrAdd("root upcounter"), new SingletonStrategy(upCounterMock));
+        IOC.register(Keys.getKeyByName("root upcounter"), new SingletonStrategy(upCounterMock));
 
         preShutdownModeEntryFilterMock = mock(ISchedulerEntryFilter.class);
-        IOC.register(Keys.getOrAdd("pre shutdown mode entry filter"), new SingletonStrategy(preShutdownModeEntryFilterMock));
+        IOC.register(Keys.getKeyByName("pre shutdown mode entry filter"), new SingletonStrategy(preShutdownModeEntryFilterMock));
     }
 
     @Test
@@ -221,9 +219,9 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
             throws Exception {
         SchedulerActor actor = new SchedulerActor(args);
 
-        ArgumentCaptor<IPoorAction> callbackCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> callbackCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
-        verify(upCounterMock).onShutdownComplete(callbackCaptor.capture());
+        verify(upCounterMock).onShutdownComplete(eq(actor.toString()), callbackCaptor.capture());
 
         callbackCaptor.getValue().execute();
         verify(service).stop();
@@ -232,7 +230,7 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
         try {
             callbackCaptor.getValue().execute();
             fail();
-        } catch (ActionExecuteException ignore) { }
+        } catch (ActionExecutionException ignore) { }
 
         doThrow(IllegalServiceStateException.class).when(service).stop();
         callbackCaptor.getValue().execute();
@@ -245,7 +243,7 @@ public class SchedulerActorTest extends PluginsLoadingTestBase {
 
         ArgumentCaptor<IAction> callbackCaptor = ArgumentCaptor.forClass(IAction.class);
 
-        verify(upCounterMock).onShutdownRequest(callbackCaptor.capture());
+        verify(upCounterMock).onShutdownRequest(eq(actor.toString()), callbackCaptor.capture());
 
         callbackCaptor.getValue().execute(null);
 

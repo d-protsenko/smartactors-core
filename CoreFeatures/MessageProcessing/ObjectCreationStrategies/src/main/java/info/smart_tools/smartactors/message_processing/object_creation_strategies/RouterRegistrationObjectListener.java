@@ -3,7 +3,7 @@ package info.smart_tools.smartactors.message_processing.object_creation_strategi
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.IReceiverObjectListener;
@@ -36,7 +36,7 @@ public class RouterRegistrationObjectListener implements IReceiverObjectListener
         }
 
         try {
-            IRouter router = IOC.resolve(Keys.getOrAdd(IRouter.class.getCanonicalName()));
+            IRouter router = IOC.resolve(Keys.getKeyByName(IRouter.class.getCanonicalName()));
 
             router.register(itemId, receiver);
         } catch (ResolutionException e) {

@@ -5,14 +5,14 @@ import info.smart_tools.smartactors.database.cached_collection.wrapper.CreateCac
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.exception.TaskPrepareException;
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
+import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,9 +23,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -39,7 +37,7 @@ public class CreateCachedCollectionTaskTest {
     private IField keyNameField;
     private IField indexesField;
 
-    private Key keyForGetOrAdd;
+    private Key keyForGetKeyByName;
 
     private static final String ORDERED_INDEX = "ordered";
     private static final String DATE_TIME_INDEX = "datetime";
@@ -52,7 +50,7 @@ public class CreateCachedCollectionTaskTest {
         keyNameField = PowerMockito.mock(IField.class);
         indexesField = PowerMockito.mock(IField.class);
         IKey keyField = PowerMockito.mock(IKey.class);
-        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(keyField);
+        when(Keys.getKeyByName(IField.class.getCanonicalName())).thenReturn(keyField);
         when(IOC.resolve(keyField, "keyName")).thenReturn(keyNameField);
         when(IOC.resolve(keyField, "indexes")).thenReturn(indexesField);
 
@@ -60,8 +58,8 @@ public class CreateCachedCollectionTaskTest {
 
         testTask = new CreateCachedCollectionTask(task);
 
-        keyForGetOrAdd = mock(Key.class);
-        when(Keys.getOrAdd(CreateCachedCollectionQuery.class.toString())).thenReturn(keyForGetOrAdd);
+        keyForGetKeyByName = mock(Key.class);
+        when(Keys.getKeyByName(CreateCachedCollectionQuery.class.toString())).thenReturn(keyForGetKeyByName);
     }
 
     @Test

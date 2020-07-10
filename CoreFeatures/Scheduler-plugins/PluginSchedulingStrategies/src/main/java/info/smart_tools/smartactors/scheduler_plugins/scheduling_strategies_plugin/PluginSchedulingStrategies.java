@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.scheduler.strategies.ContinuouslyRepeatScheduleStrategy;
 import info.smart_tools.smartactors.scheduler.strategies.OnceSchedulingStrategy;
 
@@ -37,11 +37,11 @@ public class PluginSchedulingStrategies extends BootstrapPlugin {
     public void registerSchedulingStrategies()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
         IOC.register(
-                Keys.getOrAdd("repeat continuously scheduling strategy"),
+                Keys.getKeyByName("repeat continuously scheduling strategy"),
                 new SingletonStrategy(new ContinuouslyRepeatScheduleStrategy()));
 
         IOC.register(
-                Keys.getOrAdd("do once scheduling strategy"),
+                Keys.getKeyByName("do once scheduling strategy"),
                 new SingletonStrategy(new OnceSchedulingStrategy()));
     }
 }

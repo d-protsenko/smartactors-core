@@ -1,29 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>core-features</artifactId>
-        <version>0.3.3</version>
+        <version>0.6.0</version>
     </parent>
-
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>scheduler-auto-startup</artifactId>
-    <version>0.3.3</version>
-
+    <version>0.6.0</version>
     <packaging>pom</packaging>
-
     <modules>
         <module>SchedulerAutoStartupPlugin</module>
         <module>SchedulerAutoStartupDistribution</module>
     </modules>
-
     <build>
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.5.1</version>
                     <configuration>
@@ -39,20 +34,6 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <version>3.0.0</version>
-                    <inherited>true</inherited>
-                    <executions>
-                        <execution>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>single</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>2.8.2</version>
                     <executions>
@@ -61,7 +42,7 @@
                             <phase>none</phase>
                         </execution>
                         <execution>
-                            <id>archiva.smartactors-features</id>
+                            <id>${feature.rid}</id>
                             <phase>deploy</phase>
                             <goals>
                                 <goal>deploy-file</goal>
@@ -69,14 +50,15 @@
                             <inherited>false</inherited>
                             <configuration>
                                 <generatePom>true</generatePom>
-                                <file>${project.parent.basedir}/project-distribution/${project.artifactId}-${project.parent.version}-archive.${deploy.fomat}</file>
-                                <url>http://archiva.smart-tools.info/repository/smartactors-features/</url>
-                                <repositoryId>archiva.smartactors-features</repositoryId>
+                                <file>${project.parent.basedir}/project-distribution/${project.artifactId}-${project.version}.${deploy.format}</file>
+                                <url>${feature.rurl}</url>
+                                <repositoryId>${feature.rid}</repositoryId>
                                 <groupId>${project.groupId}</groupId>
                                 <artifactId>${project.artifactId}</artifactId>
                                 <version>${project.version}</version>
                                 <packaging>${deploy.format}</packaging>
                                 <description>This archive contains ...</description>
+                                <classifier>${deploy.classifier}</classifier>
                             </configuration>
                         </execution>
                     </executions>
@@ -85,5 +67,4 @@
             </plugins>
         </pluginManagement>
     </build>
-
 </project>

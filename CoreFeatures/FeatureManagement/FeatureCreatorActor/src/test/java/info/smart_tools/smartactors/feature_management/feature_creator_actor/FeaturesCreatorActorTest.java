@@ -9,11 +9,10 @@ import info.smart_tools.smartactors.feature_management.feature_creator_actor.wra
 import info.smart_tools.smartactors.feature_management.interfaces.ifeature.IFeature;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
@@ -30,9 +29,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Test for {@link FeaturesCreatorActor}
@@ -49,7 +46,7 @@ public class FeaturesCreatorActorTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -61,7 +58,7 @@ public class FeaturesCreatorActorTest {
         );
 
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
@@ -72,7 +69,7 @@ public class FeaturesCreatorActorTest {
                         }
                 )
         );
-        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     if (args.length == 0) {
                         return new DSObject();
@@ -100,7 +97,7 @@ public class FeaturesCreatorActorTest {
             throws Exception {
         FeaturesCreatorActor actor = new FeaturesCreatorActor();
         CreateMessageWrapper wrapper = mock(CreateMessageWrapper.class);
-        when(wrapper.getFileName()).thenReturn("test-feature-0.0.1-archive.zip");
+        when(wrapper.getFileName()).thenReturn("test-feature-0.0.1.zip");
         when(wrapper.getObservedDirectory()).thenReturn("target/test-classes/");
 
         doAnswer(invocationOnMock -> {
@@ -109,7 +106,7 @@ public class FeaturesCreatorActorTest {
                 assertEquals(featureDescription.getValue(new FieldName("name")), "test-feature");
                 assertEquals(
                         featureDescription.getValue(new FieldName("featureLocation")),
-                        new Path("target/test-classes/test-feature-0.0.1-archive.zip")
+                        new Path("target/test-classes/test-feature-0.0.1.zip")
                 );
             } catch (Throwable e) {
                 throw new RuntimeException(e);
@@ -157,7 +154,7 @@ public class FeaturesCreatorActorTest {
     public void checkCreationFeatureByMessageMethodBasedOnJsonFile()
             throws Exception {
         List<IObject> repositoryStorage = new ArrayList<>();
-        IOC.register(Keys.getOrAdd("feature-repositories"), new SingletonStrategy(repositoryStorage));
+        IOC.register(Keys.getKeyByName("feature-repositories"), new SingletonStrategy(repositoryStorage));
 
         FeaturesCreatorActor actor = new FeaturesCreatorActor();
         CreateFeaturesWrapper wrapper = mock(CreateFeaturesWrapper.class);
@@ -207,14 +204,14 @@ public class FeaturesCreatorActorTest {
     public void checkCreationFeatureByMessageMethodBasedOnZipFile()
             throws Exception {
         List<IObject> repositoryStorage = new ArrayList<>();
-        IOC.register(Keys.getOrAdd("feature-repositories"), new SingletonStrategy(repositoryStorage));
+        IOC.register(Keys.getKeyByName("feature-repositories"), new SingletonStrategy(repositoryStorage));
 
         FeaturesCreatorActor actor = new FeaturesCreatorActor();
         CreateFeaturesWrapper wrapper = mock(CreateFeaturesWrapper.class);
         IObject json = new DSObject(
                 "{\"features\": [{\"name\":\"test-feature\",\"version\":null,\"group\":null}]}"
         );
-        ((List<IObject>) json.getValue(new FieldName("features"))).get(0).setValue(new FieldName("featureLocation"), new Path("target/test-classes/test-feature-0.0.1-archive.zip"));
+        ((List<IObject>) json.getValue(new FieldName("features"))).get(0).setValue(new FieldName("featureLocation"), new Path("target/test-classes/test-feature-0.0.1.zip"));
         when(wrapper.getFeaturesDescription()).thenReturn(
                 (List<IObject>) json.getValue(new FieldName("features"))
         );
@@ -234,6 +231,6 @@ public class FeaturesCreatorActorTest {
         assertEquals(((IFeature) features.toArray()[0]).getName(), "test-feature");
         assertEquals(((IFeature) features.toArray()[0]).getGroupId(), null);
         assertEquals(((IFeature) features.toArray()[0]).getVersion(), null);
-        assertEquals(((IFeature) features.toArray()[0]).getFeatureLocation(), new Path("target/test-classes/test-feature-0.0.1-archive.zip"));
+        assertEquals(((IFeature) features.toArray()[0]).getLocation(), new Path("target/test-classes/test-feature-0.0.1.zip"));
     }
 }

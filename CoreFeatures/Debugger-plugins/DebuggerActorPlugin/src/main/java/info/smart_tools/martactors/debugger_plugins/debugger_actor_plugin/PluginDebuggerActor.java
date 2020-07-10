@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 /**
  *
@@ -34,6 +34,6 @@ public class PluginDebuggerActor extends BootstrapPlugin {
     @After({"debugger:session"})
     public void registerActor()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("debugger actor"), new ApplyFunctionToArgumentsStrategy(args -> new DebuggerActor()));
+        IOC.register(Keys.getKeyByName("debugger actor"), new ApplyFunctionToArgumentsStrategy(args -> new DebuggerActor()));
     }
 }

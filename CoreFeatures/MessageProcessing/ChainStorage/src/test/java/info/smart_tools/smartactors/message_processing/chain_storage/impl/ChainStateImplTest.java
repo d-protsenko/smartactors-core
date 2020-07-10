@@ -1,14 +1,13 @@
 package info.smart_tools.smartactors.message_processing.chain_storage.impl;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainModificationException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
@@ -18,7 +17,7 @@ import org.junit.Test;
 
 import java.text.MessageFormat;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -27,7 +26,7 @@ import static org.mockito.Mockito.when;
  */
 public class ChainStateImplTest extends PluginsLoadingTestBase {
     private IReceiverChain[] chainMocks;
-    private IResolveDependencyStrategy[] modStrategyMocks;
+    private IStrategy[] modStrategyMocks;
     private IObject[] modArgMocks;
 
     @Override
@@ -47,16 +46,16 @@ public class ChainStateImplTest extends PluginsLoadingTestBase {
             chainMocks[i] = mock(IReceiverChain.class);
         }
 
-        modStrategyMocks = new IResolveDependencyStrategy[2];
+        modStrategyMocks = new IStrategy[2];
         modArgMocks = new IObject[modStrategyMocks.length];
 
         for (int i = 0; i < modStrategyMocks.length; i++) {
-            modStrategyMocks[i] = mock(IResolveDependencyStrategy.class);
+            modStrategyMocks[i] = mock(IStrategy.class);
             modArgMocks[i] = mock(IObject.class);
 
             String mk = MessageFormat.format("mod-{0}", i);
-            IOC.register(Keys.getOrAdd(mk), modStrategyMocks[i]);
-            when(modArgMocks[i].getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "modification")))
+            IOC.register(Keys.getKeyByName(mk), modStrategyMocks[i]);
+            when(modArgMocks[i].getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "modification")))
                     .thenReturn(mk);
         }
 

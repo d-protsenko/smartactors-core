@@ -10,10 +10,10 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,12 +31,12 @@ public class DebuggerBreakpointsStorageImpl implements IDebuggerBreakpointsStora
         private IObject asIObject;
         private boolean enabled;
 
-        private Breakpoint(final String chain, final int stepId, final String id, final boolean enabled, final IObject args)
+        private Breakpoint(final Object chainName, final int stepId, final String id, final boolean enabled, final IObject args)
                 throws ResolutionException, ChangeValueException, InvalidArgumentException {
             this.enabled = enabled;
 
-            this.asIObject = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
-            this.asIObject.setValue(chainFN, chain);
+            this.asIObject = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            this.asIObject.setValue(chainFN, chainName);
             this.asIObject.setValue(stepFN, stepId);
             this.asIObject.setValue(enabledFN, true);
             this.asIObject.setValue(idFN, id);
@@ -80,22 +80,24 @@ public class DebuggerBreakpointsStorageImpl implements IDebuggerBreakpointsStora
      */
     public DebuggerBreakpointsStorageImpl()
             throws ResolutionException {
-        chainFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
-        stepFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "step");
-        enabledFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "enabled");
-        idFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id");
-        argsFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "args");
+        chainFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
+        stepFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "step");
+        enabledFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "enabled");
+        idFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "id");
+        argsFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "args");
     }
 
     @Override
     public String addBreakpoint(final IObject desc) throws BreakpointStorageException {
         try {
-            String chainName = (String) desc.getValue(chainFN);
             int stepId = ((Number) desc.getValue(stepFN)).intValue();
-
-            IChainStorage chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
-
-            IReceiverChain chain = chainStorage.resolve(IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName));
+            Object chainName = (String) desc.getValue(chainFN);
+            Object chainId = IOC.resolve(
+                    Keys.getKeyByName("chain_id_from_map_name"),
+                    chainName
+            );
+            IChainStorage chainStorage = IOC.resolve(Keys.getKeyByName(IChainStorage.class.getCanonicalName()));
+            IReceiverChain chain = chainStorage.resolve(chainId);
 
             IObject stepArgs = chain.getArguments(stepId);
 

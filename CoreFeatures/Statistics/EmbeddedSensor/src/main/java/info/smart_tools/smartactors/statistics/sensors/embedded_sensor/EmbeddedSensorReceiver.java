@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_container.exception.SendingMessageException;
 import info.smart_tools.smartactors.message_bus.message_bus.MessageBus;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
@@ -38,7 +38,7 @@ public class EmbeddedSensorReceiver implements IMessageReceiver {
     private long maxPeriodItems;
     private IEmbeddedSensorStrategy<?> strategy;
     private final AtomicReference<IEmbeddedSensorObservationPeriod> currentPeriod = new AtomicReference<>();
-    private Object statisticsChainId;
+    private String statisticsChainName;
 
     private final ITimer timer;
     private final ITime systemTime;
@@ -61,14 +61,14 @@ public class EmbeddedSensorReceiver implements IMessageReceiver {
      */
     public EmbeddedSensorReceiver(final IObject args)
             throws ResolutionException, ReadValueException, InvalidArgumentException, EmbeddedSensorStrategyException {
-        periodFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "period");
-        startFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "start");
-        limitFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "limit");
-        strategyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "strategy");
-        statisticsChainFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "statisticsChain");
+        periodFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "period");
+        startFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "start");
+        limitFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "limit");
+        strategyFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "strategy");
+        statisticsChainFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "statisticsChain");
 
-        timer = IOC.resolve(Keys.getOrAdd("timer"));
-        systemTime = IOC.resolve(Keys.getOrAdd("time"));
+        timer = IOC.resolve(Keys.getKeyByName("timer"));
+        systemTime = IOC.resolve(Keys.getKeyByName("time"));
 
         observationPeriod = Duration.parse((String) args.getValue(periodFieldName)).toMillis();
 
@@ -80,10 +80,10 @@ public class EmbeddedSensorReceiver implements IMessageReceiver {
         Number maxItems = (Number) args.getValue(limitFieldName);
         maxPeriodItems = (maxItems == null) ? -1 : maxItems.longValue();
 
-        strategy = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), args.getValue(strategyFieldName)), args);
-        statisticsChainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), args.getValue(statisticsChainFieldName));
+        strategy = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), args.getValue(strategyFieldName)), args);
+        statisticsChainName = (String)args.getValue(statisticsChainFieldName);
 
-        currentPeriod.set(IOC.resolve(Keys.getOrAdd(IEmbeddedSensorObservationPeriod.class.getCanonicalName()),
+        currentPeriod.set(IOC.resolve(Keys.getKeyByName(IEmbeddedSensorObservationPeriod.class.getCanonicalName()),
                 observationStart, observationStart + observationPeriod, maxPeriodItems, strategy));
     }
 
@@ -93,7 +93,7 @@ public class EmbeddedSensorReceiver implements IMessageReceiver {
             // Message is created and sent with some delay to let all threads write data to the old period
             timer.schedule(() -> {
                 try {
-                    MessageBus.send(period.createMessage(), statisticsChainId);
+                    MessageBus.send(period.createMessage(), statisticsChainName);
                 } catch (SendingMessageException | ResolutionException | InvalidArgumentException | ChangeValueException
                         | EmbeddedSensorStrategyException e) {
                     throw new TaskExecutionException(e);
@@ -130,5 +130,9 @@ public class EmbeddedSensorReceiver implements IMessageReceiver {
         } catch (TaskScheduleException | EmbeddedSensorStrategyException | InvalidArgumentException | ResolutionException e) {
             throw new MessageReceiveException(e);
         }
+    }
+
+    @Override
+    public void dispose() {
     }
 }

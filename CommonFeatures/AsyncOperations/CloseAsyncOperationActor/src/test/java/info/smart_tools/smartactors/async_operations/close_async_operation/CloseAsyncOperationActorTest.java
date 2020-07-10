@@ -1,21 +1,19 @@
 package info.smart_tools.smartactors.async_operations.close_async_operation;
 
 import info.smart_tools.smartactors.async_operations.close_async_operation.wrapper.CloseAsyncOpMessage;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.database.async_operation_collection.IAsyncOperationCollection;
 import info.smart_tools.smartactors.database.async_operation_collection.exception.CompleteAsyncOperationException;
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.internal.verification.AtLeast;
-import org.mockito.internal.verification.Times;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -23,8 +21,8 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.atLeast;
-import static org.powermock.api.mockito.PowerMockito.*;
 import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 @PrepareForTest({IOC.class, Keys.class, CloseAsyncOperationActor.class})
 @RunWith(PowerMockRunner.class)
@@ -46,17 +44,17 @@ public class CloseAsyncOperationActorTest {
         IField collectionNameField = mock(IField.class);
         IField databaseOptionsF = mock(IField.class);
         IKey fieldKey = mock(IKey.class);
-        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(fieldKey);
+        when(Keys.getKeyByName(IField.class.getCanonicalName())).thenReturn(fieldKey);
         when(IOC.resolve(fieldKey, "collectionName")).thenReturn(collectionNameField);
         when(IOC.resolve(fieldKey, "databaseOptions")).thenReturn(databaseOptionsF);
 
         when(collectionNameField.in(actorParams)).thenReturn(collectionName);
 
         when(databaseOptionsF.in(actorParams)).thenReturn(databaseOptionsKey);
-        when(IOC.resolve(Keys.getOrAdd(databaseOptionsKey))).thenReturn(databaseOptions);
+        when(IOC.resolve(Keys.getKeyByName(databaseOptionsKey))).thenReturn(databaseOptions);
 
         IKey collectionKey = mock(IKey.class);
-        when(Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName())).thenReturn(collectionKey);
+        when(Keys.getKeyByName(IAsyncOperationCollection.class.getCanonicalName())).thenReturn(collectionKey);
 
         targetCollection = mock(IAsyncOperationCollection.class);
         when(IOC.resolve(collectionKey, databaseOptions, collectionName)).thenReturn(targetCollection);
@@ -64,7 +62,7 @@ public class CloseAsyncOperationActorTest {
         testActor = new CloseAsyncOperationActor(actorParams);
 
         verifyStatic(atLeast(2));
-        Keys.getOrAdd(IField.class.getCanonicalName());
+        Keys.getKeyByName(IField.class.getCanonicalName());
 
         verifyStatic();
         IOC.resolve(fieldKey, "collectionName");
@@ -72,7 +70,7 @@ public class CloseAsyncOperationActorTest {
         verify(collectionNameField).in(actorParams);
 
         verifyStatic();
-        Keys.getOrAdd(IAsyncOperationCollection.class.getCanonicalName());
+        Keys.getKeyByName(IAsyncOperationCollection.class.getCanonicalName());
     }
 
     @Test

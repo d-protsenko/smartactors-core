@@ -1,21 +1,21 @@
 package info.smart_tools.smartactors.ioc.recursive_strategy_container;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.DeletionException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
+import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.iscope.exception.ScopeException;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
-import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
-import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,7 +30,7 @@ public class StrategyContainerScopeTest {
 
     private IScope parentScope;
     private IScope childScope;
-    private IResolveDependencyStrategy resolveByNameStrategy = mock(IResolveDependencyStrategy.class);
+    private IStrategy resolveByNameStrategy = mock(IStrategy.class);
 
     @Before
     public void setUp() throws ScopeProviderException, InvalidArgumentException, RegistrationException {
@@ -56,7 +56,7 @@ public class StrategyContainerScopeTest {
         childScope = ScopeProvider.getScope(childScopeKey);
 
         ScopeProvider.setCurrentScope(parentScope);
-        IOC.register(IOC.getKeyForKeyStorage(), new ResolveByNameIocStrategy(
+        IOC.register(IOC.getKeyForKeyByNameStrategy(), new ResolveByNameIocStrategy(
                 (a) -> {
                     try {
                         return new Key((String) a[0]);
@@ -69,7 +69,7 @@ public class StrategyContainerScopeTest {
 
     @Test
     public void testSystemIOC() throws ScopeProviderException, ResolutionException, InvalidArgumentException, RegistrationException, DeletionException {
-        IKey key = Keys.getOrAdd("test");
+        IKey key = Keys.getKeyByName("test");
 
         ScopeProvider.setCurrentScope(parentScope);
         try {
@@ -105,7 +105,7 @@ public class StrategyContainerScopeTest {
         assertSame(childObject, IOC.resolve(key));
 
         ScopeProvider.setCurrentScope(childScope);
-        IOC.remove(key);
+        IOC.unregister(key);
 
         ScopeProvider.setCurrentScope(parentScope);
         assertSame(parentObject, IOC.resolve(key));
@@ -113,7 +113,7 @@ public class StrategyContainerScopeTest {
         assertSame(parentObject, IOC.resolve(key));
 
         ScopeProvider.setCurrentScope(parentScope);
-        IOC.remove(key);
+        IOC.unregister(key);
 
         ScopeProvider.setCurrentScope(parentScope);
         try {

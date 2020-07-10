@@ -1,10 +1,10 @@
 package info.smart_tools.smartactors.message_processing_interfaces.ichain_storage;
 
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainCreationException;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainModificationException;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 
 import java.util.List;
 
@@ -20,6 +20,13 @@ public interface IChainStorage {
      * @throws ChainCreationException if any error occurs
      */
     void register(Object chainId, IObject description) throws ChainCreationException;
+
+    /**
+     * Remove a chain with given identifier.
+     *
+     * @param chainId        identifier to store chain with
+     */
+    void unregister(Object chainId);
 
     /**
      * Modify a chain and store the modified chain with the same identifier.

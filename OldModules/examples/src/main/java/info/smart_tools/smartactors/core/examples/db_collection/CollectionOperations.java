@@ -1,21 +1,21 @@
 package info.smart_tools.smartactors.core.examples.db_collection;
 
-import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
-import info.smart_tools.smartactors.iobject.ds_object.DSObject;
-import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.ipool.IPool;
-import info.smart_tools.smartactors.task.interfaces.itask.ITask;
-import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.base.pool_guard.PoolGuard;
 import info.smart_tools.smartactors.base.pool_guard.exception.PoolGuardException;
+import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
+import info.smart_tools.smartactors.iobject.ds_object.DSObject;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 
 /**
  * A set of sample operations over database collection.
@@ -38,11 +38,11 @@ public final class CollectionOperations {
      */
     public static void createCollection(final IPool pool, final CollectionName collection)
             throws ResolutionException, PoolGuardException, TaskExecutionException {
-        IObject createOptions = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject createOptions = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 "{ \"fulltext\": \"text\", \"language\": \"english\" }");
         try (PoolGuard guard = new PoolGuard(pool)) {
             ITask task = IOC.resolve(
-                    Keys.getOrAdd("db.collection.create"),
+                    Keys.getKeyByName("db.collection.create"),
                     guard.getObject(),
                     collection,
                     createOptions
@@ -66,7 +66,7 @@ public final class CollectionOperations {
             throws ResolutionException, TaskExecutionException, SerializeException, PoolGuardException {
         try (PoolGuard guard = new PoolGuard(pool)) {
             ITask task = IOC.resolve(
-                    Keys.getOrAdd("db.collection.insert"),
+                    Keys.getKeyByName("db.collection.insert"),
                     guard.getObject(),
                     collection,
                     document
@@ -91,7 +91,7 @@ public final class CollectionOperations {
             throws ResolutionException, TaskExecutionException, SerializeException, PoolGuardException {
         try (PoolGuard guard = new PoolGuard(pool)) {
             ITask task = IOC.resolve(
-                    Keys.getOrAdd("db.collection.upsert"),
+                    Keys.getKeyByName("db.collection.upsert"),
                     guard.getObject(),
                     collection,
                     document
@@ -115,7 +115,7 @@ public final class CollectionOperations {
             throws ResolutionException, TaskExecutionException, PoolGuardException {
         try (PoolGuard guard = new PoolGuard(pool)) {
             ITask task = IOC.resolve(
-                    Keys.getOrAdd("db.collection.getbyid"),
+                    Keys.getKeyByName("db.collection.getbyid"),
                     guard.getObject(),
                     collection,
                     id,
@@ -124,7 +124,7 @@ public final class CollectionOperations {
                             System.out.println("Found by id");
                             System.out.println((String) doc.serialize());
                         } catch (SerializeException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     }
             );
@@ -143,10 +143,10 @@ public final class CollectionOperations {
      */
     public static void searchDocumentByIntField(final IPool pool, final CollectionName collection)
             throws ResolutionException, TaskExecutionException, PoolGuardException, InvalidArgumentException {
-        IFieldName intField = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "int");
+        IFieldName intField = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "int");
         try (PoolGuard guard = new PoolGuard(pool)) {
             ITask task = IOC.resolve(
-                    Keys.getOrAdd("db.collection.search"),
+                    Keys.getKeyByName("db.collection.search"),
                     guard.getObject(),
                     collection,
                     new DSObject(String.format(
@@ -159,7 +159,7 @@ public final class CollectionOperations {
                                 System.out.println((String) doc.serialize());
                             }
                         } catch (SerializeException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     }
             );
@@ -178,10 +178,10 @@ public final class CollectionOperations {
      */
     public static void searchDocumentByTextField(final IPool pool, final CollectionName collection)
             throws ResolutionException, InvalidArgumentException, TaskExecutionException, PoolGuardException {
-        IFieldName textField = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "text");
+        IFieldName textField = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "text");
         try (PoolGuard guard = new PoolGuard(pool)) {
             ITask task = IOC.resolve(
-                    Keys.getOrAdd("db.collection.search"),
+                    Keys.getKeyByName("db.collection.search"),
                     guard.getObject(),
                     collection,
                     new DSObject(String.format(
@@ -198,7 +198,7 @@ public final class CollectionOperations {
                                 System.out.println((String) doc.serialize());
                             }
                         } catch (SerializeException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     }
             );
@@ -219,7 +219,7 @@ public final class CollectionOperations {
             throws ResolutionException, InvalidArgumentException, TaskExecutionException, PoolGuardException {
         try (PoolGuard guard = new PoolGuard(pool)) {
             ITask task = IOC.resolve(
-                    Keys.getOrAdd("db.collection.search"),
+                    Keys.getKeyByName("db.collection.search"),
                     guard.getObject(),
                     collection,
                     new DSObject("{ " +
@@ -232,7 +232,7 @@ public final class CollectionOperations {
                                 System.out.println((String) doc.serialize());
                             }
                         } catch (SerializeException e) {
-                            throw new ActionExecuteException(e);
+                            throw new ActionExecutionException(e);
                         }
                     }
             );
@@ -254,7 +254,7 @@ public final class CollectionOperations {
             throws ResolutionException, TaskExecutionException, SerializeException, PoolGuardException {
         try (PoolGuard guard = new PoolGuard(pool)) {
             ITask task = IOC.resolve(
-                    Keys.getOrAdd("db.collection.delete"),
+                    Keys.getKeyByName("db.collection.delete"),
                     guard.getObject(),
                     collection,
                     document
@@ -276,10 +276,10 @@ public final class CollectionOperations {
      */
     public static void countByInt(final IPool pool, final CollectionName collection)
             throws PoolGuardException, ResolutionException, InvalidArgumentException, TaskExecutionException {
-        IFieldName intField = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "int");
+        IFieldName intField = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "int");
         try (PoolGuard guard = new PoolGuard(pool)) {
             ITask task = IOC.resolve(
-                    Keys.getOrAdd("db.collection.count"),
+                    Keys.getKeyByName("db.collection.count"),
                     guard.getObject(),
                     collection,
                     new DSObject(String.format(

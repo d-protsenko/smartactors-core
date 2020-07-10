@@ -1,11 +1,11 @@
 package info.smart_tools.smartactors.http_endpoint.response_content_json_strategy;
 
 
-import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.endpoint.interfaces.iresponse.IResponse;
+import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
-import info.smart_tools.smartactors.endpoint.interfaces.iresponse.IResponse;
 import org.junit.Test;
 
 import java.nio.charset.Charset;

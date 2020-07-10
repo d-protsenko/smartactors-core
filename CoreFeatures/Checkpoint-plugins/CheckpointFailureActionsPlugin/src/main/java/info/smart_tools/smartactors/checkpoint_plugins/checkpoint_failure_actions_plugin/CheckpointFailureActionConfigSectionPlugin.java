@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.Boot
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 /**
  *
@@ -33,7 +33,7 @@ public class CheckpointFailureActionConfigSectionPlugin extends BootstrapPlugin 
     @After({"checkpoint_failure_action_default"})
     public void registerSectionStrategy()
             throws ResolutionException, InvalidArgumentException {
-        IConfigurationManager configurationManager = IOC.resolve(Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
+        IConfigurationManager configurationManager = IOC.resolve(Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
         configurationManager.addSectionStrategy(new CheckpointFailureActionSectionStrategy());
     }
 }

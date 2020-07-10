@@ -13,9 +13,9 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.deser.std.UntypedObjectDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.DeleteValueException;
@@ -113,7 +113,7 @@ public class ConfigurationObject implements IObject {
             }
 
             Object canonicalValue = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "resolve key for configuration object"),
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "resolve key for configuration object"),
                     name,
                     body.get(name)
             );

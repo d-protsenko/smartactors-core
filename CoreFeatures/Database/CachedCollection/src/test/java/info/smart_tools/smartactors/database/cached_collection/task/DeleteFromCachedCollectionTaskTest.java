@@ -11,7 +11,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,10 +20,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({IOC.class, Keys.class})
@@ -46,8 +43,8 @@ public class DeleteFromCachedCollectionTaskTest {
         documentField = mock(IField.class);
         IKey keyField = mock(IKey.class);
         IKey nestedKeyField = mock(IKey.class);
-        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(keyField);
-        when(Keys.getOrAdd(NestedField.class.getCanonicalName())).thenReturn(nestedKeyField);
+        when(Keys.getKeyByName(IField.class.getCanonicalName())).thenReturn(keyField);
+        when(Keys.getKeyByName(NestedField.class.getCanonicalName())).thenReturn(nestedKeyField);
         when(IOC.resolve(nestedKeyField, "document/isActive")).thenReturn(isActiveField);
         when(IOC.resolve(keyField, "document")).thenReturn(documentField);
         when(IOC.resolve(keyField, "collectionName")).thenReturn(collectionNameField);
@@ -68,7 +65,7 @@ public class DeleteFromCachedCollectionTaskTest {
         verify(isActiveField).out(query, false);
         verifyStatic();
         IOC.resolve(
-            Keys.getOrAdd("db.collection.upsert"),
+            Keys.getKeyByName("db.collection.upsert"),
             connection,
             "collectionName",
             doc

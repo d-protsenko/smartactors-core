@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.checkpoint.checkpoint_actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.checkpoint.interfaces.IRecoverStrategy;
 import info.smart_tools.smartactors.checkpoint.interfaces.exceptions.RecoverStrategyExecutionException;
 import info.smart_tools.smartactors.checkpoint.interfaces.exceptions.RecoverStrategyInitializationException;
@@ -12,7 +12,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerAction;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
@@ -42,17 +42,17 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
      */
     public CheckpointSchedulerAction()
             throws ResolutionException {
-        recoverFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "recover");
-        strategyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "strategy");
-        recoverStrategyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "recoverStrategy");
-        messageFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
-        completedFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "completed");
-        gotFeedbackFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "gotFeedback");
+        recoverFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "recover");
+        strategyFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "strategy");
+        recoverStrategyFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "recoverStrategy");
+        messageFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
+        completedFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "completed");
+        gotFeedbackFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "gotFeedback");
 
-        responsibleCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responsibleCheckpointId");
-        prevCheckpointIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointId");
-        prevCheckpointEntryIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointEntryId");
-        processorFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "processor");
+        responsibleCheckpointIdFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responsibleCheckpointId");
+        prevCheckpointIdFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointId");
+        prevCheckpointEntryIdFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointEntryId");
+        processorFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "processor");
     }
 
     @Override
@@ -70,7 +70,7 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
 
             entry.getState().setValue(messageFieldName, message);
 
-            IRecoverStrategy strategy = IOC.resolve(Keys.getOrAdd(recoverStrategyId));
+            IRecoverStrategy strategy = IOC.resolve(Keys.getKeyByName(recoverStrategyId));
 
             strategy.init(entry.getState(), recoverConfig, (IMessageProcessor) args.getValue(processorFieldName));
 
@@ -99,7 +99,7 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
                 // If there was no feedback (the message did not reach next checkpoint before it ran out of re-send trials) then we should
                 // execute a "failure action" that will handle the "lost" message.
                 if (null == entry.getState().getValue(gotFeedbackFieldName)) {
-                    IAction<IObject> failureAction = IOC.resolve(Keys.getOrAdd("checkpoint failure action"));
+                    IAction<IObject> failureAction = IOC.resolve(Keys.getKeyByName("checkpoint failure action"));
 
                     failureAction.execute((IObject) entry.getState().getValue(messageFieldName));
                 }
@@ -107,13 +107,13 @@ public class CheckpointSchedulerAction implements ISchedulerAction {
             }
 
             IRecoverStrategy recoverStrategy = IOC.resolve(IOC.resolve(
-                    IOC.getKeyForKeyStorage(),
+                    IOC.getKeyForKeyByNameStrategy(),
                     entry.getState().getValue(recoverStrategyFieldName)
             ));
 
             recoverStrategy.reSend(entry.getState());
         } catch (ResolutionException | ReadValueException | InvalidArgumentException | RecoverStrategyExecutionException
-                | ActionExecuteException e) {
+                | ActionExecutionException e) {
             throw new SchedulerActionExecutionException("Error occurred executing checkpoint action.", e);
         }
     }

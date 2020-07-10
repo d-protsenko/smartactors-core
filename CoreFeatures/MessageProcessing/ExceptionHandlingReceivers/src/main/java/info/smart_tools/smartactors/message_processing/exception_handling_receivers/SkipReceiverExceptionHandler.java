@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.message_processing.exception_handling_receivers;
 
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageReceiveException;
 
@@ -31,5 +31,9 @@ public class SkipReceiverExceptionHandler extends ExceptionHandlingReceiver {
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new MessageReceiveException("Exception occurred while skipping a receiver thrown exception", e);
         }
+    }
+
+    @Override
+    public void dispose() {
     }
 }

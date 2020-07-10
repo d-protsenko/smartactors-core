@@ -11,6 +11,11 @@
     <packaging>pom</packaging>
 
     <properties>
+        <feature.rurl>http://archiva.smart-tools.info/repository/smartactors-features/</feature.rurl>
+        <feature.rid>archiva.smartactors-features</feature.rid>
+        <module.rurl>${feature.rurl}</module.rurl>
+        <module.rid>${feature.rid}</module.rid>
+
         <core.version>0.2.0-SNAPSHOT</core.version>
         <feature.version>0.2.0-SNAPSHOT</feature.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -25,8 +30,8 @@
 
     <repositories>
         <repository>
-            <id>archiva.smartactors-modules</id>
-            <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
+            <id>${module.rid}</id>
+            <url>${module.rurl}</url>
         </repository>
     </repositories>
 
@@ -66,9 +71,9 @@
                 </goals>
                 <configuration>
                     <generatePom>false</generatePom>
-                    <file>${basedir}/target/${artifactId}-${feature.version}-archive.zip</file>
-                    <url>http://archiva.smart-tools.info/repository/smartactors-features/</url>
-                    <repositoryId>archiva.smartactors-features</repositoryId>
+                    <file>${basedir}/target/${artifactId}-${feature.version}.zip</file>
+                    <url>${feature.rurl}</url>
+                    <repositoryId>${feature.rid}</repositoryId>
 
                     <groupId>info.smart_tools.smartactors</groupId>
                     <artifactId>${artifactId}</artifactId>
@@ -82,8 +87,8 @@
 
     <distributionManagement>
         <repository>
-            <id>archiva.smartactors-modules</id>
-            <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
+            <id>${module.rid}</id>
+            <url>${module.rurl}</url>
         </repository>
     </distributionManagement>
 

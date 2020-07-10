@@ -1,11 +1,13 @@
 package info.smart_tools.smartactors.task.thread_pool;
 
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 import info.smart_tools.smartactors.task.interfaces.ithread_pool.IThreadPool;
-import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -16,6 +18,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class ThreadPool implements IThreadPool {
     private final Queue<ThreadImpl> threadsQueue;
     private IScope scope;
+    private IModule module;
     private boolean terminating = false;
 
     /**
@@ -24,16 +27,18 @@ public class ThreadPool implements IThreadPool {
      * @param threadCount    initial count of threads.
      */
     public ThreadPool(final int threadCount) {
-        threadsQueue = new ConcurrentLinkedQueue<>();
 
-        for (int i = 0; i < threadCount; i++) {
-            threadsQueue.offer(new ThreadImpl(this));
-        }
-
+        this.module = ModuleManager.getCurrentModule();
         try {
             this.scope = ScopeProvider.getCurrentScope();
         } catch (ScopeProviderException e) {
             this.scope = null;
+        }
+
+        threadsQueue = new ConcurrentLinkedQueue<>();
+
+        for (int i = 0; i < threadCount; i++) {
+            threadsQueue.offer(new ThreadImpl(this, "TaskThread"+(i+1)));
         }
     }
 
@@ -74,5 +79,9 @@ public class ThreadPool implements IThreadPool {
 
     IScope getScope() {
         return this.scope;
+    }
+
+    IModule getModule() {
+        return this.module;
     }
 }

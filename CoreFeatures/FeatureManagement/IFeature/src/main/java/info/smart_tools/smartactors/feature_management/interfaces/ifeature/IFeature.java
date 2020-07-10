@@ -43,7 +43,31 @@ public interface IFeature {
      * Gets feature location
      * @return the feature location
      */
-    IPath getFeatureLocation();
+    IPath getLocation();
+
+    /**
+     * Gets feature directory
+     * @return the feature directory
+     */
+    IPath getDirectory();
+
+    /**
+     * Gets feature ID
+     * @return the feature ID
+     */
+    Object getId();
+
+    /**
+     * Gets feature package type (zip, jar, etc)
+     * @return the feature package type
+     */
+    String getPackageType();
+
+    /**
+     * Gets full feature name
+     * @return the full feature name
+     */
+    String getDisplayName();
 
     /**
      * Sets feature name
@@ -67,7 +91,13 @@ public interface IFeature {
      * Sets feature location
      * @param location the feature location
      */
-    void setFeatureLocation(IPath location);
+    void setLocation(IPath location);
+
+    /**
+     * Sets feature directory
+     * @param location the feature directory
+     */
+    void setDirectory(IPath location);
 
     /**
      * Sets feature group ID
@@ -80,4 +110,23 @@ public interface IFeature {
      * @param version the feature version
      */
     void setVersion(String version);
+
+    /**
+     * Sets feature package type
+     * @param packageType the feature package type
+     */
+    void setPackageType(String packageType);
+
+    /**
+     * Creates a copy of the feature instance with same Id and other fields
+     * @return new feature copy
+     */
+    IFeature clone();
+
+    /**
+     * Update feature content from its clone
+     * @param clone the clone of the feature
+     * @return true if update successful and false otherwise
+     */
+    boolean updateFromClone(IFeature clone);
 }

@@ -2,11 +2,11 @@ package info.smart_tools.smartactors.message_processing.response_sender_receiver
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
@@ -24,15 +24,20 @@ public class ResponseSenderReceiver implements IMessageReceiver {
      * @throws ResolutionException if error occurs resolving any dependency
      */
     public ResponseSenderReceiver() throws ResolutionException {
-        action = IOC.resolve(Keys.getOrAdd("send response action"));
+        action = IOC.resolve(Keys.getKeyByName("send response action"));
     }
 
     @Override
     public void receive(final IMessageProcessor processor) throws MessageReceiveException, AsynchronousOperationException {
         try {
             action.execute(processor.getEnvironment());
-        } catch (ActionExecuteException | InvalidArgumentException e) {
+        } catch (ActionExecutionException | InvalidArgumentException e) {
             throw new MessageReceiveException("Error occurred sending response.", e);
         }
+    }
+
+    @Override
+    public void dispose() {
+        // do nothing
     }
 }

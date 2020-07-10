@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.scheduler.actor.impl.actions;
 
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
@@ -10,8 +10,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
@@ -49,7 +48,7 @@ public class BlockingMessageSchedulerActionTest extends PluginsLoadingTestBase {
     private IQueue queueMock;
     private IObject entryState;
 
-    private IResolveDependencyStrategy sequenceStrategy, processorStrategy;
+    private IStrategy sequenceStrategy, processorStrategy;
 
     private ISchedulerAction action;
 
@@ -71,30 +70,30 @@ public class BlockingMessageSchedulerActionTest extends PluginsLoadingTestBase {
         schedulerEntryMock = mock(ISchedulerEntry.class);
         queueMock = mock(IQueue.class);
 
-        entryState = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+        entryState = IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()));
 
         when(schedulerEntryMock.getState()).thenReturn(entryState);
 
-        sequenceStrategy = mock(IResolveDependencyStrategy.class);
+        sequenceStrategy = mock(IStrategy.class);
         when(sequenceStrategy.resolve(any(), same(receiverChainMock)))
                 .thenReturn(messageProcessingSequenceMock)
-                .thenThrow(ResolveDependencyStrategyException.class);
-        IOC.register(Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()), sequenceStrategy);
-        processorStrategy = mock(IResolveDependencyStrategy.class);
+                .thenThrow(StrategyException.class);
+        IOC.register(Keys.getKeyByName(IMessageProcessingSequence.class.getCanonicalName()), sequenceStrategy);
+        processorStrategy = mock(IStrategy.class);
         when(processorStrategy.resolve(same(queueMock), same(messageProcessingSequenceMock)))
                 .thenReturn(messageProcessorMock)
-                .thenThrow(ResolveDependencyStrategyException.class);
-        IOC.register(Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()), processorStrategy);
+                .thenThrow(StrategyException.class);
+        IOC.register(Keys.getKeyByName(IMessageProcessor.class.getCanonicalName()), processorStrategy);
 
         when(schedulerEntryMock.getId()).thenReturn(UUID.randomUUID().toString());
 
-        IOC.register(Keys.getOrAdd(IChainStorage.class.getCanonicalName()), new SingletonStrategy(chainStorageMock));
-        IOC.register(Keys.getOrAdd("default_stack_depth"), new SingletonStrategy(321));
-        IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(queueMock));
+        IOC.register(Keys.getKeyByName(IChainStorage.class.getCanonicalName()), new SingletonStrategy(chainStorageMock));
+        IOC.register(Keys.getKeyByName("default_stack_depth"), new SingletonStrategy(321));
+        IOC.register(Keys.getKeyByName("task_queue"), new SingletonStrategy(queueMock));
 
-        IOC.register(Keys.getOrAdd("chain_id_from_map_name"), new IResolveDependencyStrategy() {
+        IOC.register(Keys.getKeyByName("chain_id_from_map_name_and_message"), new IStrategy() {
             @Override
-            public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
+            public <T> T resolve(Object... args) throws StrategyException {
                 return (T) (String.valueOf(args[0]) + "__id");
             }
         });
@@ -105,13 +104,13 @@ public class BlockingMessageSchedulerActionTest extends PluginsLoadingTestBase {
     }
 
     private IFieldName fn(String n) throws Exception {
-        return IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), n);
+        return IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), n);
     }
 
     @Test
     public void Should_initializeEntryState()
             throws Exception {
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject args = IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()),
                 ("{" +
                         "'message': {'a':'asd'}," +
                         "'setEntryId': 'idFld'," +
@@ -131,7 +130,7 @@ public class BlockingMessageSchedulerActionTest extends PluginsLoadingTestBase {
     @Test(expected = SchedulerActionInitializationException.class)
     public void Should_throwWhenNoMessageGiven()
             throws Exception {
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject args = IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()),
                 ("{" +
                         "'setEntryId': 'idFld'," +
                         "'preShutdownExec': true," +
@@ -144,7 +143,7 @@ public class BlockingMessageSchedulerActionTest extends PluginsLoadingTestBase {
     @Test(expected = SchedulerActionInitializationException.class)
     public void Should_throwWhenNoChainGiven()
             throws Exception {
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject args = IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()),
                 ("{" +
                         "'message': {'a':'asd'}," +
                         "'setEntryId': 'idFld'," +
@@ -157,8 +156,8 @@ public class BlockingMessageSchedulerActionTest extends PluginsLoadingTestBase {
     @Test(expected = SchedulerActionInitializationException.class)
     public void Should_throwWhenErrorOccursResolvingDependency()
             throws Exception {
-        IOC.remove(Keys.getOrAdd("default_stack_depth"));
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IOC.unregister(Keys.getKeyByName("default_stack_depth"));
+        IObject args = IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()),
                 ("{" +
                         "'message': {'a':'asd'}," +
                         "'setEntryId': 'idFld'," +
@@ -171,7 +170,7 @@ public class BlockingMessageSchedulerActionTest extends PluginsLoadingTestBase {
     @Test
     public void Should_useDefaultWhenNoStackDepthGiven()
             throws Exception {
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject args = IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()),
                 ("{" +
                         "'message': {'a':'asd'}," +
                         "'setEntryId': 'idFld'," +
@@ -185,7 +184,7 @@ public class BlockingMessageSchedulerActionTest extends PluginsLoadingTestBase {
     @Test
     public void Should_sendMessageAndAddFinalActionToContext()
             throws Exception {
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject args = IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()),
                 ("{" +
                         "'message': {'a':'asd'}," +
                         "'setEntryId': 'idFld'," +
@@ -219,7 +218,7 @@ public class BlockingMessageSchedulerActionTest extends PluginsLoadingTestBase {
     @Test
     public void Should_unpauseEntryImmediatelyIfMessageProcessorFailsToStart()
             throws Exception {
-        IObject args = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()),
+        IObject args = IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()),
                 ("{" +
                         "'message': {'a':'asd'}," +
                         "'setEntryId': 'idFld'," +

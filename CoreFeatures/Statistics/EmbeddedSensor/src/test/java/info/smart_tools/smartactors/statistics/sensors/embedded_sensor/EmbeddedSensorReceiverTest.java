@@ -1,14 +1,14 @@
 package info.smart_tools.smartactors.statistics.sensors.embedded_sensor;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_handler.IMessageBusHandler;
 import info.smart_tools.smartactors.message_bus.message_bus.MessageBus;
@@ -24,7 +24,6 @@ import info.smart_tools.smartactors.timer.interfaces.itimer.ITimer;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
@@ -37,7 +36,7 @@ public class EmbeddedSensorReceiverTest extends PluginsLoadingTestBase {
     private ITime timeMock;
     private ITimer timerMock;
     private IEmbeddedSensorStrategy<?> sensorStrategyMock;
-    private IResolveDependencyStrategy periodStrategyMock;
+    private IStrategy periodStrategyMock;
     private IEmbeddedSensorObservationPeriod periods[];
     private IMessageProcessor processors[];
     private IMessageBusHandler messageBusHandlerMock;
@@ -57,19 +56,19 @@ public class EmbeddedSensorReceiverTest extends PluginsLoadingTestBase {
         timeMock = mock(ITime.class);
         timerMock = mock(ITimer.class);
 
-        IOC.register(Keys.getOrAdd("time"), new SingletonStrategy(timeMock));
-        IOC.register(Keys.getOrAdd("timer"), new SingletonStrategy(timerMock));
+        IOC.register(Keys.getKeyByName("time"), new SingletonStrategy(timeMock));
+        IOC.register(Keys.getKeyByName("timer"), new SingletonStrategy(timerMock));
 
         sensorStrategyMock = mock(IEmbeddedSensorStrategy.class);
-        IOC.register(Keys.getOrAdd("the sensor strategy"), new SingletonStrategy(sensorStrategyMock));
+        IOC.register(Keys.getKeyByName("the sensor strategy"), new SingletonStrategy(sensorStrategyMock));
 
         periods = new IEmbeddedSensorObservationPeriod[] {
                 mock(IEmbeddedSensorObservationPeriod.class),
                 mock(IEmbeddedSensorObservationPeriod.class),
         };
 
-        periodStrategyMock = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.getOrAdd(IEmbeddedSensorObservationPeriod.class.getCanonicalName()), periodStrategyMock);
+        periodStrategyMock = mock(IStrategy.class);
+        IOC.register(Keys.getKeyByName(IEmbeddedSensorObservationPeriod.class.getCanonicalName()), periodStrategyMock);
         when(periodStrategyMock.resolve(any(), any(), any(), any())).thenReturn(periods[0]);
 
         processors = new IMessageProcessor[] {
@@ -80,9 +79,9 @@ public class EmbeddedSensorReceiverTest extends PluginsLoadingTestBase {
         messageBusHandlerMock = mock(IMessageBusHandler.class);
         ScopeProvider.getCurrentScope().setValue(MessageBus.getMessageBusKey(), messageBusHandlerMock);
 
-        IOC.register(Keys.getOrAdd("chain_id_from_map_name"), new IResolveDependencyStrategy() {
+        IOC.register(Keys.getKeyByName("chain_id_from_map_name_and_message"), new IStrategy() {
             @Override
-            public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
+            public <T> T resolve(Object... args) throws StrategyException {
                 return (T) String.valueOf(args[0]).concat("__0");
             }
         });
@@ -95,7 +94,7 @@ public class EmbeddedSensorReceiverTest extends PluginsLoadingTestBase {
             throws Exception {
         when(timeMock.currentTimeMillis()).thenReturn(1000L);
 
-        IObject args = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject args = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'period':'PT1M'," +
                         "'strategy':'the sensor strategy'," +
@@ -124,11 +123,13 @@ public class EmbeddedSensorReceiverTest extends PluginsLoadingTestBase {
 
         verify(periods[1]).recordProcessor(processors[1], 62000L);
         verify(timerMock).schedule(taskCaptor.capture(), eq(62000L + 1000L));
-        verify(messageBusHandlerMock, times(0)).handle(any(), any());
+        verify(messageBusHandlerMock, times(0)).handle(any(), any(), eq(true));
         when(periods[0].createMessage()).thenReturn(mock(IObject.class));
 
         taskCaptor.getValue().execute();
 
-        verify(messageBusHandlerMock).handle(same(periods[0].createMessage()), eq("theStatisticsChain__0"));
+        verify(messageBusHandlerMock).handle(same(periods[0].createMessage()), eq("theStatisticsChain"), eq(true));
+
+        r.dispose();
     }
 }

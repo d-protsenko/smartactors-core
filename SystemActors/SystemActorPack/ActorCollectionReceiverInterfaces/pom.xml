@@ -1,30 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>system-actors-pack</artifactId>
-        <version>0.3.3</version>
+        <version>0.6.0</version>
     </parent>
-
     <artifactId>system-actors-pack.actor-collection-receiver-interfaces</artifactId>
-    <version>0.3.3</version>
-
+    <version>0.6.0</version>
     <dependencies>
-        <!-- Components of info.smart_tools.smartactors.iobject -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.iobject</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
     </dependencies>
-
     <build>
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.5.1</version>
                     <configuration>
@@ -41,7 +36,7 @@
                             <phase>none</phase>
                         </execution>
                         <execution>
-                            <id>archiva.smartactors-modules</id>
+                            <id>${module.rid}</id>
                             <phase>deploy</phase>
                             <goals>
                                 <goal>deploy-file</goal>
@@ -50,8 +45,8 @@
                             <configuration>
                                 <generatePom>true</generatePom>
                                 <file>${project.basedir}/target/${project.artifactId}-${project.version}.jar</file>
-                                <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
-                                <repositoryId>archiva.smartactors-modules</repositoryId>
+                                <url>${module.rurl}</url>
+                                <repositoryId>${module.rid}</repositoryId>
                                 <groupId>${project.groupId}</groupId>
                                 <artifactId>${project.artifactId}</artifactId>
                                 <version>${project.version}</version>

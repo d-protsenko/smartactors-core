@@ -1,14 +1,14 @@
 package info.smart_tools.smartactors.database.cached_collection.task;
 
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.exception.TaskPrepareException;
+import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.field.nested_field.NestedField;
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,10 +19,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.time.format.DateTimeFormatter;
 
 import static org.mockito.Matchers.eq;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({IOC.class, Keys.class})
@@ -42,7 +39,7 @@ public class UpsertIntoCachedCollectionTaskTest {
         mockStatic(Keys.class);
 
         IKey formatterKey = Mockito.mock(IKey.class);
-        when(Keys.getOrAdd("datetime_formatter")).thenReturn(formatterKey);
+        when(Keys.getKeyByName("datetime_formatter")).thenReturn(formatterKey);
         when(IOC.resolve(eq(formatterKey))).thenReturn(DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss"));
 
         startDateTimeField = mock(NestedField.class);
@@ -50,8 +47,8 @@ public class UpsertIntoCachedCollectionTaskTest {
         documentField = mock(IField.class);
         IKey keyField = mock(IKey.class);
         IKey keyNestedField = mock(IKey.class);
-        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(keyField);
-        when(Keys.getOrAdd(NestedField.class.getCanonicalName())).thenReturn(keyNestedField);
+        when(Keys.getKeyByName(IField.class.getCanonicalName())).thenReturn(keyField);
+        when(Keys.getKeyByName(NestedField.class.getCanonicalName())).thenReturn(keyNestedField);
         when(IOC.resolve(keyNestedField, "document/startDateTime")).thenReturn(startDateTimeField);
         when(IOC.resolve(keyField, "document")).thenReturn(documentField);
         when(IOC.resolve(keyField, "collectionName")).thenReturn(collectionNameField);
@@ -73,7 +70,7 @@ public class UpsertIntoCachedCollectionTaskTest {
 
         verifyStatic();
         IOC.resolve(
-            Keys.getOrAdd("db.collection.upsert"),
+            Keys.getKeyByName("db.collection.upsert"),
             connection,
             "collectionName",
             doc

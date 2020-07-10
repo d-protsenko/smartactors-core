@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.database_postgresql.postgres_schema.search;
 
-import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBuildException;
-import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.QueryStatement;
+import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +24,7 @@ public class ConditionsTest {
     private QueryStatement query;
     private QueryWriter writer;
     private QueryWriterResolver resolver;
-    private FieldPath fieldPath;
+    private String fieldPath;
     private Object queryParameter;
 
     @Before
@@ -50,8 +50,7 @@ public class ConditionsTest {
         when(resolver.resolve(any())).thenReturn(writer);
         when(resolver.toString()).thenReturn("resolver");
 
-        fieldPath = mock(FieldPath.class);
-        when(fieldPath.toString()).thenReturn("fieldPath");
+        fieldPath = "fieldPath";
     }
 
     @Test

@@ -2,11 +2,11 @@ package info.smart_tools.smartactors.scheduler.actor.impl.timer;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
-import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartupException;
+import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStopException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.scheduler.interfaces.IDelayedSynchronousService;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
@@ -80,13 +80,13 @@ public class SchedulerTimer implements IDelayedSynchronousService, ITimer {
         this.myStartTime = Long.MAX_VALUE;
         this.myStopTime = Long.MAX_VALUE;
 
-        this.sysTime = IOC.resolve(Keys.getOrAdd("time"));
+        this.sysTime = IOC.resolve(Keys.getKeyByName("time"));
         this.underlyingTimer = underlyingTimer;
     }
 
     @Override
     public void start()
-            throws IllegalServiceStateException, ServiceStartupException {
+            throws IllegalServiceStateException, ServiceStartException {
         this.myStartTime = 0;
     }
 
@@ -98,7 +98,7 @@ public class SchedulerTimer implements IDelayedSynchronousService, ITimer {
 
     @Override
     public void startAfter(final long startTime)
-            throws ServiceStartupException, IllegalServiceStateException, InvalidArgumentException {
+            throws ServiceStartException, IllegalServiceStateException, InvalidArgumentException {
         this.myStartTime = startTime;
         this.myStopTime = Long.MAX_VALUE;
     }

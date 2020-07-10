@@ -44,7 +44,7 @@ This is the list of modules (jars) used by in-memory collections:
 In-memory database doesn't require connections and connection pools.
 However, you can use null connection poll, to keep your code compatible with Postgres collections
 
-    IPool pool = IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool"));
+    IPool pool = IOC.resolve(Keys.getKeyByName("DatabaseConnectionPool"));
     
 ## Full text search
 

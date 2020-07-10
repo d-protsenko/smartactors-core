@@ -2,19 +2,19 @@ package info.smart_tools.smartactors.async_operations_plugins.create_async_opera
 
 import info.smart_tools.smartactors.async_operations.create_async_operation.CreateAsyncOperationActor;
 import info.smart_tools.smartactors.async_operations.create_async_operation.exception.CreateAsyncOperationActorException;
-import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,17 +25,10 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.function.Function;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.doThrow;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyNew;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 @PrepareForTest({IOC.class, Keys.class, CreateAsyncOpPlugin.class, CreateNewInstanceStrategy.class})
 @RunWith(PowerMockRunner.class)
@@ -51,7 +44,7 @@ public class CreateAsyncOpPluginTest {
 
         IKey key1 = mock(IKey.class);
         IKey keyPool = mock(IKey.class);
-        when(IOC.getKeyForKeyStorage()).thenReturn(key1);
+        when(IOC.getKeyForKeyByNameStrategy()).thenReturn(key1);
         when(IOC.resolve(eq(key1), eq("CreateAsyncOperationActorPlugin"))).thenReturn(keyPool);
 
         bootstrap = mock(IBootstrap.class);
@@ -71,7 +64,7 @@ public class CreateAsyncOpPluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("CreateAsyncOperationActorPlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
         //verify(bootstrapItem).after("IOC");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
@@ -79,12 +72,12 @@ public class CreateAsyncOpPluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey createAsyncOpKey = mock(IKey.class);
-        when(Keys.getOrAdd(CreateAsyncOperationActor.class.getCanonicalName())).thenReturn(createAsyncOpKey);
+        when(Keys.getKeyByName(CreateAsyncOperationActor.class.getCanonicalName())).thenReturn(createAsyncOpKey);
 
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(CreateAsyncOperationActor.class.getCanonicalName());
+        Keys.getKeyByName(CreateAsyncOperationActor.class.getCanonicalName());
 
         ArgumentCaptor<CreateNewInstanceStrategy> createNewInstanceStrategyArgumentCaptor = ArgumentCaptor.forClass(CreateNewInstanceStrategy.class);
 
@@ -128,20 +121,20 @@ public class CreateAsyncOpPluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("CreateAsyncOperationActorPlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
         //verify(bootstrapItem).after("IOC");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         verify(bootstrap).add(bootstrapItem);
 
-        when(Keys.getOrAdd(CreateAsyncOperationActor.class.getCanonicalName())).thenThrow(new ResolutionException(""));
+        when(Keys.getKeyByName(CreateAsyncOperationActor.class.getCanonicalName())).thenThrow(new ResolutionException(""));
 
         try {
             actionArgumentCaptor.getValue().execute();
-        } catch (ActionExecuteException e) {
+        } catch (ActionExecutionException e) {
             verifyStatic();
-            Keys.getOrAdd(CreateAsyncOperationActor.class.getCanonicalName());
+            Keys.getKeyByName(CreateAsyncOperationActor.class.getCanonicalName());
             return;
         }
         assertTrue("Must throw exception", false);
@@ -160,7 +153,7 @@ public class CreateAsyncOpPluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("CreateAsyncOperationActorPlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
         //verify(bootstrapItem).after("IOC");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
@@ -168,7 +161,7 @@ public class CreateAsyncOpPluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey createAsyncOpKey = mock(IKey.class);
-        when(Keys.getOrAdd(CreateAsyncOperationActor.class.getCanonicalName())).thenReturn(createAsyncOpKey);
+        when(Keys.getKeyByName(CreateAsyncOperationActor.class.getCanonicalName())).thenReturn(createAsyncOpKey);
 
         ArgumentCaptor<Function<Object[], Object>> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -180,10 +173,10 @@ public class CreateAsyncOpPluginTest {
 
         try {
             actionArgumentCaptor.getValue().execute();
-        } catch (ActionExecuteException e) {
+        } catch (ActionExecutionException e) {
 
             verifyStatic();
-            Keys.getOrAdd(CreateAsyncOperationActor.class.getCanonicalName());
+            Keys.getKeyByName(CreateAsyncOperationActor.class.getCanonicalName());
 
             verifyNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 
@@ -215,7 +208,7 @@ public class CreateAsyncOpPluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("CreateAsyncOperationActorPlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
         //verify(bootstrapItem).after("IOC");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
@@ -223,7 +216,7 @@ public class CreateAsyncOpPluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey createAsyncOpKey = mock(IKey.class);
-        when(Keys.getOrAdd(CreateAsyncOperationActor.class.getCanonicalName())).thenReturn(createAsyncOpKey);
+        when(Keys.getKeyByName(CreateAsyncOperationActor.class.getCanonicalName())).thenReturn(createAsyncOpKey);
 
         ArgumentCaptor<Function<Object[], Object>> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -232,10 +225,10 @@ public class CreateAsyncOpPluginTest {
 
         try {
             actionArgumentCaptor.getValue().execute();
-        } catch (ActionExecuteException e) {
+        } catch (ActionExecutionException e) {
 
             verifyStatic();
-            Keys.getOrAdd(CreateAsyncOperationActor.class.getCanonicalName());
+            Keys.getKeyByName(CreateAsyncOperationActor.class.getCanonicalName());
 
             verifyNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 
@@ -264,7 +257,7 @@ public class CreateAsyncOpPluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("CreateAsyncOperationActorPlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
         //verify(bootstrapItem).after("IOC");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
@@ -272,7 +265,7 @@ public class CreateAsyncOpPluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey createAsyncOpKey = mock(IKey.class);
-        when(Keys.getOrAdd(CreateAsyncOperationActor.class.getCanonicalName())).thenReturn(createAsyncOpKey);
+        when(Keys.getKeyByName(CreateAsyncOperationActor.class.getCanonicalName())).thenReturn(createAsyncOpKey);
 
         ArgumentCaptor<Function<Object[], Object>> targetFuncArgumentCaptor = ArgumentCaptor.forClass((Class) Function.class);
 
@@ -282,7 +275,7 @@ public class CreateAsyncOpPluginTest {
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(CreateAsyncOperationActor.class.getCanonicalName());
+        Keys.getKeyByName(CreateAsyncOperationActor.class.getCanonicalName());
 
         verifyNew(CreateNewInstanceStrategy.class).withArguments(targetFuncArgumentCaptor.getValue());
 

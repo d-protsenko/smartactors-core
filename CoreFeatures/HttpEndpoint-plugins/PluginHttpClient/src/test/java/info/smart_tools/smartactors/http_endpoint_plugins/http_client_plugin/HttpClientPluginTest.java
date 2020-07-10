@@ -1,9 +1,8 @@
 package info.smart_tools.smartactors.http_endpoint_plugins.http_client_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.endpoint.interfaces.iclient.IClient;
 import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.exception.RequestSenderException;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IResponseHandler;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
@@ -16,12 +15,11 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.ex
 import info.smart_tools.smartactors.http_endpoint.http_client.HttpClient;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.scope.iscope.IScope;
@@ -34,16 +32,9 @@ import org.mockito.stubbing.Answer;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by sevenbits on 08.10.16.
@@ -57,7 +48,7 @@ public class HttpClientPluginTest {
         scope.setValue(IOC.getIocKey(), new StrategyContainer());
         ScopeProvider.setCurrentScope(scope);
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
 
@@ -66,8 +57,8 @@ public class HttpClientPluginTest {
         bootstrap.start();
 
         IOC.register(
-                Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
-                new CreateNewInstanceStrategy(
+                Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
                                 return new FieldName((String) args[0]);
@@ -111,6 +102,7 @@ public class HttpClientPluginTest {
         assertEquals(itemList.size(), 1);
         IBootstrapItem<String> item = itemList.get(0);
         item.executeProcess();
+        item.executeRevertProcess();
         reset(bootstrap);
     }
 
@@ -149,12 +141,12 @@ public class HttpClientPluginTest {
         item.executeProcess();
 
         IResponseHandler responseHandler = mock(IResponseHandler.class);
-        IOC.register(Keys.getOrAdd(IResponseHandler.class.getCanonicalName()), new SingletonStrategy(responseHandler));
+        IOC.register(Keys.getKeyByName(IResponseHandler.class.getCanonicalName()), new SingletonStrategy(responseHandler));
         HttpClient client = mock(HttpClient.class);
-        IOC.register(Keys.getOrAdd("createTimerOnRequest"), new SingletonStrategy(client));
+        IOC.register(Keys.getKeyByName("createTimerOnRequest"), new SingletonStrategy(client));
         IObject request =
                 new DSObject("{\"messageMapId\": \"messageMapId\", \"message\": {}, \"method\": \"POST\", \"uri\": \"https://foo.bar\"}");
-        IOC.resolve(Keys.getOrAdd("sendHttpRequest"), client, request);
+        IOC.resolve(Keys.getKeyByName("sendHttpRequest"), client, request);
         verify(client, times(1)).sendRequest(any());
         assertNotNull(client);
     }

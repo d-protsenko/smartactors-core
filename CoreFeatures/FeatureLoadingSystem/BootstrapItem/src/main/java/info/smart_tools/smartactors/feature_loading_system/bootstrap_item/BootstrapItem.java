@@ -1,10 +1,10 @@
 package info.smart_tools.smartactors.feature_loading_system.bootstrap_item;
 
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.exception.RevertProcessExecutionException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 
 import java.util.List;
 
@@ -37,13 +37,13 @@ public class BootstrapItem implements IBootstrapItem<String> {
     }
 
     @Override
-    public BootstrapItem process(final IPoorAction action) {
+    public BootstrapItem process(final IActionNoArgs action) {
         item.setProcess(action);
         return this;
     }
 
     @Override
-    public BootstrapItem revertProcess(final IPoorAction action) {
+    public BootstrapItem revertProcess(final IActionNoArgs action) {
         item.setRevertProcess(action);
         return this;
     }

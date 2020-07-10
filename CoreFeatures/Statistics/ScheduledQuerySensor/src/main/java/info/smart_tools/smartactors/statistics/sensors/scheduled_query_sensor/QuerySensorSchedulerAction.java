@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_bus.interfaces.imessage_bus_container.exception.SendingMessageException;
 import info.smart_tools.smartactors.message_bus.message_bus.MessageBus;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerAction;
@@ -37,18 +37,18 @@ public class QuerySensorSchedulerAction implements ISchedulerAction {
      */
     public QuerySensorSchedulerAction()
             throws ResolutionException {
-        queryExecutorFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "queryExecutor");
-        statisticsChainFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "statisticsChain");
-        dataFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "data");
-        periodStartFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "periodStart");
-        periodEndFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "periodEnd");
+        queryExecutorFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "queryExecutor");
+        statisticsChainFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "statisticsChain");
+        dataFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "data");
+        periodStartFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "periodStart");
+        periodEndFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "periodEnd");
     }
 
     @Override
     public void init(final ISchedulerEntry entry, final IObject args) throws SchedulerActionInitializationException {
         try {
             Object queryExecutorDependency = args.getValue(queryExecutorFieldName);
-            IQueryExecutor queryExecutor = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), queryExecutorDependency));
+            IQueryExecutor queryExecutor = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), queryExecutorDependency));
 
             queryExecutor.init(entry, args);
 
@@ -64,18 +64,19 @@ public class QuerySensorSchedulerAction implements ISchedulerAction {
     public void execute(final ISchedulerEntry entry) throws SchedulerActionExecutionException {
         try {
             Object queryExecutorDependency = entry.getState().getValue(queryExecutorFieldName);
-            IQueryExecutor queryExecutor = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), queryExecutorDependency));
+            IQueryExecutor queryExecutor = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), queryExecutorDependency));
 
             Collection<? extends Number> data = queryExecutor.execute(entry);
             Long time = entry.getLastTime();
 
-            IObject message = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject message = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
             message.setValue(dataFieldName, data);
             message.setValue(periodStartFieldName, time);
             message.setValue(periodEndFieldName, time);
 
-            Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), entry.getState().getValue(statisticsChainFieldName));
-            MessageBus.send(message, chainId);
+            //Object chainId = IOC.resolve(Keys.getKeyByName("chain_id_from_map_name_and_message"), entry.getState().getValue(statisticsChainFieldName), message);
+            //MessageBus.send(message, chainId);
+            MessageBus.send(message, entry.getState().getValue(statisticsChainFieldName));
         } catch (ReadValueException | InvalidArgumentException | QueryExecutionException | ResolutionException | ChangeValueException
                 | SendingMessageException e) {
             throw new SchedulerActionExecutionException("Error occurred querying or sending statistics.", e);

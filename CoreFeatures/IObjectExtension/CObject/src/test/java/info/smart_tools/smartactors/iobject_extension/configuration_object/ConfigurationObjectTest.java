@@ -1,19 +1,19 @@
 package info.smart_tools.smartactors.iobject_extension.configuration_object;
 
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.IStrategyRegistration;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.DeleteValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
-import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
-import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.scope.iscope.IScope;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,7 +39,7 @@ public class ConfigurationObjectTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -52,7 +52,7 @@ public class ConfigurationObjectTest {
 
         IOC.register(
                 IOC.resolve(
-                        IOC.getKeyForKeyStorage(), "configuration object"
+                        IOC.getKeyForKeyByNameStrategy(), "configuration object"
                 ),
                 new ApplyFunctionToArgumentsStrategy(
                         (a) -> {
@@ -66,7 +66,7 @@ public class ConfigurationObjectTest {
                         }
                 )
         );
-        IResolveDependencyStrategy defaultStrategy = new ApplyFunctionToArgumentsStrategy(
+        IStrategy defaultStrategy = new ApplyFunctionToArgumentsStrategy(
                 (a) -> {
                     try {
                         return a[1];
@@ -77,7 +77,7 @@ public class ConfigurationObjectTest {
                     }
                 }
         );
-        IResolveDependencyStrategy inStrategy = new ApplyFunctionToArgumentsStrategy(
+        IStrategy inStrategy = new ApplyFunctionToArgumentsStrategy(
                 (a) -> {
                     try {
                         Object obj = a[1];
@@ -96,7 +96,7 @@ public class ConfigurationObjectTest {
                     }
                 }
         );
-        IResolveDependencyStrategy outStrategy = new ApplyFunctionToArgumentsStrategy(
+        IStrategy outStrategy = new ApplyFunctionToArgumentsStrategy(
                 (a) -> {
                     try {
                         Object obj = a[1];
@@ -132,13 +132,13 @@ public class ConfigurationObjectTest {
                     }
                 }
         );
-        IResolveDependencyStrategy strategy = new CObjectStrategy();
-        ((IAdditionDependencyStrategy) strategy).register("in_", inStrategy);
-        ((IAdditionDependencyStrategy) strategy).register("out_", outStrategy);
-        ((IAdditionDependencyStrategy) strategy).register("default", defaultStrategy);
+        IStrategy strategy = new CObjectStrategy();
+        ((IStrategyRegistration) strategy).register("in_", inStrategy);
+        ((IStrategyRegistration) strategy).register("out_", outStrategy);
+        ((IStrategyRegistration) strategy).register("default", defaultStrategy);
         IOC.register(
                 IOC.resolve(
-                        IOC.getKeyForKeyStorage(), "resolve key for configuration object"
+                        IOC.getKeyForKeyByNameStrategy(), "resolve key for configuration object"
                 ),
                 strategy
         );

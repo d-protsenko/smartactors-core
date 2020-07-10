@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.system_actors_pack.actor_collection_receive
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
@@ -40,7 +40,7 @@ public class ChildDeletionCheckerReceiver implements IMessageReceiver {
     }
 
     private void checkDeletion(final IMessageProcessor messageProcessor)
-            throws ActionExecuteException, DeletionCheckException, InvalidArgumentException {
+            throws ActionExecutionException, DeletionCheckException, InvalidArgumentException {
         messageProcessor.resetEnvironment();
         if (deletionCheckStrategy.checkDelete(creationContext, messageProcessor.getEnvironment())) {
             deletionAction.execute(creationContext);
@@ -57,13 +57,22 @@ public class ChildDeletionCheckerReceiver implements IMessageReceiver {
         } catch (MessageReceiveException e) {
             try {
                 checkDeletion(processor);
-            } catch (ActionExecuteException | DeletionCheckException | InvalidArgumentException ee) {
+            } catch (ActionExecutionException | DeletionCheckException | InvalidArgumentException ee) {
                 e.addSuppressed(ee);
             }
 
             throw new MessageReceiveException(e);
-        } catch (ActionExecuteException | DeletionCheckException | InvalidArgumentException e) {
+        } catch (ActionExecutionException | DeletionCheckException | InvalidArgumentException e) {
             throw new MessageReceiveException(e);
+        }
+    }
+
+    @Override
+    public void dispose() {
+        try {
+            underlyingReceiver.dispose();
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
     }
 }

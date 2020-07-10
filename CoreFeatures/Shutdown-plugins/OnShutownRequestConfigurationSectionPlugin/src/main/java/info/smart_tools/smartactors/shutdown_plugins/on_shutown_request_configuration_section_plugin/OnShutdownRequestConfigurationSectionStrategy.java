@@ -10,7 +10,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 import java.util.List;
 
@@ -56,9 +56,9 @@ public class OnShutdownRequestConfigurationSectionStrategy implements ISectionSt
     public OnShutdownRequestConfigurationSectionStrategy(final Object defaultActionKeyName)
             throws ResolutionException {
         this.defaultActionKeyName = defaultActionKeyName;
-        sectionNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "onShutdownRequest");
-        upcounterFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "upcounter");
-        actionFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "action");
+        sectionNameFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "onShutdownRequest");
+        upcounterFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "upcounter");
+        actionFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "action");
     }
 
     @Override
@@ -67,7 +67,7 @@ public class OnShutdownRequestConfigurationSectionStrategy implements ISectionSt
             List<IObject> section = (List) config.getValue(sectionNameFieldName);
 
             for (IObject obj : section) {
-                IUpCounter upCounter = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), obj.getValue(upcounterFieldName)));
+                IUpCounter upCounter = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), obj.getValue(upcounterFieldName)));
 
                 Object actionKeyName = obj.getValue(actionFieldName);
 
@@ -75,11 +75,41 @@ public class OnShutdownRequestConfigurationSectionStrategy implements ISectionSt
                     actionKeyName = defaultActionKeyName;
                 }
 
-                upCounter.onShutdownRequest(IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), actionKeyName)));
+                upCounter.onShutdownRequest( "cfg-"+actionKeyName,
+                        IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), actionKeyName)));
             }
         } catch (ReadValueException | InvalidArgumentException | ClassCastException | ResolutionException
                 | UpCounterCallbackExecutionException e) {
             throw new ConfigurationProcessingException(e);
+        }
+    }
+
+    @Override
+    public void onRevertConfig(final IObject config) throws ConfigurationProcessingException {
+        ConfigurationProcessingException exception = new ConfigurationProcessingException("Error occurred reverting \"onShutdownRequest\" configuration section.");
+        try {
+            List<IObject> section = (List) config.getValue(sectionNameFieldName);
+
+            for (IObject obj : section) {
+                try {
+                    IUpCounter upCounter = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), obj.getValue(upcounterFieldName)));
+
+                    Object actionKeyName = obj.getValue(actionFieldName);
+
+                    if (null == actionKeyName) {
+                        actionKeyName = defaultActionKeyName;
+                    }
+
+                    upCounter.removeFromShutdownRequest("cfg-" + actionKeyName);
+                } catch (ReadValueException | InvalidArgumentException | ResolutionException e) {
+                    exception.addSuppressed(e);
+                }
+            }
+        } catch (ReadValueException | InvalidArgumentException | ClassCastException e) {
+            exception.addSuppressed(e);
+        }
+        if (exception.getSuppressed().length > 0) {
+            throw exception;
         }
     }
 

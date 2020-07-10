@@ -1,40 +1,40 @@
 package info.smart_tools.smartactors.core.proof_of_assumption;
 
-import info.smart_tools.smartactors.task.blocking_queue.BlockingQueue;
-import info.smart_tools.smartactors.message_processing.chain_call_receiver.ChainCallReceiver;
-import info.smart_tools.smartactors.message_processing.chain_call_receiver.exceptions.ChainChoiceException;
-import info.smart_tools.smartactors.message_processing.chain_storage.ChainStorage;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.message_processing_interfaces.imessage.IMessage;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
-import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
-import info.smart_tools.smartactors.task.interfaces.itask.ITask;
-import info.smart_tools.smartactors.task.interfaces.itask_dispatcher.ITaskDispatcher;
-import info.smart_tools.smartactors.task.interfaces.ithread_pool.IThreadPool;
+import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
+import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
+import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
+import info.smart_tools.smartactors.message_processing.chain_call_receiver.ChainCallReceiver;
+import info.smart_tools.smartactors.message_processing.chain_storage.ChainStorage;
 import info.smart_tools.smartactors.message_processing.map_router.MapRouter;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageReceiveException;
 import info.smart_tools.smartactors.message_processing.message_processing_sequence.MessageProcessingSequence;
+import info.smart_tools.smartactors.message_processing.message_processing_sequence.exceptions.ChainChoiceException;
 import info.smart_tools.smartactors.message_processing.message_processor.MessageProcessor;
 import info.smart_tools.smartactors.message_processing.receiver_chain.ImmutableReceiverChain;
 import info.smart_tools.smartactors.message_processing.receiver_chain.ImmutableReceiverChainResolutionStrategy;
-import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
+import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
+import info.smart_tools.smartactors.message_processing_interfaces.imessage.IMessage;
+import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageReceiveException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
-import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
-import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
+import info.smart_tools.smartactors.task.blocking_queue.BlockingQueue;
+import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
+import info.smart_tools.smartactors.task.interfaces.itask_dispatcher.ITaskDispatcher;
+import info.smart_tools.smartactors.task.interfaces.ithread_pool.IThreadPool;
 import info.smart_tools.smartactors.task.task_dispatcher.TaskDispatcher;
 import info.smart_tools.smartactors.task.thread_pool.ThreadPool;
 import org.junit.Before;
@@ -88,7 +88,7 @@ public class MessageProcessingTest {
 
         ScopeProvider.setCurrentScope(ScopeProvider.getScope(ScopeProvider.createScope(null)));
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new CreateNewInstanceStrategy(objects -> {
                     try {
                         return new Key(objects[0].toString());
@@ -98,10 +98,10 @@ public class MessageProcessingTest {
                 })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new CreateNewInstanceStrategy(objects -> new DSObject()));
 
-        IOC.register(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(objects -> {
                     try {
                         return new FieldName(String.valueOf(objects[0]));
@@ -229,27 +229,27 @@ public class MessageProcessingTest {
         final AtomicBoolean done = new AtomicBoolean(false);
         ConcurrentMap<Long, Long> threadUseCount = new ConcurrentHashMap<>();
 
-        IOC.register(IOC.resolve(IOC.getKeyForKeyStorage(), "chain_id"),
+        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "chain_id_from_map_name"),
                 new ResolveByNameIocStrategy(objects -> String.valueOf(objects[0])));
 
-        final IFieldName targetNameFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "target");
+        final IFieldName targetNameFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "target");
 
-        IOC.register(IOC.resolve(IOC.getKeyForKeyStorage(), "receiver_id_from_iobject"),
-                new IResolveDependencyStrategy() {
+        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "receiver_id_from_iobject"),
+                new IStrategy() {
                     @Override
-                    public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
+                    public <T> T resolve(Object... args) throws StrategyException {
                         try {
                             return (T)String.valueOf(((IObject)args[0]).getValue(targetNameFieldName));
                         } catch (ReadValueException | InvalidArgumentException e) {
-                            throw new ResolveDependencyStrategyException(e);
+                            throw new StrategyException(e);
                         }
                     }
                 });
 
-        IOC.register(IOC.resolve(IOC.getKeyForKeyStorage(), IReceiverChain.class.toString()),
+        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), IReceiverChain.class.toString()),
                 new ImmutableReceiverChainResolutionStrategy());
 
-        IOC.register(IOC.resolve(IOC.getKeyForKeyStorage(), IObject.class),
+        IOC.register(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), IObject.class),
                 new CreateNewInstanceStrategy(objects -> new DSObject()));
 
         IObject prepareTarget = new DSObject("{\"target\":\"prepare\"}");
@@ -266,8 +266,8 @@ public class MessageProcessingTest {
         IObject payloadChainDesc = new DSObject();
         IObject innerPayloadChainDesc = new DSObject();
 
-        IFieldName exceptionalFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "exceptional");
-        IFieldName pathFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "steps");
+        IFieldName exceptionalFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "exceptional");
+        IFieldName pathFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "steps");
 
         // Main chain
         mainChainDesc.setValue(exceptionalFieldName, new ArrayList<>());

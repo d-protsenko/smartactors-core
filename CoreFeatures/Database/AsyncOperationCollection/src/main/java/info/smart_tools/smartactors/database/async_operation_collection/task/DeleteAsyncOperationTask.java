@@ -3,12 +3,12 @@ package info.smart_tools.smartactors.database.async_operation_collection.task;
 import info.smart_tools.smartactors.database.async_operation_collection.exception.DeleteAsyncOperationException;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.exception.TaskPrepareException;
+import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 /**
  * Task-facade for delete task for async operations collection
@@ -29,8 +29,8 @@ public class DeleteAsyncOperationTask implements IDatabaseTask {
     public DeleteAsyncOperationTask(final IStorageConnection connection) throws Exception {
         this.connection = connection;
         try {
-            collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
-            documentField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document");
+            collectionNameField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
+            documentField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "document");
         } catch (Exception e) {
             throw new DeleteAsyncOperationException("Failed to create task", e);
         }
@@ -40,7 +40,7 @@ public class DeleteAsyncOperationTask implements IDatabaseTask {
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
             deleteTask = IOC.resolve(
-                    Keys.getOrAdd("db.collection.delete"),
+                    Keys.getKeyByName("db.collection.delete"),
                     connection,
                     collectionNameField.in(query),
                     documentField.in(query)

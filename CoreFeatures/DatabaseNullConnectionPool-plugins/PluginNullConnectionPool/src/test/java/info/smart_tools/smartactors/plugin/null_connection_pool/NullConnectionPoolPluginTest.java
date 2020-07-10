@@ -6,7 +6,7 @@ import info.smart_tools.smartactors.database.interfaces.istorage_connection.ISto
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.wrapper.ConnectionOptions;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_simple_container_plugin.PluginIOCSimpleContainer;
 import org.junit.Before;
@@ -28,18 +28,18 @@ public class NullConnectionPoolPluginTest {
 
     @Test
     public void testPoolRegistered() throws Exception {
-        assertTrue(IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool")) instanceof IPool);
+        assertTrue(IOC.resolve(Keys.getKeyByName("DatabaseConnectionPool")) instanceof IPool);
     }
 
     @Test
     public void testPoolRegisteredWithOptions() throws Exception {
         ConnectionOptions options = mock(ConnectionOptions.class);
-        assertTrue(IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool"), options) instanceof IPool);
+        assertTrue(IOC.resolve(Keys.getKeyByName("DatabaseConnectionPool"), options) instanceof IPool);
     }
 
     @Test
     public void testPoolGuarded() throws Exception {
-        IPool pool = IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool"));
+        IPool pool = IOC.resolve(Keys.getKeyByName("DatabaseConnectionPool"));
         try (PoolGuard guard = new PoolGuard(pool)) {
             assertTrue(guard.getObject() instanceof IStorageConnection);
         }

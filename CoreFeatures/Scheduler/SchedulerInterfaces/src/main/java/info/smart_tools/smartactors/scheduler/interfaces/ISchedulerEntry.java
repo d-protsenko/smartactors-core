@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.scheduler.interfaces;
 
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryPauseException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryScheduleException;
 import info.smart_tools.smartactors.scheduler.interfaces.exceptions.EntryStorageAccessException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 /**
  * Interface of a scheduler entry.

@@ -1,20 +1,21 @@
 package info.smart_tools.smartactors.message_processing_plugins.actor_reveiver_creator_plugin;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.message_processing_interfaces.iroutable_object_creator.IRoutedObjectCreator;
-import info.smart_tools.smartactors.scope.iscope.IScope;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
-import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
+import info.smart_tools.smartactors.message_processing_interfaces.iroutable_object_creator.IRoutedObjectCreator;
+import info.smart_tools.smartactors.scope.iscope.IScope;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -23,14 +24,9 @@ import org.mockito.stubbing.Answer;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.*;
 
 public class ActorReceiverCreatorPluginTest {
 
@@ -43,7 +39,7 @@ public class ActorReceiverCreatorPluginTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -54,7 +50,7 @@ public class ActorReceiverCreatorPluginTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -106,11 +102,29 @@ public class ActorReceiverCreatorPluginTest {
         item.executeProcess();
         IRoutedObjectCreator objectCreator = IOC.resolve(
                 IOC.resolve(
-                        IOC.getKeyForKeyStorage(),
+                        IOC.getKeyForKeyByNameStrategy(),
                         IRoutedObjectCreator.class.getCanonicalName() + "#actor"
                 )
         );
         assertNotNull(objectCreator);
+
+        item.executeRevertProcess();
+
+        try {
+            IOC.resolve(Keys.getKeyByName(IRoutedObjectCreator.class.getCanonicalName() + "#actor"));
+            fail();
+        } catch (ResolutionException e) {}
+
+        try {
+            IOC.resolve(Keys.getKeyByName("actor_receiver_queue"));
+            fail();
+        } catch (ResolutionException e) {}
+
+        try {
+            IOC.resolve(Keys.getKeyByName("actor_receiver_busyness_flag"));
+            fail();
+        } catch (ResolutionException e) {}
+
         reset(bootstrap);
     }
 

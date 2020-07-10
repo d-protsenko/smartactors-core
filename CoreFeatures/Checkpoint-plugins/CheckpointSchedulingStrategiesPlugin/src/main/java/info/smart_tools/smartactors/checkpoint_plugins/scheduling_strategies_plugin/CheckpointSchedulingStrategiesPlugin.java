@@ -9,7 +9,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 /**
  * Plugin that registers some scheduling strategies useful for checkpoint configuration.
@@ -35,7 +35,7 @@ public class CheckpointSchedulingStrategiesPlugin extends BootstrapPlugin {
     @Before("checkpoint_actor")
     public void registerRegularRepeatStrategy()
             throws ResolutionException, InvalidArgumentException, RegistrationException {
-        IOC.register(Keys.getOrAdd("checkpoint repeat strategy"),
+        IOC.register(Keys.getKeyByName("checkpoint repeat strategy"),
                 new SingletonStrategy(new CheckpointRegularRepeatStrategy()));
     }
 
@@ -50,7 +50,7 @@ public class CheckpointSchedulingStrategiesPlugin extends BootstrapPlugin {
     @Before("checkpoint_actor")
     public void registerFibonacciRepeatStrategy()
             throws ResolutionException, InvalidArgumentException, RegistrationException {
-        IOC.register(Keys.getOrAdd("checkpoint fibonacci repeat strategy"),
+        IOC.register(Keys.getKeyByName("checkpoint fibonacci repeat strategy"),
                 new SingletonStrategy(new CheckpointFibonacciRepeatStrategy()));
     }
 }

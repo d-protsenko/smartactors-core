@@ -9,14 +9,17 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.exceptions.RouteNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainChoiceException;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NoExceptionHandleChainException;
+import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 
 /**
  * Implementation of {@link IDebuggerSequence}.
@@ -62,9 +65,9 @@ public class DebuggerSequenceImpl implements IDebuggerSequence, IDumpable {
 
         this.wrapped = sequence;
 
-        debuggerArguments = IOC.resolve(Keys.getOrAdd("configuration object"), DEBUGGER_INTERRUPT_TARGET);
+        debuggerArguments = IOC.resolve(Keys.getKeyByName("configuration object"), DEBUGGER_INTERRUPT_TARGET);
 
-        IRouter router = IOC.resolve(Keys.getOrAdd(IRouter.class.getCanonicalName()));
+        IRouter router = IOC.resolve(Keys.getKeyByName(IRouter.class.getCanonicalName()));
 
         try {
             debuggerReceiver = router.route(debuggerAddress);
@@ -103,8 +106,9 @@ public class DebuggerSequenceImpl implements IDebuggerSequence, IDumpable {
                 wrapped.catchException(exception, exceptionContext);
                 exception = null;
                 return true;
-            } catch (NoExceptionHandleChainException | NestedChainStackOverflowException | ChangeValueException | InvalidArgumentException
-                    | ReadValueException e) {
+            } catch (NoExceptionHandleChainException | NestedChainStackOverflowException | ChangeValueException |
+                    InvalidArgumentException | ReadValueException | ChainNotFoundException | ResolutionException |
+                    ScopeProviderException e) {
                 e.addSuppressed(exception);
                 exception = e;
             }
@@ -171,22 +175,31 @@ public class DebuggerSequenceImpl implements IDebuggerSequence, IDumpable {
     }
 
     @Override
-    public void callChain(final IReceiverChain chain) throws NestedChainStackOverflowException {
-        wrapped.callChain(chain);
+    public void setScopeSwitchingChainName(Object chainName) { wrapped.setScopeSwitchingChainName(chainName); }
+
+    @Override
+    public void callChain(final Object chainName)
+            throws NestedChainStackOverflowException, ResolutionException, ChainNotFoundException, ScopeProviderException {
+        wrapped.callChain(chainName);
     }
 
     @Override
-    public void catchException(final Throwable exc, final IObject context)
-            throws NoExceptionHandleChainException, NestedChainStackOverflowException, ChangeValueException,
-            InvalidArgumentException, ReadValueException {
-        this.exception = exc;
+    public void callChainSecurely(final Object chainName, IMessageProcessor processor)
+            throws NestedChainStackOverflowException, ResolutionException, ChainNotFoundException,
+            ChainChoiceException, ScopeProviderException {
+        wrapped.callChainSecurely(chainName, processor);
+    }
+
+    @Override
+    public void catchException(final Throwable exception, final IObject context) {
+        this.exception = exception;
         this.exceptionContext = context;
     }
 
     @Override
     public IObject dump(final IObject options) throws DumpException, InvalidArgumentException {
         try {
-            return IOC.resolve(Keys.getOrAdd("make dump"), wrapped, options);
+            return IOC.resolve(Keys.getKeyByName("make dump"), wrapped, options);
         } catch (ResolutionException e) {
             throw new DumpException("Error creating dump of debugger sequence.", e);
         }

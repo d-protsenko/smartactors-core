@@ -1,18 +1,18 @@
 package info.smart_tools.smartactors.database.async_operation_collection.task;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.database.async_operation_collection.exception.UpdateAsyncOperationException;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.exception.TaskPrepareException;
+import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 /**
  * Task for mark async operation as done
@@ -35,9 +35,9 @@ public class UpdateAsyncOperationTask implements IDatabaseTask {
         this.connection = connection;
 
         try {
-            doneFlagField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "done");
-            documentField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document");
-            collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+            doneFlagField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "done");
+            documentField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "document");
+            collectionNameField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
         } catch (ResolutionException e) {
             throw new UpdateAsyncOperationException("Can't resolve one of fields", e);
         }
@@ -49,7 +49,7 @@ public class UpdateAsyncOperationTask implements IDatabaseTask {
         try {
             IObject document = documentField.in(query);
             doneFlagField.out(document, true);
-            upsertTask = IOC.resolve(Keys.getOrAdd("db.collection.upsert"),
+            upsertTask = IOC.resolve(Keys.getKeyByName("db.collection.upsert"),
                     connection,
                     collectionNameField.in(query),
                     document);

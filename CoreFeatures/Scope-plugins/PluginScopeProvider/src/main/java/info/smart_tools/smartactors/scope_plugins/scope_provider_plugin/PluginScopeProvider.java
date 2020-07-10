@@ -1,10 +1,10 @@
 package info.smart_tools.smartactors.scope_plugins.scope_provider_plugin;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.scope.iscope.IScope;
@@ -48,7 +48,7 @@ public class PluginScopeProvider implements IPlugin {
                             IScope scope = ScopeProvider.getScope(systemScopeKey);
                             ScopeProvider.setCurrentScope(scope);
                         } catch (ScopeProviderException e) {
-                            throw new ActionExecuteException("ScopeProvider plugin can't load.", e);
+                            throw new ActionExecutionException("ScopeProvider plugin can't load.", e);
                         }
                     });
 

@@ -1,11 +1,11 @@
 package info.smart_tools.smartactors.core.dependency_resolving_feature_manager;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
+import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ifeature_manager.IFeature;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ifeature_manager.exception.FeatureManagementException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.ipath.IPath;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -68,7 +68,7 @@ class Feature implements IFeature {
             } else {
                 try {
                     action.execute(paths);
-                } catch (ActionExecuteException | InvalidArgumentException e) {
+                } catch (ActionExecutionException | InvalidArgumentException e) {
                     throw new FeatureManagementException("Error occurred executing action for a feature that already is present:", e);
                 }
             }

@@ -1,20 +1,20 @@
 {
   "features" : [ {
   "actors" : [ {
-  "artifactId" : "server-developing-tools.interfaces.iserver",
+  "artifactId" : "server-interfaces.interfaces.iserver",
   "uploadRepositories" : [ {
   "uploadRepositoryId" : "archiva.server-dev-tools",
   "uploadRepositoryUrl" : "http://archiva.smart-tools.info/repository/server-dev-tools/"
 } ],
   "rawName" : "IServer",
-  "version" : "0.3.3"
+  "version" : "0.6.1"
 } ],
   "uploadRepositories" : [ ],
   "plugins" : [ ],
   "groupId" : "info.smart_tools.smartactors",
-  "artifactId" : "server-developing-tools",
-  "rawName" : "Interfaces",
-  "version" : "0.3.3"
+  "artifactId" : "server-interfaces",
+  "rawName" : "ServerInterfaces",
+  "version" : "0.6.1"
 } ],
   "on-actor-creation-upload-repositories" : [ {
   "uploadRepositoryId" : "archiva.smartactors-modules",
@@ -30,5 +30,5 @@
 } ],
   "groupId" : "info.smart_tools.smartactors",
   "name" : "ServerDevelopmentTools",
-  "version" : "0.3.3"
+  "version" : "0.6.1"
 }

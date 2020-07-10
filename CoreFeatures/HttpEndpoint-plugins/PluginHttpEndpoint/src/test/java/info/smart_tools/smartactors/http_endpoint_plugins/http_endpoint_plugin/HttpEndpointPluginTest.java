@@ -1,25 +1,26 @@
 package info.smart_tools.smartactors.http_endpoint_plugins.http_endpoint_plugin;
 
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.ioc_strategy_pack.resolve_by_type_and_name_strategy.ResolveByTypeAndNameStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
-import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 import info.smart_tools.smartactors.http_endpoint_plugins.endpoint_plugin.EndpointPlugin;
-import info.smart_tools.smartactors.scope.iscope.IScope;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.iobject.ds_object.DSObject;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_strategy.ResolveByNameIocStrategy;
-import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
+import info.smart_tools.smartactors.ioc_strategy_pack.resolve_by_type_and_name_strategy.ResolveByTypeAndNameStrategy;
+import info.smart_tools.smartactors.scope.iscope.IScope;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -28,16 +29,12 @@ import org.mockito.stubbing.Answer;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.*;
 
 public class HttpEndpointPluginTest {
+
     private IBootstrap bootstrap;
     private HttpEndpointPlugin plugin;
     private ResolveByTypeAndNameStrategy deserializationStrategyChooser;
@@ -58,7 +55,7 @@ public class HttpEndpointPluginTest {
         scope.setValue(IOC.getIocKey(), new StrategyContainer());
         ScopeProvider.setCurrentScope(scope);
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
 
@@ -67,8 +64,12 @@ public class HttpEndpointPluginTest {
         bootstrap.start();
 
         IOC.register(
-                Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
-                new CreateNewInstanceStrategy(
+                Keys.getKeyByName(IObject.class.getCanonicalName()),
+                new ApplyFunctionToArgumentsStrategy(a -> new DSObject())
+        );
+        IOC.register(
+                Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
                                 return new FieldName((String) args[0]);
@@ -79,26 +80,25 @@ public class HttpEndpointPluginTest {
                         }
                 )
         );
-
-        IOC.register(Keys.getOrAdd("DeserializationStrategyChooser"), new SingletonStrategy(
+        IOC.register(Keys.getKeyByName("DeserializationStrategyChooser"), new SingletonStrategy(
                         deserializationStrategyChooser
                 )
         );
 
 
-        IOC.register(Keys.getOrAdd("ResponseSenderChooser"), new SingletonStrategy(
+        IOC.register(Keys.getKeyByName("ResponseSenderChooser"), new SingletonStrategy(
                         resolveByTypeAndNameStrategy
                 )
         );
-        IOC.register(Keys.getOrAdd("CookiesSetterChooser"), new SingletonStrategy(
+        IOC.register(Keys.getKeyByName("CookiesSetterChooser"), new SingletonStrategy(
                         resolveCookies
                 )
         );
-        IOC.register(Keys.getOrAdd("HeadersExtractorChooser"), new SingletonStrategy(
+        IOC.register(Keys.getKeyByName("HeadersExtractorChooser"), new SingletonStrategy(
                         resolveHeaders
                 )
         );
-        IOC.register(Keys.getOrAdd("ResponseStatusSetter"), new SingletonStrategy(
+        IOC.register(Keys.getKeyByName("ResponseStatusSetter"), new SingletonStrategy(
                         resolveStatusSetter
                 )
         );
@@ -136,6 +136,7 @@ public class HttpEndpointPluginTest {
         assertEquals(itemList.size(), 1);
         IBootstrapItem<String> item = itemList.get(0);
         item.executeProcess();
+        item.executeRevertProcess();
         reset(bootstrap);
     }
 

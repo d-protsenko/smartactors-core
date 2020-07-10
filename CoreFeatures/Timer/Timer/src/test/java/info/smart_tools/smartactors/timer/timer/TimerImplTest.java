@@ -1,15 +1,21 @@
 package info.smart_tools.smartactors.timer.timer;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import info.smart_tools.smartactors.scope.iscope.IScope;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.timer.interfaces.itimer.ITimer;
 import info.smart_tools.smartactors.timer.interfaces.itimer.exceptions.TaskScheduleException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -22,8 +28,9 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.powermock.api.mockito.PowerMockito.*;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
@@ -60,7 +67,10 @@ public class TimerImplTest {
         taskQueueMock = mock(IQueue.class);
         taskQueueKey =mock(IKey.class);
 
-        when(Keys.getOrAdd(eq("task_queue"))).thenReturn(taskQueueKey);
+        ScopeProvider.setCurrentScope(mock(IScope.class));
+        ModuleManager.setCurrentModule(ModuleManager.getModuleById(ModuleManager.coreId));
+
+        when(Keys.getKeyByName(eq("task_queue"))).thenReturn(taskQueueKey);
         when(IOC.resolve(same(taskQueueKey))).thenReturn(taskQueueMock);
     }
 

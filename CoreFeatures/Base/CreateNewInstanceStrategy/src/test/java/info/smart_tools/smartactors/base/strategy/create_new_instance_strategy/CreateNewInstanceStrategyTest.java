@@ -1,15 +1,11 @@
 package info.smart_tools.smartactors.base.strategy.create_new_instance_strategy;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * Tests for CreateNewInstanceStrategy
@@ -28,7 +24,7 @@ public class CreateNewInstanceStrategyTest {
         Checker checker = new Checker();
         Object value = new Object();
 
-        IResolveDependencyStrategy strategy = new CreateNewInstanceStrategy(
+        IStrategy strategy = new CreateNewInstanceStrategy(
                 (args) ->{
                     checker.wasCalled = true;
                     return value;
@@ -45,7 +41,7 @@ public class CreateNewInstanceStrategyTest {
     public void checkStrategyCreationWithArgs()
             throws Exception {
         Checker checker = new Checker();
-        IResolveDependencyStrategy strategy = new CreateNewInstanceStrategy(
+        IStrategy strategy = new CreateNewInstanceStrategy(
                 (args) -> {
                     checker.wasCalled = true;
                     assertEquals(2, args.length);
@@ -58,10 +54,10 @@ public class CreateNewInstanceStrategyTest {
         strategy.resolve(1, "test");
     }
 
-    @Test (expected = ResolveDependencyStrategyException.class)
-    public void checkResolveDependencyStrategyExceptionOnWrongArgs()
+    @Test (expected = StrategyException.class)
+    public void checkStrategyExceptionOnWrongArgs()
             throws Exception {
-        IResolveDependencyStrategy strategy = new CreateNewInstanceStrategy(
+        IStrategy strategy = new CreateNewInstanceStrategy(
                 (args) -> {
                     Integer a = (Integer) args[0];
                     return null;

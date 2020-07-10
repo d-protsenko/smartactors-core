@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.uuid_nextid_strategy;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 
 import java.util.UUID;
 
@@ -10,9 +10,9 @@ import java.util.UUID;
  * or anywhere else.
  * {@link java.util.UUID}
  */
-public class UuidNextIdStrategy implements IResolveDependencyStrategy {
+public class UuidNextIdStrategy implements IStrategy {
     @Override
-    public String resolve(final Object... args) throws ResolveDependencyStrategyException {
+    public String resolve(final Object... args) throws StrategyException {
         return UUID.randomUUID().toString();
     }
 }

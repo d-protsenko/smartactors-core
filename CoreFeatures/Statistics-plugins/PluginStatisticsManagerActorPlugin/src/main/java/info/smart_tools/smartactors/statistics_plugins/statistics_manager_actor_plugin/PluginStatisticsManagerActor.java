@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
@@ -38,7 +38,7 @@ public class PluginStatisticsManagerActor extends BootstrapPlugin {
     @Item("statistics_manager_actor")
     public void registerActorCreationDependency()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("statistics manager actor"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.getKeyByName("statistics manager actor"), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
                 return new StatisticsManagerActor();
             } catch (ResolutionException e) {
@@ -57,7 +57,7 @@ public class PluginStatisticsManagerActor extends BootstrapPlugin {
     @Item("test_statistics_collector")
     public void registerTestStatisticsCollector()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("test statistics collector"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.getKeyByName("test statistics collector"), new ApplyFunctionToArgumentsStrategy(args -> {
             try {
                 return new IMessageReceiver() {
                     @Override
@@ -69,6 +69,9 @@ public class PluginStatisticsManagerActor extends BootstrapPlugin {
                             throw new MessageReceiveException(e);
                         }
                     }
+
+                    @Override
+                    public void dispose() { }
                 };
             } catch (Exception e) {
                 throw new FunctionExecutionException(e);

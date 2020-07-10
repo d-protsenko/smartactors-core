@@ -1,15 +1,15 @@
 package info.smart_tools.smartactors.http_endpoint.http_headers_setter;
 
-import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.http_endpoint.interfaces.iheaders_extractor.IHeadersExtractor;
 import info.smart_tools.smartactors.http_endpoint.interfaces.iheaders_extractor.exceptions.HeadersSetterException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.ifield.IField;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaders;
 
@@ -39,10 +39,10 @@ public class HttpHeadersExtractor implements IHeadersExtractor {
         IFieldName headerName;
         IFieldName headerValue;
         try {
-            contextField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "context");
-            headersField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "headers");
-            headerName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
-            headerValue = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "value");
+            contextField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "context");
+            headersField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "headers");
+            headerName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name");
+            headerValue = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "value");
         } catch (ResolutionException e) {
             throw new HeadersSetterException("Failed to resolve fieldName", e);
         }

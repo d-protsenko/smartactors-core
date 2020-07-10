@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing.condition_chain_choice_strategy.ConditionChainChoiceStrategy;
 
 /**
@@ -35,6 +35,15 @@ public class PluginConditionChainChoiceStrategy extends BootstrapPlugin {
     @BootstrapPlugin.Before({"ChainCallReceiver"})
     public void item()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("condition chain choice strategy"), new SingletonStrategy(new ConditionChainChoiceStrategy()));
+        IOC.register(Keys.getKeyByName("condition chain choice strategy"), new SingletonStrategy(new ConditionChainChoiceStrategy()));
+    }
+
+    /**
+     * Unregisters condition chain choice strategy.
+     */
+    @BootstrapPlugin.Item("condition_chain_choice_strategy")
+    public void revertItem() {
+        String[] keyNames = { "condition chain choice strategy" };
+        Keys.unregisterByNames(keyNames);
     }
 }

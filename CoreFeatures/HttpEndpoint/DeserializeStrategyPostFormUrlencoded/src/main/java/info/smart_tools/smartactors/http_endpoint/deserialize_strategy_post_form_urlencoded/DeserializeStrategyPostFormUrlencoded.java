@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 
@@ -34,11 +34,11 @@ public class DeserializeStrategyPostFormUrlencoded implements IDeserializeStrate
             }
             String string = new String(bytes);
             QueryStringDecoder decoder = new QueryStringDecoder(string, false);
-            IObject message = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+            IObject message = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
             decoder.parameters().forEach(
                     (k, v) -> {
                         try {
-                            IFieldName fieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), k);
+                            IFieldName fieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), k);
                             message.setValue(fieldName, v.get(0));
                         } catch (ResolutionException | ChangeValueException | InvalidArgumentException e) {
                             throw new RuntimeException(e);

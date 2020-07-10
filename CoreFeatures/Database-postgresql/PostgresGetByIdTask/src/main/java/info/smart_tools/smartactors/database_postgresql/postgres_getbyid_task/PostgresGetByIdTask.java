@@ -1,17 +1,17 @@
 package info.smart_tools.smartactors.database_postgresql.postgres_getbyid_task;
 
-import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.exception.TaskPrepareException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
-import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.JDBCCompiledQuery;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.QueryStatement;
 import info.smart_tools.smartactors.database_postgresql.postgres_schema.PostgresSchema;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -53,7 +53,7 @@ public class PostgresGetByIdTask implements IDatabaseTask {
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-            GetByIdMessage message = IOC.resolve(Keys.getOrAdd(GetByIdMessage.class.getCanonicalName()), query);
+            GetByIdMessage message = IOC.resolve(Keys.getKeyByName(GetByIdMessage.class.getCanonicalName()), query);
             collection = message.getCollectionName();
             id = message.getId();
             callback = message.getCallback();
@@ -79,7 +79,7 @@ public class PostgresGetByIdTask implements IDatabaseTask {
             ResultSet resultSet = statement.getResultSet();
             if (resultSet.next()) {
                 String sqlDoc = resultSet.getString(1);
-                IObject document = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), sqlDoc);
+                IObject document = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), sqlDoc);
                 callback.execute(document);
                 connection.commit();
             } else {

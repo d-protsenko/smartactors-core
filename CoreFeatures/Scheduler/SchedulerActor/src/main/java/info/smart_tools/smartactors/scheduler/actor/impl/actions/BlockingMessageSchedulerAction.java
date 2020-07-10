@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.scheduler.actor.impl.actions;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
@@ -10,12 +10,12 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageProcessorProcessException;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerAction;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
@@ -58,13 +58,13 @@ public class BlockingMessageSchedulerAction implements ISchedulerAction {
 
     public BlockingMessageSchedulerAction()
             throws ResolutionException {
-        messageFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "message");
-        setEntryIdFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "setEntryId");
-        preShutdownExecFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "preShutdownExec");
-        chainFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "chain");
-        finalActionsFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "finalActions");
-        stackDepthFN = IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), "stackDepth");
-        chainStorage = IOC.resolve(Keys.getOrAdd(IChainStorage.class.getCanonicalName()));
+        messageFN = IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "message");
+        setEntryIdFN = IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "setEntryId");
+        preShutdownExecFN = IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "preShutdownExec");
+        chainFN = IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "chain");
+        finalActionsFN = IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "finalActions");
+        stackDepthFN = IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), "stackDepth");
+        chainStorage = IOC.resolve(Keys.getKeyByName(IChainStorage.class.getCanonicalName()));
     }
 
     @Override
@@ -84,7 +84,7 @@ public class BlockingMessageSchedulerAction implements ISchedulerAction {
             String entryIdFieldFN = (String) args.getValue(setEntryIdFN);
 
             if (entryIdFieldFN != null && !entryIdFieldFN.isEmpty()) {
-                ((IObject) message).setValue(IOC.resolve(Keys.getOrAdd(IFieldName.class.getCanonicalName()), entryIdFieldFN), entry.getId());
+                ((IObject) message).setValue(IOC.resolve(Keys.getKeyByName(IFieldName.class.getCanonicalName()), entryIdFieldFN), entry.getId());
             }
 
             entry.getState().setValue(messageFN, message);
@@ -97,7 +97,7 @@ public class BlockingMessageSchedulerAction implements ISchedulerAction {
             Number stackDepth = (Number) args.getValue(stackDepthFN);
 
             if (null == stackDepth) {
-                stackDepth = IOC.resolve(Keys.getOrAdd("default_stack_depth"));
+                stackDepth = IOC.resolve(Keys.getKeyByName("default_stack_depth"));
             }
 
             entry.getState().setValue(stackDepthFN, stackDepth);
@@ -110,26 +110,26 @@ public class BlockingMessageSchedulerAction implements ISchedulerAction {
     public void execute(final ISchedulerEntry entry) throws SchedulerActionExecutionException {
         try {
             String serializedMessage = ((IObject) entry.getState().getValue(messageFN)).serialize();
-            IObject message = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()), serializedMessage);
-            IObject context = IOC.resolve(Keys.getOrAdd(IObject.class.getCanonicalName()));
+            IObject message = IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()), serializedMessage);
+            IObject context = IOC.resolve(Keys.getKeyByName(IObject.class.getCanonicalName()));
             List<IAction<IObject>> finalActionsList = new ArrayList<>(1);
 
             finalActionsList.add(env -> {
                 try {
                     entry.unpause();
                 } catch (EntryPauseException e) {
-                    throw new ActionExecuteException(e);
+                    throw new ActionExecutionException(e);
                 }
             });
 
             context.setValue(finalActionsFN, finalActionsList);
 
-            Object chainId = IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), entry.getState().getValue(chainFN));
+            Object chainId = IOC.resolve(Keys.getKeyByName("chain_id_from_map_name_and_message"), entry.getState().getValue(chainFN), message);
             IReceiverChain chain = chainStorage.resolve(chainId);
-            IMessageProcessingSequence sequence = IOC.resolve(Keys.getOrAdd(IMessageProcessingSequence.class.getCanonicalName()),
+            IMessageProcessingSequence sequence = IOC.resolve(Keys.getKeyByName(IMessageProcessingSequence.class.getCanonicalName()),
                     entry.getState().getValue(stackDepthFN), chain);
-            Object taskQueue = IOC.resolve(Keys.getOrAdd("task_queue"));
-            IMessageProcessor messageProcessor = IOC.resolve(Keys.getOrAdd(IMessageProcessor.class.getCanonicalName()),
+            Object taskQueue = IOC.resolve(Keys.getKeyByName("task_queue"));
+            IMessageProcessor messageProcessor = IOC.resolve(Keys.getKeyByName(IMessageProcessor.class.getCanonicalName()),
                     taskQueue, sequence);
 
             entry.pause();

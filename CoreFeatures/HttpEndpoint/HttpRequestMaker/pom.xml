@@ -5,10 +5,10 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>http-endpoint</artifactId>
-        <version>0.3.3</version>
+        <version>0.6.3</version>
     </parent>
     <artifactId>http-endpoint.http-request-maker</artifactId>
-    <version>0.3.3</version>
+    <version>0.6.3</version>
     <dependencies>
         <dependency>
             <groupId>io.netty</groupId>
@@ -27,7 +27,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>ioc.named-keys-storage</artifactId>
+            <artifactId>ioc.key-tools</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
@@ -52,6 +52,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>2.0.2-beta</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.strategy-container</artifactId>
             <version>[0.0.1, 1.0.0)</version>
@@ -65,7 +71,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.strategy.create-new-instance-strategy</artifactId>
+            <artifactId>base.strategy.apply-function-to-arguments</artifactId>
             <version>[0.0.1, 1.0.0)</version>
             <scope>test</scope>
         </dependency>
@@ -96,7 +102,7 @@
                             <phase>none</phase>
                         </execution>
                         <execution>
-                            <id>archiva.smartactors-modules</id>
+                            <id>${module.rid}</id>
                             <phase>deploy</phase>
                             <goals>
                                 <goal>deploy-file</goal>
@@ -105,8 +111,8 @@
                             <configuration>
                                 <generatePom>true</generatePom>
                                 <file>${project.basedir}/target/${project.artifactId}-${project.version}.jar</file>
-                                <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
-                                <repositoryId>archiva.smartactors-modules</repositoryId>
+                                <url>${module.rurl}</url>
+                                <repositoryId>${module.rid}</repositoryId>
                                 <groupId>${project.groupId}</groupId>
                                 <artifactId>${project.artifactId}</artifactId>
                                 <version>${project.version}</version>

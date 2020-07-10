@@ -5,10 +5,10 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>feature-management</artifactId>
-        <version>0.3.3</version>
+        <version>0.6.1</version>
     </parent>
     <artifactId>feature-management.feature-creator-actor</artifactId>
-    <version>0.3.3</version>
+    <version>0.6.1</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
@@ -22,7 +22,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>ioc.named-keys-storage</artifactId>
+            <artifactId>ioc.key-tools</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
@@ -99,7 +99,7 @@
                             <phase>none</phase>
                         </execution>
                         <execution>
-                            <id>archiva.smartactors-modules</id>
+                            <id>${module.rid}</id>
                             <phase>deploy</phase>
                             <goals>
                                 <goal>deploy-file</goal>
@@ -108,8 +108,8 @@
                             <configuration>
                                 <generatePom>true</generatePom>
                                 <file>${project.basedir}/target/${project.artifactId}-${project.version}.jar</file>
-                                <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
-                                <repositoryId>archiva.smartactors-modules</repositoryId>
+                                <url>${module.rurl}</url>
+                                <repositoryId>${module.rid}</repositoryId>
                                 <groupId>${project.groupId}</groupId>
                                 <artifactId>${project.artifactId}</artifactId>
                                 <version>${project.version}</version>

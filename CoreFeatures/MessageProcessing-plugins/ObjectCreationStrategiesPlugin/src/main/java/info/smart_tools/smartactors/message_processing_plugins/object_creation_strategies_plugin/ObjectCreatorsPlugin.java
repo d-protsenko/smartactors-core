@@ -6,13 +6,12 @@ import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.Ap
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing.object_creation_strategies.*;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.IReceiverObjectCreator;
 
@@ -40,14 +39,14 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
 
     private void registerCreatorType(final String typeName, final CreatorConstructor constructor)
             throws ResolutionException, RegistrationException, InvalidArgumentException, ChangeValueException {
-        registerCreatorType(typeName, constructor, IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject")));
+        registerCreatorType(typeName, constructor, IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
     }
 
     private void registerCreatorType(final String typeName, final CreatorConstructor constructor, final IObject namedFilterConfig)
             throws ResolutionException, RegistrationException, InvalidArgumentException, ChangeValueException {
         String dependencyName = "filter creator#" + typeName;
         IOC.register(
-                Keys.getOrAdd(dependencyName),
+                Keys.getKeyByName(dependencyName),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     try {
                         IReceiverObjectCreator underlyingCreator = (IReceiverObjectCreator) args[0];
@@ -63,14 +62,38 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
 
         if (null != namedFilterConfig) {
             namedFilterConfig.setValue(
-                    IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency"),
+                    IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency"),
                     dependencyName
             );
 
             IOC.register(
-                    Keys.getOrAdd("named filter config#" + typeName),
+                    Keys.getKeyByName("named filter config#" + typeName),
                     new SingletonStrategy(namedFilterConfig)
             );
+        }
+    }
+
+    private void unregisterCreatorType(final String typeName) {
+        try {
+            unregisterCreatorType(typeName, IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject")));
+        } catch(ResolutionException e) { }
+    }
+
+    private void unregisterCreatorType(final String typeName, final IObject namedFilterConfig) {
+        String[] keyNames = { "filter creator#" + typeName };
+        Keys.unregisterByNames(keyNames);
+
+        if (null != namedFilterConfig) {
+            /*
+            String keyName = "info.smart_tools.smartactors.iobject.ifield_name.IFieldName";
+            try {
+                namedFilterConfig.deleteField(IOC.resolve(Keys.getKeyByName(keyName), "dependency"));
+            } catch(InvalidArgumentException | DeleteValueException e) {
+                System.out.println("[WARNING] Field '"+keyName+"' deletion failed");
+            } catch (ResolutionException e) { }
+            */
+            keyNames[0] = "named filter config#" + typeName;
+            Keys.unregisterByNames(keyNames);
         }
     }
 
@@ -109,30 +132,46 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
                 GenericDecoratorReceiverObjectCreator::new,
                 null);
 
-        IObject tsWrapperCreatorConfig = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject tsWrapperCreatorConfig = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
         tsWrapperCreatorConfig.setValue(
-                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency"),
+                IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency"),
                 "filter creator#decorate receiver");
         tsWrapperCreatorConfig.setValue(
-                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "decoratorDependency"),
+                IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "decoratorDependency"),
                 "thread safe wrapper creator receiver decorator");
 
         IOC.register(
-                Keys.getOrAdd("named filter config#thread-safe wrapper creator"),
+                Keys.getKeyByName("named filter config#thread-safe wrapper creator"),
                 new SingletonStrategy(tsWrapperCreatorConfig)
         );
 
-        IObject ntsWrapperCreatorConfig = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"));
+        IObject ntsWrapperCreatorConfig = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"));
         ntsWrapperCreatorConfig.setValue(
-                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency"),
+                IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency"),
                 "filter creator#decorate receiver");
         ntsWrapperCreatorConfig.setValue(
-                IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "decoratorDependency"),
+                IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "decoratorDependency"),
                 "non thread safe wrapper creator receiver decorator");
         IOC.register(
-                Keys.getOrAdd("named filter config#non-thread-safe wrapper creator"),
+                Keys.getKeyByName("named filter config#non-thread-safe wrapper creator"),
                 new SingletonStrategy(ntsWrapperCreatorConfig)
         );
+    }
+
+    @ItemRevert("basic_object_creators")
+    public void unregisterCreators() {
+        String[] keyNames = {
+                "named filter config#non-thread-safe wrapper creator",
+                "named filter config#thread-safe wrapper creator"
+        };
+        Keys.unregisterByNames(keyNames);
+
+        unregisterCreatorType("decorate receiver", null);
+        unregisterCreatorType("set address from name");
+        unregisterCreatorType("per-receiver actor sync");
+        unregisterCreatorType("handler router receiver");
+        unregisterCreatorType("method invokers");
+        unregisterCreatorType("top-level object");
     }
 
     @Item("basic_object_kinds")
@@ -145,7 +184,7 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
     public void registerKinds()
             throws RegistrationException, ResolutionException, InvalidArgumentException {
         IOC.register(
-                Keys.getOrAdd("object kind filter sequence#raw"),
+                Keys.getKeyByName("object kind filter sequence#raw"),
                 new SingletonStrategy(Arrays.asList(
                         "top-level object",
                         "thread-safe wrapper creator",
@@ -153,7 +192,7 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
                 ))
         );
         IOC.register(
-                Keys.getOrAdd("object kind filter sequence#stateless_actor"),
+                Keys.getKeyByName("object kind filter sequence#stateless_actor"),
                 new SingletonStrategy(Arrays.asList(
                         "top-level object",
                         "method invokers",
@@ -163,7 +202,7 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
                 ))
         );
         IOC.register(
-                Keys.getOrAdd("object kind filter sequence#actor"),
+                Keys.getKeyByName("object kind filter sequence#actor"),
                 new SingletonStrategy(Arrays.asList(
                         "top-level object",
                         "method invokers",
@@ -173,5 +212,15 @@ public class ObjectCreatorsPlugin extends BootstrapPlugin {
                         "set address from name"
                 ))
         );
+    }
+
+    @ItemRevert("basic_object_kinds")
+    public void unregisterKinds() {
+        String[] keyNames = {
+                "object kind filter sequence#raw",
+                "object kind filter sequence#stateless_actor",
+                "object kind filter sequence#actor"
+        };
+        Keys.unregisterByNames(keyNames);
     }
 }

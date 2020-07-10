@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.base.isynchronous_service;
 
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
-import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartupException;
+import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStopException;
 
 /**
@@ -12,9 +12,9 @@ public interface ISynchronousService {
      * Start the service.
      *
      * @throws IllegalServiceStateException if the service is already started
-     * @throws ServiceStartupException if any error occurs starting the service
+     * @throws ServiceStartException if any error occurs starting the service
      */
-    void start() throws IllegalServiceStateException, ServiceStartupException;
+    void start() throws IllegalServiceStateException, ServiceStartException;
 
     /**
      * Stop the service.

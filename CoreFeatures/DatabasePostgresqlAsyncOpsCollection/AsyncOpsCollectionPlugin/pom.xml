@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>database-postgresql-async-ops-collection</artifactId>
-        <version>0.3.3</version>
+        <version>0.6.0</version>
     </parent>
-
     <artifactId>database-postgresql-async-ops-collection.async-ops-collection-plugin</artifactId>
-    <version>0.3.3</version>
-
+    <version>0.6.0</version>
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
@@ -24,15 +22,9 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>database-postgresql.postgres-connection</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc-strategy-pack.resolve-by-composite-name-ioc-with-lambda-strategy</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
-        <!-- Components of info.smart_tools.smartactors.base -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>base.exception.invalid-argument-exception</artifactId>
@@ -50,12 +42,12 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.interfaces.iresolve-dependency-strategy</artifactId>
+            <artifactId>base.interfaces.istrategy</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>base.interfaces.iaddition-dependency-strategy</artifactId>
+            <artifactId>base.interfaces.istrategy-registration</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
@@ -63,8 +55,6 @@
             <artifactId>base.interfaces.iaction</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
-
-        <!-- Components of info.smart_tools.smartactors.feature-loading-system -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>feature-loading-system.interfaces.iplugin</artifactId>
@@ -87,18 +77,9 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>feature-loading-system.bootstrap-plugin</artifactId>
-            <version>[0.0.1, 1.0.0)</version>
-        </dependency>
-
-        <!-- Components of info.smart_tools.smartactors.iobject -->
-        <dependency>
-            <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>iobject.iobject</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
-
-        <!-- Components of info.smart_tools.smartactors.ioc -->
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
             <artifactId>ioc.iioccontainer</artifactId>
@@ -111,7 +92,7 @@
         </dependency>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>ioc.named-keys-storage</artifactId>
+            <artifactId>ioc.key-tools</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
@@ -119,8 +100,6 @@
             <artifactId>ioc.ikey</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
-
-        <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -164,12 +143,10 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.5.1</version>
                     <configuration>
@@ -186,7 +163,7 @@
                             <phase>none</phase>
                         </execution>
                         <execution>
-                            <id>archiva.smartactors-modules</id>
+                            <id>${module.rid}</id>
                             <phase>deploy</phase>
                             <goals>
                                 <goal>deploy-file</goal>
@@ -195,8 +172,8 @@
                             <configuration>
                                 <generatePom>true</generatePom>
                                 <file>${project.basedir}/target/${project.artifactId}-${project.version}.jar</file>
-                                <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
-                                <repositoryId>archiva.smartactors-modules</repositoryId>
+                                <url>${module.rurl}</url>
+                                <repositoryId>${module.rid}</repositoryId>
                                 <groupId>${project.groupId}</groupId>
                                 <artifactId>${project.artifactId}</artifactId>
                                 <version>${project.version}</version>

@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.scheduler.actor.impl.exceptions.CancelledLocalEntryRequestException;
 import info.smart_tools.smartactors.scheduler.actor.impl.filter.AllPassEntryFilter;
 import info.smart_tools.smartactors.scheduler.actor.impl.remote_storage.IRemoteEntryStorage;
@@ -17,11 +17,7 @@ import info.smart_tools.smartactors.timer.interfaces.itimer.ITimer;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -119,7 +115,7 @@ public class EntryStorage implements ISchedulerEntryStorage {
      */
     public EntryStorage(final IRemoteEntryStorage remoteEntryStorage, final ISchedulerEntryStorageObserver observer)
             throws ResolutionException {
-        this(remoteEntryStorage, observer, IOC.resolve(Keys.getOrAdd("timer")));
+        this(remoteEntryStorage, observer, IOC.resolve(Keys.getKeyByName("timer")));
     }
 
     @Override
@@ -255,7 +251,7 @@ public class EntryStorage implements ISchedulerEntryStorage {
 
             IObject savedEntryState = remoteEntryStorage.querySingleEntry(id);
 
-            return IOC.resolve(Keys.getOrAdd("restore scheduler entry"), savedEntryState, this);
+            return IOC.resolve(Keys.getKeyByName("restore scheduler entry"), savedEntryState, this);
         } catch (ResolutionException e) {
             throw new EntryStorageAccessException("Error occurred restoring required entry from state saved in remote storage.");
         } catch (CancelledLocalEntryRequestException e) {

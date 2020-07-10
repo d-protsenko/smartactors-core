@@ -5,7 +5,7 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>statistics-plugins</artifactId>
-        <version>0.3.3</version>
+        <version>0.6.0</version>
     </parent>
     <artifactId>statistics-plugins-distribution</artifactId>
     <packaging>pom</packaging>
@@ -36,7 +36,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -45,6 +45,7 @@
                         </goals>
                         <configuration>
                             <skipAssembly>${deployOnly}</skipAssembly>
+                            <appendAssemblyId>false</appendAssemblyId>
                             <outputDirectory>../../project-distribution</outputDirectory>
                             <finalName>${project.parent.artifactId}-${project.parent.version}</finalName>
                             <descriptors>

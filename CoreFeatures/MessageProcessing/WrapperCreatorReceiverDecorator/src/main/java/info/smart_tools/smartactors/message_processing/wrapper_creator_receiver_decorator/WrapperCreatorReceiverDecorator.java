@@ -1,15 +1,15 @@
 package info.smart_tools.smartactors.message_processing.wrapper_creator_receiver_decorator;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
@@ -24,7 +24,7 @@ import java.util.Map;
 public class WrapperCreatorReceiverDecorator implements IMessageReceiver {
     private final IMessageReceiver underlyingReceiver;
     private final IFieldName wrapperFieldName;
-    private final Map<Object, IResolveDependencyStrategy> wrapperStrategies;
+    private final Map<Object, IStrategy> wrapperStrategies;
     private final IKey strategyDependencyKey;
 
     /**
@@ -37,15 +37,15 @@ public class WrapperCreatorReceiverDecorator implements IMessageReceiver {
      */
     public WrapperCreatorReceiverDecorator(
             final IMessageReceiver underlyingReceiver,
-            final Map<Object, IResolveDependencyStrategy> wrapperStrategiesMap,
+            final Map<Object, IStrategy> wrapperStrategiesMap,
             final String strategyDependencyName)
             throws ResolutionException {
         this.underlyingReceiver = underlyingReceiver;
         this.wrapperStrategies = wrapperStrategiesMap;
 
-        this.strategyDependencyKey = Keys.getOrAdd(strategyDependencyName);
+        this.strategyDependencyKey = Keys.getKeyByName(strategyDependencyName);
 
-        wrapperFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "wrapper");
+        wrapperFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "wrapper");
     }
 
     @Override
@@ -59,7 +59,7 @@ public class WrapperCreatorReceiverDecorator implements IMessageReceiver {
                 // stepArgs object is used as key for strategy cache as if the wrapperConfigObject was used the entry would not be ever
                 // garbage-collected (even if wrapperStrategies stores keys by weak references): wrapper resolution strategy has a strong
                 // reference to configuration object
-                IResolveDependencyStrategy conf = wrapperStrategies.get(stepArgs);
+                IStrategy conf = wrapperStrategies.get(stepArgs);
 
                 if (null == conf) {
                     conf = IOC.resolve(strategyDependencyKey, wrapperConfigObject);
@@ -70,8 +70,17 @@ public class WrapperCreatorReceiverDecorator implements IMessageReceiver {
             }
 
             underlyingReceiver.receive(processor);
-        } catch (ReadValueException | InvalidArgumentException | ResolutionException | ResolveDependencyStrategyException e) {
+        } catch (ReadValueException | InvalidArgumentException | ResolutionException | StrategyException e) {
             throw new MessageReceiveException(e);
+        }
+    }
+
+    @Override
+    public void dispose() {
+        try {
+            underlyingReceiver.dispose();
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
     }
 }

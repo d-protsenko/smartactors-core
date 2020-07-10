@@ -4,7 +4,7 @@ import info.smart_tools.smartactors.base.exception.invalid_argument_exception.In
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.IReceiverObjectCreator;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.exeptions.InvalidReceiverPipelineException;
@@ -55,7 +55,7 @@ public class UserObjectMethodInvokerReceiverCreator extends BasicIntermediateRec
                 }
 
                 IMessageReceiver methodInvoker = IOC.resolve(
-                        Keys.getOrAdd("method invoker receiver"),
+                        Keys.getKeyByName("method invoker receiver"),
                         item,
                         method,
                         getFilterConfig()

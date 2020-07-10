@@ -2,36 +2,31 @@ package info.smart_tools.smartactors.message_processing.message_processor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.IllegalUpCounterState;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.MessageProcessorProcessException;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.Signal;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NoExceptionHandleChainException;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.*;
+import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.shutdown.ishutdown_aware_task.IShutdownAwareTask;
 import info.smart_tools.smartactors.shutdown.ishutdown_aware_task.exceptions.ShutdownAwareTaskNotificationException;
 import info.smart_tools.smartactors.task.imanaged_task.IManagedTask;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.AsynchronousOperationException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 import java.util.ArrayList;
 import java.util.List;
-import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
-import info.smart_tools.smartactors.task.interfaces.itask.ITask;
-import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 
 /**
  * Task that performs on a message actions defined by a message processing sequence.
@@ -126,20 +121,20 @@ public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask,
         this.interrupted = 0;
         this.asyncOpDepth = 0;
 
-        this.rawEnvironment = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
+        this.rawEnvironment = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
 
-        configFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "config");
-        messageFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
-        contextFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context");
-        responseFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "response");
-        sequenceFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sequence");
-        argumentsFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "arguments");
-        processorFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "processor");
-        finalActionsFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "finalActions");
+        configFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "config");
+        messageFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "message");
+        contextFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "context");
+        responseFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "response");
+        sequenceFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sequence");
+        argumentsFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "arguments");
+        processorFieldName = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "processor");
+        finalActionsFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "finalActions");
 
-        this.finalTask = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "final task"), this.rawEnvironment);
+        this.finalTask = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "final task"), this.rawEnvironment);
 
-        this.upCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
+        this.upCounter = IOC.resolve(Keys.getKeyByName("root upcounter"));
     }
 
     @Override
@@ -150,7 +145,7 @@ public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask,
         this.context = theContext;
 
         try {
-            this.response = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
+            this.response = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject"));
 
             rawEnvironment.setValue(configFieldName, config);
             rawEnvironment.setValue(sequenceFieldName, messageProcessingSequence);
@@ -172,7 +167,7 @@ public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask,
                 try {
                     upCounter.down();
                 } catch (UpCounterCallbackExecutionException | IllegalUpCounterState e) {
-                    throw new ActionExecuteException(e);
+                    throw new ActionExecutionException(e);
                 }
             });
 
@@ -232,7 +227,7 @@ public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask,
         }
 
         try {
-            Object signal = IOC.resolve(Keys.getOrAdd(signalName));
+            Object signal = IOC.resolve(Keys.getKeyByName(signalName));
 
             if (!(signal instanceof Signal)) {
                 throw new InvalidArgumentException("Resolved signal is not a signal.");
@@ -316,7 +311,8 @@ public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask,
         }
     }
 
-    private void enqueueNext() throws NestedChainStackOverflowException, InvalidArgumentException, ChangeValueException, ReadValueException {
+    private void enqueueNext() throws NestedChainStackOverflowException, InvalidArgumentException,
+            ChangeValueException, ReadValueException, ResolutionException, ChainNotFoundException, ScopeProviderException {
         checkSignal();
 
         if (messageProcessingSequence.next()) {
@@ -335,7 +331,8 @@ public class MessageProcessor implements ITask, IMessageProcessor, IManagedTask,
     }
 
     private void checkSignal()
-            throws ChangeValueException, InvalidArgumentException, NestedChainStackOverflowException, ReadValueException {
+            throws ChangeValueException, InvalidArgumentException, NestedChainStackOverflowException,
+            ReadValueException, ResolutionException, ChainNotFoundException, ScopeProviderException {
         Throwable signal = this.signalException;
 
         if (null != signal) {

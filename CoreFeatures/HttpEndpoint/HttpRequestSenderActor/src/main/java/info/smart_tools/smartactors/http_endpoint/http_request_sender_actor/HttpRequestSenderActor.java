@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 /**
  * Actor for sending request by http
@@ -36,7 +36,7 @@ public class HttpRequestSenderActor {
      */
     public HttpRequestSenderActor() {
         try {
-            uriFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uri");
+            uriFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uri");
         } catch (ResolutionException e) {
             e.printStackTrace();
         }
@@ -52,10 +52,10 @@ public class HttpRequestSenderActor {
             throws HttpRequestSenderActorException {
         try {
             if (message.getRequest().getValue(uriFieldName).toString().startsWith("http:")) {
-                uriFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uri");
+                uriFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "uri");
                 if (message.getRequest().getValue(uriFieldName) != null) {
-                    IClient client = IOC.resolve(Keys.getOrAdd("getHttpClient"), message.getRequest());
-                    IOC.resolve(Keys.getOrAdd("sendHttpRequest"), client, message.getRequest());
+                    IClient client = IOC.resolve(Keys.getKeyByName("getHttpClient"), message.getRequest());
+                    IOC.resolve(Keys.getKeyByName("sendHttpRequest"), client, message.getRequest());
                 }
             }
         } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {

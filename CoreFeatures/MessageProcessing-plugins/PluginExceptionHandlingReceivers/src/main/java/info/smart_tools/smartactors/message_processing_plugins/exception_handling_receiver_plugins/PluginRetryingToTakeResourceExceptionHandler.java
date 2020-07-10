@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing.exception_handling_receivers.RetryingToTakeResourceExceptionHandler;
 
 /**
@@ -34,7 +34,17 @@ public class PluginRetryingToTakeResourceExceptionHandler extends BootstrapPlugi
     @BootstrapPlugin.After({"IOC", "IFieldNamePlugin"})
     public void item()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("RetryingToTakeResourceExceptionHandler"),
+        IOC.register(Keys.getKeyByName("RetryingToTakeResourceExceptionHandler"),
                 new SingletonStrategy(new RetryingToTakeResourceExceptionHandler()));
+    }
+
+    /**
+     * Unregisters RetryingToTakeResourceExceptionHandler.
+     *
+     */
+    @BootstrapPlugin.ItemRevert("PluginRetryingToTakeResourceExceptionHandler")
+    public void revertItem() {
+        String[] keyNames = { "RetryingToTakeResourceExceptionHandler" };
+        Keys.unregisterByNames(keyNames);
     }
 }

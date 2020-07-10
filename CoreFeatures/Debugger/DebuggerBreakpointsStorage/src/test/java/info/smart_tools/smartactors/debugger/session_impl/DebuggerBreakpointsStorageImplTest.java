@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.debugger.session_impl;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerBreakpointsStorage;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSequence;
@@ -10,7 +10,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
@@ -46,7 +46,7 @@ public class DebuggerBreakpointsStorageImplTest extends PluginsLoadingTestBase {
     protected void registerMocks() throws Exception {
         chainStorageMock = mock(IChainStorage.class);
 
-        IOC.register(Keys.getOrAdd(IChainStorage.class.getCanonicalName()), new SingletonStrategy(chainStorageMock));
+        IOC.register(Keys.getKeyByName(IChainStorage.class.getCanonicalName()), new SingletonStrategy(chainStorageMock));
 
         debuggerSequenceMock = mock(IDebuggerSequence.class);
         realSequenceMock = mock(IMessageProcessingSequence.class);
@@ -57,9 +57,9 @@ public class DebuggerBreakpointsStorageImplTest extends PluginsLoadingTestBase {
         stepArgsMock1 = mock(IObject.class);
         stepArgsMock2 = mock(IObject.class);
 
-        IOC.register(Keys.getOrAdd("chain_id_from_map_name"), new IResolveDependencyStrategy() {
+        IOC.register(Keys.getKeyByName("chain_id_from_map_name"), new IStrategy() {
             @Override
-            public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
+            public <T> T resolve(Object... args) throws StrategyException {
                 return (T) args[0];
             }
         });
@@ -74,7 +74,7 @@ public class DebuggerBreakpointsStorageImplTest extends PluginsLoadingTestBase {
 
         IDebuggerBreakpointsStorage storage = new DebuggerBreakpointsStorageImpl();
 
-        String id = storage.addBreakpoint(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        String id = storage.addBreakpoint(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'chain':'thatChain'," +
                         "'step':42," +
@@ -89,7 +89,7 @@ public class DebuggerBreakpointsStorageImplTest extends PluginsLoadingTestBase {
 
         assertEquals(1, storage.listBreakpoints().size());
 
-        String id2 = storage.addBreakpoint(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        String id2 = storage.addBreakpoint(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'chain':'thatChain'," +
                         "'step':21," +
@@ -101,7 +101,7 @@ public class DebuggerBreakpointsStorageImplTest extends PluginsLoadingTestBase {
         when(realSequenceMock.getCurrentReceiverArguments()).thenReturn(stepArgsMock2);
         assertFalse(storage.shouldBreakAt(debuggerSequenceMock));
 
-        storage.modifyBreakpoint(id2, IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        storage.modifyBreakpoint(id2, IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'id':'" + id2 + "'," +
                         "'enabled':true" +

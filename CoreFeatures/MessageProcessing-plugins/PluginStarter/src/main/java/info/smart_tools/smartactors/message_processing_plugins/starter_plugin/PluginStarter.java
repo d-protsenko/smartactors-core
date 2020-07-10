@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.message_processing_plugins.starter_plugin;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.IBootstrapItem;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.IPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
 
@@ -39,11 +39,11 @@ public class PluginStarter implements IPlugin {
                     .process(() -> {
 //                        try {
 //                            IConfigurationManager configurationManager = IOC.resolve(
-//                                    Keys.getOrAdd(IConfigurationManager.class.getCanonicalName()));
+//                                    Keys.getKeyByName(IConfigurationManager.class.getCanonicalName()));
 //
 //                            configurationManager.configure();
 //                        } catch (ResolutionException | InvalidStateException | ConfigurationProcessingException e) {
-//                            throw new ActionExecuteException(e);
+//                            throw new ActionExecutionException(e);
 //                        }
                     });
 

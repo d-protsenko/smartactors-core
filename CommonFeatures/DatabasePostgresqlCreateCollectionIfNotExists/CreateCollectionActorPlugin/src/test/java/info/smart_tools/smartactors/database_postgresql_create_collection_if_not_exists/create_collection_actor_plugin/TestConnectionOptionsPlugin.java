@@ -10,7 +10,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 public final class TestConnectionOptionsPlugin extends BootstrapPlugin {
     protected TestConnectionOptionsPlugin(IBootstrap bootstrap) {
@@ -21,7 +21,7 @@ public final class TestConnectionOptionsPlugin extends BootstrapPlugin {
     @After({})
     @Before("")
     public void register() throws InvalidArgumentException, ResolutionException, RegistrationException {
-        IOC.register(Keys.getOrAdd("PostgresConnectionOptions"), new ApplyFunctionToArgumentsStrategy(args -> new ConnectionOptions() {
+        IOC.register(Keys.getKeyByName("PostgresConnectionOptions"), new ApplyFunctionToArgumentsStrategy(args -> new ConnectionOptions() {
             @Override
             public String getUrl() throws ReadValueException {
                 return null;

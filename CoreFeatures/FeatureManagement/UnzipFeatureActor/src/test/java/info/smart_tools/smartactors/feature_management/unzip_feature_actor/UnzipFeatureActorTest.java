@@ -8,29 +8,24 @@ import info.smart_tools.smartactors.feature_management.unzip_feature_actor.excep
 import info.smart_tools.smartactors.feature_management.unzip_feature_actor.wrapper.UnzipFeatureWrapper;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.HashSet;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by sevenbits on 12/19/16.
@@ -48,7 +43,7 @@ public class UnzipFeatureActorTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -60,7 +55,7 @@ public class UnzipFeatureActorTest {
         );
 
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
@@ -71,7 +66,7 @@ public class UnzipFeatureActorTest {
                         }
                 )
         );
-        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     if (args.length == 0) {
                         return new DSObject();
@@ -94,7 +89,6 @@ public class UnzipFeatureActorTest {
         assertNotNull(actor);
     }
 
-    @Ignore
     @Test
     public void checkUnzipMethod()
             throws Exception {
@@ -103,17 +97,21 @@ public class UnzipFeatureActorTest {
         IFeature feature = mock(IFeature.class);
         when(feature.getName()).thenReturn("test-feature");
         when(feature.getDependencies()).thenReturn(null);
-        String fileName = "target/test-classes/test-feature-VERSION-archive.zip";
-        String directory = "target/test-classes/test-feature-VERSION";
-        when(feature.getFeatureLocation()).thenReturn(
+        when(feature.getGroupId()).thenReturn("com.groupId");
+        String fileName = "target"+File.separator+"test-classes"+File.separator+"test-feature-VERSION.zip";
+        String directory = "target"+File.separator+"test-classes"+File.separator+"test-feature-VERSION";
+        when(feature.getLocation()).thenReturn(
                 new Path(fileName)
         );
         when(wrapper.getFeature()).thenReturn(feature);
         actor.unzip(wrapper);
         verify(feature, times(1)).setDependencies(
-                new HashSet<String>(){{add("first-test-feature"); add("second-test-feature");}}
+                new HashSet<String>(){{
+                    add("info.smart_tools.smartactors:first-test-feature");
+                    add("info.smart_tools.smartactors:second-test-feature");
+                }}
         );
-        verify(feature, times(1)).setFeatureLocation(new Path(directory));
+        verify(feature, times(1)).setLocation(new Path(directory));
     }
 
     @Test (expected = UnzipFeatureException.class)
@@ -134,8 +132,8 @@ public class UnzipFeatureActorTest {
         IFeature feature = mock(IFeature.class);
         when(feature.getName()).thenReturn("test-feature");
         when(feature.getDependencies()).thenReturn(null);
-        String fileName = "target/test-classes/unsupported-test-feature-VERSION-archive.zip";
-        when(feature.getFeatureLocation()).thenReturn(
+        String fileName = "target/test-classes/unsupported-test-feature-VERSION.zip";
+        when(feature.getLocation()).thenReturn(
                 new Path(fileName)
         );
         when(wrapper.getFeature()).thenReturn(feature);
@@ -151,8 +149,8 @@ public class UnzipFeatureActorTest {
         IFeature feature = mock(IFeature.class);
         when(feature.getName()).thenReturn("test-feature");
         when(feature.getDependencies()).thenReturn(null);
-        String fileName = "target/test-classes/broken-test-feature-VERSION-archive.zip";
-        when(feature.getFeatureLocation()).thenReturn(
+        String fileName = "target/test-classes/broken-test-feature-VERSION.zip";
+        when(feature.getLocation()).thenReturn(
                 new Path(fileName)
         );
         when(wrapper.getFeature()).thenReturn(feature);

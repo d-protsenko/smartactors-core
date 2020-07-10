@@ -1,15 +1,15 @@
 package info.smart_tools.smartactors.email.email_actor.email;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.email.email_actor.exception.PartCreatorException;
 import info.smart_tools.smartactors.field.field.Field;
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -53,12 +53,12 @@ public class MessagePartCreators {
 
     static {
         try {
-            partType_Part_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "type");
-            partText_TextPart_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "text");
-            partMime_Part_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "mime");
-            sourcePath_FilePart_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "sourceFile");
-            attachmentName_FilePart_F = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "attachmentName");
-            sourceF = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "source");
+            partType_Part_F = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "type");
+            partText_TextPart_F = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "text");
+            partMime_Part_F = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "mime");
+            sourcePath_FilePart_F = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "sourceFile");
+            attachmentName_FilePart_F = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "attachmentName");
+            sourceF = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "source");
         } catch (ResolutionException e) {
             throw new RuntimeException("Failed to initialize fields", e);
         }

@@ -1,23 +1,22 @@
 package info.smart_tools.smartactors.http_endpoint.message_to_bytes_mapper;
 
 
-import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_strategy.ResolveByNameIocStrategy;
+import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
-import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.google.common.base.Verify.verify;
@@ -40,14 +39,15 @@ public class MessageToBytesMapperTest {
         ScopeProvider.setCurrentScope(mainScope);
 
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
-        IKey keyIObject = Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
-        IKey keyString = Keys.getOrAdd(String.class.toString());
-        IKey keyEmptyIObject = Keys.getOrAdd("EmptyIObject");
-        IOC.register(keyIObject,
-                new CreateNewInstanceStrategy(
+        IKey keyIObject = Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject");
+        IKey keyString = Keys.getKeyByName(String.class.toString());
+        IKey keyEmptyIObject = Keys.getKeyByName("EmptyIObject");
+        IOC.register(
+                keyIObject,
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
                                 return new DSObject((String) args[0]);
@@ -57,13 +57,15 @@ public class MessageToBytesMapperTest {
                         }
                 )
         );
-        IOC.register(keyEmptyIObject,
-                new CreateNewInstanceStrategy(
+        IOC.register(
+                keyEmptyIObject,
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> new DSObject()
                 )
         );
-        IOC.register(keyString,
-                new CreateNewInstanceStrategy(
+        IOC.register(
+                keyString,
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> new String((byte[]) args[0])
                 )
         );
@@ -78,7 +80,7 @@ public class MessageToBytesMapperTest {
     @Test
     public void messageToBytesMapperShouldReturnDeserializedIObject() throws ResolutionException, SerializeException {
         MessageToBytesMapper mapper = new MessageToBytesMapper();
-        IObject iObject = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), "{\"hello\": \"world\"}");
+        IObject iObject = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{\"hello\": \"world\"}");
         byte[] bytes = iObject.serialize().toString().getBytes();
         IObject iObject2 = mapper.deserialize(bytes);
         verify(iObject.serialize().equals(iObject2.serialize()));
@@ -87,7 +89,7 @@ public class MessageToBytesMapperTest {
     public void messageToBytesMapperShouldDeleteNonASCIICharacters() throws ResolutionException, SerializeException {
         MessageToBytesMapper mapper = new MessageToBytesMapper();
         String stringWithNonASCII = "\uFEFF{\"hello\": \"world\"}";
-        IObject iObject = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), "{\"hello\": \"world\"}");
+        IObject iObject = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{\"hello\": \"world\"}");
         byte[] bytes = stringWithNonASCII.getBytes();
         IObject iObject2 = mapper.deserialize(bytes);
         verify(iObject.serialize().equals(iObject2.serialize()));

@@ -14,7 +14,7 @@ public interface FieldPath {
      * Valid path matches this pattern.
      */
     Pattern VALIDATION_PATTERN =
-            Pattern.compile("^([a-zA-Z_а-яА-Я\\-][a-zA-Z0-9_а-яА-Я\\-]*)((\\.([a-zA-Z_а-яА-Я\\-][a-zA-Z0-9_а-яА-Я\\-]*))|(\\[[0-9]+\\]))*$");
+            Pattern.compile("^([a-zA-Z_а-яА-Я \\-][a-zA-Z0-9_а-яА-Я \\-]*)((\\.([a-zA-Z_а-яА-Я \\-][a-zA-Z0-9_а-яА-Я \\-]*))|(\\[[0-9]+\\]))*$");
 
     /**
      * The path is split to the parts using this pattern.
@@ -46,4 +46,10 @@ public interface FieldPath {
      */
     String toSQL();
 
+    /**
+     * Get id of field path used in SQL query
+     * The result is depended on database and schema type
+     * @return String representation of field path id usable in SQL query
+     */
+    String getId();
 }

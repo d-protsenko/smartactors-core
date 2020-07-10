@@ -1,14 +1,11 @@
 package info.smart_tools.smartactors.base.strategy.apply_function_to_arguments;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * Tests for {@link ApplyFunctionToArgumentsStrategy}
@@ -26,7 +23,7 @@ public class ApplyFunctionToArgumentsStrategyTest {
         Checker checker = new Checker();
         Object value = new Object();
 
-        IResolveDependencyStrategy strategy = new ApplyFunctionToArgumentsStrategy(
+        IStrategy strategy = new ApplyFunctionToArgumentsStrategy(
                 (args) ->{
                     checker.wasCalled = true;
                     return value;
@@ -43,7 +40,7 @@ public class ApplyFunctionToArgumentsStrategyTest {
     public void checkStrategyCreationWithArgs()
             throws Exception {
         Checker checker = new Checker();
-        IResolveDependencyStrategy strategy = new ApplyFunctionToArgumentsStrategy(
+        IStrategy strategy = new ApplyFunctionToArgumentsStrategy(
                 (args) -> {
                     checker.wasCalled = true;
                     assertEquals(2, args.length);
@@ -56,10 +53,10 @@ public class ApplyFunctionToArgumentsStrategyTest {
         strategy.resolve(1, "test");
     }
 
-    @Test (expected = ResolveDependencyStrategyException.class)
-    public void checkResolveDependencyStrategyExceptionOnWrongArgs()
+    @Test (expected = StrategyException.class)
+    public void checkStrategyExceptionOnWrongArgs()
             throws Exception {
-        IResolveDependencyStrategy strategy = new ApplyFunctionToArgumentsStrategy(
+        IStrategy strategy = new ApplyFunctionToArgumentsStrategy(
                 (args) -> {
                     Integer a = (Integer) args[0];
                     return null;

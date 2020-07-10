@@ -6,23 +6,30 @@
 
     <artifactId>server-with-features</artifactId>
     <groupId>info.smart_tools.smartactors</groupId>
-    <version>0.3.3</version>
+    <version>0.6.0</version>
+
+    <properties>
+        <feature.rurl>http://archiva.smart-tools.info/repository/servers/</feature.rurl>
+        <feature.rid>archiva.servers</feature.rid>
+        <module.rurl>${feature.rurl}</module.rurl>
+        <module.rid>${feature.rid}</module.rid>
+    </properties>
 
     <repositories>
         <repository>
-            <id>archiva.server-dev-tools</id>
-            <url>http://archiva.smart-tools.info/repository/server-dev-tools/</url>
+            <id>a${feature.rid}</id>
+            <url>${feature.rurl}</url>
         </repository>
         <repository>
-            <id>archiva.smartactors-modules</id>
-            <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
+            <id>${module.rid}</id>
+            <url>${module.rurl}</url>
         </repository>
     </repositories>
 
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>server-developing-tools.interfaces.iserver</artifactId>
+            <artifactId>server-development-tools.interfaces.iserver</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -65,6 +72,11 @@
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>class-management.module-manager</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
         </dependency>
     </dependencies>
 
@@ -112,12 +124,12 @@
                 <configuration>
                     <generatePom>false</generatePom>
                     <file>${basedir}/target/server.jar</file>
-                    <url>http://archiva.smart-tools.info/repository/servers/</url>
-                    <repositoryId>archiva.servers</repositoryId>
+                    <url>${feature.rurl}</url>
+                    <repositoryId>${feature.rid}</repositoryId>
 
                     <groupId>info.smart_tools.smartactors</groupId>
                     <artifactId>${artifactId}</artifactId>
-                    <version>0.3.3</version>
+                    <version>0.6.0</version>
                     <packaging>jar</packaging>
                 </configuration>
             </plugin>

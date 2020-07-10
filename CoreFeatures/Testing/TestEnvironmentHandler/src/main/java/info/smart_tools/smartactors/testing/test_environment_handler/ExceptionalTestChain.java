@@ -1,8 +1,10 @@
 package info.smart_tools.smartactors.testing.test_environment_handler;
 
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.scope.iscope.IScope;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -23,12 +25,25 @@ class ExceptionalTestChain implements IReceiverChain {
     }
 
     @Override
-    public String getName() {
+    public Object getId() {
         return "exceptional test chain";
     }
 
     @Override
-    public IObject getExceptionalChainAndEnvironments(Throwable exception) {
+    public Object getName() {
+        return "exceptional test chain";
+    }
+
+    @Override
+    public IScope getScope() { return null; }
+
+    @Override
+    public IModule getModule() {
+        return null;
+    }
+
+    @Override
+    public IObject getExceptionalChainNamesAndEnvironments(Throwable exception) {
         return null;
     }
 
@@ -38,7 +53,7 @@ class ExceptionalTestChain implements IReceiverChain {
     }
 
     @Override
-    public Collection<IReceiverChain> getExceptionalChains() {
+    public Collection<Object> getExceptionalChainNames() {
         return Collections.emptyList();
     }
 }

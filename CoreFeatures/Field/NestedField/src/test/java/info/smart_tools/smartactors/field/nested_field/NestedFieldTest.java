@@ -2,7 +2,6 @@ package info.smart_tools.smartactors.field.nested_field;
 
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

@@ -12,7 +12,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.statistics.sensors.embedded_sensor.strategies.CountStrategy;
 import info.smart_tools.smartactors.statistics.sensors.embedded_sensor.strategies.TimeDeltaForLimitedCountStrategy;
 
@@ -40,7 +40,7 @@ public class PluginEmbeddedSensorStrategies extends BootstrapPlugin {
     @Item("embedded_sensor_strategy:count")
     public void registerCountStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("embedded sensor count strategy"), new SingletonStrategy(new CountStrategy()));
+        IOC.register(Keys.getKeyByName("embedded sensor count strategy"), new SingletonStrategy(new CountStrategy()));
     }
 
     /**
@@ -53,14 +53,14 @@ public class PluginEmbeddedSensorStrategies extends BootstrapPlugin {
     @Item("embedded_sensor_strategy:limited_count_time_delta")
     public void registerTimeDeltaStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IFieldName limitFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "limit");
-        IFieldName timeFieldNameFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "timeFieldName");
-        IOC.register(Keys.getOrAdd("embedded sensor time delta strategy for limited count"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IFieldName limitFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "limit");
+        IFieldName timeFieldNameFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "timeFieldName");
+        IOC.register(Keys.getKeyByName("embedded sensor time delta strategy for limited count"), new ApplyFunctionToArgumentsStrategy(args -> {
             IObject arg = (IObject) args[0];
 
             try {
                 int limit = ((Number) arg.getValue(limitFieldName)).intValue();
-                IFieldName timeFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IFieldName timeFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                         arg.getValue(timeFieldNameFieldName));
                 return new TimeDeltaForLimitedCountStrategy(limit, timeFieldName);
             } catch (ResolutionException | ReadValueException | InvalidArgumentException e) {

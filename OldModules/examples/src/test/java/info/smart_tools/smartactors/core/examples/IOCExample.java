@@ -1,20 +1,20 @@
 package info.smart_tools.smartactors.core.examples;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
+import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
+import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.iscope.exception.ScopeException;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
-import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
-import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,7 +31,7 @@ public class IOCExample {
         IScope scope = ScopeProvider.getScope(scopeKey);
         ScopeProvider.setCurrentScope(scope);
         scope.setValue(IOC.getIocKey(), new StrategyContainer());
-        IOC.register(IOC.getKeyForKeyStorage(), new ResolveByNameIocStrategy(
+        IOC.register(IOC.getKeyForKeyByNameStrategy(), new ResolveByNameIocStrategy(
                 (a) -> {
                     try {
                         return new Key((String) a[0]);
@@ -44,8 +44,8 @@ public class IOCExample {
     
     @Test
     public void keyExample() throws ResolutionException, InvalidArgumentException {
-        IKey resolveKey = IOC.resolve(IOC.getKeyForKeyStorage(), "sample");
-        IKey key = Keys.getOrAdd("sample");
+        IKey resolveKey = IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "sample");
+        IKey key = Keys.getKeyByName("sample");
         IKey newKey = new Key("sample");
         assertEquals("resolve differs from got from Keys", resolveKey, key);
         assertEquals("new differs from resolve", newKey, resolveKey);
@@ -53,7 +53,7 @@ public class IOCExample {
 
     @Test
     public void singletonStrategyExample() throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IKey key = Keys.getOrAdd("singleton");
+        IKey key = Keys.getKeyByName("singleton");
         SampleClass sampleObject = new SampleClass("singleton");
         IOC.register(key, new SingletonStrategy(sampleObject));
         SampleClass resolveObject1 = IOC.resolve(key);
@@ -66,7 +66,7 @@ public class IOCExample {
 
     @Test
     public void createNewInstanceStrategyExample() throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IKey key = Keys.getOrAdd("new");
+        IKey key = Keys.getKeyByName("new");
         IOC.register(key, new CreateNewInstanceStrategy(
                 (args) -> new SampleClass((String) args[0])));
         SampleClass resolveObject1 = IOC.resolve(key, "id1");

@@ -2,11 +2,12 @@ package info.smart_tools.smartactors.database_postgresql.postgres_schema;
 
 import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
-import info.smart_tools.smartactors.database_postgresql.postgres_schema.search.PostgresFieldPath;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.database_postgresql.postgres_connection.QueryStatement;
 import info.smart_tools.smartactors.database_postgresql.postgres_schema.indexes.IndexCreators;
+import info.smart_tools.smartactors.database_postgresql.postgres_schema.indexes.IndexDroppers;
 import info.smart_tools.smartactors.database_postgresql.postgres_schema.search.FieldPath;
+import info.smart_tools.smartactors.database_postgresql.postgres_schema.search.PostgresFieldPath;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -34,9 +35,8 @@ public final class PostgresSchema {
 
     /**
      * Dictionary for Full Text Search
-     * TODO: don't hardcode Russian
      */
-    public static final String FTS_DICTIONARY = "russian";
+    public static final String DEFAULT_FTS_DICTIONARY = "english";
 
     /**
      * Default page size. How many documents to return when the paging is not defined.
@@ -71,8 +71,78 @@ public final class PostgresSchema {
             body.write(");\n");
             CreateClauses.writePrimaryKey(body, collection);
             if (options != null) {
-                IndexCreators.writeIndexes(body, collection, options);
+                IndexCreators.writeCreateIndexes(body, collection, options);
             }
+        } catch (Exception e) {
+            throw new QueryBuildException("Failed to build create body", e);
+        }
+    }
+
+    /**
+     * Fills the statement body with the ALTER TABLE ADD COLUMN sentence and
+     * CREATE INDEX sentences to add the column and corresponding index for
+     * full text search operation with desired language.
+     * @param statement statement to fill the body
+     * @param collection collection name to use to construct the sequence name
+     * @param options document describing a set of options for the collection creation
+     * @throws QueryBuildException if the statement body cannot be built
+     */
+    public static void addIndexes(final QueryStatement statement, final CollectionName collection, final IObject options)
+            throws QueryBuildException {
+        try {
+            if (options == null) {
+                throw new QueryBuildException("Options for db.collection.addindexes must not be null");
+            }
+            Writer body = statement.getBodyWriter();
+            AlterClauses.writeAddFulltextColumn(body, collection, options);
+            IndexCreators.writeCreateIndexes(body, collection, options);
+        } catch (Exception e) {
+            throw new QueryBuildException("Failed to build create body", e);
+        }
+    }
+
+    /**
+     * Fills the statement body with the ALTER TABLE DROP COLUMN sentence and
+     * DROP INDEX sentences to drop the column and corresponding index for
+     * full text search operation with desired language.
+     * @param statement statement to fill the body
+     * @param collection collection name to use to construct the sequence name
+     * @param options document describing a set of options for the collection creation
+     * @throws QueryBuildException if the statement body cannot be built
+     */
+    public static void dropIndexes(final QueryStatement statement, final CollectionName collection, final IObject options)
+            throws QueryBuildException {
+        try {
+            if (options == null) {
+                throw new QueryBuildException("Options for db.collection.dropindexes must not be null");
+            }
+            Writer body = statement.getBodyWriter();
+            IndexDroppers.writeDropIndexes(body, collection, options);
+            AlterClauses.writeDropFulltextColumn(body, collection, options);
+        } catch (Exception e) {
+            throw new QueryBuildException("Failed to build create body", e);
+        }
+    }
+
+    /**
+     * Fills the statement body with the ALTER TABLE ADD COLUMN sentence and
+     * CREATE INDEX sentences to add the column and corresponding index for
+     * full text search operation with desired language.
+     * It executes indexes addition inside the transaction.
+     * @param statement statement to fill the body
+     * @param collection collection name to use to construct the sequence name
+     * @param options document describing a set of options for the collection creation
+     * @throws QueryBuildException if the statement body cannot be built
+     */
+    public static void addIndexesSafe(final QueryStatement statement, final CollectionName collection, final IObject options)
+            throws QueryBuildException {
+        try {
+            Writer body = statement.getBodyWriter();
+            body.write("BEGIN;");
+            addIndexes(statement, collection, options);
+            body.write("COMMIT;");
+        } catch (QueryBuildException e) {
+            throw e;
         } catch (Exception e) {
             throw new QueryBuildException("Failed to build create body", e);
         }
@@ -197,6 +267,50 @@ public final class PostgresSchema {
             SearchClauses.writeSearchPaging(statement, criteria);
         } catch (Exception e) {
             throw new QueryBuildException("Failed to build search query", e);
+        }
+    }
+
+    /**
+     * Fills the statement body and it's list of parameter setters with the collection name and WHERE clause
+     * for the percentile_disc function to search for the quantiles in the collection for the provided value.
+     * <p>
+     *     While the search criteria is similar to the one in {@link PostgresSchema#search(QueryStatement, CollectionName, IObject)},
+     *     it also contain an additional criteria used for finding quantiles. An example for this criteria is provided here.
+     *     <pre>
+     *  {
+     *      "field": "requiredFieldName",
+     *      "values": [ 0, 0.5, 1 ]
+     *  }
+     *     </pre>
+     * </p>
+     * @param statement statement to fill the body and add parameter setters
+     * @param collection collection name to use as the table name
+     * @param percentileCriteria JSON describing which value's percentiles must be found
+     * @param criteria complex JSON describing the search criteria
+     * @throws QueryBuildException when unable to build percentile search query
+     */
+    public static void percentileSearch(
+            final QueryStatement statement,
+            final CollectionName collection,
+            final IObject percentileCriteria,
+            final IObject criteria
+    ) throws QueryBuildException {
+        try {
+            Writer body = statement.getBodyWriter();
+
+            body.write("SELECT ");
+            PercentileClauses.writePercentileDiscrete(statement, percentileCriteria);
+            body.write(" FROM ");
+            body.write(collection.toString());
+            if (criteria == null) {
+                // no search criteria present, no need for page limitation
+                return;
+            }
+            SearchClauses.writeSearchWhere(statement, criteria);
+            SearchClauses.writeSearchOrder(statement, criteria);
+            SearchClauses.writeSearchPaging(statement, criteria, false);
+        } catch (Exception e) {
+            throw new QueryBuildException("Failed to build percentile search query", e);
         }
     }
 

@@ -10,7 +10,7 @@ import info.smart_tools.smartactors.database_postgresql.postgres_connection.Quer
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 
 import java.sql.PreparedStatement;
@@ -48,7 +48,7 @@ public final class PostgresCreateIfNotExistsTask implements IDatabaseTask {
     @Override
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
-            CreateIfNotExistsCollectionMessage message = IOC.resolve(Keys.getOrAdd(CreateIfNotExistsCollectionMessage.class.getCanonicalName()), query);
+            CreateIfNotExistsCollectionMessage message = IOC.resolve(Keys.getKeyByName(CreateIfNotExistsCollectionMessage.class.getCanonicalName()), query);
             collection = message.getCollectionName();
             options = message.getOptions();
             preparedQuery = new QueryStatement();

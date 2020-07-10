@@ -1,17 +1,17 @@
 package info.smart_tools.smartactors.database.async_operation_collection.task;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.database.async_operation_collection.exception.CreateAsyncOperationException;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.exception.TaskPrepareException;
+import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
 
 /**
  * DB task for creating operations in db
@@ -32,8 +32,8 @@ public class CreateAsyncOperationTask implements IDatabaseTask {
         this.connection = connection;
 
         try {
-            documentField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "document");
-            collectionNameField = IOC.resolve(Keys.getOrAdd(IField.class.getCanonicalName()), "collectionName");
+            documentField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "document");
+            collectionNameField = IOC.resolve(Keys.getKeyByName(IField.class.getCanonicalName()), "collectionName");
         } catch (ResolutionException e) {
             throw new CreateAsyncOperationException("Can't resolve one of fields", e);
         }
@@ -53,7 +53,7 @@ public class CreateAsyncOperationTask implements IDatabaseTask {
     public void prepare(final IObject query) throws TaskPrepareException {
         try {
             task = IOC.resolve(
-                    Keys.getOrAdd("db.collection.upsert"),
+                    Keys.getKeyByName("db.collection.upsert"),
                     connection,
                     collectionNameField.in(query),
                     documentField.in(query)

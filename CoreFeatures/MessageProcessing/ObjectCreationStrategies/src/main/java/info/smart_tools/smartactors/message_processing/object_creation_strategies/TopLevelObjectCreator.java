@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.IReceiverObjectCreator;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.IReceiverObjectListener;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.exeptions.InvalidReceiverPipelineException;
@@ -28,8 +28,8 @@ public class TopLevelObjectCreator implements IReceiverObjectCreator {
 
     public TopLevelObjectCreator()
             throws ResolutionException {
-        dependencyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
-        topLevelObjectFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "topLevelObject");
+        dependencyFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
+        topLevelObjectFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "topLevelObject");
     }
 
     @Override
@@ -37,7 +37,7 @@ public class TopLevelObjectCreator implements IReceiverObjectCreator {
             throws ReceiverObjectListenerException, InvalidReceiverPipelineException, ReceiverObjectCreatorException {
         try {
             Object object = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), config.getValue(dependencyFieldName)),
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), config.getValue(dependencyFieldName)),
                     config
             );
 

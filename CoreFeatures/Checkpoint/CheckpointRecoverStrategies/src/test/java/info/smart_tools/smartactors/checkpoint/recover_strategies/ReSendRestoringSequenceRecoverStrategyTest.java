@@ -1,14 +1,13 @@
 package info.smart_tools.smartactors.checkpoint.recover_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
@@ -17,13 +16,12 @@ import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlu
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Test for {@link ReSendRestoringSequenceRecoverStrategy}.
@@ -47,9 +45,9 @@ public class ReSendRestoringSequenceRecoverStrategyTest extends PluginsLoadingTe
         IObject dumpMock = mock(IObject.class);
         IMessageProcessor processorMock = mock(IMessageProcessor.class);
         IMessageProcessingSequence sequenceMock = mock(IMessageProcessingSequence.class);
-        IResolveDependencyStrategy makeDumpStrategy = mock(IResolveDependencyStrategy.class);
+        IStrategy makeDumpStrategy = mock(IStrategy.class);
 
-        IOC.register(Keys.getOrAdd("make dump"), makeDumpStrategy);
+        IOC.register(Keys.getKeyByName("make dump"), makeDumpStrategy);
 
         when(makeDumpStrategy.resolve(same(sequenceMock), same(argsMock))).thenReturn(dumpMock);
 
@@ -57,13 +55,13 @@ public class ReSendRestoringSequenceRecoverStrategyTest extends PluginsLoadingTe
 
         new ReSendRestoringSequenceRecoverStrategy().init(stateMock, argsMock, processorMock);
 
-        verify(stateMock).setValue(eq(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sequenceDump")), same(dumpMock));
+        verify(stateMock).setValue(eq(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "sequenceDump")), same(dumpMock));
     }
 
     @Test
     public void Should_recoverMessageProcessingSequence()
             throws Exception {
-        IObject state = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject state = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
                         "'responsibleCheckpointId':'rcid'," +
                         "'entryId':'eid'," +
@@ -73,17 +71,17 @@ public class ReSendRestoringSequenceRecoverStrategyTest extends PluginsLoadingTe
                         "'message':{'is-a-message':true}" +
                         "}").replace('\'','"'));
 
-        IResolveDependencyStrategy recoverSequenceStrategy = mock(IResolveDependencyStrategy.class);
-        IResolveDependencyStrategy messageProcessorStrategy = mock(IResolveDependencyStrategy.class);
+        IStrategy recoverSequenceStrategy = mock(IStrategy.class);
+        IStrategy messageProcessorStrategy = mock(IStrategy.class);
         IMessageProcessingSequence sequenceMock = mock(IMessageProcessingSequence.class);
         IMessageProcessor processorMock = mock(IMessageProcessor.class);
         Object taskQueue = new Object();
 
-        IOC.register(Keys.getOrAdd("recover message processing sequence"), recoverSequenceStrategy);
-        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), messageProcessorStrategy);
-        IOC.register(Keys.getOrAdd("task_queue"), new SingletonStrategy(taskQueue));
+        IOC.register(Keys.getKeyByName("recover message processing sequence"), recoverSequenceStrategy);
+        IOC.register(Keys.getKeyByName("info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor"), messageProcessorStrategy);
+        IOC.register(Keys.getKeyByName("task_queue"), new SingletonStrategy(taskQueue));
 
-        when(recoverSequenceStrategy.resolve(eq("This is a sequence dump. Trust me I am IObject."))).thenReturn(sequenceMock);
+        when(recoverSequenceStrategy.resolve(eq("This is a sequence dump. Trust me I am IObject."), any())).thenReturn(sequenceMock);
         when(messageProcessorStrategy.resolve(same(taskQueue), same(sequenceMock))).thenReturn(processorMock);
 
         new ReSendRestoringSequenceRecoverStrategy().reSend(state);
@@ -93,19 +91,19 @@ public class ReSendRestoringSequenceRecoverStrategyTest extends PluginsLoadingTe
         verify(processorMock).process(mc.capture(), any());
 
         assertNotNull(mc.getValue());
-        assertEquals(true, mc.getValue().getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "is-a-message")));
+        assertEquals(true, mc.getValue().getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "is-a-message")));
 
         IObject checkpointStatus =
-                (IObject) mc.getValue().getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpointStatus"));
+                (IObject) mc.getValue().getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpointStatus"));
 
         assertNotNull(checkpointStatus);
         assertEquals("rcid",
-                checkpointStatus.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responsibleCheckpointId")));
+                checkpointStatus.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "responsibleCheckpointId")));
         assertEquals("eid",
-                checkpointStatus.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpointEntryId")));
+                checkpointStatus.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "checkpointEntryId")));
         assertEquals("pceid",
-                checkpointStatus.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointEntryId")));
+                checkpointStatus.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointEntryId")));
         assertEquals("pcid",
-                checkpointStatus.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointId")));
+                checkpointStatus.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "prevCheckpointId")));
     }
 }

@@ -1,16 +1,18 @@
 package info.smart_tools.smartactors.message_processing.chain_modifications;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.scope.iscope.IScope;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -68,18 +70,29 @@ class ReceiverReplacingChainDecorator implements IReceiverChain {
     }
 
     @Override
-    public String getName() {
+    public Object getId() {
+        return original.getId();
+    }
+
+    @Override
+    public Object getName() {
         return original.getName();
     }
 
     @Override
-    public IObject getExceptionalChainAndEnvironments(final Throwable exception) {
-        return original.getExceptionalChainAndEnvironments(exception);
+    public IScope getScope() { return original.getScope(); }
+
+    @Override
+    public IModule getModule() { return original.getModule(); }
+
+    @Override
+    public IObject getExceptionalChainNamesAndEnvironments(final Throwable exception) {
+        return original.getExceptionalChainNamesAndEnvironments(exception);
     }
 
     @Override
-    public Collection<IReceiverChain> getExceptionalChains() {
-        return original.getExceptionalChains();
+    public Collection<Object> getExceptionalChainNames() {
+        return original.getExceptionalChainNames();
     }
 
     @Override
@@ -114,7 +127,7 @@ class ReceiverReplacingChainDecorator implements IReceiverChain {
  *     }
  * </pre>
  */
-public class ReplaceReceiversChainModificationStrategy implements IResolveDependencyStrategy {
+public class ReplaceReceiversChainModificationStrategy implements IStrategy {
     private static final int CHAIN_ARGUMENT_INDEX = 0;
     private static final int MODIFICATION_DESCRIPTION_ARGUMENT_INDEX = 1;
 
@@ -130,14 +143,14 @@ public class ReplaceReceiversChainModificationStrategy implements IResolveDepend
      */
     public ReplaceReceiversChainModificationStrategy()
             throws ResolutionException {
-        replacementsFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "replacements");
-        stepFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "step");
-        dependencyFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
-        argsFN = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "args");
+        replacementsFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "replacements");
+        stepFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "step");
+        dependencyFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency");
+        argsFN = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "args");
     }
 
     @Override
-    public <T> T resolve(final Object... args) throws ResolveDependencyStrategyException {
+    public <T> T resolve(final Object... args) throws StrategyException {
         try {
             IReceiverChain originalChain = (IReceiverChain) args[CHAIN_ARGUMENT_INDEX];
             IObject modificationDescription = (IObject) args[MODIFICATION_DESCRIPTION_ARGUMENT_INDEX];
@@ -149,7 +162,7 @@ public class ReplaceReceiversChainModificationStrategy implements IResolveDepend
             for (IObject replacement : replacements) {
                 int step = ((Number) replacement.getValue(stepFN)).intValue();
                 IMessageReceiver receiver = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), replacement.getValue(dependencyFN)),
+                        IOC.resolve(IOC.getKeyForKeyByNameStrategy(), replacement.getValue(dependencyFN)),
                         originalChain.get(step), replacement.getValue(argsFN)
                 );
 
@@ -158,7 +171,7 @@ public class ReplaceReceiversChainModificationStrategy implements IResolveDepend
 
             return (T) new ReceiverReplacingChainDecorator(originalChain, replacementMap);
         } catch (ClassCastException | ReadValueException | InvalidArgumentException | ResolutionException e) {
-            throw new ResolveDependencyStrategyException(e);
+            throw new StrategyException(e);
         }
     }
 }

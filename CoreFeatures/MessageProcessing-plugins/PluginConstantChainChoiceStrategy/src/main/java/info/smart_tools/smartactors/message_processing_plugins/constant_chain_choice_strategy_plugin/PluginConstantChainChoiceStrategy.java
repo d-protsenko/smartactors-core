@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing.constant_chain_choice_strategy.ConstantChainChoiceStrategy;
 
 /**
@@ -30,6 +30,15 @@ public class PluginConstantChainChoiceStrategy extends BootstrapPlugin {
     @Before({"ChainCallReceiver"})
     public void item()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("constant chain choice strategy"), new SingletonStrategy(new ConstantChainChoiceStrategy()));
+        IOC.register(Keys.getKeyByName("constant chain choice strategy"), new SingletonStrategy(new ConstantChainChoiceStrategy()));
+    }
+
+    /**
+     * Unregisters constant chain choice strategy.
+     */
+    @ItemRevert("constant_chain_choice_strategy")
+    public void revertItem() {
+        String[] keyNames = { "constant chain choice strategy" };
+        Keys.unregisterByNames(keyNames);
     }
 }

@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.message_processing.handler_routing_receiver;
 
-import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.ifield.IField;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
@@ -33,7 +33,7 @@ public class HandlerRoutingReceiver implements IMessageReceiver {
         }
 
         this.handlerReceiversMap = handlerReceiversMap;
-        this.handlerField = IOC.resolve(IOC.resolve(IOC.getKeyForKeyStorage(), IField.class.getCanonicalName()), "handler");
+        this.handlerField = IOC.resolve(IOC.resolve(IOC.getKeyForKeyByNameStrategy(), IField.class.getCanonicalName()), "handler");
     }
 
     @Override
@@ -44,12 +44,23 @@ public class HandlerRoutingReceiver implements IMessageReceiver {
             IMessageReceiver handlerReceiver = handlerReceiversMap.get(handlerId);
 
             if (null == handlerReceiver) {
-                throw new MessageReceiveException("Handler not found.");
-            } else {
-                handlerReceiver.receive(processor);
+                throw new MessageReceiveException("Handler with Id '"+handlerId.toString()+"' not found.");
             }
+            handlerReceiver.receive(processor);
+
         } catch (ReadValueException | InvalidArgumentException e) {
             throw new MessageReceiveException("Error reading handler name.");
+        }
+    }
+
+    @Override
+    public void dispose() {
+        for (IMessageReceiver receiver : handlerReceiversMap.values()) {
+            try {
+                receiver.dispose();
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -3,42 +3,35 @@ package info.smart_tools.smartactors.http_endpoint.http_endpoint;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
-import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
+import info.smart_tools.smartactors.endpoint.interfaces.ichannel_handler.IChannelHandler;
 import info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy;
+import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
+import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
+import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.exception.RequestSenderException;
 import info.smart_tools.smartactors.endpoint.interfaces.iresponse_handler.IResponseHandler;
 import info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty;
 import info.smart_tools.smartactors.http_endpoint.deserialize_strategy_post_json.DeserializeStrategyPostJson;
 import info.smart_tools.smartactors.http_endpoint.http_client.HttpClient;
 import info.smart_tools.smartactors.http_endpoint.http_server.HttpServer;
-import info.smart_tools.smartactors.endpoint.interfaces.ichannel_handler.IChannelHandler;
-import info.smart_tools.smartactors.endpoint.interfaces.ienvironment_handler.IEnvironmentHandler;
-import info.smart_tools.smartactors.endpoint.interfaces.imessage_mapper.IMessageMapper;
-import info.smart_tools.smartactors.endpoint.interfaces.irequest_sender.exception.RequestSenderException;
 import info.smart_tools.smartactors.iobject.ds_object.DSObject;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_strategy.ResolveByNameIocStrategy;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.message_processing.message_processing_sequence.MessageProcessingSequence;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandler;
-import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.DefaultFullHttpRequest;
-import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpHeaders;
-import io.netty.handler.codec.http.HttpMethod;
-import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.*;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
@@ -60,7 +53,7 @@ public class HttpEndpointTest {
     protected HttpClient client;
     protected IEnvironmentHandler environmentHandler;
     protected BiConsumer<ChannelHandlerContext, FullHttpResponse> handlerStub;
-    protected IReceiverChain receiver;
+    protected String receiver;
 
 
     protected int getTestingPort() {
@@ -71,7 +64,7 @@ public class HttpEndpointTest {
     @BeforeMethod
     public void setUp() throws ExecutionException, InterruptedException, URISyntaxException, InvalidArgumentException, ResolutionException, RegistrationException, ScopeProviderException, RequestSenderException, UpCounterCallbackExecutionException {
         mapperStub = mock(IMessageMapper.class);
-        receiver = mock(IReceiverChain.class);
+        receiver = mock(String.class);
         environmentHandler = mock(IEnvironmentHandler.class);
         HttpEndpointTest me = this;
 
@@ -90,20 +83,21 @@ public class HttpEndpointTest {
         ScopeProvider.setCurrentScope(mainScope);
 
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy()
         );
-        IKey keyMessageProcessingSequence = Keys.getOrAdd(MessageProcessingSequence.class.getCanonicalName());
-        IKey keyIObject = Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
-        IKey keyChannelHandler = Keys.getOrAdd("info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty");
-        IKey keyIFieldName = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey keyMessageProcessingSequence = Keys.getKeyByName(MessageProcessingSequence.class.getCanonicalName());
+        IKey keyIObject = Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject");
+        IKey keyChannelHandler = Keys.getKeyByName("info.smart_tools.smartactors.http_endpoint.channel_handler_netty.ChannelHandlerNetty");
+        IKey keyIFieldName = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         IOC.register(
                 keyMessageProcessingSequence,
-                new CreateNewInstanceStrategy(
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
-                                return new MessageProcessingSequence((int) args[0], (IReceiverChain) args[1]);
-                            } catch (InvalidArgumentException | ResolutionException ignored) {
+                                boolean switchScopeOnStartup = args.length > 3 ? (Boolean)args[3] : true;
+                                return new MessageProcessingSequence((int) args[0], args[1], (IObject)args[2], switchScopeOnStartup);
+                            } catch (InvalidArgumentException | ResolutionException | ChainNotFoundException ignored) {
                             }
                             return null;
                         }
@@ -111,7 +105,7 @@ public class HttpEndpointTest {
         );
         IOC.register(
                 keyIObject,
-                new CreateNewInstanceStrategy(
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
                                 return args.length > 0 ? new DSObject((String) args[0]) : new DSObject();
@@ -123,7 +117,7 @@ public class HttpEndpointTest {
         );
         IOC.register(
                 keyIFieldName,
-                new CreateNewInstanceStrategy(
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             try {
                                 return new FieldName((String) args[0]);
@@ -135,7 +129,7 @@ public class HttpEndpointTest {
         );
         IOC.register(
                 keyChannelHandler,
-                new CreateNewInstanceStrategy(
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> {
                             IChannelHandler handler = new ChannelHandlerNetty();
                             handler.init(args[0]);
@@ -143,11 +137,14 @@ public class HttpEndpointTest {
                         }
                 )
         );
-        IOC.register(Keys.getOrAdd("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
-                new CreateNewInstanceStrategy(
+        IOC.register(
+                Keys.getKeyByName("info.smart_tools.smartactors.endpoint.interfaces.ideserialize_strategy.IDeserializeStrategy"),
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> new DeserializeStrategyPostJson(mapperStub)
                 ));
-        IOC.register(Keys.getOrAdd("EmptyIObject"), new CreateNewInstanceStrategy(
+        IOC.register(
+                Keys.getKeyByName("EmptyIObject"),
+                new ApplyFunctionToArgumentsStrategy(
                         (args) -> new DSObject()
                 )
         );
@@ -171,7 +168,7 @@ public class HttpEndpointTest {
     /* @Test
      public void whenEndpointHandlerReceivesRequest_ItShouldHandleEnvironmentHandler()
              throws ResolutionException, InvalidArgumentException, EnvironmentHandleException, RequestHandlerInternalException {
-         IObject stubMessage = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"), "{\"hello\": \"world\"}");
+         IObject stubMessage = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"), "{\"hello\": \"world\"}");
          when(mapperStub.deserialize(any(byte[].class))).thenReturn(stubMessage);
          HttpRequest request = createTestRequest();
          sendRequest(request);
@@ -183,12 +180,12 @@ public class HttpEndpointTest {
     }
 
     protected HttpServer createEndpoint(
-            IEnvironmentHandler environmentHandler, IReceiverChain receiver, IMessageMapper<byte[]> mapper
+            IEnvironmentHandler environmentHandler, Object receiverName, IMessageMapper<byte[]> mapper
     ) throws ResolutionException, ScopeProviderException, UpCounterCallbackExecutionException {
         Map<String, IDeserializeStrategy> strategies = new HashMap<>();
         strategies.put("application/json", new DeserializeStrategyPostJson(mapper));
         return new HttpEndpoint(getTestingPort(), 4096, ScopeProvider.getCurrentScope(),
-                environmentHandler, receiver, "", mock(IUpCounter.class));
+                ModuleManager.getCurrentModule(), environmentHandler, receiverName, "", mock(IUpCounter.class));
     }
 
     protected HttpClient createClient(IResponseHandler handler) throws URISyntaxException, RequestSenderException {

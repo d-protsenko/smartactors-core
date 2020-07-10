@@ -10,9 +10,7 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests for {@link MapRouter}.
@@ -25,7 +23,7 @@ public class MapRouterTest {
     }
 
     @Test
-    public void Should_storeReceivers()
+    public void Should_storeAndRevertReceivers()
             throws Exception {
         Map<Object, IMessageReceiver> map = mock(Map.class);
         Object id = mock(Object.class);
@@ -44,6 +42,13 @@ public class MapRouterTest {
         when(map.get(same(id))).thenReturn(receiver1);
 
         assertSame(receiver1, router.route(id));
+
+        router.unregister(id);
+        verify(map).remove(id);
+
+        when(map.remove(same(id))).thenReturn(receiver1);
+        router.unregister(id);
+        verify(receiver1).dispose();
     }
 
     @Test(expected = RouteNotFoundException.class)

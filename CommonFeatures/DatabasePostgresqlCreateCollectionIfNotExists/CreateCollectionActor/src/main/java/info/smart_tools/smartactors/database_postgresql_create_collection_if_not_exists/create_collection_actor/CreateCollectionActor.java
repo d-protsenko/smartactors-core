@@ -9,7 +9,7 @@ import info.smart_tools.smartactors.database_postgresql_create_collection_if_not
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 
@@ -22,13 +22,13 @@ import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutio
 public class CreateCollectionActor {
     public void createTable(CreateCollectionWrapper message) throws CreateCollectionActorException {
         try {
-            final ConnectionOptions options = IOC.resolve(Keys.getOrAdd(message.getConnectionOptionsRegistrationName()));
-            final IPool pool = IOC.resolve(Keys.getOrAdd("PostgresConnectionPool"), options);
+            final ConnectionOptions options = IOC.resolve(Keys.getKeyByName(message.getConnectionOptionsRegistrationName()));
+            final IPool pool = IOC.resolve(Keys.getKeyByName("PostgresConnectionPool"), options);
 
             String collectionName = message.getCollectionName();
             try (PoolGuard guard = new PoolGuard(pool)) {
                 ITask task = IOC.resolve(
-                        Keys.getOrAdd("db.collection.create-if-not-exists"),
+                        Keys.getKeyByName("db.collection.create-if-not-exists"),
                         guard.getObject(),
                         collectionName,
                         message.getOptions()

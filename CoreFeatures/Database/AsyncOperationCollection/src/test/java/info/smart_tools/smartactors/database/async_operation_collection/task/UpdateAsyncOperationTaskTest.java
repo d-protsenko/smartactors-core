@@ -1,29 +1,30 @@
 package info.smart_tools.smartactors.database.async_operation_collection.task;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.IDatabaseTask;
 import info.smart_tools.smartactors.database.interfaces.idatabase_task.exception.TaskPrepareException;
+import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
-import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
+import info.smart_tools.smartactors.task.interfaces.itask.exception.TaskExecutionException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.doThrow;
+import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
@@ -47,7 +48,7 @@ public class UpdateAsyncOperationTaskTest {
         collectionNameField = mock(IField.class);
 
         Key fieldKey = mock(Key.class);
-        when(Keys.getOrAdd(IField.class.getCanonicalName())).thenReturn(fieldKey);
+        when(Keys.getKeyByName(IField.class.getCanonicalName())).thenReturn(fieldKey);
 
         when(IOC.resolve(fieldKey, "done")).thenReturn(doneFlagField);
         when(IOC.resolve(fieldKey, "document")).thenReturn(documentField);
@@ -59,7 +60,7 @@ public class UpdateAsyncOperationTaskTest {
         testTask = new UpdateAsyncOperationTask(connection);
 
         verifyStatic(times(3));
-        Keys.getOrAdd(IField.class.getCanonicalName());
+        Keys.getKeyByName(IField.class.getCanonicalName());
 
         verifyStatic();
         IOC.resolve(fieldKey, "done");
@@ -81,7 +82,7 @@ public class UpdateAsyncOperationTaskTest {
         String collectionName = "example";
 
         IKey upsertTaskKey = mock(IKey.class);
-        when(Keys.getOrAdd("db.collection.upsert")).thenReturn(upsertTaskKey);
+        when(Keys.getKeyByName("db.collection.upsert")).thenReturn(upsertTaskKey);
         when(collectionNameField.in(query)).thenReturn(collectionName);
 
         when(IOC.resolve(upsertTaskKey, connection, collectionName, document)).thenReturn(targetTask);
@@ -92,7 +93,7 @@ public class UpdateAsyncOperationTaskTest {
         verify(doneFlagField).out(document, true);
 
         verifyStatic();
-        Keys.getOrAdd("db.collection.upsert");
+        Keys.getKeyByName("db.collection.upsert");
 
         verifyStatic();
         IOC.resolve(upsertTaskKey, connection, collectionName, document);
@@ -148,13 +149,13 @@ public class UpdateAsyncOperationTaskTest {
     }
 
     @Test
-    public void MustInCorrectPrepareWhenKeysGetOrAddThrowException() throws ReadValueException, InvalidArgumentException, ResolutionException, TaskPrepareException, ChangeValueException {
+    public void MustInCorrectPrepareWhenKeysgetKeyByNameThrowException() throws ReadValueException, InvalidArgumentException, ResolutionException, TaskPrepareException, ChangeValueException {
         IObject query = mock(IObject.class);
 
         IObject document = mock(IObject.class);
         when(documentField.in(query)).thenReturn(document);
 
-        when(Keys.getOrAdd("db.collection.upsert")).thenThrow(new ResolutionException(""));
+        when(Keys.getKeyByName("db.collection.upsert")).thenThrow(new ResolutionException(""));
 
         try {
             testTask.prepare(query);
@@ -163,7 +164,7 @@ public class UpdateAsyncOperationTaskTest {
             verify(doneFlagField).out(document, true);
 
             verifyStatic();
-            Keys.getOrAdd("db.collection.upsert");
+            Keys.getKeyByName("db.collection.upsert");
             return;
         }
         assertTrue(false);
@@ -179,7 +180,7 @@ public class UpdateAsyncOperationTaskTest {
         String collectionName = "example";
 
         IKey upsertTaskKey = mock(IKey.class);
-        when(Keys.getOrAdd("db.collection.upsert")).thenReturn(upsertTaskKey);
+        when(Keys.getKeyByName("db.collection.upsert")).thenReturn(upsertTaskKey);
         when(collectionNameField.in(query)).thenReturn(collectionName);
 
         when(IOC.resolve(upsertTaskKey, connection, collectionName, document)).thenThrow(new ResolutionException(""));
@@ -191,7 +192,7 @@ public class UpdateAsyncOperationTaskTest {
             verify(doneFlagField).out(document, true);
 
             verifyStatic();
-            Keys.getOrAdd("db.collection.upsert");
+            Keys.getKeyByName("db.collection.upsert");
 
             verifyStatic();
             IOC.resolve(upsertTaskKey, connection, collectionName, document);

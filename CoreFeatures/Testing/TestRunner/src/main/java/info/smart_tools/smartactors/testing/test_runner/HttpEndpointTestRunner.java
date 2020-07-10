@@ -1,17 +1,14 @@
 package info.smart_tools.smartactors.testing.test_runner;
 
-import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.testing.interfaces.isource.ISource;
 import info.smart_tools.smartactors.testing.interfaces.isource.exception.SourceExtractionException;
 import info.smart_tools.smartactors.testing.interfaces.itest_runner.ITestRunner;
@@ -96,7 +93,7 @@ import info.smart_tools.smartactors.testing.interfaces.itest_runner.exception.Te
 public class HttpEndpointTestRunner implements ITestRunner {
 
     private final IFieldName contentFieldName;
-    private final IFieldName chainFieldName;
+    private final IFieldName chainNameFieldName;
     private final IFieldName callbackFieldName;
 
     /**
@@ -107,13 +104,13 @@ public class HttpEndpointTestRunner implements ITestRunner {
             throws InitializationException {
         try {
             this.contentFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "content"
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "content"
             );
-            this.chainFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainName"
+            this.chainNameFieldName = IOC.resolve(
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainName"
             );
             this.callbackFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "callback"
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "callback"
             );
         } catch (ResolutionException e) {
             throw new InitializationException("Could not create new instance of HttpEndpointTestRunner.", e);
@@ -141,25 +138,18 @@ public class HttpEndpointTestRunner implements ITestRunner {
 
         try {
             IObject sourceObject = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.iobject.IObject")
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.iobject.IObject")
             );
-            String chainName = (String) description.getValue(this.chainFieldName);
-            Object chainId = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "chain_id_from_map_name"), chainName
-            );
-            IChainStorage chainStorage = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), IChainStorage.class.getCanonicalName())
-            );
-            IReceiverChain testedChain = chainStorage.resolve(chainId);
+            Object chainName = description.getValue(this.chainNameFieldName);
 
             sourceObject.setValue(this.contentFieldName, description);
             sourceObject.setValue(this.callbackFieldName, callback);
-            sourceObject.setValue(this.chainFieldName, testedChain);
+            sourceObject.setValue(this.chainNameFieldName, chainName);
             ISource<IObject, IObject> source = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "test_data_source")
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "test_data_source")
             );
             source.setSource(sourceObject);
-        } catch (ChainNotFoundException | ReadValueException | ChangeValueException | ResolutionException | SourceExtractionException e) {
+        } catch (ReadValueException | ChangeValueException | ResolutionException | SourceExtractionException e) {
             throw new TestExecutionException(e);
         }
     }

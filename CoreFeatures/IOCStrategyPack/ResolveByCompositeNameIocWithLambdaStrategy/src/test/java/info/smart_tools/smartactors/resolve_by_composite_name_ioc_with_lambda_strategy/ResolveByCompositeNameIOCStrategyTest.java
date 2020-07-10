@@ -1,8 +1,8 @@
 package info.smart_tools.smartactors.resolve_by_composite_name_ioc_with_lambda_strategy;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.ioc_strategy_pack.resolve_by_composite_name_ioc_with_lambda_strategy.ResolveByCompositeNameIOCStrategy;
 import org.junit.Test;
 
@@ -22,7 +22,7 @@ public class ResolveByCompositeNameIOCStrategyTest {
     @Test
     public void checkStrategyCreation()
         throws InvalidArgumentException {
-        IResolveDependencyStrategy strategy = new ResolveByCompositeNameIOCStrategy(
+        IStrategy strategy = new ResolveByCompositeNameIOCStrategy(
             (args)-> null
         );
         assertNotNull(strategy);
@@ -32,7 +32,7 @@ public class ResolveByCompositeNameIOCStrategyTest {
     public void checkStrategyResolutionCallInternalStrategy()
         throws Exception {
         Counter counter = new Counter();
-        IResolveDependencyStrategy strategy = new ResolveByCompositeNameIOCStrategy(
+        IStrategy strategy = new ResolveByCompositeNameIOCStrategy(
             (args)-> {
                 ++counter.times;
                 return "";
@@ -47,7 +47,7 @@ public class ResolveByCompositeNameIOCStrategyTest {
         throws Exception {
         Counter counter = new Counter();
         Object o = new Object();
-        IResolveDependencyStrategy strategy = new ResolveByCompositeNameIOCStrategy(
+        IStrategy strategy = new ResolveByCompositeNameIOCStrategy(
             (args)-> {
                 ++counter.times;
                 return o;
@@ -64,7 +64,7 @@ public class ResolveByCompositeNameIOCStrategyTest {
         throws Exception {
         Counter counter = new Counter();
         Object o = new Object();
-        IResolveDependencyStrategy strategy = new ResolveByCompositeNameIOCStrategy(
+        IStrategy strategy = new ResolveByCompositeNameIOCStrategy(
             (args)-> {
                 ++counter.times;
                 return o;
@@ -82,7 +82,7 @@ public class ResolveByCompositeNameIOCStrategyTest {
         new ResolveByCompositeNameIOCStrategy(null);
     }
 
-    @Test (expected = ResolveDependencyStrategyException.class)
+    @Test (expected = StrategyException.class)
     public void checkStrategyResolutionException()
         throws Exception {
         new ResolveByCompositeNameIOCStrategy((args)-> null).resolve("key");

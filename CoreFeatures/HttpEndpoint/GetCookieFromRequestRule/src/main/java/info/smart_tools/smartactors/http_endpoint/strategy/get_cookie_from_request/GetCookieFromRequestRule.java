@@ -1,6 +1,6 @@
 package info.smart_tools.smartactors.http_endpoint.strategy.get_cookie_from_request;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 
@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 /**
  * Rule that extract cookie from request
  */
-public class GetCookieFromRequestRule implements IResolveDependencyStrategy {
+public class GetCookieFromRequestRule implements IStrategy {
 
     /**
      * Extracts cookie from given HTTP request.

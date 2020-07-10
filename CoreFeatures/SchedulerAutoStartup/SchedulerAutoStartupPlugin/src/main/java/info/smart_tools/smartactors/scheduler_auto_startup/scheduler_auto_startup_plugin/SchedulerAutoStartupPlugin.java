@@ -2,16 +2,16 @@ package info.smart_tools.smartactors.scheduler_auto_startup.scheduler_auto_start
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.isynchronous_service.exceptions.IllegalServiceStateException;
-import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartupException;
+import info.smart_tools.smartactors.base.isynchronous_service.exceptions.ServiceStartException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_plugin.BootstrapPlugin;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerService;
 import info.smart_tools.smartactors.task.interfaces.iqueue.IQueue;
 import info.smart_tools.smartactors.task.interfaces.itask.ITask;
@@ -38,19 +38,19 @@ public class SchedulerAutoStartupPlugin extends BootstrapPlugin {
     @Item("scheduler_actor_delayed_startup_action")
     public void doSomeThing()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("scheduler service activation action for scheduler actor"),
+        IOC.register(Keys.getKeyByName("scheduler service activation action for scheduler actor"),
                 new SingletonStrategy((IAction<ISchedulerService>) service -> {
                     try {
-                        IQueue<ITask> featureLoadCompletionQueue = IOC.resolve(Keys.getOrAdd("feature group load completion task queue"));
+                        IQueue<ITask> featureLoadCompletionQueue = IOC.resolve(Keys.getKeyByName("feature group load completion task queue"));
                         featureLoadCompletionQueue.put(() -> {
                             try {
                                 service.start();
-                            } catch (ServiceStartupException | IllegalServiceStateException e) {
+                            } catch (ServiceStartException | IllegalServiceStateException e) {
                                 throw new TaskExecutionException(e);
                             }
                         });
                     } catch (ResolutionException e) {
-                        throw new ActionExecuteException(e);
+                        throw new ActionExecutionException(e);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }

@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.https_endpoint.interfaces.issl_engine_provider;
 
-import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.https_endpoint.interfaces.issl_engine_provider.exception.SSLEngineProviderException;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
 
 import javax.net.ssl.SSLEngine;
 

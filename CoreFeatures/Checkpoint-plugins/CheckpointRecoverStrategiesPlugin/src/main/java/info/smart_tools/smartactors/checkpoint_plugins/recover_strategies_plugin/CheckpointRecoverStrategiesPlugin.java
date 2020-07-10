@@ -11,7 +11,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 /**
  * Plugin that registers some recover strategies for checkpoint.
@@ -37,7 +37,7 @@ public class CheckpointRecoverStrategiesPlugin extends BootstrapPlugin {
     @Before({"checkpoint_actor"})
     public void singleChainRecoverStrategyItem()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("single chain recover strategy"),
+        IOC.register(Keys.getKeyByName("single chain recover strategy"),
                 new SingletonStrategy(new ReSendToChainRecoverStrategy(new SingleChainRecoverStrategy())));
     }
 
@@ -52,7 +52,7 @@ public class CheckpointRecoverStrategiesPlugin extends BootstrapPlugin {
     @Before({"checkpoint_actor"})
     public void chainSequenceRecoverStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("chain sequence recover strategy"),
+        IOC.register(Keys.getKeyByName("chain sequence recover strategy"),
                 new SingletonStrategy(new ReSendToChainRecoverStrategy(new ChainSequenceRecoverStrategy())));
     }
 
@@ -67,7 +67,7 @@ public class CheckpointRecoverStrategiesPlugin extends BootstrapPlugin {
     @Before({"checkpoint_actor"})
     public void sequenceRecoverStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("restore sequence recover strategy"),
+        IOC.register(Keys.getKeyByName("restore sequence recover strategy"),
                 new SingletonStrategy(new ReSendRestoringSequenceRecoverStrategy()));
     }
 }

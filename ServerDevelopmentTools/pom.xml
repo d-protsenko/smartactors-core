@@ -4,19 +4,26 @@
 
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>server-development-tools</artifactId>
-    <version>0.3.3</version>
+    <version>0.6.1</version>
 
     <packaging>pom</packaging>
 
+    <properties>
+        <feature.rurl>http://archiva.smart-tools.info/repository/server-dev-tools/</feature.rurl>
+        <feature.rid>archiva.server-dev-tools</feature.rid>
+        <module.rurl>${feature.rurl}</module.rurl>
+        <module.rid>${feature.rid}</module.rid>
+    </properties>
+
     <repositories>
         <repository>
-            <id>smartactors-modules</id>
-            <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
+            <id>${module.rid}</id>
+            <url>${module.rurl}</url>
         </repository>
     </repositories>
 
     <modules>
-        <module>Interfaces</module>
+        <module>ServerInterfaces</module>
     </modules>
 
     <build>
@@ -25,7 +32,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>3.1.0</version>
                     <executions>
                         <execution>
                             <phase>package</phase>

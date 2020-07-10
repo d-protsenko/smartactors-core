@@ -1,19 +1,24 @@
 package info.smart_tools.smartactors.database_postgresql.postgres_schema.indexes;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
+import info.smart_tools.smartactors.database_postgresql.postgres_schema.search.FieldPath;
 import info.smart_tools.smartactors.database_postgresql.postgres_schema.search.PostgresFieldPath;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.database_postgresql.postgres_schema.search.FieldPath;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A set of classes to write CREATE INDEX SQL statements.
@@ -27,7 +32,7 @@ public class IndexCreators {
         put("ordered", (indexDefinition) -> IndexCreators::writeOrderedIndex);
         put("datetime", (indexDefinition) -> IndexCreators::writeDatetimeIndex);
         put("tags", (indexDefinition) -> IndexCreators::writeTagsIndex);
-        put("fulltext", FulltextIndexWriter::resolve);
+        put("fulltext", FulltextIndexWriter::resolveAdd);
     }};
 
     /**
@@ -40,10 +45,10 @@ public class IndexCreators {
      * Writes CREATE INDEX statements to the SQL statement body.
      * @param body where to write SQL
      * @param collection name of the collection
-     * @param options document describing create collection options
+     * @param options document describing index creation options
      * @throws Exception when something goes wrong
      */
-    public static void writeIndexes(Writer body, CollectionName collection, IObject options) throws Exception {
+    public static void writeCreateIndexes(Writer body, CollectionName collection, IObject options) throws Exception {
         try {
             if (options == null) {
                 // no indexes definition, ignoring
@@ -59,7 +64,7 @@ public class IndexCreators {
 
     private static void writeCreateIndex(final String indexType, final Writer body, final CollectionName collection, IObject options)
             throws Exception {
-        IKey fieldNameKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
+        IKey fieldNameKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName");
         Object indexFields = null;
         try {
             IFieldName indexDefinitionField = IOC.resolve(fieldNameKey, indexType);
@@ -70,18 +75,24 @@ public class IndexCreators {
         }
 
         List<FieldPath> fieldPaths = new ArrayList<>();
-        if (indexFields instanceof String) {
-            fieldPaths.add(PostgresFieldPath.fromString((String) indexFields));
-        } else if (indexFields instanceof List) {
-            for (Object fieldName : (List) indexFields) {
-                fieldPaths.add(PostgresFieldPath.fromString((String) fieldName));
-            }
-        } else if (indexFields == null) {
-            // ignoring absence of this index type definition
+        if (indexFields == null) {
             return;
-        } else {
-            throw new QueryBuildException("Unknown index definition for " + indexType + ": " + indexFields);
+            // ignoring absence of this index type definition
         }
+        try {
+            boolean pathFound = checkAndAddSingleFieldPath(fieldPaths, indexFields);
+            if (!pathFound) {
+                for (Object fieldName : (List) indexFields) {
+                    pathFound = checkAndAddSingleFieldPath(fieldPaths, fieldName);
+                    if (!pathFound) {
+                        throw new QueryBuildException("Bad options for creating index task: field data need to be a string, an IObject or a list");
+                    }
+                }
+            }
+        } catch (ClassCastException e) {
+            throw new QueryBuildException("Bad options for creating index task: field data need to be a string, an IObject or a list", e);
+        }
+
 
         INDEX_WRITERS.get(indexType).resolve(options).write(body, collection, fieldPaths);
     }
@@ -89,36 +100,70 @@ public class IndexCreators {
     private static void writeOrderedIndex(final Writer body, final CollectionName collection,
                                           final List<FieldPath> fields) throws IOException {
         for (FieldPath field : fields) {
-            body.write("CREATE INDEX ON ");
+            body.write("CREATE INDEX ");
+            body.write(collection.toString());
+            body.write("_");
+            body.write(field.getId());
+            body.write("_ordered_index ON ");
             body.write(collection.toString());
             body.write(" USING BTREE ((");
             body.write(field.toSQL());
             body.write("));\n");
         }
-
     }
 
     private static void writeDatetimeIndex(final Writer body, final CollectionName collection,
                                            final List<FieldPath> fields) throws IOException {
         for (FieldPath field : fields) {
-            body.write("CREATE INDEX ON ");
+            body.write("CREATE INDEX ");
             body.write(collection.toString());
-            body.write(" USING BTREE (");
-            body.write("(parse_timestamp_immutable(");
+            body.write("_");
+            body.write(field.getId());
+            body.write("_datetime_index ON ");
+            body.write(collection.toString());
+            body.write(" USING BTREE ((parse_timestamp_immutable(");
             body.write(field.toSQL());
-            body.write("))");
-            body.write(");\n");
+            body.write(")));\n");
         }
     }
 
     private static void writeTagsIndex(final Writer body, final CollectionName collection,
                                        final List<FieldPath> fields) throws IOException {
         for (FieldPath field : fields) {
-            body.write("CREATE INDEX ON ");
+            body.write("CREATE INDEX ");
+            body.write(collection.toString());
+            body.write("_");
+            body.write(field.getId());
+            body.write("_tags_index ON ");
             body.write(collection.toString());
             body.write(" USING GIN ((");
             body.write(field.toSQL());
             body.write("));\n");
         }
+    }
+
+    private static boolean checkAndAddSingleFieldPath(List<FieldPath> fieldPaths, final Object fieldPathData) throws QueryBuildException {
+        if (fieldPathData instanceof String) {
+            fieldPaths.add(PostgresFieldPath.fromString((String) fieldPathData));
+            return true;
+        } else if (fieldPathData instanceof IObject) {
+            try {
+                IObject iObjectFieldPathData = (IObject) fieldPathData;
+                IKey fieldNameKey = Keys.getKeyByName(IFieldName.class.getCanonicalName());
+                IFieldName nameFN = IOC.resolve(fieldNameKey, "fieldName");
+                IFieldName typeFN = IOC.resolve(fieldNameKey, "type");
+                String name = (String) iObjectFieldPathData.getValue(nameFN);
+                String type = (String) iObjectFieldPathData.getValue(typeFN);
+                fieldPaths.add(PostgresFieldPath.fromStringAndType(name, type));
+                return true;
+            } catch (ResolutionException e) {
+                throw new QueryBuildException("Cannot resolve dependency while building query ", e);
+            } catch (ReadValueException | InvalidArgumentException e) {
+                throw new QueryBuildException("Cannot read value from field name options", e);
+            } catch (NullPointerException e) {
+                throw new QueryBuildException("Incorrect format of create index options", e);
+            }
+        }
+        return false;
     }
 }

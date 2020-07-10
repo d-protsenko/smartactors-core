@@ -1,28 +1,25 @@
 package info.smart_tools.smartactors.message_processing.message_processor;
 
-import info.smart_tools.smartactors.iobject.field_name.FieldName;
-import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
+import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.scope.iscope.IScope;
-import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
-import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
 import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
+import info.smart_tools.smartactors.scope.iscope.IScope;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
+import info.smart_tools.smartactors.task.interfaces.itask.ITask;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,7 +37,7 @@ public class FinalTaskTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -51,7 +48,7 @@ public class FinalTaskTest {
                         })
         );
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -84,7 +81,7 @@ public class FinalTaskTest {
             throws Exception {
         IObject env = mock(IObject.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy((a)-> {
                     throw new RuntimeException();
                 })
@@ -104,7 +101,7 @@ public class FinalTaskTest {
         Checker checker = new Checker();
         IAction action = new IAction() {
             @Override
-            public void execute(Object actingObject) throws ActionExecuteException, InvalidArgumentException {
+            public void execute(Object actingObject) throws ActionExecutionException, InvalidArgumentException {
                 checker.setChecked(true);
             }
         };
@@ -133,14 +130,14 @@ public class FinalTaskTest {
         Checker checker2 = new Checker();
         IAction action1 = new IAction() {
             @Override
-            public void execute(Object actingObject) throws ActionExecuteException, InvalidArgumentException {
+            public void execute(Object actingObject) throws ActionExecutionException, InvalidArgumentException {
                 checker1.setChecked(true);
-                throw new ActionExecuteException("something");
+                throw new ActionExecutionException("something");
             }
         };
         IAction action2 = new IAction() {
             @Override
-            public void execute(Object actingObject) throws ActionExecuteException, InvalidArgumentException {
+            public void execute(Object actingObject) throws ActionExecutionException, InvalidArgumentException {
                 checker2.setChecked(true);
             }
         };

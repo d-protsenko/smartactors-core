@@ -1,21 +1,17 @@
 package info.smart_tools.smartactors.core.scope_creation_event_handler;
 
-import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.scope.iscope.IScope;
+import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.ioc.istrategy_container.IStrategyContainer;
+import info.smart_tools.smartactors.scope.iscope.IScope;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests for ScopeCreationEventHandler
@@ -57,13 +53,13 @@ public class ScopeCreationEventHandlerTest {
         fail();
     }
 
-    @Test (expected = ActionExecuteException.class)
+    @Test (expected = ActionExecutionException.class)
     public void checkObserverExecuteExceptionOnHandlerExecution()
             throws Exception {
         IKey key = mock(IKey.class);
         IScope scope = mock(IScope.class);
         IAction handler = new ScopeCreationEventHandler(key);
-        doThrow(ActionExecuteException.class).when(scope).setValue(any(IKey.class), any(IStrategyContainer.class));
+        doThrow(ActionExecutionException.class).when(scope).setValue(any(IKey.class), any(IStrategyContainer.class));
         handler.execute(scope);
         fail();
     }

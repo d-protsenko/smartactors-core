@@ -1,34 +1,34 @@
 package info.smart_tools.smartactors.core.examples;
 
-import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
-import info.smart_tools.smartactors.iobject_extension.configuration_object.ConfigurationObject;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.core.examples.actor.GreetingMessage;
 import info.smart_tools.smartactors.core.examples.wrapper.ConcatSplitRulesPlugin;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception.ProcessExecutionException;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException;
 import info.smart_tools.smartactors.iobject.iobject_wrapper.IObjectWrapper;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_generator.IWrapperGenerator;
-import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_generator.exception.WrapperGeneratorException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.iobject_extension.configuration_object.ConfigurationObject;
 import info.smart_tools.smartactors.iobject_extension.wds_object.WDSObject;
 import info.smart_tools.smartactors.iobject_extension_plugins.configuration_object_plugin.InitializeConfigurationObjectStrategies;
+import info.smart_tools.smartactors.iobject_extension_plugins.wds_object_plugin.PluginWDSObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.fieldname_plugin.FieldNamePlugin;
-import info.smart_tools.smartactors.field_plugins.ifield_plugin.IFieldPlugin;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_simple_container_plugin.PluginIOCSimpleContainer;
 import info.smart_tools.smartactors.ioc_strategy_pack_plugins.resolve_standard_types_strategies_plugin.ResolveStandardTypesStrategiesPlugin;
-import info.smart_tools.smartactors.iobject_extension_plugins.wds_object_plugin.PluginWDSObject;
+import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_generator.IWrapperGenerator;
+import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_generator.exception.WrapperGeneratorException;
 import info.smart_tools.smartactors.message_processing_plugins.wrapper_generator_plugin.RegisterWrapperGenerator;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -64,11 +64,11 @@ public class WrapperExample {
         new ConcatSplitRulesPlugin(bootstrap).load();
         bootstrap.start();
 
-        iObjectKey = Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject");
-        iFieldKey = Keys.getOrAdd(IField.class.getCanonicalName());
-        configObjectKey = Keys.getOrAdd("configuration object");
-        wdsObjectKey = Keys.getOrAdd(WDSObject.class.getCanonicalName());
-        iWrapperGeneratorKey = Keys.getOrAdd(IWrapperGenerator.class.getCanonicalName());
+        iObjectKey = Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject");
+        iFieldKey = Keys.getKeyByName(IField.class.getCanonicalName());
+        configObjectKey = Keys.getKeyByName("configuration object");
+        wdsObjectKey = Keys.getKeyByName(WDSObject.class.getCanonicalName());
+        iWrapperGeneratorKey = Keys.getKeyByName(IWrapperGenerator.class.getCanonicalName());
     }
 
     @Test

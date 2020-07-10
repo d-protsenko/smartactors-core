@@ -1,6 +1,5 @@
 package info.smart_tools.smartactors.actors.validate_form_data.parser;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;

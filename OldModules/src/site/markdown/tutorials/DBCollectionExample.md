@@ -20,7 +20,7 @@ You should do the following to perform a database query.
 1. Resolve [IoC](IOCExample.html) dependency to take command object which interacts with DB.
 
         ITask task = IOC.resolve(
-            Keys.getOrAdd("command_name"),          // each command has it's own unique name
+            Keys.getKeyByName("command_name"),          // each command has it's own unique name
             connection,                             // object - connection to the DB
             "collection_name",                      // each document belongs to the collection
             other comma-separated parameters        // the set of parameters depends on the command
@@ -91,7 +91,7 @@ When the document is successfully inserted, the command adds the field "collecti
 #### Example
 
     ITask task = IOC.resolve(
-            Keys.getOrAdd("db.collection.upsert"),
+            Keys.getKeyByName("db.collection.upsert"),
             connection,
             collectionName,
             document
@@ -127,7 +127,7 @@ If the document is absent in the collection, no error appears because the absenc
 #### Example
  
     ITask task = IOC.resolve(
-            Keys.getOrAdd("db.collection.delete"),
+            Keys.getKeyByName("db.collection.delete"),
             connection,
             collectionName,
             document
@@ -150,7 +150,7 @@ If the document with such id does not exist, the `TaskExecutionException` is thr
 #### Example
 
     ITask task = IOC.resolve(
-            Keys.getOrAdd("db.collection.getbyid"),
+            Keys.getKeyByName("db.collection.getbyid"),
             connection,
             collectionName,
             documentiId,
@@ -159,7 +159,7 @@ If the document with such id does not exist, the `TaskExecutionException` is thr
                     System.out.println("Found by id");
                     System.out.println((String) doc.serialize());
                 } catch (SerializeException e) {
-                    throw new ActionExecuteException(e);
+                    throw new ActionExecutionException(e);
                 }
             }
     );
@@ -218,7 +218,7 @@ Available conditions:
 Available operators:
 
 * `$eq` — test for equality of the document field and the specified value
-* `$neq` — test for not equality
+* `$ne` — test for not equality
 * `$lt` — "less than", the document field is less than the specified value
 * `$gt` — "greater than", the document field is larger than the specified value
 * `$lte` — less or equal
@@ -310,7 +310,7 @@ You define the pair: the document field name and the sort direction: "asc" or "d
 #### Example
     
     ITask task = IOC.resolve(
-            Keys.getOrAdd("db.collection.search"),
+            Keys.getKeyByName("db.collection.search"),
             connection,
             collectionName,
             new DSObject(String.format(
@@ -327,7 +327,7 @@ You define the pair: the document field name and the sort direction: "asc" or "d
                         System.out.println((String) doc.serialize());
                     }
                 } catch (SerializeException e) {
-                    throw new ActionExecuteException(e);
+                    throw new ActionExecutionException(e);
                 }
             }
     );
@@ -365,11 +365,11 @@ Get the document by id.
 
         void Handle(final IGetDocumentMessage mes) {
     
-            IPool pool = IOC.resolve(Keys.getOrAdd("DatabaseConnectionPool"));
+            IPool pool = IOC.resolve(Keys.getKeyByName("DatabaseConnectionPool"));
             try (PoolGuard guard = new PoolGuard(pool)) {
                  
                 ITask task = IOC.resolve(
-                    Keys.getOrAdd("db.collection.getbyid"),
+                    Keys.getKeyByName("db.collection.getbyid"),
                     guard.getObject(),
                     mes.collectionName(),
                     mes.id(),

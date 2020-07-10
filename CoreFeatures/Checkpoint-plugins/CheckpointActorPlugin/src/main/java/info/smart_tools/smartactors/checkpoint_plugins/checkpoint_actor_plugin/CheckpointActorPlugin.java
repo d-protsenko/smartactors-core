@@ -2,7 +2,7 @@ package info.smart_tools.smartactors.checkpoint_plugins.checkpoint_actor_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.base.interfaces.iaction.IAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
@@ -15,7 +15,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.SerializeException
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerService;
 
 /**
@@ -41,7 +41,7 @@ public class CheckpointActorPlugin extends BootstrapPlugin {
     @Item("checkpoint_actor")
     public void registerCheckpointActorStub()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("checkpoint actor"), new ApplyFunctionToArgumentsStrategy(a -> {
+        IOC.register(Keys.getKeyByName("checkpoint actor"), new ApplyFunctionToArgumentsStrategy(a -> {
             try {
                 return new CheckpointActor((IObject) a[0]);
             } catch (Exception e) {
@@ -61,7 +61,7 @@ public class CheckpointActorPlugin extends BootstrapPlugin {
     @Before({"checkpoint_actor"})
     public void registerSchedulerAction()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("checkpoint scheduler action"),
+        IOC.register(Keys.getKeyByName("checkpoint scheduler action"),
                 new SingletonStrategy(new CheckpointSchedulerAction()));
     }
 
@@ -80,13 +80,13 @@ public class CheckpointActorPlugin extends BootstrapPlugin {
     @Before({"checkpoint_actor"})
     public void registerDefaultFailureAction()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("checkpoint failure action"),
+        IOC.register(Keys.getKeyByName("checkpoint failure action"),
                 new SingletonStrategy((IAction<IObject>) msg -> {
                     try {
                         String msgString = msg.serialize();
                         System.err.printf("Lost message: %s\n", msgString);
                     } catch (SerializeException e) {
-                        throw new ActionExecuteException(e);
+                        throw new ActionExecutionException(e);
                     }
                 }));
     }
@@ -104,7 +104,7 @@ public class CheckpointActorPlugin extends BootstrapPlugin {
     })
     public void registerDefaultActivationAction()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("scheduler service activation action for checkpoint actor"),
+        IOC.register(Keys.getKeyByName("scheduler service activation action for checkpoint actor"),
                 new SingletonStrategy((IAction<ISchedulerService>) service -> { }));
     }
 }

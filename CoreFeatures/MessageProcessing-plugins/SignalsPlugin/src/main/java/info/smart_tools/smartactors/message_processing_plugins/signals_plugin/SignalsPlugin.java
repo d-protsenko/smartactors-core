@@ -7,7 +7,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing.signals.AbortSignal;
 import info.smart_tools.smartactors.message_processing.signals.ShutdownSignal;
 
@@ -32,7 +32,16 @@ public class SignalsPlugin extends BootstrapPlugin {
     })
     public void registerSystemSignals()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("shutdown signal"), new SingletonStrategy(new ShutdownSignal()));
-        IOC.register(Keys.getOrAdd("abort signal"), new SingletonStrategy(new AbortSignal()));
+        IOC.register(Keys.getKeyByName("shutdown signal"), new SingletonStrategy(new ShutdownSignal()));
+        IOC.register(Keys.getKeyByName("abort signal"), new SingletonStrategy(new AbortSignal()));
+    }
+
+    @ItemRevert("system_signal_classes")
+    public void unregisterSystemSignals() {
+        String[] itemNames = {
+                "shutdown signal",
+                "abort signal"
+        };
+        Keys.unregisterByNames(itemNames);
     }
 }

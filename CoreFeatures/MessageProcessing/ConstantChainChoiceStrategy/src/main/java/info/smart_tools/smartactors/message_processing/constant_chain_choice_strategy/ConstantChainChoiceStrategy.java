@@ -1,11 +1,12 @@
 package info.smart_tools.smartactors.message_processing.constant_chain_choice_strategy;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
+import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing.chain_call_receiver.IChainChoiceStrategy;
-import info.smart_tools.smartactors.message_processing.chain_call_receiver.exceptions.ChainChoiceException;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 
 /**
@@ -16,16 +17,12 @@ public class ConstantChainChoiceStrategy implements IChainChoiceStrategy {
 
     public ConstantChainChoiceStrategy()
             throws ResolutionException {
-        chainIdFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
+        chainIdFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chain");
     }
 
     @Override
-    public Object chooseChain(IMessageProcessor messageProcessor) throws ChainChoiceException {
-        try {
-            Object name = messageProcessor.getSequence().getCurrentReceiverArguments().getValue(chainIdFieldName);
-            return IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), name);
-        } catch (Exception e) {
-            throw new ChainChoiceException("Exception occurred reading chain id for current step.", e);
-        }
+    public Object chooseChain(IMessageProcessor messageProcessor)
+            throws InvalidArgumentException, ReadValueException {
+        return messageProcessor.getSequence().getCurrentReceiverArguments().getValue(chainIdFieldName);
     }
 }

@@ -26,7 +26,7 @@
     {
       "name": "cp",
       "pn" : "MyProject",
-      "v": "0.0.1-SNAPSHOT",
+      "v": "0.0.1",
       "g": "com.my-project"
     },
     {
@@ -76,19 +76,19 @@
     {
       "name": "ufv",
       "fn" : "all",
-      "v": "0.0.1-SNAPSHOT"
+      "v": "0.0.1"
     },
     {
       "name": "uav",
       "fn" : "all",
       "an" : "all",
-      "v": "0.0.1-SNAPSHOT"
+      "v": "0.0.1"
     },
     {
       "name": "uplv",
       "fn" : "all",
       "pln" : "all",
-      "v": "0.0.1-SNAPSHOT"
+      "v": "0.0.1"
     }
   ]
 }

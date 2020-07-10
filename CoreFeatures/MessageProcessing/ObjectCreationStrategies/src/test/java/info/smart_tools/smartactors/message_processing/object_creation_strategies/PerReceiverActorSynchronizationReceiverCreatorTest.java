@@ -1,14 +1,14 @@
 package info.smart_tools.smartactors.message_processing.object_creation_strategies;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.IReceiverObjectCreator;
@@ -30,7 +30,7 @@ public class PerReceiverActorSynchronizationReceiverCreatorTest extends PluginsL
     private IReceiverObjectListener listenerMock;
     private IReceiverObjectCreator creatorMock;
     private IMessageReceiver[] receiverMocks;
-    private IResolveDependencyStrategy actorReceiverResolutionStrategy;
+    private IStrategy actorReceiverResolutionStrategy;
     private IObject filterConfig, objectConfig, context;
 
     @Override
@@ -55,8 +55,8 @@ public class PerReceiverActorSynchronizationReceiverCreatorTest extends PluginsL
             mock(IMessageReceiver.class),
         };
 
-        actorReceiverResolutionStrategy = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.getOrAdd("create actor synchronization receiver"), actorReceiverResolutionStrategy);
+        actorReceiverResolutionStrategy = mock(IStrategy.class);
+        IOC.register(Keys.getKeyByName("create actor synchronization receiver"), actorReceiverResolutionStrategy);
 
         when(actorReceiverResolutionStrategy.resolve(same(receiverMocks[0]))).thenReturn(receiverMocks[1]);
         when(actorReceiverResolutionStrategy.resolve(same(receiverMocks[2]))).thenReturn(receiverMocks[3]);
@@ -117,7 +117,7 @@ public class PerReceiverActorSynchronizationReceiverCreatorTest extends PluginsL
     @Test(expected = ReceiverObjectListenerException.class)
     public void Should_throwWhenActorReceiverCreationStrategyThrows()
             throws Exception {
-        when(actorReceiverResolutionStrategy.resolve(same(receiverMocks[0]))).thenThrow(ResolveDependencyStrategyException.class);
+        when(actorReceiverResolutionStrategy.resolve(same(receiverMocks[0]))).thenThrow(StrategyException.class);
 
         IReceiverObjectCreator creator = new PerReceiverActorSynchronizationReceiverCreator(creatorMock, filterConfig, objectConfig);
 

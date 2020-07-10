@@ -6,21 +6,26 @@
 
     <groupId>info.smart_tools.smartactors</groupId>
     <artifactId>core-pack</artifactId>
-    <version>0.3.3</version>
+    <version>0.6.0</version>
 
     <packaging>pom</packaging>
 
     <properties>
-        <core.version>0.3.3</core.version>
-        <feature.version>0.3.3</feature.version>
+        <feature.rurl>http://archiva.smart-tools.info/repository/smartactors-features/</feature.rurl>
+        <feature.rid>archiva.smartactors-features</feature.rid>
+        <module.rurl>${feature.rurl}</module.rurl>
+        <module.rid>${feature.rid}</module.rid>
+
+        <core.version>0.6.0</core.version>
+        <feature.version>0.6.0</feature.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
     
     <repositories>
         <repository>
-            <id>archiva.smartactors-modules</id>
-            <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
+            <id>${module.rid}</id>
+            <url>${module.rurl}</url>
         </repository>
     </repositories>
 
@@ -395,9 +400,9 @@
                 </goals>
                 <configuration>
                     <generatePom>false</generatePom>
-                    <file>${basedir}/target/${artifactId}-${feature.version}-archive.zip</file>
-                    <url>http://archiva.smart-tools.info/repository/smartactors-features/</url>
-                    <repositoryId>archiva.smartactors-features</repositoryId>
+                    <file>${basedir}/target/${artifactId}-${feature.version}.zip</file>
+                    <url>${feature.rurl}</url>
+                    <repositoryId>${feature.rid}</repositoryId>
 
                     <groupId>info.smart_tools.smartactors</groupId>
                     <artifactId>${artifactId}</artifactId>

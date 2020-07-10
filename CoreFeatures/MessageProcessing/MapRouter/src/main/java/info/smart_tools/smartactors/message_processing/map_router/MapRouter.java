@@ -47,8 +47,20 @@ public class MapRouter implements IRouter {
         IMessageReceiver oldReceiver = map.put(targetId, receiver);
 
         if (null != oldReceiver) {
-            System.out.println(MessageFormat.format("Warning: replacing receiver ({0}) registered as ''{1}'' by {2}",
+            System.out.println(MessageFormat.format("[WARNING] replacing receiver ({0}) registered as ''{1}'' by {2}",
                     oldReceiver.toString(), targetId.toString(), receiver.toString()));
+        }
+    }
+
+    @Override
+    public void unregister(final Object targetId) {
+        IMessageReceiver receiver = map.remove(targetId);
+
+        if (null != receiver) {
+            receiver.dispose();
+        } else {
+            System.out.println(MessageFormat.format("[WARNING] ''{0}'' has no receivers, nothing to delete",
+                    targetId.toString()));
         }
     }
 

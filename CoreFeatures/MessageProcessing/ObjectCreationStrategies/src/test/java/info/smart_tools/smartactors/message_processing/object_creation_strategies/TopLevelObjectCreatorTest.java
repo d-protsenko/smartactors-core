@@ -1,14 +1,13 @@
 package info.smart_tools.smartactors.message_processing.object_creation_strategies;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.IReceiverObjectCreator;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.IReceiverObjectListener;
@@ -19,7 +18,7 @@ import org.junit.Test;
 
 import java.util.Collections;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
@@ -31,7 +30,7 @@ public class TopLevelObjectCreatorTest extends PluginsLoadingTestBase {
     private IObject configMock;
     private IObject contextMock;
     private IReceiverObjectListener listenerMock;
-    private IResolveDependencyStrategy objectResolutionStrategy;
+    private IStrategy objectResolutionStrategy;
     private Object object = new Object();
 
     @Override
@@ -48,13 +47,13 @@ public class TopLevelObjectCreatorTest extends PluginsLoadingTestBase {
         configMock = mock(IObject.class);
         contextMock = mock(IObject.class);
         listenerMock = mock(IReceiverObjectListener.class);
-        objectResolutionStrategy = mock(IResolveDependencyStrategy.class);
+        objectResolutionStrategy = mock(IStrategy.class);
 
-        IOC.register(Keys.getOrAdd("the object dependency"), objectResolutionStrategy);
+        IOC.register(Keys.getKeyByName("the object dependency"), objectResolutionStrategy);
 
         when(objectResolutionStrategy.resolve(same(configMock))).thenReturn(object);
 
-        when(configMock.getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency")))
+        when(configMock.getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "dependency")))
                 .thenReturn("the object dependency");
     }
 
@@ -68,7 +67,7 @@ public class TopLevelObjectCreatorTest extends PluginsLoadingTestBase {
         verify(objectResolutionStrategy, times(1)).resolve(any());
         verify(listenerMock).acceptItem(isNull(), same(object));
         verify(listenerMock).endItems();
-        verify(contextMock).setValue(eq(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "topLevelObject")), same(object));
+        verify(contextMock).setValue(eq(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "topLevelObject")), same(object));
     }
 
     @Test
@@ -84,7 +83,7 @@ public class TopLevelObjectCreatorTest extends PluginsLoadingTestBase {
             throws Exception {
         IReceiverObjectCreator creator = new TopLevelObjectCreator();
 
-        when(objectResolutionStrategy.resolve(any())).thenThrow(ResolveDependencyStrategyException.class);
+        when(objectResolutionStrategy.resolve(any())).thenThrow(StrategyException.class);
 
         creator.create(listenerMock, configMock, contextMock);
     }

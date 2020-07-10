@@ -1,18 +1,18 @@
 package info.smart_tools.smartactors.http_endpoint_plugins.get_cookie_rule_plugin;
 
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.base.strategy.create_new_instance_strategy.CreateNewInstanceStrategy;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.http_endpoint.strategy.get_cookie_from_request.GetCookieFromRequestRule;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ikey.IKey;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.http_endpoint.strategy.get_cookie_from_request.GetCookieFromRequestRule;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,12 +20,12 @@ import org.mockito.ArgumentCaptor;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.*;
 
-@PrepareForTest({IOC.class, Keys.class, GetCookieFromRequestRulePlugin.class, CreateNewInstanceStrategy.class})
+@PrepareForTest({IOC.class, Keys.class, GetCookieFromRequestRulePlugin.class, ApplyFunctionToArgumentsStrategy.class})
 @RunWith(PowerMockRunner.class)
 public class GetCookieFromRequestRulePluginTest {
     private GetCookieFromRequestRulePlugin plugin;
@@ -54,7 +54,7 @@ public class GetCookieFromRequestRulePluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("GetCookieFromRequestRulePlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
 //        verify(bootstrapItem).after("IOC");
 //        verify(bootstrapItem).after("wds_object");
@@ -64,7 +64,7 @@ public class GetCookieFromRequestRulePluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey strategyKey = mock(IKey.class);
-        when(Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName())).thenReturn(strategyKey);
+        when(Keys.getKeyByName(IStrategy.class.getCanonicalName())).thenReturn(strategyKey);
 
         GetCookieFromRequestRule targetObject = mock(GetCookieFromRequestRule.class);
         whenNew(GetCookieFromRequestRule.class).withNoArguments().thenReturn(targetObject);
@@ -72,7 +72,7 @@ public class GetCookieFromRequestRulePluginTest {
         actionArgumentCaptor.getValue().execute();
 
         verifyStatic();
-        Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName());
+        Keys.getKeyByName(IStrategy.class.getCanonicalName());
 
         verifyNew(GetCookieFromRequestRule.class).withNoArguments();
 
@@ -108,23 +108,23 @@ public class GetCookieFromRequestRulePluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("GetCookieFromRequestRulePlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
 //        verify(bootstrapItem).after("IOC");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         verify(bootstrap).add(bootstrapItem);
 
-        when(Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName())).thenThrow(new ResolutionException(""));
+        when(Keys.getKeyByName(IStrategy.class.getCanonicalName())).thenThrow(new ResolutionException(""));
 
         GetCookieFromRequestRule targetObject = mock(GetCookieFromRequestRule.class);
         whenNew(GetCookieFromRequestRule.class).withNoArguments().thenReturn(targetObject);
 
         try {
             actionArgumentCaptor.getValue().execute();
-        } catch (ActionExecuteException e) {
+        } catch (ActionExecutionException e) {
             verifyStatic();
-            Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName());
+            Keys.getKeyByName(IStrategy.class.getCanonicalName());
             return;
         }
         assertTrue("Must throw exception", false);
@@ -143,7 +143,7 @@ public class GetCookieFromRequestRulePluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("GetCookieFromRequestRulePlugin");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
 
 //        verify(bootstrapItem).after("IOC");
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
@@ -151,7 +151,7 @@ public class GetCookieFromRequestRulePluginTest {
         verify(bootstrap).add(bootstrapItem);
 
         IKey strategyKey = mock(IKey.class);
-        when(Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName())).thenReturn(strategyKey);
+        when(Keys.getKeyByName(IStrategy.class.getCanonicalName())).thenReturn(strategyKey);
 
         GetCookieFromRequestRule targetObject = mock(GetCookieFromRequestRule.class);
         whenNew(GetCookieFromRequestRule.class).withNoArguments().thenReturn(targetObject);
@@ -160,9 +160,9 @@ public class GetCookieFromRequestRulePluginTest {
 
         try {
             actionArgumentCaptor.getValue().execute();
-        } catch (ActionExecuteException e) {
+        } catch (ActionExecutionException e) {
             verifyStatic();
-            Keys.getOrAdd(IResolveDependencyStrategy.class.getCanonicalName());
+            Keys.getKeyByName(IStrategy.class.getCanonicalName());
 
             verifyNew(GetCookieFromRequestRule.class).withNoArguments();
 

@@ -1,9 +1,9 @@
 {
   "repositories": [
     {
-      "repositoryId": "archiva.smartactors-features",
+      "repositoryId": "smartactors_core_and_core_features_dev",
       "type": "default",
-      "url": "http://archiva.smart-tools.info/repository/smartactors-features/"
+      "url": "https://repository.smart-tools.info/artifactory/smartactors_core_and_core_features_dev"
     }
   ],
   "features": [
@@ -134,7 +134,7 @@
     },
     {
       "group": "info.smart_tools.smartactors",
-      "name": "utility-tools",
+      "name": "class-management",
       "version": "RELEASE"
     },
     {
@@ -145,6 +145,16 @@
     {
       "group": "info.smart_tools.smartactors",
       "name": "shutdown-plugins",
+      "version": "RELEASE"
+    },
+    {
+      "group": "info.smart_tools.smartactors",
+      "name": "version-management",
+      "version": "RELEASE"
+    },
+    {
+      "group": "info.smart_tools.smartactors",
+      "name": "version-management-plugins",
       "version": "RELEASE"
     }
   ]

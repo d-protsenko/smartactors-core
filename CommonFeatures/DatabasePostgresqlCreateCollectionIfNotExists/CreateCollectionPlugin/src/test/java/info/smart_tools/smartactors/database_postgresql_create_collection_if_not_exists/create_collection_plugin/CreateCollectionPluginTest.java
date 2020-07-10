@@ -1,10 +1,10 @@
 package info.smart_tools.smartactors.database_postgresql_create_collection_if_not_exists.create_collection_plugin;
 
-import info.smart_tools.smartactors.database_postgresql_create_collection_if_not_exists.create_collection_task.CreateIfNotExistsCollectionMessage;
-import info.smart_tools.smartactors.database_postgresql_create_collection_if_not_exists.create_collection_task.PostgresCreateIfNotExistsTask;
 import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBuildException;
 import info.smart_tools.smartactors.database.database_storage.utils.CollectionName;
 import info.smart_tools.smartactors.database.interfaces.istorage_connection.IStorageConnection;
+import info.smart_tools.smartactors.database_postgresql_create_collection_if_not_exists.create_collection_task.CreateIfNotExistsCollectionMessage;
+import info.smart_tools.smartactors.database_postgresql_create_collection_if_not_exists.create_collection_task.PostgresCreateIfNotExistsTask;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap.Bootstrap;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
@@ -14,7 +14,7 @@ import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObje
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_simple_container_plugin.PluginIOCSimpleContainer;
 import org.junit.Before;
@@ -47,16 +47,16 @@ public class CreateCollectionPluginTest {
 
     @Test
     public void testCreateTaskInitialized() throws ResolutionException {
-        assertTrue(IOC.resolve(Keys.getOrAdd(CreateIfNotExistsCollectionMessage.class.getCanonicalName()), message)
+        assertTrue(IOC.resolve(Keys.getKeyByName(CreateIfNotExistsCollectionMessage.class.getCanonicalName()), message)
                 instanceof CreateIfNotExistsCollectionMessage);
         IObject options = mock(IObject.class);
-        assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.create-if-not-exists"), connection, collection, options)
+        assertTrue(IOC.resolve(Keys.getKeyByName("db.collection.create-if-not-exists"), connection, collection, options)
                 instanceof PostgresCreateIfNotExistsTask);
     }
 
     @Test
     public void testCreateTaskInitializedWithoutOptions() throws ResolutionException {
-        assertTrue(IOC.resolve(Keys.getOrAdd("db.collection.create-if-not-exists"), connection, collection)
+        assertTrue(IOC.resolve(Keys.getKeyByName("db.collection.create-if-not-exists"), connection, collection)
                 instanceof PostgresCreateIfNotExistsTask);
     }
 }

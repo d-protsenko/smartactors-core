@@ -2,9 +2,9 @@ package info.smart_tools.smartactors.database_postgresql.postgres_schema.search;
 
 
 import info.smart_tools.smartactors.database.database_storage.exceptions.QueryBuildException;
+import info.smart_tools.smartactors.database_postgresql.postgres_connection.QueryStatement;
 import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.database_postgresql.postgres_connection.QueryStatement;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -34,7 +34,7 @@ public final class Conditions {
     public static void writeAndCondition(
             final QueryStatement query,
             final QueryWriterResolver resolver,
-            final FieldPath contextFieldPath,
+            final String contextFieldPath,
             final Object queryParameter
     ) throws QueryBuildException {
         writeCompositeCondition("(", ")", "AND", query, resolver, contextFieldPath, queryParameter);
@@ -51,7 +51,7 @@ public final class Conditions {
     public static void writeOrCondition(
             final QueryStatement query,
             final QueryWriterResolver resolver,
-            final FieldPath contextFieldPath,
+            final String contextFieldPath,
             final Object queryParameter
     ) throws QueryBuildException {
         writeCompositeCondition("(", ")", "OR", query, resolver, contextFieldPath, queryParameter);
@@ -68,7 +68,7 @@ public final class Conditions {
     public static void writeNotCondition(
             final QueryStatement query,
             final QueryWriterResolver resolver,
-            final FieldPath contextFieldPath,
+            final String contextFieldPath,
             final Object queryParameter
     ) throws QueryBuildException {
         writeCompositeCondition("(NOT(", "))", "AND", query, resolver, contextFieldPath, queryParameter);
@@ -101,7 +101,7 @@ public final class Conditions {
             final String delimiter,
             final QueryStatement query,
             final QueryWriterResolver resolver,
-            final FieldPath contextFieldPath,
+            final String contextFieldPath,
             final Object queryParameter
     ) throws QueryBuildException {
         Writer writer = query.getBodyWriter();

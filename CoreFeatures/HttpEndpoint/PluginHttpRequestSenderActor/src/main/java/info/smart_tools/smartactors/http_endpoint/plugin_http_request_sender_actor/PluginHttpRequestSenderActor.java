@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.http_endpoint.plugin_http_request_sender_actor;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
@@ -12,7 +12,7 @@ import info.smart_tools.smartactors.http_endpoint.http_request_sender_actor.Http
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 /**
  * Plugin for {@link HttpRequestSenderActor}
@@ -41,16 +41,20 @@ public class PluginHttpRequestSenderActor implements IPlugin {
                     .process(() -> {
                         try {
                             IOC.register(
-                                    Keys.getOrAdd("HttpRequestSenderActor"),
+                                    Keys.getKeyByName("HttpRequestSenderActor"),
                                     // Response sender is stateless so it's safe to use singleton strategy.
                                     new SingletonStrategy(new HttpRequestSenderActor()));
                         } catch (ResolutionException e) {
-                            throw new ActionExecuteException("RequestSenderActor plugin can't load: can't get RequestSenderActor key", e);
+                            throw new ActionExecutionException("RequestSenderActor plugin can't load: can't get RequestSenderActor key", e);
                         } catch (InvalidArgumentException e) {
-                            throw new ActionExecuteException("RequestSenderActor plugin can't load: can't create strategy", e);
+                            throw new ActionExecutionException("RequestSenderActor plugin can't load: can't create strategy", e);
                         } catch (RegistrationException e) {
-                            throw new ActionExecuteException("RequestSenderActor plugin can't load: can't register new strategy", e);
+                            throw new ActionExecutionException("RequestSenderActor plugin can't load: can't register new strategy", e);
                         }
+                    })
+                    .revertProcess(() -> {
+                        String[] keyNames = { "HttpRequestSenderActor" };
+                        Keys.unregisterByNames(keyNames);
                     });
 
             bootstrap.add(requestSenderItem);

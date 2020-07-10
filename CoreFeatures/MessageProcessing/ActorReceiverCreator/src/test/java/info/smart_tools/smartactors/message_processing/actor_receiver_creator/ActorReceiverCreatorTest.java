@@ -1,41 +1,34 @@
 package info.smart_tools.smartactors.message_processing.actor_receiver_creator;
 
-import info.smart_tools.smartactors.message_processing.actor_receiver.ActorReceiver;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
 import info.smart_tools.smartactors.iobject.field_name.FieldName;
 import info.smart_tools.smartactors.iobject.ifield.IField;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
+import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
+import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
+import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
+import info.smart_tools.smartactors.message_processing.actor_receiver.ActorReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.ireceiver_generator.IReceiverGenerator;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
 import info.smart_tools.smartactors.message_processing_interfaces.iroutable_object_creator.exceptions.ObjectCreationException;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
-import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.message_processing_interfaces.iwrapper_generator.IWrapperGenerator;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
-import info.smart_tools.smartactors.ioc.resolve_by_name_ioc_with_lambda_strategy.ResolveByNameIocStrategy;
+import info.smart_tools.smartactors.scope.iscope.IScope;
 import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
-import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
-import info.smart_tools.smartactors.ioc.strategy_container.StrategyContainer;
-import info.smart_tools.smartactors.ioc.string_ioc_key.Key;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests for {@link ActorReceiverCreator}
@@ -51,7 +44,7 @@ public class ActorReceiverCreatorTest {
         ScopeProvider.setCurrentScope(scope);
 
         IOC.register(
-                IOC.getKeyForKeyStorage(),
+                IOC.getKeyForKeyByNameStrategy(),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -65,21 +58,21 @@ public class ActorReceiverCreatorTest {
         Queue queue = mock(Queue.class);
         when(queue.isEmpty()).thenReturn(true);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "actor_receiver_queue"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "actor_receiver_queue"),
                 new SingletonStrategy(queue)
         );
 
         AtomicBoolean isBusy = new AtomicBoolean();
         isBusy.set(false);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "actor_receiver_busyness_flag"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "actor_receiver_busyness_flag"),
                 new SingletonStrategy(isBusy)
         );
 
         // register wrapper generator
-        IResolveDependencyStrategy wgs = mock(IResolveDependencyStrategy.class);
+        IStrategy wgs = mock(IStrategy.class);
         IWrapperGenerator wg = mock(IWrapperGenerator.class);
-        IOC.register(Keys.getOrAdd(IWrapperGenerator.class.getCanonicalName()), wgs);
+        IOC.register(Keys.getKeyByName(IWrapperGenerator.class.getCanonicalName()), wgs);
         when(wgs.resolve()).thenReturn(wg);
         MethodWrapper mw = new MethodWrapper();
         when(wg.generate(IMethodWrapper.class)).thenReturn(mw);
@@ -89,7 +82,7 @@ public class ActorReceiverCreatorTest {
     public void checkCreationAndExecution()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -102,7 +95,7 @@ public class ActorReceiverCreatorTest {
         );
         IField field = mock(IField.class);
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), IField.class.getCanonicalName()),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), IField.class.getCanonicalName()),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             return field;
@@ -110,28 +103,28 @@ public class ActorReceiverCreatorTest {
                 )
         );
         // register receiver generator
-        IResolveDependencyStrategy rgs = mock(IResolveDependencyStrategy.class);
+        IStrategy rgs = mock(IStrategy.class);
         IReceiverGenerator rg = mock(IReceiverGenerator.class);
-        IOC.register(Keys.getOrAdd(IReceiverGenerator.class.getCanonicalName()), rgs);
+        IOC.register(Keys.getKeyByName(IReceiverGenerator.class.getCanonicalName()), rgs);
         when(rgs.resolve()).thenReturn(rg);
         IMessageReceiver mr = mock(IMessageReceiver.class);
-        when(rg.generate(any(CustomActor.class), any(IResolveDependencyStrategy.class), any(String.class))).thenReturn(mr);
+        when(rg.generate(any(CustomActor.class), any(IStrategy.class), any(String.class))).thenReturn(mr);
 
         IObject objectSection = mock(IObject.class);
         when(objectSection.getValue(new FieldName("name"))).thenReturn("actorID");
         when(objectSection.getValue(new FieldName("dependency"))).thenReturn("createSampleActorStrategy");
-        IResolveDependencyStrategy createSampleActorStrategy = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.getOrAdd("createSampleActorStrategy"), createSampleActorStrategy);
+        IStrategy createSampleActorStrategy = mock(IStrategy.class);
+        IOC.register(Keys.getKeyByName("createSampleActorStrategy"), createSampleActorStrategy);
         ConstructorWrapperImpl wrapperImpl = new ConstructorWrapperImpl();
         CustomActor a = new CustomActor(wrapperImpl);
         when(createSampleActorStrategy.resolve(objectSection))
                 .thenReturn(a);
 
         ActorReceiverCreator arc = new ActorReceiverCreator();
-        IRouter router = new Router();
+        IRouter router = new ActorInnerRouter();
 
         arc.createObject(router, objectSection);
-        assertEquals(((Router) router).map.size(), 1);
+        assertEquals(((ActorInnerRouter) router).map.size(), 1);
         IMessageReceiver actorReceiver = router.route("actorID");
         assertSame(actorReceiver.getClass(), ActorReceiver.class);
 
@@ -152,7 +145,7 @@ public class ActorReceiverCreatorTest {
         verify(createSampleActorStrategy, times(1)).resolve(objectSection);
         verify(rg, times(1)).generate(
                 any(CustomActor.class),
-                any(IResolveDependencyStrategy.class),
+                any(IStrategy.class),
                 any(String.class)
         );
         verify(objectSection, times(1)).getValue(new FieldName("name"));
@@ -163,7 +156,7 @@ public class ActorReceiverCreatorTest {
     public void checkCreationExceptionOnWrongFieldNameStrategy()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {
@@ -182,7 +175,7 @@ public class ActorReceiverCreatorTest {
     public void checkMethodExceptionOnWrongArgs()
             throws Exception {
         IOC.register(
-                IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
+                IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"),
                 new ResolveByNameIocStrategy(
                         (a) -> {
                             try {

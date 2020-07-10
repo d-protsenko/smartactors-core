@@ -1,17 +1,20 @@
 package info.smart_tools.smartactors.message_processing.chain_storage;
 
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.class_management.module_manager.ModuleManager;
+import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing.chain_storage.interfaces.IChainState;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainCreationException;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainModificationException;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.iobject.iobject.IObject;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
+import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.ChainNotFoundException;
+import info.smart_tools.smartactors.scope.iscope_provider_container.exception.ScopeProviderException;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -64,23 +67,42 @@ public class ChainStorage implements IChainStorage {
             throws ChainCreationException {
         try {
             IReceiverChain newChain = IOC.resolve(
-                    Keys.getOrAdd(IReceiverChain.class.getCanonicalName()),
-                    chainId, description, this, router);
+                    Keys.getKeyByName(IReceiverChain.class.getCanonicalName()),
+                    chainId,
+                    description,
+                    router,
+                    ScopeProvider.getCurrentScope(),
+                    ModuleManager.getCurrentModule()
+            );
 
             IChainState oldState;
 
-            IChainState state = IOC.resolve(Keys.getOrAdd(IChainState.class.getCanonicalName()), newChain);
+            IChainState state = IOC.resolve(Keys.getKeyByName(IChainState.class.getCanonicalName()), newChain);
 
             synchronized (modificationLock) {
                 oldState = chainStates.put(chainId, state);
             }
 
             if (null != oldState) {
-                System.out.println(MessageFormat.format("Warning: replacing chain ({0}) registered as ''{1}'' by {2}",
+                System.out.println(MessageFormat.format("[WARNING] Replacing chain ({0}) registered as ''{1}'' by {2}",
                         oldState.getCurrent().toString(), chainId.toString(), newChain.toString()));
             }
-        } catch (ResolutionException  e) {
+        } catch (ResolutionException | ScopeProviderException e) {
             throw new ChainCreationException(MessageFormat.format("Could not create a chain ''{0}''", chainId.toString()), e);
+        }
+    }
+
+    @Override
+    public void unregister(final Object chainId) {
+        IChainState oldState;
+
+        synchronized (modificationLock) {
+            oldState = chainStates.remove(chainId);
+        }
+
+        if (null == oldState) {
+            System.out.println(MessageFormat.format("[WARNING] ''{1}'' has no chains, nothing to delete",
+                    chainId.toString()));
         }
     }
 

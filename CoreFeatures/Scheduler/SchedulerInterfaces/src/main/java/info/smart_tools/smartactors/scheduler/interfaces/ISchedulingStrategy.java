@@ -1,7 +1,7 @@
 package info.smart_tools.smartactors.scheduler.interfaces;
 
-import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulingStrategyExecutionException;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
+import info.smart_tools.smartactors.scheduler.interfaces.exceptions.SchedulingStrategyExecutionException;
 
 /**
  * Interface for a strategy defining when to execute tasks associated with scheduler entries.

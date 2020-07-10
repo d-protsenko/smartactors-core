@@ -12,16 +12,23 @@
     </modules>
 
     <groupId>info.smart_tools.smartactors</groupId>
-    <version>0.3.3</version>
+    <version>0.6.1</version>
+
+    <properties>
+        <feature.rurl>http://archiva.smart-tools.info/repository/servers/</feature.rurl>
+        <feature.rid>archiva.servers</feature.rid>
+        <module.rurl>${feature.rurl}</module.rurl>
+        <module.rid>${feature.rid}</module.rid>
+    </properties>
 
     <repositories>
         <repository>
-            <id>archiva.server-dev-tools</id>
-            <url>http://archiva.smart-tools.info/repository/server-dev-tools/</url>
+            <id>${feature.rid}</id>
+            <url>${feature.rurl}</url>
         </repository>
         <repository>
-            <id>archiva.smartactors-modules</id>
-            <url>http://archiva.smart-tools.info/repository/smartactors-modules/</url>
+            <id>${module.rid}</id>
+            <url>${module.rurl}</url>
         </repository>
     </repositories>
 
@@ -39,7 +46,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>3.1.0</version>
                     <executions>
                         <execution>
                             <phase>package</phase>
@@ -59,9 +66,9 @@
                     <!--</goals>-->
                     <!--<configuration>-->
                         <!--<generatePom>false</generatePom>-->
-                        <!--<file>${basedir}/target/${project.artifactId}-${project.version}-archive.zip</file>-->
-                        <!--<url>http://archiva.smart-tools.info/repository/servers/</url>-->
-                        <!--<repositoryId>archiva.servers</repositoryId>-->
+                        <!--<file>${basedir}/target/${project.artifactId}-${project.version}.zip</file>-->
+                        <!--<url>${feature.rurl}</url>-->
+                        <!--<repositoryId>${feature.rid}</repositoryId>-->
 
                         <!--<groupId>info.smart_tools.smartactors</groupId>-->
                         <!--<artifactId>${project.artifactId}</artifactId>-->
@@ -87,14 +94,15 @@
                             <inherited>false</inherited>
                             <configuration>
                                 <generatePom>true</generatePom>
-                                <file>${project.basedir}/project-distribution/${project.artifactId}-${project.version}-archive.zip</file>
-                                <url>http://archiva.smart-tools.info/repository/servers/</url>
-                                <repositoryId>archiva.servers</repositoryId>
+                                <file>${project.basedir}/project-distribution/${project.artifactId}-${project.version}.zip</file>
+                                <url>${feature.rurl}</url>
+                                <repositoryId>${feature.rid}</repositoryId>
                                 <groupId>${project.groupId}</groupId>
                                 <artifactId>${project.artifactId}</artifactId>
                                 <version>${project.version}</version>
                                 <packaging>zip</packaging>
                                 <description>This archive contains ...</description>
+                                <classifier>${deploy.classifier}</classifier>
                             </configuration>
                         </execution>
                     </executions>

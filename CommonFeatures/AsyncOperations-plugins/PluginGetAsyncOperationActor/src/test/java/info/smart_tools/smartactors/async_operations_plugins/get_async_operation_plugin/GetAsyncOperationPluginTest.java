@@ -1,15 +1,15 @@
 package info.smart_tools.smartactors.async_operations_plugins.get_async_operation_plugin;
 
 import info.smart_tools.smartactors.async_operations.get_async_operation.GetAsyncOperationActor;
-import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
-import info.smart_tools.smartactors.ioc.ikey.IKey;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
+import info.smart_tools.smartactors.feature_loading_system.bootstrap_item.BootstrapItem;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap.IBootstrap;
+import info.smart_tools.smartactors.feature_loading_system.interfaces.iplugin.exception.PluginException;
+import info.smart_tools.smartactors.ioc.ikey.IKey;
+import info.smart_tools.smartactors.ioc.ioc.IOC;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,8 +19,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.*;
 
@@ -40,7 +40,7 @@ public class GetAsyncOperationPluginTest {
 
         IKey key = mock(IKey.class);
         IKey keyPlugin = mock(IKey.class);
-        when(IOC.getKeyForKeyStorage()).thenReturn(key);
+        when(IOC.getKeyForKeyByNameStrategy()).thenReturn(key);
         when(IOC.resolve(eq(key), eq("GetFormActorPlugin"))).thenReturn(keyPlugin);
 
         bootstrap = mock(IBootstrap.class);
@@ -49,7 +49,7 @@ public class GetAsyncOperationPluginTest {
     @Test
     public void ShouldCorrectLoadPlugin() throws Exception {
         IKey actorKey = mock(IKey.class);
-        when(Keys.getOrAdd(eq(GetAsyncOperationActor.class.getCanonicalName()))).thenReturn(actorKey);
+        when(Keys.getKeyByName(eq(GetAsyncOperationActor.class.getCanonicalName()))).thenReturn(actorKey);
 
         BootstrapItem bootstrapItem = mock(BootstrapItem.class);
         whenNew(BootstrapItem.class).withArguments("CreateGetAsyncOperationActor").thenReturn(bootstrapItem);
@@ -60,7 +60,7 @@ public class GetAsyncOperationPluginTest {
 
         verifyNew(BootstrapItem.class).withArguments("CreateGetAsyncOperationActor");
 
-        ArgumentCaptor<IPoorAction> actionArgumentCaptor = ArgumentCaptor.forClass(IPoorAction.class);
+        ArgumentCaptor<IActionNoArgs> actionArgumentCaptor = ArgumentCaptor.forClass(IActionNoArgs.class);
         verify(bootstrapItem).process(actionArgumentCaptor.capture());
 
         ArgumentCaptor<ApplyFunctionToArgumentsStrategy> createNewInstanceStrategyArgumentCaptor =

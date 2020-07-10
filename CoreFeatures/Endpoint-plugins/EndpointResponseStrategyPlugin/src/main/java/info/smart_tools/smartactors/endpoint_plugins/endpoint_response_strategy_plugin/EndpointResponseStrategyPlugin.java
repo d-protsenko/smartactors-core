@@ -8,7 +8,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 public class EndpointResponseStrategyPlugin extends BootstrapPlugin {
 
@@ -22,8 +22,19 @@ public class EndpointResponseStrategyPlugin extends BootstrapPlugin {
     }
 
     @Item("http_response_strategy")
-    public void doSomeThing()
+    public void registerHttpResponseStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("endpoint response strategy"), new SingletonStrategy(new EndpointResponseStrategy()));
+        IOC.register(
+                Keys.getKeyByName("endpoint response strategy"),
+                new SingletonStrategy(
+                        new EndpointResponseStrategy()
+                )
+        );
+    }
+
+    @ItemRevert("http_response_strategy")
+    public void unregisterHttpResponseStrategy() {
+        String[] keyNames = { "endpoint response strategy" };
+        Keys.unregisterByNames(keyNames);
     }
 }

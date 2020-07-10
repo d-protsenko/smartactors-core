@@ -5,11 +5,11 @@
     <parent>
         <groupId>info.smart_tools.smartactors</groupId>
         <artifactId>task</artifactId>
-        <version>0.3.3</version>
+        <version>0.6.0</version>
     </parent>
 
     <artifactId>task.itask-execution-state</artifactId>
-    <version>0.3.3</version>
+    <version>0.6.0</version>
 
     <dependencies>
         <dependency>
@@ -45,6 +45,25 @@
                         <execution>
                             <id>default-deploy</id>
                             <phase>none</phase>
+                        </execution>
+                        <execution>
+                            <id>${module.rid}</id>
+                            <phase>deploy</phase>
+                            <goals>
+                                <goal>deploy-file</goal>
+                            </goals>
+                            <inherited>false</inherited>
+                            <configuration>
+                                <generatePom>true</generatePom>
+                                <file>${project.basedir}/target/${project.artifactId}-${project.version}.jar</file>
+                                <url>${module.rurl}</url>
+                                <repositoryId>${module.rid}</repositoryId>
+                                <groupId>${project.groupId}</groupId>
+                                <artifactId>${project.artifactId}</artifactId>
+                                <version>${project.version}</version>
+                                <packaging>jar</packaging>
+                                <description>This package contains ...</description>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>

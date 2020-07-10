@@ -1,12 +1,12 @@
 package info.smart_tools.smartactors.testing.test_checkers;
 
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
-import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.base.exception.initialization_exception.InitializationException;
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueException;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
+import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.testing.interfaces.iassertion.IAssertion;
@@ -67,14 +67,14 @@ public class AssertionChecker implements IResultChecker {
             throws InitializationException {
         try {
             preparedSuccessReceiverArguments = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "configuration object")
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "configuration object")
             );
             preparedSuccessReceiverWrapperConfig = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "configuration object")
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "configuration object")
             );
 
             IFieldName wrapperFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "wrapper"
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "wrapper"
             );
             preparedSuccessReceiverArguments.setValue(wrapperFieldName, preparedSuccessReceiverWrapperConfig);
 
@@ -107,25 +107,25 @@ public class AssertionChecker implements IResultChecker {
             throws InitializationException {
         try {
             IFieldName assertNameFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name"
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "name"
             );
             IFieldName assertTypeFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "type"
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "type"
             );
             IFieldName assertValueFieldName = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "value"
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "value"
             );
 
             for (IObject assertion : descriptions) {
                 String name = (String) assertion.getValue(assertNameFieldName);
                 String type = (String) assertion.getValue(assertTypeFieldName);
                 IFieldName getterFieldName = IOC.resolve(
-                        IOC.resolve(IOC.getKeyForKeyStorage(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "in_" + name
+                        IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "in_" + name
                 );
 
                 try {
                     IAssertion assertion1 = IOC.resolve(
-                            IOC.resolve(IOC.getKeyForKeyStorage(), "assertion of type " + type)
+                            IOC.resolve(IOC.getKeyForKeyByNameStrategy(), "assertion of type " + type)
                     );
 
                     preparedSuccessReceiverWrapperConfig.setValue(getterFieldName, assertion.getValue(assertValueFieldName));

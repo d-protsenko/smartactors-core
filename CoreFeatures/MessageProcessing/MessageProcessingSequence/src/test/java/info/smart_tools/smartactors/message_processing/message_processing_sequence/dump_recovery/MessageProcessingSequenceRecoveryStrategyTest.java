@@ -1,31 +1,29 @@
 package info.smart_tools.smartactors.message_processing.message_processing_sequence.dump_recovery;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.base.strategy.singleton_strategy.SingletonStrategy;
+import info.smart_tools.smartactors.class_management.interfaces.imodule.IModule;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
-import info.smart_tools.smartactors.iobject.ifield_name.IFieldName;
 import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.IChainStorage;
-import info.smart_tools.smartactors.message_processing_interfaces.ichain_storage.exceptions.ChainNotFoundException;
 import info.smart_tools.smartactors.message_processing_interfaces.irouter.IRouter;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessingSequence;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageReceiver;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IReceiverChain;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.exceptions.NestedChainStackOverflowException;
+import info.smart_tools.smartactors.scope.scope_provider.ScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
 import info.smart_tools.smartactors.scope_plugins.scoped_ioc_plugin.ScopedIOCPlugin;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.same;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -35,7 +33,7 @@ import static org.mockito.Mockito.when;
 public class MessageProcessingSequenceRecoveryStrategyTest extends PluginsLoadingTestBase {
     private IChainStorage chainStorageMock;
     private IRouter routerMock;
-    private IResolveDependencyStrategy chainResolutionStrategyMock;
+    private IStrategy chainResolutionStrategyMock;
 
     @Override
     protected void loadPlugins() throws Exception {
@@ -48,21 +46,21 @@ public class MessageProcessingSequenceRecoveryStrategyTest extends PluginsLoadin
 
     @Override
     protected void registerMocks() throws Exception {
-        IOC.register(Keys.getOrAdd("chain_id_from_map_name"), new IResolveDependencyStrategy() {
+        IOC.register(Keys.getKeyByName("chain_id_from_map_name_and_message"), new IStrategy() {
             @Override
-            public <T> T resolve(Object... args) throws ResolveDependencyStrategyException {
+            public <T> T resolve(Object... args) throws StrategyException {
                 return (T) String.valueOf(args[0]);
             }
         });
 
-        chainResolutionStrategyMock = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.getOrAdd(IReceiverChain.class.getCanonicalName()), chainResolutionStrategyMock);
+        chainResolutionStrategyMock = mock(IStrategy.class);
+        IOC.register(Keys.getKeyByName(IReceiverChain.class.getCanonicalName()), chainResolutionStrategyMock);
 
         routerMock = mock(IRouter.class);
         chainStorageMock = mock(IChainStorage.class);
 
-        IOC.register(Keys.getOrAdd(IRouter.class.getCanonicalName()), new SingletonStrategy(routerMock));
-        IOC.register(Keys.getOrAdd(IChainStorage.class.getCanonicalName()), new SingletonStrategy(chainStorageMock));
+        IOC.register(Keys.getKeyByName(IRouter.class.getCanonicalName()), new SingletonStrategy(routerMock));
+        IOC.register(Keys.getKeyByName(IChainStorage.class.getCanonicalName()), new SingletonStrategy(chainStorageMock));
     }
 
     @Test
@@ -70,23 +68,24 @@ public class MessageProcessingSequenceRecoveryStrategyTest extends PluginsLoadin
             throws Exception {
         IReceiverChain chainA = mock(IReceiverChain.class), chainB = mock(IReceiverChain.class);
 
-        IObject seqDump = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.iobject.IObject"),
+        IObject seqDump = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.iobject.IObject"),
                 ("{" +
-                        "'maxDepth':3," +
+                        "'maxDepth':4," +
                         "'chainsStack':['a','b','a']," +
                         "'stepsStack':[1,4,2]," +
+                        "'scopeSwitchingStack':[false,true,false]," +
                         "'chainsDump':{" +
                         "   'a': {'this-is':'chain-a dump'}" +
                         "}" +
                         "}").replace('\'','"'));
 
         when(chainStorageMock.resolve("b")).thenReturn(chainB);
-        when(chainStorageMock.resolve("a")).thenThrow(ChainNotFoundException.class);
+        when(chainStorageMock.resolve("a")).thenReturn(chainA);//thenThrow(ChainNotFoundException.class);
         when(chainResolutionStrategyMock.resolve(
                 eq("a"),
                 same(((IObject) seqDump
-                        .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainsDump")))
-                        .getValue(IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "a"))),
+                        .getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chainsDump")))
+                        .getValue(IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "a"))),
                 any(),
                 same(routerMock)
         )).thenReturn(chainA);
@@ -94,8 +93,17 @@ public class MessageProcessingSequenceRecoveryStrategyTest extends PluginsLoadin
         when(chainA.get(1)).thenReturn(mock(IMessageReceiver.class));
         when(chainA.get(2)).thenReturn(mock(IMessageReceiver.class));
         when(chainA.get(3)).thenReturn(mock(IMessageReceiver.class));
+        when(chainB.get(0)).thenReturn(mock(IMessageReceiver.class));
+        when(chainB.get(1)).thenReturn(mock(IMessageReceiver.class));
+        when(chainB.get(2)).thenReturn(mock(IMessageReceiver.class));
+        when(chainB.get(3)).thenReturn(mock(IMessageReceiver.class));
+        when(chainB.getScope()).thenReturn(ScopeProvider.getCurrentScope());
+        when(chainA.getScope()).thenReturn(ScopeProvider.getCurrentScope());
+        when(chainB.getModule()).thenReturn(mock(IModule.class));
+        when(chainA.getName()).thenReturn("a");
+        when(chainB.getName()).thenReturn("b");
 
-        IMessageProcessingSequence sequence = new MessageProcessingSequenceRecoveryStrategy().resolve(seqDump);
+        IMessageProcessingSequence sequence = new MessageProcessingSequenceRecoveryStrategy().resolve(seqDump, null);
 
         assertNotNull(sequence);
 
@@ -104,8 +112,10 @@ public class MessageProcessingSequenceRecoveryStrategyTest extends PluginsLoadin
         assertEquals(4, sequence.getStepAtLevel(1));
         assertEquals(1, sequence.getStepAtLevel(0));
 
+        sequence.setScopeSwitchingChainName("a");
+        sequence.callChain("a");
         try {
-            sequence.callChain(chainA);
+            sequence.callChain("a");
             fail();
         } catch (NestedChainStackOverflowException ok) {}
     }

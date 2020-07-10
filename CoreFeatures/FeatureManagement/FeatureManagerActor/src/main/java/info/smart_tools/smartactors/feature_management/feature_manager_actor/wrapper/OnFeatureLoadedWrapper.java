@@ -24,5 +24,4 @@ public interface OnFeatureLoadedWrapper {
      */
     IQueue getAfterFeaturesCallbackQueue()
             throws ReadValueException;
-
 }

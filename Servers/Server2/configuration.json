@@ -84,8 +84,7 @@
           "handler":"onFeatureStepCompleted",
           "wrapper":{
             "in_getFeature":"message/feature",
-            "in_getMessageProcessor":"processor",
-            "in_getFeatureProcess":"message/featureProcess"
+            "in_getMessageProcessor":"processor"
           },
           "target":"feature-manager"
         },
@@ -100,8 +99,7 @@
           "handler":"onFeatureStepCompleted",
           "wrapper":{
             "in_getFeature":"message/feature",
-            "in_getMessageProcessor":"processor",
-            "in_getFeatureProcess":"message/featureProcess"
+            "in_getMessageProcessor":"processor"
           },
           "target":"feature-manager"
         },
@@ -213,6 +211,18 @@
         }
       ],
       "exceptional":[]
+    },
+    {
+      "id":"stopDirectoryWatcher",
+      "steps":[
+        {
+          "handler":"stopService",
+          "wrapper":{
+          },
+          "target":"directory-watcher"
+        }
+      ],
+      "exceptional":[]
     }
   ],
   "onFeatureLoading": [
@@ -220,17 +230,6 @@
       "chain": "loadCoreFeaturesAndFeatures",
       "messages": [
         {}
-      ]
-    },
-    {
-      "chain": "runDirectoryWatcher",
-      "messages": [
-        {
-          "observedDirectory": "features",
-          "executionChain": "onNewFile",
-          "fileNameFieldName": "fileName",
-          "observedDirectoryFieldName": "observedDirectory"
-        }
       ]
     }
   ],

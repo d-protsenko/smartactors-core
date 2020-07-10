@@ -6,7 +6,6 @@ import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
-import net.sourceforge.argparse4j.internal.HelpScreenException;
 
 public class CommandLineArgsResolver implements ICommandLineArgsResolver {
 
@@ -58,6 +57,7 @@ public class CommandLineArgsResolver implements ICommandLineArgsResolver {
         parser.addArgument("-sn", "--server_name").help("the name of directory for server (default - 'server')");
         parser.addArgument("-sl", "--source_location").help("the location of source file");
         parser.addArgument("-aid", "--artifact_id").help("the artifact id");
+        parser.addArgument("-type", "--type").help("the package type(jar or zip)");
 //        parser.addArgument("make")
 //                .help("make current project/feature/actor. Will be run follows maven command: mvn clean package");
 //        parser.addArgument("deploy")
@@ -276,6 +276,22 @@ public class CommandLineArgsResolver implements ICommandLineArgsResolver {
     public boolean isPath() {
         String path = ns.getString("path");
         return !(null == path || path.isEmpty());
+    }
+
+    public String getPackageType()
+            throws InvalidCommandLineArgumentException {
+        String type = null;
+        type = ns.getString("type");
+        if (null == type) {
+            throw new InvalidCommandLineArgumentException("Could not resolve argument: -type.");
+        }
+
+        return type;
+    }
+
+    public boolean isPackageType() {
+        String type = ns.getString("type");
+        return !(null == type || type.isEmpty());
     }
 
     public boolean isHelp() {

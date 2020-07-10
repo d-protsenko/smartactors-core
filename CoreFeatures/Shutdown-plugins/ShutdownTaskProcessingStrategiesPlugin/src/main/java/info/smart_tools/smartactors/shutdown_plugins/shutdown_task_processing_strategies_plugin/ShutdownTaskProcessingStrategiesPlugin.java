@@ -1,10 +1,10 @@
 package info.smart_tools.smartactors.shutdown_plugins.shutdown_task_processing_strategies_plugin;
 
 import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
-import info.smart_tools.smartactors.base.interfaces.iaction.IBiFunction;
-import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecuteException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IFunctionTwoArgs;
+import info.smart_tools.smartactors.base.interfaces.iaction.exception.ActionExecutionException;
 import info.smart_tools.smartactors.base.interfaces.iaction.exception.FunctionExecutionException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
 import info.smart_tools.smartactors.base.iup_counter.IUpCounter;
 import info.smart_tools.smartactors.base.iup_counter.exception.UpCounterCallbackExecutionException;
 import info.smart_tools.smartactors.base.strategy.apply_function_to_arguments.ApplyFunctionToArgumentsStrategy;
@@ -15,7 +15,7 @@ import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.shutdown.shutdown_task_processing_strategies.*;
 import info.smart_tools.smartactors.task.interfaces.itask_dispatcher.ITaskDispatcher;
 import info.smart_tools.smartactors.task.itask_preprocess_strategy.ITaskProcessStrategy;
@@ -36,13 +36,13 @@ public class ShutdownTaskProcessingStrategiesPlugin extends BootstrapPlugin {
     @After({"IOC"})
     public void registerStrategies()
             throws ResolutionException, InvalidArgumentException, RegistrationException {
-        IOC.register(Keys.getOrAdd("ignore task processing strategy"),
+        IOC.register(Keys.getKeyByName("ignore task processing strategy"),
                 new SingletonStrategy(new IgnoreTaskStrategy()));
-        IOC.register(Keys.getOrAdd("execute task processing strategy"),
+        IOC.register(Keys.getKeyByName("execute task processing strategy"),
                 new SingletonStrategy(new ExecuteTaskStrategy()));
-        IOC.register(Keys.getOrAdd("notify task processing strategy"),
+        IOC.register(Keys.getKeyByName("notify task processing strategy"),
                 new SingletonStrategy(new NotifyTaskStrategy()));
-        IOC.register(Keys.getOrAdd("limit trials task processing strategy"),
+        IOC.register(Keys.getKeyByName("limit trials task processing strategy"),
                 new ApplyFunctionToArgumentsStrategy(args -> {
                     int maxTrials = (int) args[0];
                     int silentTrials = maxTrials;
@@ -58,9 +58,9 @@ public class ShutdownTaskProcessingStrategiesPlugin extends BootstrapPlugin {
                     }
                 }));
 
-        IResolveDependencyStrategy strategyStorage = new StrategyStorageWithCacheStrategy(
+        IStrategy strategyStorage = new StrategyStorageWithCacheStrategy(
                 a -> a,
-                (IBiFunction<Map<Class, Object>, Class, Object>) (map, clz) -> {
+                (IFunctionTwoArgs<Map<Class, Object>, Class, Object>) (map, clz) -> {
                     for (Map.Entry<Class, Object> entry : map.entrySet()) {
                         if (clz.isAssignableFrom(entry.getKey())) {
                             return entry.getValue();
@@ -71,15 +71,29 @@ public class ShutdownTaskProcessingStrategiesPlugin extends BootstrapPlugin {
                 }
         );
 
-        IOC.register(Keys.getOrAdd("shutdown mode task processing strategy by task class"),
+        IOC.register(Keys.getKeyByName("shutdown mode task processing strategy by task class"),
                 strategyStorage);
-        IOC.register(Keys.getOrAdd("expandable_strategy#shutdown mode task processing strategy by task class"),
+        IOC.register(Keys.getKeyByName("expandable_strategy#shutdown mode task processing strategy by task class"),
                 new SingletonStrategy(strategyStorage));
 
-        IOC.register(Keys.getOrAdd("task processing strategy for shutdown mode"),
+        IOC.register(Keys.getKeyByName("task processing strategy for shutdown mode"),
                 new SingletonStrategy(new CompositeStrategy(
-                        Keys.getOrAdd("shutdown mode task processing strategy by task class"),
-                        IOC.resolve(Keys.getOrAdd("execute task processing strategy")))));
+                        Keys.getKeyByName("shutdown mode task processing strategy by task class"),
+                        IOC.resolve(Keys.getKeyByName("execute task processing strategy")))));
+    }
+
+    @ItemRevert("shutdown_task_process_strategies")
+    public void unregisterStrategies() {
+        String[] itemNames = {
+                "task processing strategy for shutdown mode",
+                "expandable_strategy#shutdown mode task processing strategy by task class",
+                "shutdown mode task processing strategy by task class",
+                "limit trials task processing strategy",
+                "notify task processing strategy",
+                "execute task processing strategy",
+                "ignore task processing strategy"
+        };
+        Keys.unregisterByNames(itemNames);
     }
 
     @Item("task_dispatcher_pre_shutdown_mode_callbacks")
@@ -87,18 +101,23 @@ public class ShutdownTaskProcessingStrategiesPlugin extends BootstrapPlugin {
         "shutdown_task_process_strategies",
         "root_upcounter",
     })
+    @Before({"read_initial_config"})
     public void registerUpcounterCallbackForTaskDispatcherShutdown()
             throws ResolutionException, UpCounterCallbackExecutionException {
-        IUpCounter upCounter = IOC.resolve(Keys.getOrAdd("root upcounter"));
+        IUpCounter upCounter = IOC.resolve(Keys.getKeyByName("root upcounter"));
 
-        upCounter.onShutdownRequest(mode -> {
+        upCounter.onShutdownRequest(this.toString(), mode -> {
             try {
-                ITaskDispatcher taskDispatcher = IOC.resolve(Keys.getOrAdd("task_dispatcher"));
-                ITaskProcessStrategy taskProcessStrategy = IOC.resolve(Keys.getOrAdd("task processing strategy for shutdown mode"));
+                ITaskDispatcher taskDispatcher = IOC.resolve(Keys.getKeyByName("task_dispatcher"));
+                ITaskProcessStrategy taskProcessStrategy = IOC.resolve(Keys.getKeyByName("task processing strategy for shutdown mode"));
                 taskDispatcher.setProcessStrategy(taskProcessStrategy);
             } catch (ResolutionException e) {
-                throw new ActionExecuteException(e);
+                throw new ActionExecutionException(e);
             }
         });
+    }
+
+    @ItemRevert("task_dispatcher_pre_shutdown_mode_callbacks")
+    public void unregisterUpcounterCallbackForTaskDispatcherShutdown() {
     }
 }

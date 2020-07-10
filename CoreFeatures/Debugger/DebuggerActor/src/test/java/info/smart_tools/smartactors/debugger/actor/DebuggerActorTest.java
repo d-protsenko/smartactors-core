@@ -1,16 +1,15 @@
 package info.smart_tools.smartactors.debugger.actor;
 
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 import info.smart_tools.smartactors.debugger.actor.wrappers.CommandMessage;
 import info.smart_tools.smartactors.debugger.actor.wrappers.DebuggableMessage;
 import info.smart_tools.smartactors.debugger.interfaces.IDebuggerSession;
-import info.smart_tools.smartactors.debugger.interfaces.exceptions.CommandExecutionException;
 import info.smart_tools.smartactors.helpers.plugins_loading_test_base.PluginsLoadingTestBase;
 import info.smart_tools.smartactors.iobject_plugins.dsobject_plugin.PluginDSObject;
 import info.smart_tools.smartactors.iobject_plugins.ifieldname_plugin.IFieldNamePlugin;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.ioc_plugins.ioc_keys_plugin.PluginIOCKeys;
 import info.smart_tools.smartactors.message_processing_interfaces.message_processing.IMessageProcessor;
 import info.smart_tools.smartactors.scope_plugins.scope_provider_plugin.PluginScopeProvider;
@@ -23,15 +22,18 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
 
 /**
  * Test for {@link DebuggerActor}.
  */
 public class DebuggerActorTest extends PluginsLoadingTestBase {
-    private IResolveDependencyStrategy sessionStrategyMock;
+    private IStrategy sessionStrategyMock;
 
     private IDebuggerSession[] session;
 
@@ -52,8 +54,8 @@ public class DebuggerActorTest extends PluginsLoadingTestBase {
 
     @Override
     protected void registerMocks() throws Exception {
-        sessionStrategyMock = mock(IResolveDependencyStrategy.class);
-        IOC.register(Keys.getOrAdd("debugger session"), sessionStrategyMock);
+        sessionStrategyMock = mock(IStrategy.class);
+        IOC.register(Keys.getKeyByName("debugger session"), sessionStrategyMock);
 
         session = new IDebuggerSession[] {
             mock(IDebuggerSession.class), mock(IDebuggerSession.class)
@@ -178,7 +180,7 @@ public class DebuggerActorTest extends PluginsLoadingTestBase {
             throws Exception {
         DebuggerActor actor = new DebuggerActor();
 
-        when(sessionStrategyMock.resolve(any(), any(), any())).thenThrow(ResolveDependencyStrategyException.class);
+        when(sessionStrategyMock.resolve(any(), any(), any())).thenThrow(StrategyException.class);
 
         when(commandMessageMock.getCommand()).thenReturn("newSession");
 

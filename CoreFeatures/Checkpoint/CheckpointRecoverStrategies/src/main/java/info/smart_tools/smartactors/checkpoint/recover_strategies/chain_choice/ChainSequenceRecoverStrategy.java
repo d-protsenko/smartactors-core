@@ -9,7 +9,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 import java.util.List;
 
@@ -39,8 +39,8 @@ public class ChainSequenceRecoverStrategy implements IRecoveryChainChoiceStrateg
      */
     public ChainSequenceRecoverStrategy()
             throws ResolutionException {
-        trialsFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "trials");
-        chainsFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chains");
+        trialsFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "trials");
+        chainsFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "chains");
     }
 
     @Override
@@ -82,9 +82,9 @@ public class ChainSequenceRecoverStrategy implements IRecoveryChainChoiceStrateg
                     trials.set(0, t);
                 }
             }
-
-            return IOC.resolve(Keys.getOrAdd("chain_id_from_map_name"), chainName);
-        } catch (InvalidArgumentException | ReadValueException | ResolutionException e) {
+            // return IOC.resolve(Keys.getKeyByName("chain_id_from_map_name_and_message"), chainName);
+            return chainName;
+        } catch (InvalidArgumentException | ReadValueException e) {
             throw new RecoverStrategyExecutionException("Error initializing recover strategy.", e);
         }
     }

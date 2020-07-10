@@ -6,7 +6,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.IReceiverObjectCreator;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.exeptions.InvalidReceiverPipelineException;
 import info.smart_tools.smartactors.message_processing_interfaces.object_creation_interfaces.exeptions.ReceiverObjectListenerException;
@@ -38,7 +38,7 @@ public class GenericDecoratorReceiverObjectCreator extends BasicIntermediateRece
             throws ResolutionException {
         super(underlyingObjectCreator, filterConfig, objectConfig);
 
-        decoratorDependencyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "decoratorDependency");
+        decoratorDependencyFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "decoratorDependency");
     }
 
     @Override
@@ -48,7 +48,7 @@ public class GenericDecoratorReceiverObjectCreator extends BasicIntermediateRece
 
         try {
             decorator = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), getFilterConfig().getValue(decoratorDependencyFieldName)),
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), getFilterConfig().getValue(decoratorDependencyFieldName)),
                     item,
                     getFilterConfig(),
                     getObjectConfig(),

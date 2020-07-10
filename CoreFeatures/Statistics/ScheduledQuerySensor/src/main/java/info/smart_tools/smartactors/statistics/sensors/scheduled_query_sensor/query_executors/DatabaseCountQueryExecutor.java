@@ -11,7 +11,7 @@ import info.smart_tools.smartactors.iobject.iobject.exception.ChangeValueExcepti
 import info.smart_tools.smartactors.iobject.iobject.exception.ReadValueException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 import info.smart_tools.smartactors.scheduler.interfaces.ISchedulerEntry;
 import info.smart_tools.smartactors.statistics.sensors.scheduled_query_sensor.interfaces.IQueryExecutor;
 import info.smart_tools.smartactors.statistics.sensors.scheduled_query_sensor.interfaces.exceptions.QueryExecutionException;
@@ -39,10 +39,10 @@ public class DatabaseCountQueryExecutor implements IQueryExecutor {
      */
     public DatabaseCountQueryExecutor()
             throws ResolutionException {
-        collectionFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collection");
-        connectionOptionsDependencyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "connectionOptionsDependency");
-        connectionPoolDependencyFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "connectionPoolDependency");
-        filterFieldName = IOC.resolve(Keys.getOrAdd("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "filter");
+        collectionFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "collection");
+        connectionOptionsDependencyFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "connectionOptionsDependency");
+        connectionPoolDependencyFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "connectionPoolDependency");
+        filterFieldName = IOC.resolve(Keys.getKeyByName("info.smart_tools.smartactors.iobject.ifield_name.IFieldName"), "filter");
     }
 
     @Override
@@ -62,15 +62,15 @@ public class DatabaseCountQueryExecutor implements IQueryExecutor {
         try {
             List<Long> res = new ArrayList<>(1);
             Object connectionOptions = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), entry.getState().getValue(connectionOptionsDependencyFieldName)));
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), entry.getState().getValue(connectionOptionsDependencyFieldName)));
             IPool connectionPool = IOC.resolve(
-                    IOC.resolve(IOC.getKeyForKeyStorage(), entry.getState().getValue(connectionPoolDependencyFieldName)),
+                    IOC.resolve(IOC.getKeyForKeyByNameStrategy(), entry.getState().getValue(connectionPoolDependencyFieldName)),
                     connectionOptions
             );
 
             try (PoolGuard pg = new PoolGuard(connectionPool)) {
                 ITask task = IOC.resolve(
-                        Keys.getOrAdd("db.collection.count"),
+                        Keys.getKeyByName("db.collection.count"),
                         pg.getObject(),
                         entry.getState().getValue(collectionFieldName),
                         entry.getState().getValue(filterFieldName),

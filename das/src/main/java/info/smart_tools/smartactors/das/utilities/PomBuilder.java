@@ -7,13 +7,7 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -160,7 +154,7 @@ public class PomBuilder {
             throws Exception {
         for (Dependency dependency : dependencies) {
             if (dependency.getVersion().equals("${core.version}")) {
-                dependency.setVersion("0.3.3");
+                dependency.setVersion("0.6.0");
             }
         }
     }

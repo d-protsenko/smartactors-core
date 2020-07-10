@@ -5,7 +5,7 @@
     <parent>
         <artifactId>servers.server2</artifactId>
         <groupId>info.smart_tools.smartactors</groupId>
-        <version>0.3.3</version>
+        <version>0.6.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>info.smart_tools.smartactors</groupId>
-            <artifactId>server-developing-tools.interfaces.iserver</artifactId>
+            <artifactId>server-interfaces.interfaces.iserver</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
         <dependency>
@@ -42,6 +42,11 @@
             <artifactId>feature-loading-system.plugin-creator</artifactId>
             <version>[0.0.1, 1.0.0)</version>
         </dependency>
+        <dependency>
+            <groupId>info.smart_tools.smartactors</groupId>
+            <artifactId>class-management.module-manager</artifactId>
+            <version>[0.0.1, 1.0.0)</version>
+        </dependency>
 
         <!-- Tests -->
         <dependency>
@@ -66,7 +71,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <configuration>
                     <finalName>server</finalName>
                     <appendAssemblyId>false</appendAssemblyId>

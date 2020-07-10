@@ -1,27 +1,26 @@
 package info.smart_tools.smartactors.ioc_strategy_pack.resolve_by_type_and_name_strategy;
 
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.IAdditionDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.i_addition_dependency_strategy.exception.AdditionDependencyStrategyException;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.IResolveDependencyStrategy;
-import info.smart_tools.smartactors.base.interfaces.iresolve_dependency_strategy.exception.ResolveDependencyStrategyException;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.IStrategyRegistration;
+import info.smart_tools.smartactors.base.interfaces.istrategy_registration.exception.StrategyRegistrationException;
+import info.smart_tools.smartactors.base.interfaces.istrategy.IStrategy;
+import info.smart_tools.smartactors.base.interfaces.istrategy.exception.StrategyException;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Stream;
 
 /**
  * There are to parameters: type and name.
  * There is single strategy for create instance by type.
  * At resolve method first parameter should be type and second name of the object instance
  */
-public class ResolveByTypeAndNameStrategy implements IResolveDependencyStrategy, IAdditionDependencyStrategy {
+public class ResolveByTypeAndNameStrategy implements IStrategy, IStrategyRegistration {
 
-    Map<String, IResolveDependencyStrategy> creatingStrategy = new HashMap<>();
+    Map<String, IStrategy> creatingStrategy = new HashMap<>();
     Map<String, Object> createdDeserializationStrategies = new ConcurrentHashMap<>();
 
     @Override
-    public Object resolve(final Object... args) throws ResolveDependencyStrategyException {
+    public Object resolve(final Object... args) throws StrategyException {
         //args[0] - type of the object
         //args[1] - name of the object
         String keyForResolvingKey = (String) args[0];
@@ -33,13 +32,13 @@ public class ResolveByTypeAndNameStrategy implements IResolveDependencyStrategy,
     }
 
     @Override
-    public void register(final Object key, final IResolveDependencyStrategy strategy) throws AdditionDependencyStrategyException {
+    public void register(final Object key, final IStrategy strategy) throws StrategyRegistrationException {
         createdDeserializationStrategies.entrySet().removeIf((k -> k.getKey().startsWith((String) key)));
         creatingStrategy.put((String) key, strategy);
     }
 
     @Override
-    public void remove(final Object key) throws AdditionDependencyStrategyException {
-        creatingStrategy.remove(key);
+    public IStrategy unregister(final Object key) throws StrategyRegistrationException {
+        return creatingStrategy.remove(key);
     }
 }

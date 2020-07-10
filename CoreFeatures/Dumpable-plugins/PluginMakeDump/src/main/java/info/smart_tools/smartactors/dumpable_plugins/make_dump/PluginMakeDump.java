@@ -11,7 +11,7 @@ import info.smart_tools.smartactors.iobject.iobject.IObject;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.RegistrationException;
 import info.smart_tools.smartactors.ioc.iioccontainer.exception.ResolutionException;
 import info.smart_tools.smartactors.ioc.ioc.IOC;
-import info.smart_tools.smartactors.ioc.named_keys_storage.Keys;
+import info.smart_tools.smartactors.ioc.key_tools.Keys;
 
 /**
  *
@@ -35,7 +35,7 @@ public class PluginMakeDump extends BootstrapPlugin {
     @Item("dump_creation_strategy")
     public void registerDumpCreationStrategy()
             throws ResolutionException, RegistrationException, InvalidArgumentException {
-        IOC.register(Keys.getOrAdd("make dump"), new ApplyFunctionToArgumentsStrategy(args -> {
+        IOC.register(Keys.getKeyByName("make dump"), new ApplyFunctionToArgumentsStrategy(args -> {
             IDumpable dumpable = (IDumpable) args[0];
             IObject options = (IObject) args[1];
 

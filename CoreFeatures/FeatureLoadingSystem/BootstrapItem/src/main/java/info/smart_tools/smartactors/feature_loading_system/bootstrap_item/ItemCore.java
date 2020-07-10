@@ -1,9 +1,9 @@
 package info.smart_tools.smartactors.feature_loading_system.bootstrap_item;
 
-import info.smart_tools.smartactors.base.interfaces.iaction.IPoorAction;
+import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
+import info.smart_tools.smartactors.base.interfaces.iaction.IActionNoArgs;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.exception.ProcessExecutionException;
 import info.smart_tools.smartactors.feature_loading_system.interfaces.ibootstrap_item.exception.RevertProcessExecutionException;
-import info.smart_tools.smartactors.base.exception.invalid_argument_exception.InvalidArgumentException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +16,9 @@ class ItemCore {
     /** Item name */
     private String itemName;
     /** Action for loading plugin chain element to the system */
-    private IPoorAction process;
+    private IActionNoArgs process;
     /** Action for unloading plugin chain element to the system */
-    private IPoorAction revertProcess;
+    private IActionNoArgs revertProcess;
     /** List of dependencies current plugin from other plugins */
     private List<String> afterList = new ArrayList<>();
     /** List of dependencies other plugins from current */
@@ -55,17 +55,17 @@ class ItemCore {
 
     /**
      * Add action for loading current item to the server
-     * @param action implementation of {@link IPoorAction}
+     * @param action implementation of {@link IActionNoArgs}
      */
-    void setProcess(final IPoorAction action) {
+    void setProcess(final IActionNoArgs action) {
         this.process = action;
     }
 
     /**
      * Add action for unloading current item from the server
-     * @param action implementation of {@link IPoorAction}
+     * @param action implementation of {@link IActionNoArgs}
      */
-    void setRevertProcess(final IPoorAction action) {
+    void setRevertProcess(final IActionNoArgs action) {
         this.revertProcess = action;
     }
 
@@ -89,7 +89,9 @@ class ItemCore {
     void executeRevertProcess()
             throws RevertProcessExecutionException {
         try {
-            this.revertProcess.execute();
+            if (null != this.revertProcess) {
+                this.revertProcess.execute();
+            }
         } catch (Throwable e) {
             throw new RevertProcessExecutionException("Revert process execution failed.", e);
         }
