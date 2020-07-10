@@ -83,11 +83,11 @@ public class DownloadFeatureActor {
                 if (
                         Paths.get(
                                 feature.getDirectory().getPath(),
-                                feature.getName() + "-" + feature.getVersion() + "." + type
+                                feature.getGroupId() + "-" + feature.getName() + "-" + feature.getVersion() + "." + type
                         ).toFile().exists() ||
                         Paths.get(
                                 feature.getDirectory().getPath(),
-                                feature.getName() + "-" + feature.getVersion() + "-" + ARCHIVE_POSTFIX + "." + type
+                                feature.getGroupId() + "-" + feature.getName() + "-" + feature.getVersion() + "-" + ARCHIVE_POSTFIX + "." + type
                         ).toFile().exists()
                 ) {
                     System.out.println("[OK] -------------- Feature '" + feature.getDisplayName() + "' already downloaded.");
@@ -145,7 +145,7 @@ public class DownloadFeatureActor {
             );
             File artifact = artifacts.get(0).getFile();
             String fileName = artifact.getName();
-            File location = Paths.get(feature.getDirectory().getPath(), fileName).toFile();
+            File location = Paths.get(feature.getDirectory().getPath(), feature.getGroupId() + "-" + fileName).toFile();
             Files.copy(artifact.toPath(), location.toPath());
             feature.setLocation(new Path(location));
         } catch (Throwable e) {

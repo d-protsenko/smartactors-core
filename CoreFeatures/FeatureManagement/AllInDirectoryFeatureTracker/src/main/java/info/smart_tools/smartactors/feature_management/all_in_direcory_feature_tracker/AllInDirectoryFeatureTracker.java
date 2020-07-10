@@ -88,6 +88,9 @@ public class AllInDirectoryFeatureTracker {
             File[] fZipped = new File(path).listFiles(
                     (item, name) -> FILE_TYPE_LIST.contains(this.getExtension(new File(name)))
             );
+            //TODO: review this part. New regexp wont work cause both groupId & artifactId could contain '-',
+            // the way is to work with feature naming, probably rework parseFeatureList function
+            // to build feature objects with names 'groupId-artifactId-version'
             if (null != fZipped) {
                 Arrays.stream(fZipped).map(m -> {
                             try {
